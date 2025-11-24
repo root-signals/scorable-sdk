@@ -22,7 +22,7 @@ Module Contents
    .. note::
 
       The construction of the API instance should be handled by
-      accesing an attribute of a :class:`root.client.Scorable` instance.
+      accesing an attribute of a :class:`scorable.client.Scorable` instance.
 
 
    .. py:method:: acreate(*, name: Optional[str] = None, path: Optional[str] = None, type: str = 'reference', _request_timeout: Optional[int] = None) -> Optional[scorable.generated.openapi_aclient.models.data_set_create.DataSetCreate]

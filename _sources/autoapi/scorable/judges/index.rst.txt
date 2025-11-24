@@ -82,7 +82,7 @@ Module Contents
    .. note::
 
       The construction of the API instance should be handled by
-      accessing an attribute of a :class:`root.client.Scorable` instance.
+      accessing an attribute of a :class:`scorable.client.Scorable` instance.
 
 
    .. py:method:: acreate(*, name: str, intent: str, evaluator_references: Optional[List[scorable.generated.openapi_aclient.models.evaluator_reference_request.EvaluatorReferenceRequest]] = None, stage: Optional[str] = None, status: Literal['unlisted', 'listed', 'public', 'public_unlisted'] = 'unlisted', _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AJudge
