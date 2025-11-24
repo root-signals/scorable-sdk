@@ -1,6 +1,6 @@
 """Scorable SDK.
 
-The use should start by creating a :class:`root.client.Scorable` instance.
+The use should start by creating a :class:`scorable.client.Scorable` instance.
 
 Example::
 
