@@ -28,7 +28,7 @@ class DataSets:
     Note:
 
       The construction of the API instance should be handled by
-      accesing an attribute of a :class:`root.client.Scorable` instance.
+      accesing an attribute of a :class:`scorable.client.Scorable` instance.
     """
 
     def __init__(self, client_context: ClientContextCallable, base_url: str, api_key: str):

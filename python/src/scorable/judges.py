@@ -178,7 +178,7 @@ class Judges:
 
     Note:
         The construction of the API instance should be handled by
-        accessing an attribute of a :class:`root.client.Scorable` instance.
+        accessing an attribute of a :class:`scorable.client.Scorable` instance.
     """
 
     def __init__(self, client_context: ClientContextCallable):

@@ -1,9 +1,3 @@
-#
-# Author: Markus Stenberg <ari@scorable.ai>
-#
-# Copyright (c) 2024 Root Signals Ltd
-#
-
 # Default target
 all: update-readme ruff mypy test
 
