@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from contextlib import AbstractAsyncContextManager
 from functools import partial
-from typing import TYPE_CHECKING, AsyncIterator, Iterator, List, Optional, Protocol
+from typing import AsyncIterator, Iterator, List, Optional, Protocol
 
 from pydantic import StrictStr
 
@@ -19,10 +19,9 @@ from .generated.openapi_client.models.execution_log_details import ExecutionLogD
 from .generated.openapi_client.models.execution_log_list import ExecutionLogList
 from .utils import ClientContextCallable, iterate_cursor_list, with_async_client, with_sync_client
 
-if TYPE_CHECKING:
 
-    class ExecutionResult(Protocol):
-        execution_log_id: str
+class ExecutionResult(Protocol):
+    execution_log_id: str
 
 
 class ExecutionLogs:

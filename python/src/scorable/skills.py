@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import AbstractAsyncContextManager, AbstractContextManager
 from enum import Enum
 from functools import partial
-from typing import TYPE_CHECKING, AsyncIterator, Dict, Iterator, List, Literal, Optional, Union, cast
+from typing import AsyncIterator, Dict, Iterator, List, Literal, Optional, Union, cast
 
 from pydantic import BaseModel, StrictStr
 
@@ -37,6 +37,7 @@ from .generated.openapi_aclient.models import (
     ModelParamsRequest as AModelParamsRequest,
 )
 from .generated.openapi_aclient.models.evaluator import Evaluator as AOpenAPIEvaluator
+from .generated.openapi_aclient.models.evaluator import Evaluator as GeneratedEvaluator
 from .generated.openapi_aclient.models.evaluator_calibration_output import (
     EvaluatorCalibrationOutput as AEvaluatorCalibrationOutput,
 )
@@ -56,6 +57,7 @@ from .generated.openapi_aclient.models.skill_test_input_request import (
 from .generated.openapi_client import ApiClient as ApiClient
 from .generated.openapi_client.api.evaluators_api import EvaluatorsApi as EvaluatorsApi
 from .generated.openapi_client.api.objectives_api import ObjectivesApi as ObjectivesApi
+from .generated.openapi_client.models.evaluator import Evaluator as SyncGeneratedEvaluator
 from .generated.openapi_client.models.evaluator_calibration_output import EvaluatorCalibrationOutput
 from .generated.openapi_client.models.evaluator_demonstrations_request import (
     EvaluatorDemonstrationsRequest,
@@ -71,11 +73,6 @@ from .generated.openapi_client.models.reference_variable_request import Referenc
 from .generated.openapi_client.models.skill_test_data_request import SkillTestDataRequest
 from .generated.openapi_client.models.skill_test_input_request import SkillTestInputRequest
 from .utils import ClientContextCallable, aiterate_cursor_list, iterate_cursor_list, with_async_client, with_sync_client
-
-if TYPE_CHECKING:
-    from .generated.openapi_aclient.models.evaluator import Evaluator as GeneratedEvaluator
-    from .generated.openapi_client.models.evaluator import Evaluator as SyncGeneratedEvaluator
-
 
 ModelName = Union[
     str,
@@ -570,7 +567,7 @@ class Evaluators:
     Note:
 
       The construction of the API instance should be handled by
-      accesing an attribute of a :class:`root.client.Scorable` instance.
+      accesing an attribute of a :class:`scorable.client.Scorable` instance.
     """
 
     def _validate_create_params_sanitize_name(
