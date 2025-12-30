@@ -208,9 +208,13 @@ class Judges:
         *,
         intent: str,
         visibility: Literal["public", "unlisted"] = "unlisted",
+        judge_id: Optional[str] = None,
+        file_id: Optional[str] = None,
         stage: Optional[str] = None,
         extra_contexts: Optional[Dict[str, str | None]] = None,
         strict: bool = False,
+        name: Optional[str] = None,
+        overwrite: bool = False,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> JudgeGeneratorResponse:
@@ -221,11 +225,16 @@ class Judges:
           intent: Describe what you want the judge to build for.
             Example: I am building a chatbot for ecommerce and I would like to measure the quality of the responses.
           visibility: Whether the judge should be visible to everyone or only to your organization.
+          judge_id: ID of an existing judge. If provided, the the existing judge will be edited instead
+            of generating a new one.
+          file_id: ID of the file to use as context for the judge.
           stage: If the intent is ambiguous, you can specify the stage of the judge.
             Example: For a chatbot judge, we can specify the stage to be "response generation".
           extra_contexts: Extra contexts to be passed to the judge.
             Example: {"domain": "Ecommerce selling clothing"}, {"audience": "Women aged 25-35"}
           strict: Whether to fail generation if the intent is ambiguous.
+          name: Name of the judge to generate. If not provided, a name will be generated for you.
+          overwrite: Whether to overwrite an existing judge with the same name.
           _request_timeout: Optional timeout for the request
 
         Returns:
@@ -237,6 +246,10 @@ class Judges:
             stage=stage,
             extra_contexts=extra_contexts,
             strict=strict,
+            overwrite=overwrite,
+            name=name,
+            judge_id=judge_id,
+            file_id=file_id,
             visibility=JudgeGeneratorVisibilityEnum.GLOBAL
             if visibility == "public"
             else JudgeGeneratorVisibilityEnum.UNLISTED,
@@ -251,9 +264,13 @@ class Judges:
         *,
         intent: str,
         visibility: Literal["public", "unlisted"] = "unlisted",
+        judge_id: Optional[str] = None,
+        file_id: Optional[str] = None,
         stage: Optional[str] = None,
         extra_contexts: Optional[Dict[str, str | None]] = None,
         strict: bool = False,
+        name: Optional[str] = None,
+        overwrite: bool = False,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AJudgeGeneratorResponse:
@@ -264,11 +281,16 @@ class Judges:
           intent: Describe what you want the judge to build for.
             Example: I am building a chatbot for ecommerce and I would like to measure the quality of the responses.
           visibility: Whether the judge should be visible to everyone or only to your organization.
+          judge_id: ID of an existing judge. If provided, the the existing judge will be edited instead
+            of generating a new one.
+          file_id: ID of the file to use as context for the judge.
           stage: If the intent is ambiguous, you can specify the stage of the judge.
             Example: For a chatbot judge, we can specify the stage to be "response generation".
           extra_contexts: Extra contexts to be passed to the judge.
             Example: {"domain": "Ecommerce selling clothing"}, {"audience": "Women aged 25-35"}
           strict: Whether to fail generation if the intent is ambiguous.
+          name: Name of the judge to generate. If not provided, a name will be generated for you.
+          overwrite: Whether to overwrite an existing judge with the same name.
           _request_timeout: Optional timeout for the request
 
         Returns:
@@ -280,6 +302,10 @@ class Judges:
             stage=stage,
             extra_contexts=extra_contexts,
             strict=strict,
+            overwrite=overwrite,
+            name=name,
+            judge_id=judge_id,
+            file_id=file_id,
             visibility=AJudgeGeneratorVisibilityEnum.GLOBAL
             if visibility == "public"
             else AJudgeGeneratorVisibilityEnum.UNLISTED,
