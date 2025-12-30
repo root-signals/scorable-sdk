@@ -28,7 +28,7 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: arun(*, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: arun(*, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
       :async:
 
 
@@ -39,6 +39,9 @@ Module Contents
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output
       :param tags: Optional tags to add to the judge execution
+      :param user_id: Optional user identifier for tracking purposes.
+      :param session_id: Optional session identifier for tracking purposes.
+      :param system_prompt: Optional system prompt that was used for the LLM call.
       :param _request_timeout: Optional timeout for the request
 
 
@@ -58,7 +61,7 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: run(*, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: run(*, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
 
       Run the judge.
 
@@ -67,6 +70,9 @@ Module Contents
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output
       :param tags: Optional tags to add to the judge execution
+      :param user_id: Optional user identifier for tracking purposes.
+      :param session_id: Optional session identifier for tracking purposes.
+      :param system_prompt: Optional system prompt that was used for the LLM call.
       :param _request_timeout: Optional timeout for the request
 
 
@@ -110,7 +116,7 @@ Module Contents
 
 
 
-   .. py:method:: agenerate(*, intent: str, visibility: Literal['public', 'unlisted'] = 'unlisted', stage: Optional[str] = None, extra_contexts: Optional[Dict[str, str | None]] = None, strict: bool = False, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_generator_response.JudgeGeneratorResponse
+   .. py:method:: agenerate(*, intent: str, visibility: Literal['public', 'unlisted'] = 'unlisted', judge_id: Optional[str] = None, file_id: Optional[str] = None, stage: Optional[str] = None, extra_contexts: Optional[Dict[str, str | None]] = None, strict: bool = False, name: Optional[str] = None, overwrite: bool = False, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_generator_response.JudgeGeneratorResponse
       :async:
 
 
@@ -119,11 +125,16 @@ Module Contents
       :param intent: Describe what you want the judge to build for.
                      Example: I am building a chatbot for ecommerce and I would like to measure the quality of the responses.
       :param visibility: Whether the judge should be visible to everyone or only to your organization.
+      :param judge_id: ID of an existing judge. If provided, the existing judge will be edited instead
+                       of generating a new one.
+      :param file_id: ID of the file to use as context for the judge.
       :param stage: If the intent is ambiguous, you can specify the stage of the judge.
                     Example: For a chatbot judge, we can specify the stage to be "response generation".
       :param extra_contexts: Extra contexts to be passed to the judge.
                              Example: {"domain": "Ecommerce selling clothing"}, {"audience": "Women aged 25-35"}
       :param strict: Whether to fail generation if the intent is ambiguous.
+      :param name: Name of the judge to generate. If not provided, a name will be generated for you.
+      :param overwrite: Whether to overwrite an existing judge with the same name.
       :param _request_timeout: Optional timeout for the request
 
       :returns: Wrapper for the judge id and optionally an error code if the generation failed.
@@ -150,7 +161,7 @@ Module Contents
 
 
 
-   .. py:method:: arun(judge_id: str, *, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: arun(judge_id: str, *, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
       :async:
 
 
@@ -162,11 +173,14 @@ Module Contents
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output
       :param tags: Optional tags to add to the judge execution
+      :param user_id: Optional user identifier for tracking purposes.
+      :param session_id: Optional session identifier for tracking purposes.
+      :param system_prompt: Optional system prompt that was used for the LLM call.
       :param _request_timeout: Optional timeout for the request
 
 
 
-   .. py:method:: arun_by_name(name: str, *, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: arun_by_name(name: str, *, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
       :async:
 
 
@@ -178,6 +192,9 @@ Module Contents
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output
       :param tags: Optional tags to add to the judge execution
+      :param user_id: Optional user identifier for tracking purposes.
+      :param session_id: Optional session identifier for tracking purposes.
+      :param system_prompt: Optional system prompt that was used for the LLM call.
       :param _request_timeout: Optional timeout for the request
 
 
@@ -215,18 +232,23 @@ Module Contents
 
 
 
-   .. py:method:: generate(*, intent: str, visibility: Literal['public', 'unlisted'] = 'unlisted', stage: Optional[str] = None, extra_contexts: Optional[Dict[str, str | None]] = None, strict: bool = False, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_generator_response.JudgeGeneratorResponse
+   .. py:method:: generate(*, intent: str, visibility: Literal['public', 'unlisted'] = 'unlisted', judge_id: Optional[str] = None, file_id: Optional[str] = None, stage: Optional[str] = None, extra_contexts: Optional[Dict[str, str | None]] = None, strict: bool = False, name: Optional[str] = None, overwrite: bool = False, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_generator_response.JudgeGeneratorResponse
 
       Generate a judge.
 
       :param intent: Describe what you want the judge to build for.
                      Example: I am building a chatbot for ecommerce and I would like to measure the quality of the responses.
       :param visibility: Whether the judge should be visible to everyone or only to your organization.
+      :param judge_id: ID of an existing judge. If provided, the existing judge will be edited instead
+                       of generating a new one.
+      :param file_id: ID of the file to use as context for the judge.
       :param stage: If the intent is ambiguous, you can specify the stage of the judge.
                     Example: For a chatbot judge, we can specify the stage to be "response generation".
       :param extra_contexts: Extra contexts to be passed to the judge.
                              Example: {"domain": "Ecommerce selling clothing"}, {"audience": "Women aged 25-35"}
       :param strict: Whether to fail generation if the intent is ambiguous.
+      :param name: Name of the judge to generate. If not provided, a name will be generated for you.
+      :param overwrite: Whether to overwrite an existing judge with the same name.
       :param _request_timeout: Optional timeout for the request
 
       :returns: Wrapper for the judge id and optionally an error code if the generation failed.
@@ -249,7 +271,7 @@ Module Contents
 
 
 
-   .. py:method:: run(judge_id: str, *, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: run(judge_id: str, *, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
 
       Run a judge directly by ID.
 
@@ -259,11 +281,14 @@ Module Contents
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output
       :param tags: Optional tags to add to the judge execution
+      :param user_id: Optional user identifier for tracking purposes.
+      :param session_id: Optional session identifier for tracking purposes.
+      :param system_prompt: Optional system prompt that was used for the LLM call.
       :param _request_timeout: Optional timeout for the request
 
 
 
-   .. py:method:: run_by_name(name: str, *, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: run_by_name(name: str, *, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
 
       Run a judge by name.
 
@@ -273,6 +298,9 @@ Module Contents
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output
       :param tags: Optional tags to add to the judge execution
+      :param user_id: Optional user identifier for tracking purposes.
+      :param session_id: Optional session identifier for tracking purposes.
+      :param system_prompt: Optional system prompt that was used for the LLM call.
       :param _request_timeout: Optional timeout for the request
 
 

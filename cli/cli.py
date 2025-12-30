@@ -495,6 +495,9 @@ def _execute_judge(
     contexts_json,
     expected_output,
     tags,
+    user_id,
+    session_id,
+    system_prompt,
 ):  # noqa: C901
     """Executes a judge."""
     if not response and not sys.stdin.isatty():
@@ -513,6 +516,12 @@ def _execute_judge(
         payload["expected_output"] = expected_output
     if tags:
         payload["tags"] = tags
+    if user_id:
+        payload["user_id"] = user_id
+    if session_id:
+        payload["session_id"] = session_id
+    if system_prompt:
+        payload["system_prompt"] = system_prompt
 
     if contexts_json:
         try:
@@ -536,6 +545,9 @@ def _execute_judge_by_name(
     contexts_json,
     expected_output,
     tags,
+    user_id,
+    session_id,
+    system_prompt,
 ):  # noqa: C901
     """Executes a judge by name."""
     if not response and not sys.stdin.isatty():
@@ -554,6 +566,12 @@ def _execute_judge_by_name(
         payload["expected_output"] = expected_output
     if tags:
         payload["tags"] = tags
+    if user_id:
+        payload["user_id"] = user_id
+    if session_id:
+        payload["session_id"] = session_id
+    if system_prompt:
+        payload["system_prompt"] = system_prompt
 
     if contexts_json:
         try:
@@ -1021,6 +1039,9 @@ def delete_cmd(judge_id):
 )
 @click.option("--expected-output", help="Expected output text.")
 @click.option("--tag", "tags", multiple=True, help="Add one or more tags.")
+@click.option("--user-id", help="User identifier for tracking purposes.")
+@click.option("--session-id", help="Session identifier for tracking purposes.")
+@click.option("--system-prompt", help="System prompt that was used for the LLM call.")
 def execute_cmd(**kwargs):
     """Execute a judge with interaction details."""
     _execute_judge(**kwargs)
@@ -1037,6 +1058,9 @@ def execute_cmd(**kwargs):
 )
 @click.option("--expected-output", help="Expected output text.")
 @click.option("--tag", "tags", multiple=True, help="Add one or more tags.")
+@click.option("--user-id", help="User identifier for tracking purposes.")
+@click.option("--session-id", help="Session identifier for tracking purposes.")
+@click.option("--system-prompt", help="System prompt that was used for the LLM call.")
 def execute_by_name_cmd(**kwargs):
     """Execute a judge by name with interaction details."""
     _execute_judge_by_name(**kwargs)

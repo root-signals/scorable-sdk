@@ -98,7 +98,7 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: arun(response: Optional[str] = None, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, *, _client: scorable.generated.openapi_aclient.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
+   .. py:method:: arun(response: Optional[str] = None, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, *, _client: scorable.generated.openapi_aclient.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
       :async:
 
 
@@ -111,6 +111,9 @@ Module Contents
       :param variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
                         predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
       :param tags: Optional tags to add to the evaluator execution
+      :param user_id: Optional user identifier for tracking purposes.
+      :param session_id: Optional session identifier for tracking purposes.
+      :param system_prompt: Optional system prompt that was used for the LLM call.
 
 
 
@@ -194,7 +197,7 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: run(response: Optional[str] = None, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, *, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
+   .. py:method:: run(response: Optional[str] = None, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, *, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
 
       Run the evaluator.
 
@@ -205,6 +208,9 @@ Module Contents
       :param variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
                         predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
       :param tags: Optional tags to add to the evaluator execution
+      :param user_id: Optional user identifier for tracking purposes.
+      :param session_id: Optional session identifier for tracking purposes.
+      :param system_prompt: Optional system prompt that was used for the LLM call.
 
 
 
@@ -558,7 +564,7 @@ Module Contents
 
 
 
-   .. py:method:: arun(evaluator_id: str, *, request: Optional[str] = None, response: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
+   .. py:method:: arun(evaluator_id: str, *, request: Optional[str] = None, response: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
       :async:
 
 
@@ -573,11 +579,14 @@ Module Contents
       :param variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
                         predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
       :param tags: Optional tags to add to the evaluator execution
+      :param user_id: Optional user identifier for tracking purposes.
+      :param session_id: Optional session identifier for tracking purposes.
+      :param system_prompt: Optional system prompt that was used for the LLM call.
       :param _request_timeout: Optional timeout for the request.
 
 
 
-   .. py:method:: arun_by_name(name: str, *, request: Optional[str] = None, response: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
+   .. py:method:: arun_by_name(name: str, *, request: Optional[str] = None, response: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
       :async:
 
 
@@ -592,6 +601,9 @@ Module Contents
       :param variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
                         predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
       :param tags: Optional tags to add to the evaluator execution
+      :param user_id: Optional user identifier for tracking purposes.
+      :param session_id: Optional session identifier for tracking purposes.
+      :param system_prompt: Optional system prompt that was used for the LLM call.
       :param _request_timeout: Optional timeout for the request.
 
 
@@ -687,7 +699,7 @@ Module Contents
 
 
 
-   .. py:method:: run(evaluator_id: str, *, request: Optional[str] = None, response: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
+   .. py:method:: run(evaluator_id: str, *, request: Optional[str] = None, response: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
 
       Run the evaluator.
 
@@ -700,11 +712,14 @@ Module Contents
       :param variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
                         predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
       :param tags: Optional tags to add to the evaluator execution
+      :param user_id: Optional user identifier for tracking purposes.
+      :param session_id: Optional session identifier for tracking purposes.
+      :param system_prompt: Optional system prompt that was used for the LLM call.
       :param _request_timeout: Optional timeout for the request.
 
 
 
-   .. py:method:: run_by_name(name: str, *, request: Optional[str] = None, response: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
+   .. py:method:: run_by_name(name: str, *, request: Optional[str] = None, response: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
 
       Run an evaluator by name.
 
@@ -717,6 +732,9 @@ Module Contents
       :param variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
                         predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
       :param tags: Optional tags to add to the evaluator execution
+      :param user_id: Optional user identifier for tracking purposes.
+      :param session_id: Optional session identifier for tracking purposes.
+      :param system_prompt: Optional system prompt that was used for the LLM call.
       :param _request_timeout: Optional timeout for the request.
 
 
