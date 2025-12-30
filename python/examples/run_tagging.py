@@ -17,6 +17,9 @@ result = client.evaluators.Faithfulness(
         """A receipt or proof of purchase is required.""",
     ],
     tags=["production", "v1.23"],
+    user_id="user123",
+    session_id="session123",
+    system_prompt="The system prompt I use in my application.",
 )
 
 # Get the execution log for the evaluator run.
@@ -30,3 +33,5 @@ logs = client.execution_logs.list(tags=["production"], include=["evaluation_cont
 for log in logs:
     print(log.score)
     print(log.evaluation_context.contexts)
+    print(log.user_id)
+    print(log.session_id)

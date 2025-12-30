@@ -86,6 +86,9 @@ class Judge(OpenApiJudge):
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> JudgeExecutionResponse:
@@ -98,6 +101,9 @@ class Judge(OpenApiJudge):
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
+          user_id: Optional user identifier for tracking purposes.
+          session_id: Optional session identifier for tracking purposes.
+          system_prompt: Optional system prompt that was used for the LLM call.
           _request_timeout: Optional timeout for the request
         """
         api_instance = JudgesApi(_client)
@@ -107,6 +113,9 @@ class Judge(OpenApiJudge):
             contexts=contexts,
             expected_output=expected_output,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return api_instance.judges_execute_create(
             judge_id=self.id,
@@ -143,6 +152,9 @@ class AJudge(AOpenApiJudge):
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AJudgeExecutionResponse:
@@ -155,6 +167,9 @@ class AJudge(AOpenApiJudge):
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
+          user_id: Optional user identifier for tracking purposes.
+          session_id: Optional session identifier for tracking purposes.
+          system_prompt: Optional system prompt that was used for the LLM call.
           _request_timeout: Optional timeout for the request
         """
         api_instance = AJudgesApi(_client)
@@ -164,6 +179,9 @@ class AJudge(AOpenApiJudge):
             request=request,
             response=response,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return await api_instance.judges_execute_create(
             judge_id=self.id,
@@ -516,6 +534,9 @@ class Judges:
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> JudgeExecutionResponse:
@@ -529,6 +550,9 @@ class Judges:
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
+          user_id: Optional user identifier for tracking purposes.
+          session_id: Optional session identifier for tracking purposes.
+          system_prompt: Optional system prompt that was used for the LLM call.
           _request_timeout: Optional timeout for the request
         """
         api_instance = JudgesApi(_client)
@@ -538,6 +562,9 @@ class Judges:
             contexts=contexts,
             expected_output=expected_output,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return api_instance.judges_execute_create(
             judge_id=judge_id,
@@ -555,6 +582,9 @@ class Judges:
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AJudgeExecutionResponse:
@@ -568,6 +598,9 @@ class Judges:
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
+          user_id: Optional user identifier for tracking purposes.
+          session_id: Optional session identifier for tracking purposes.
+          system_prompt: Optional system prompt that was used for the LLM call.
           _request_timeout: Optional timeout for the request
         """
         api_instance = AJudgesApi(_client)
@@ -577,6 +610,9 @@ class Judges:
             request=request,
             response=response,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return await api_instance.judges_execute_create(
             judge_id=judge_id,
@@ -594,6 +630,9 @@ class Judges:
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> JudgeExecutionResponse:
@@ -607,6 +646,9 @@ class Judges:
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
+          user_id: Optional user identifier for tracking purposes.
+          session_id: Optional session identifier for tracking purposes.
+          system_prompt: Optional system prompt that was used for the LLM call.
           _request_timeout: Optional timeout for the request
         """
         api_instance = JudgesApi(_client)
@@ -616,6 +658,9 @@ class Judges:
             contexts=contexts,
             expected_output=expected_output,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return api_instance.judges_execute_by_name_create(
             name=name,
@@ -633,6 +678,9 @@ class Judges:
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AJudgeExecutionResponse:
@@ -646,6 +694,9 @@ class Judges:
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
+          user_id: Optional user identifier for tracking purposes.
+          session_id: Optional session identifier for tracking purposes.
+          system_prompt: Optional system prompt that was used for the LLM call.
           _request_timeout: Optional timeout for the request
         """
         api_instance = AJudgesApi(_client)
@@ -655,6 +706,9 @@ class Judges:
             request=request,
             response=response,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return await api_instance.judges_execute_by_name_create(
             name=name,
