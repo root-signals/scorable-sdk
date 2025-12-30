@@ -1,3 +1,7 @@
+## 1.6.7
+
+- Add user_id and session_id to evaluator and judge runs
+
 ## 1.6.6
 
 - Remove functions field from evaluator requests
