@@ -204,7 +204,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** @description Get evaluator details. The response includes a 'requirements' field that specifies what parameters are required for execution. The requirements field indicates whether the evaluator requires request, response, contexts, expected_output, or reference variables. */
+    /** @description Get evaluator details. The response includes a 'inputs' field that specifies what parameters are required for execution. The requirements field indicates whether the evaluator requires request, response, contexts, expected_output, or reference variables. */
     get: operations['evaluators_retrieve'];
     /** @description Update an evaluator. */
     put: operations['evaluators_update'];
@@ -440,6 +440,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/judges/{judge_id}/openai/responses': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description OpenAI compatible endpoint for running a judge on the Responses API. See https://platform.openai.com/docs/api-reference/responses/create for more information. */
+    post: operations['judges_openai_responses_create_2'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/judges/{judge_id}/refine/': {
     parameters: {
       query?: never;
@@ -449,7 +466,14 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** @description Execute a judge as rectifier to improve the response. The rectifier will analyze the original response using the judge's evaluators and attempt to improve it based on their feedback. */
+    /**
+     * @description Execute a judge as rectifier to improve the response. The rectifier will analyze the original response using the judge's evaluators and attempt to improve it based on their feedback.
+     *
+     *     When stream=false (default): Returns complete response with both original and improved results.
+     *     When stream=true: Streams results as Server-Sent Events (SSE):
+     *       1. First chunk: Original evaluation results
+     *       2. Final chunk: Improved response and final evaluation results
+     */
     post: operations['judges_refine_create'];
     delete?: never;
     options?: never;
@@ -468,6 +492,23 @@ export interface paths {
     put?: never;
     /** @description OpenAI compatible endpoint for running a LLM interaction and refining the response using a judge. See https://platform.openai.com/docs/api-reference/chat/create for more information. */
     post: operations['judges_refine_openai_chat_completions_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/judges/{judge_id}/refine/openai/responses': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description OpenAI Responses compatible endpoint for running a LLM interaction and refining the response using a judge. See https://platform.openai.com/docs/api-reference/responses/create for more information. */
+    post: operations['judges_refine_openai_responses_create'];
     delete?: never;
     options?: never;
     head?: never;
@@ -613,6 +654,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/judges/openai/responses': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description OpenAI compatible endpoint for running a judge on the Responses API. See https://platform.openai.com/docs/api-reference/responses/create for more information. */
+    post: operations['judges_openai_responses_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/models/': {
     parameters: {
       query?: never;
@@ -723,6 +781,15 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    /**
+     * @description * `pending` - pending
+     *     * `processing` - processing
+     *     * `completed` - completed
+     *     * `failed` - failed
+     *     * `partial` - partial
+     * @enum {string}
+     */
+    BatchExecutionStatus: 'pending' | 'processing' | 'completed' | 'failed' | 'partial';
     DataSetCreate: {
       /** Format: uuid */
       readonly id: string;
@@ -999,6 +1066,12 @@ export interface components {
       expected_output?: string | null;
       tags?: string[];
       evaluator_version_id?: string | null;
+      /** @default  */
+      user_id?: string | null;
+      /** @default  */
+      session_id?: string | null;
+      /** @default  */
+      system_prompt?: string | null;
       /**
        * @description Extra variables to be used in the execution of the evaluator. Optional.
        * @default {}
@@ -1151,7 +1224,10 @@ export interface components {
       readonly rendered_prompt: string;
       /** Format: double */
       readonly score: number | null;
+      readonly session_id: string;
+      readonly system_prompt: string;
       readonly tags: string[];
+      readonly user_id: string;
       readonly evaluator_results: components['schemas']['SkillExecutionValidatorResult'][];
       readonly variables: {
         [key: string]: string;
@@ -1180,9 +1256,15 @@ export interface components {
       readonly owner: components['schemas']['NestedUserDetails'];
       /** Format: uuid */
       parent_execution_log_id?: string | null;
+      /** @description Truncated preview of the request to the LLM model. */
+      readonly request_preview: string;
+      /** @description Truncated preview of the response from the LLM model. */
+      readonly response_preview: string;
       /** Format: double */
       readonly score: number | null;
+      readonly session_id: string;
       readonly tags: string[];
+      readonly user_id: string;
       /** @description The variables used in the execution. Only included when explicitly requested with include=variables parameter. */
       readonly variables: {
         [key: string]: string;
@@ -1282,7 +1364,7 @@ export interface components {
     JudgeBatchExecutionDetail: {
       /** Format: uuid */
       readonly batch_execution_id: string;
-      readonly status: components['schemas']['Status776Enum'];
+      readonly status: components['schemas']['BatchExecutionStatus'];
       /** @description Total number of inputs in the batch */
       readonly total_count: number;
       /** @description Number of successfully completed executions */
@@ -1306,6 +1388,12 @@ export interface components {
       contexts?: string[];
       expected_output?: string | null;
       evaluator_version_id?: string | null;
+      /** @default  */
+      user_id: string | null;
+      /** @default  */
+      session_id: string | null;
+      /** @default  */
+      system_prompt: string | null;
     };
     JudgeBatchExecutionItem: {
       /** @description Position in the batch (0-indexed) */
@@ -1338,7 +1426,7 @@ export interface components {
     JudgeBatchExecutionListItem: {
       /** Format: uuid */
       readonly batch_execution_id: string;
-      readonly status: components['schemas']['Status776Enum'];
+      readonly status: components['schemas']['BatchExecutionStatus'];
       /** @description Total number of inputs in the batch */
       readonly total_count: number;
       /** @description Number of successfully completed executions */
@@ -1372,6 +1460,12 @@ export interface components {
       contexts?: string[];
       expected_output?: string | null;
       tags?: string[];
+      /** @default  */
+      user_id?: string | null;
+      /** @default  */
+      session_id?: string | null;
+      /** @default  */
+      system_prompt?: string | null;
       /** Format: uuid */
       judge_version_id?: string | null;
     };
@@ -1393,6 +1487,13 @@ export interface components {
       generating_model_params?: components['schemas']['GenerationModelParamsRequest'] | null;
       /** Format: uuid */
       judge_id?: string | null;
+      /**
+       * @description Whether to overwrite an existing judge with the same name
+       * @default true
+       */
+      overwrite: boolean | null;
+      /** @description The name of the judge to generate. If not provided, a name will be generated for you. */
+      name?: string | null;
     };
     JudgeGeneratorResponse: {
       /** Format: uuid */
@@ -1467,8 +1568,41 @@ export interface components {
       contexts?: string[];
       expected_output?: string | null;
       tags?: string[];
+      /** @default  */
+      user_id?: string | null;
+      /** @default  */
+      session_id?: string | null;
+      /** @default  */
+      system_prompt?: string | null;
       /** Format: uuid */
       judge_version_id?: string | null;
+      /**
+       * @description Maximum number of improvement attempts
+       * @default 3
+       */
+      max_iterations?: number;
+      /**
+       * @description Number of tries without improvement before early stopping
+       * @default 1
+       */
+      patience?: number;
+      /**
+       * Format: double
+       * @description Minimum score improvement required to accept a change
+       * @default 0.05
+       */
+      min_improvement?: number;
+      /**
+       * Format: double
+       * @description Target score to achieve
+       * @default 0.8
+       */
+      threshold?: number;
+      /**
+       * @description Enable streaming of intermediate and final results
+       * @default false
+       */
+      stream?: boolean;
     };
     JudgeRectifierResponse: {
       /** @description List of results from each evaluator */
@@ -1995,15 +2129,6 @@ export interface components {
      * @enum {string}
      */
     SkillTypeEnum: 'managed' | 'native';
-    /**
-     * @description * `pending` - pending
-     *     * `processing` - processing
-     *     * `completed` - completed
-     *     * `failed` - failed
-     *     * `partial` - partial
-     * @enum {string}
-     */
-    Status776Enum: 'pending' | 'processing' | 'completed' | 'failed' | 'partial';
     StatusChange: {
       status: components['schemas']['StatusChangeStatusEnum'];
     };
@@ -2483,7 +2608,7 @@ export interface operations {
       query?: {
         /** @description The pagination cursor value. */
         cursor?: string;
-        /** @description Return only Root Signals defined evaluators. */
+        /** @description Return only Scorable defined evaluators. */
         is_root_evaluator?: boolean;
         /** @description Search for evaluators by name (exact match). */
         name?: string;
@@ -2555,8 +2680,6 @@ export interface operations {
   evaluators_retrieve: {
     parameters: {
       query?: {
-        /** @description Include the last N validator results for each validator in the response. */
-        include_last_n_validator_results?: number;
         /** @description Get a specific version of the evaluator */
         version_id?: string;
       };
@@ -3109,6 +3232,31 @@ export interface operations {
       };
     };
   };
+  judges_openai_responses_create_2: {
+    parameters: {
+      query?: {
+        /** @description Whether to run judge evaluation asynchronously. When true, returns completion response immediately without waiting for judge evaluation. Defaults to false. */
+        async_judge?: boolean;
+        /** @description Whether to include evaluator results in the response metadata. Defaults to true. */
+        rs_metadata?: boolean;
+      };
+      header?: never;
+      path: {
+        judge_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   judges_refine_create: {
     parameters: {
       query?: never;
@@ -3134,33 +3282,32 @@ export interface operations {
           'application/json': components['schemas']['JudgeRectifierResponse'];
         };
       };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
     };
   };
   judges_refine_openai_chat_completions_create: {
+    parameters: {
+      query?: {
+        /** @description Whether to include evaluator results in the response metadata. Defaults to true. */
+        rs_metadata?: boolean;
+      };
+      header?: never;
+      path: {
+        judge_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  judges_refine_openai_responses_create: {
     parameters: {
       query?: {
         /** @description Whether to include evaluator results in the response metadata. Defaults to true. */
@@ -3439,6 +3586,29 @@ export interface operations {
     };
   };
   judges_openai_chat_completions_create: {
+    parameters: {
+      query?: {
+        /** @description Whether to run judge evaluation asynchronously. When true, returns completion response immediately without waiting for judge evaluation. Defaults to false. */
+        async_judge?: boolean;
+        /** @description Whether to include evaluator results in the response metadata. Defaults to true. */
+        rs_metadata?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  judges_openai_responses_create: {
     parameters: {
       query?: {
         /** @description Whether to run judge evaluation asynchronously. When true, returns completion response immediately without waiting for judge evaluation. Defaults to false. */

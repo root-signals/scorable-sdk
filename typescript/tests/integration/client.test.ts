@@ -108,6 +108,45 @@ describe.skipIf(!process.env.SCORABLE_API_KEY)('Scorable Client Integration', ()
       });
     }, 20000);
 
+    it('should handle evaluator execution with metadata', async () => {
+      const result = await client.evaluators.executeByName('Politeness', {
+        response: 'Hello, how can I help you today?',
+        user_id: 'test-user',
+        session_id: 'test-session',
+        system_prompt: 'Be polite and helpful',
+        tags: ['test', 'integration'],
+      });
+      expect(result).toBeDefined();
+      expect(result.score).toBeDefined();
+      expect(result.execution_log_id).toBeDefined();
+
+      // Verify the log has the metadata
+      const log = await client.executionLogs.get(result.execution_log_id);
+      expect(log.user_id).toBe('test-user');
+      expect(log.session_id).toBe('test-session');
+      expect(log.system_prompt).toBe('Be polite and helpful');
+      expect(log.tags).toContain('integration');
+    }, 20000);
+
+    it('should handle judge execution with metadata', async () => {
+      // Find a judge to execute
+      const judges = await client.judges.list({ page_size: 1 });
+      if (judges.results.length === 0) return;
+
+      const judge = judges.results[0]!;
+      const result = await client.judges.execute(judge.id, {
+        request: 'Help me',
+        response: 'OK',
+        user_id: 'test-user-judge',
+        session_id: 'test-session-judge',
+        system_prompt: 'Judge fairly',
+        tags: ['judge-test'],
+      });
+
+      expect(result).toBeDefined();
+      expect(result.evaluator_results).toBeInstanceOf(Array);
+    }, 20000);
+
     it('should provide rate limiter status', () => {
       const status = client.rateLimiter.getStatus();
       expect(status).toHaveProperty('requestsRemaining');

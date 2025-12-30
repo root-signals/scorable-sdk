@@ -165,7 +165,7 @@ const networkTroubleshootingEvaluator = await client.evaluators.create({
 
             Chatbot response: {{response}}`,
   intent: "To measure the technical accuracy and appropriateness of network troubleshooting responses",
-  model: "gemini-2.0-flash"  // Check client.models.list() for all available models. You can also add your own model.
+  model: "gemini-3-flash"  // Check client.models.list() for all available models. You can also add your own model.
 });
 
 const response = await networkTroubleshootingEvaluator.execute({
@@ -173,7 +173,14 @@ const response = await networkTroubleshootingEvaluator.execute({
   response: `
     I'm sorry to hear that your internet isn't working.
     Let's troubleshoot this step by step.
-  `
+  `,
+  // Optional parameters for tracking sessions and users
+  user_id: "user-123",
+  session_id: "session-456",
+  // Optional system prompt used to generate the response
+  system_prompt: "You are a technical support agent helping with network issues.",
+  // Optional tags for categorizing the evaluation
+  tags: ["production", "v0.1"]
 });
 
 console.log(response.score);
@@ -205,9 +212,14 @@ const results = await client.judges.execute(
   judgeDefinition.judge_id,
   {
     request: "Can I return my order? I bought a pair of shoes and they don't fit.",
-    response: "Yes, you can return your order for a 20% discount on the next purchase."
-    // The signature of the execute method is the same as the evaluator execute method. You can pass in
-    // contexts, tags etc...
+    response: "Yes, you can return your order for a 20% discount on the next purchase.",
+    // Optional parameters for tracking sessions and users
+    user_id: "user-123",
+    session_id: "session-456",
+    // Optional system prompt used to generate the response
+    system_prompt: "You are a technical support agent helping with network issues.",
+    // Optional tags for categorizing the judge run
+    tags: ["production", "v0.1"]
   }
 );
 

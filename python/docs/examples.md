@@ -33,6 +33,12 @@ We can also create a custom evaluator. Evaluators return only floating point val
 # 1.  Relevance: The initial response is generic and lacks...
 ```
 
+## Monitoring LLM pipelines with tags, user ID and session ID
+
+Evaluator runs can be tagged with free-form tags. User ID and session ID can be used to track the execution of a specific user in a specific session.
+
+```{literalinclude} ../examples/run_tagging.py
+```
 
 ## Adjust evaluator behavior
 
@@ -59,13 +65,6 @@ You can form a judge by describing your application and optionally the stage you
 ## Create a judge
 If you already have a set of evaluators you wish to use for a specific use case, you can create a judge by giving the name, intent and list of evaluators.
 ```{literalinclude} ../examples/create_judge.py
-```
-
-## Monitoring LLM pipelines with tags
-
-Evaluator runs can be tagged with free-form tags.
-
-```{literalinclude} ../examples/run_tagging.py
 ```
 
 

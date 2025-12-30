@@ -153,9 +153,12 @@ scorable judge execute <judge_id> --request "What is the capital of France?" --r
 
 *   `--request`: Request text.
 *   `--response`: Response text to evaluate.
-*   `--contexts`: JSON list of context strings. E.g., `'["ctx1"]'`
+*   `--contexts`: JSON list of context strings. E.g., `'["Retreived document from a knowledge base"]'`
 *   `--expected-output`: Expected output text.
 *   `--tag`: Add one or more tags.
+*   `--user-id`: User identifier for tracking purposes.
+*   `--session-id`: Session identifier for tracking purposes.
+*   `--system-prompt`: System prompt that was used for the LLM call.
 
 **Using stdin input:**
 
@@ -169,6 +172,16 @@ echo "Paris" | scorable judge execute <judge_id> --request "What is the capital 
 cat response.txt | scorable judge execute <judge_id>
 ```
 
+**With tracking parameters:**
+
+```bash
+scorable judge execute <judge_id> \
+  --response "Paris" \
+  --user-id "user-123" \
+  --session-id "session-456" \
+  --system-prompt "You are a helpful assistant."
+```
+
 #### `execute-by-name`
 
 Execute a Judge by its name.
@@ -176,6 +189,17 @@ Execute a Judge by its name.
 ```bash
 scorable judge execute-by-name "My New Judge" --request "What is the capital of France?" --response "Paris"
 ```
+
+**Options:**
+
+*   `--request`: Request text.
+*   `--response`: Response text to evaluate.
+*   `--contexts`: JSON list of context strings. E.g., `'["ctx1"]'`
+*   `--expected-output`: Expected output text.
+*   `--tag`: Add one or more tags.
+*   `--user-id`: User identifier for tracking purposes.
+*   `--session-id`: Session identifier for tracking purposes.
+*   `--system-prompt`: System prompt that was used for the LLM call.
 
 Input can also be piped in similar way as with `execute`.
 

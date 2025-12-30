@@ -88,7 +88,7 @@ class ProductionEvaluationService {
             this.client.evaluators.executeByName(evaluatorName, {
               request: response.request,
               response: response.response,
-              context: `Model: ${response.model}, Session: ${response.sessionId}`,
+              contexts: [`Model: ${response.model}, Session: ${response.sessionId}`],
             }),
           );
 

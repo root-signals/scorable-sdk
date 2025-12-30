@@ -237,6 +237,9 @@ class Evaluator(AOpenAPIEvaluator):
         expected_output: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         *,
         _client: ApiClient,
         _request_timeout: Optional[int] = None,
@@ -252,6 +255,9 @@ class Evaluator(AOpenAPIEvaluator):
           variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
             predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
           tags: Optional tags to add to the evaluator execution
+          user_id: Optional user identifier for tracking purposes.
+          session_id: Optional session identifier for tracking purposes.
+          system_prompt: Optional system prompt that was used for the LLM call.
         """
 
         if not response and not request:
@@ -267,6 +273,9 @@ class Evaluator(AOpenAPIEvaluator):
             expected_output=expected_output,
             variables=variables,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return api_instance.evaluators_execute_create(
             id=self.id,
@@ -303,6 +312,9 @@ class AEvaluator(AOpenAPIEvaluator):
         expected_output: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         *,
         _client: AApiClient,
         _request_timeout: Optional[int] = None,
@@ -318,6 +330,9 @@ class AEvaluator(AOpenAPIEvaluator):
           variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
             predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
           tags: Optional tags to add to the evaluator execution
+          user_id: Optional user identifier for tracking purposes.
+          session_id: Optional session identifier for tracking purposes.
+          system_prompt: Optional system prompt that was used for the LLM call.
         """
 
         if not response and not request:
@@ -333,6 +348,9 @@ class AEvaluator(AOpenAPIEvaluator):
             expected_output=expected_output,
             variables=variables,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return await api_instance.evaluators_execute_create(
             id=self.id,
@@ -461,6 +479,9 @@ class PresetEvaluatorRunner:
         expected_output: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         *,
         _client: ApiClient,
         _request_timeout: Optional[int] = None,
@@ -476,6 +497,9 @@ class PresetEvaluatorRunner:
             variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
                 predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
             tags: Optional tags to add to the evaluator execution
+            user_id: Optional user identifier for tracking purposes.
+            session_id: Optional session identifier for tracking purposes.
+            system_prompt: Optional system prompt that was used for the LLM call.
         """
 
         if not response and not request:
@@ -491,6 +515,9 @@ class PresetEvaluatorRunner:
             expected_output=expected_output,
             variables=variables,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return api_instance.evaluators_execute_create(
             id=self.evaluator_id,
@@ -523,6 +550,9 @@ class APresetEvaluatorRunner:
         expected_output: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         *,
         _client: AApiClient,
         _request_timeout: Optional[int] = None,
@@ -538,6 +568,9 @@ class APresetEvaluatorRunner:
             variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
                 predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
             tags: Optional tags to add to the evaluator execution
+            user_id: Optional user identifier for tracking purposes.
+            session_id: Optional session identifier for tracking purposes.
+            system_prompt: Optional system prompt that was used for the LLM call.
         """
 
         if not response and not request:
@@ -553,6 +586,9 @@ class APresetEvaluatorRunner:
             expected_output=expected_output,
             variables=variables,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return await api_instance.evaluators_execute_create(
             id=self.evaluator_id,
@@ -606,6 +642,9 @@ class Evaluators:
         evaluator_version_id: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> EvaluatorExecutionResult:
@@ -622,6 +661,9 @@ class Evaluators:
             variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
                 predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
             tags: Optional tags to add to the evaluator execution
+            user_id: Optional user identifier for tracking purposes.
+            session_id: Optional session identifier for tracking purposes.
+            system_prompt: Optional system prompt that was used for the LLM call.
             _request_timeout: Optional timeout for the request.
         """
 
@@ -638,6 +680,9 @@ class Evaluators:
             expected_output=expected_output,
             variables=variables,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return api_instance.evaluators_execute_create(
             id=evaluator_id,
@@ -657,6 +702,9 @@ class Evaluators:
         evaluator_version_id: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AEvaluatorExecutionResult:
@@ -673,6 +721,9 @@ class Evaluators:
             variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
                 predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
             tags: Optional tags to add to the evaluator execution
+            user_id: Optional user identifier for tracking purposes.
+            session_id: Optional session identifier for tracking purposes.
+            system_prompt: Optional system prompt that was used for the LLM call.
             _request_timeout: Optional timeout for the request.
         """
 
@@ -688,6 +739,9 @@ class Evaluators:
             expected_output=expected_output,
             variables=variables,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return await api_instance.evaluators_execute_create(
             id=evaluator_id,
@@ -1487,6 +1541,9 @@ class Evaluators:
         evaluator_version_id: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> EvaluatorExecutionResult:
@@ -1503,6 +1560,9 @@ class Evaluators:
             variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
                 predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
             tags: Optional tags to add to the evaluator execution
+            user_id: Optional user identifier for tracking purposes.
+            session_id: Optional session identifier for tracking purposes.
+            system_prompt: Optional system prompt that was used for the LLM call.
             _request_timeout: Optional timeout for the request.
         """
 
@@ -1519,6 +1579,9 @@ class Evaluators:
             expected_output=expected_output,
             variables=variables,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return api_instance.evaluators_execute_by_name_create(
             name=name,
@@ -1556,6 +1619,9 @@ class Evaluators:
         evaluator_version_id: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
         tags: Optional[List[str]] = None,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AEvaluatorExecutionResult:
@@ -1572,6 +1638,9 @@ class Evaluators:
             variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
                 predicate is "evaluate the output based on {subject}: {output}", then variables={"subject": "clarity"}.
             tags: Optional tags to add to the evaluator execution
+            user_id: Optional user identifier for tracking purposes.
+            session_id: Optional session identifier for tracking purposes.
+            system_prompt: Optional system prompt that was used for the LLM call.
             _request_timeout: Optional timeout for the request.
         """
 
@@ -1587,6 +1656,9 @@ class Evaluators:
             expected_output=expected_output,
             variables=variables,
             tags=tags,
+            user_id=user_id,
+            session_id=session_id,
+            system_prompt=system_prompt,
         )
         return await api_instance.evaluators_execute_by_name_create(
             name=name,

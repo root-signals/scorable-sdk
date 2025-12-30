@@ -210,15 +210,24 @@ describe('JudgesResource', () => {
         error: undefined,
       });
 
-      const result = await client.judges.generate({ intent });
+      const result = await client.judges.generate({
+        intent,
+        extra_contexts: { domain: 'Ecommerce selling clothing' },
+        stage: 'response generation',
+        overwrite: true,
+        name: 'Test Judge',
+      });
 
       expect(result.judge_id).toBeDefined();
       expect(mockClient.POST).toHaveBeenCalledWith('/v1/judges/generate/', {
         body: {
           intent,
           visibility: 'unlisted',
-          stage: null,
+          stage: 'response generation',
           strict: true,
+          extra_contexts: { domain: 'Ecommerce selling clothing' },
+          overwrite: true,
+          name: 'Test Judge',
         },
       });
     });
@@ -242,6 +251,9 @@ describe('JudgesResource', () => {
           visibility: 'unlisted',
           stage: null,
           strict: true,
+          extra_contexts: null,
+          overwrite: false,
+          name: null,
         },
       });
     });

@@ -23,6 +23,7 @@ export interface UpdateJudgeData {
 }
 
 export type JudgeExecutionPayload = components['schemas']['JudgeExecutionRequest'];
+export type JudgeRefinementPayload = components['schemas']['JudgeRectifierRequestRequest'];
 
 export interface JudgeListParams extends ListParams {
   is_preset?: boolean;
@@ -186,16 +187,25 @@ export class JudgesResource {
   async generate({
     intent,
     stage,
+    overwrite,
+    extra_contexts,
+    name,
   }: {
     intent: string;
     stage?: string;
+    overwrite?: boolean;
+    extra_contexts?: { [key: string]: string | null } | null;
+    name?: string;
   }): Promise<{ judge_id: string; error_code?: string | null }> {
     const { data, error } = await this._client.POST('/v1/judges/generate/', {
       body: {
+        overwrite: overwrite ?? false,
         intent,
         visibility: 'unlisted' as const,
         stage: stage ?? null,
         strict: true,
+        extra_contexts: extra_contexts ?? null,
+        name: name ?? null,
       },
     });
 
@@ -216,7 +226,7 @@ export class JudgesResource {
    */
   async refine(
     id: string,
-    payload: JudgeExecutionPayload,
+    payload: JudgeRefinementPayload,
   ): Promise<components['schemas']['JudgeRectifierResponse'] | undefined> {
     const { data, error } = await this._client.POST('/v1/judges/{judge_id}/refine/', {
       params: { path: { judge_id: id } },
