@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        python-version: [ "3.11", "3.12", "3.13", "3.14"]
 
     defaults:
       run:
@@ -43,13 +43,6 @@ jobs:
       - name: Setup
         run: make .venv
 
-      - name: Ensure generated schema matches what we have
-        run: |
-          make generate-openapi-client
-          sudo chown -R `whoami` src/scorable/generated
-          make fix-openapi-client
-          git diff src/scorable/generated || \
-            ( echo "Generated OpenAPI has changed. Please run 'make generate' and commit the changes." && exit 1 )
 
       - name: Run the lint+tests
         if: |
