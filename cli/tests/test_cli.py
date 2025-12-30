@@ -347,7 +347,9 @@ class TestJudgeExecute:
                 with patch("cli.sys.stdin.isatty", return_value=False):
                     from cli import _execute_judge
 
-                    _execute_judge("judge-123", None, None, None, None, None)
+                    _execute_judge(
+                        "judge-123", None, None, None, None, None, None, None, None
+                    )
 
                     # Verify that _request was called with stdin content as response
                     mock_req.assert_called_once()
@@ -369,7 +371,17 @@ class TestJudgeExecute:
                 with patch("cli.sys.stdin.isatty", return_value=False):
                     from cli import _execute_judge
 
-                    _execute_judge("judge-123", None, flag_response, None, None, None)
+                    _execute_judge(
+                        "judge-123",
+                        None,
+                        flag_response,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                    )
 
                     # Verify that _request was called with flag content, not stdin
                     mock_req.assert_called_once()
@@ -407,7 +419,9 @@ class TestJudgeExecuteByName:
                 with patch("cli.sys.stdin.isatty", return_value=False):
                     from cli import _execute_judge_by_name
 
-                    _execute_judge_by_name("Test Judge", None, None, None, None, None)
+                    _execute_judge_by_name(
+                        "Test Judge", None, None, None, None, None, None, None, None
+                    )
 
                     # Verify that _request was called with stdin content as response
                     mock_req.assert_called_once()
@@ -430,7 +444,15 @@ class TestJudgeExecuteByName:
                     from cli import _execute_judge_by_name
 
                     _execute_judge_by_name(
-                        "Test Judge", None, flag_response, None, None, None
+                        "Test Judge",
+                        None,
+                        flag_response,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
                     )
 
                     # Verify that _request was called with flag content, not stdin

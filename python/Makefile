@@ -26,7 +26,7 @@ mypy: .venv
 pre-commit: mypy
 
 ruff: .venv
-	$(IN_VENV) ruff check --fix .
+	$(IN_VENV) ruff check --fix --unsafe-fixes .
 	$(IN_VENV) ruff format .
 
 test: .venv
