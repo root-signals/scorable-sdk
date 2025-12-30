@@ -225,7 +225,7 @@ class Judges:
           intent: Describe what you want the judge to build for.
             Example: I am building a chatbot for ecommerce and I would like to measure the quality of the responses.
           visibility: Whether the judge should be visible to everyone or only to your organization.
-          judge_id: ID of an existing judge. If provided, the the existing judge will be edited instead
+          judge_id: ID of an existing judge. If provided, the existing judge will be edited instead
             of generating a new one.
           file_id: ID of the file to use as context for the judge.
           stage: If the intent is ambiguous, you can specify the stage of the judge.
@@ -281,7 +281,7 @@ class Judges:
           intent: Describe what you want the judge to build for.
             Example: I am building a chatbot for ecommerce and I would like to measure the quality of the responses.
           visibility: Whether the judge should be visible to everyone or only to your organization.
-          judge_id: ID of an existing judge. If provided, the the existing judge will be edited instead
+          judge_id: ID of an existing judge. If provided, the existing judge will be edited instead
             of generating a new one.
           file_id: ID of the file to use as context for the judge.
           stage: If the intent is ambiguous, you can specify the stage of the judge.
