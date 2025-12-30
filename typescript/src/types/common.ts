@@ -88,5 +88,8 @@ export interface ExecutionPayload {
   expected_output?: string;
   reference?: string;
   variables?: Record<string, string>;
-  [key: string]: unknown;
+  tags?: string[];
+  user_id?: string;
+  session_id?: string;
+  system_prompt?: string;
 }
