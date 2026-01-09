@@ -17,10 +17,6 @@
     <img src="https://img.shields.io/badge/HuggingFace-FF9D00?style=for-the-badge&logo=huggingface&logoColor=white&scale=2" />
   </a>
 
-  <a href="https://discord.gg/QbDAAmW9yz">
-    <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white&scale=2" />
-  </a>
-
   <a href="https://docs.scorable.ai">
     <img src="https://img.shields.io/badge/Documentation-E53935?style=for-the-badge&logo=readthedocs&logoColor=white&scale=2" />
   </a>
