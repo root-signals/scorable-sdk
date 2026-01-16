@@ -54,6 +54,9 @@ class ExecutionLogsApi:
                 description="* `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy"
             ),
         ] = None,
+        has_session_id: Annotated[
+            Optional[StrictBool], Field(description="Filter logs that have a session identifier")
+        ] = None,
         include: Annotated[
             Optional[StrictStr],
             Field(
@@ -73,8 +76,14 @@ class ExecutionLogsApi:
         ] = None,
         page_size: Annotated[Optional[StrictInt], Field(description="Number of results to return per page.")] = None,
         search: Annotated[Optional[StrictStr], Field(description="Filter with skill name or id")] = None,
+        session_id: Annotated[
+            Optional[StrictStr], Field(description="Filter logs by external session identifier (exact match)")
+        ] = None,
         tags: Annotated[Optional[StrictStr], Field(description="Filter logs by tag names (comma-separated)")] = None,
         unique_skills: Annotated[Optional[StrictBool], Field(description="Return only unique skills")] = None,
+        user_id: Annotated[
+            Optional[StrictStr], Field(description="Filter logs by external user identifier (exact match)")
+        ] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -99,6 +108,8 @@ class ExecutionLogsApi:
         :type executed_item_id: str
         :param execution_type: * `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy
         :type execution_type: str
+        :param has_session_id: Filter logs that have a session identifier
+        :type has_session_id: bool
         :param include: Comma-separated list of additional fields to include in the response. Supports: llm_output, variables, evaluation_context
         :type include: str
         :param max_score: Filter logs by maximum score, inclusive, excludes null scores
@@ -111,10 +122,14 @@ class ExecutionLogsApi:
         :type page_size: int
         :param search: Filter with skill name or id
         :type search: str
+        :param session_id: Filter logs by external session identifier (exact match)
+        :type session_id: str
         :param tags: Filter logs by tag names (comma-separated)
         :type tags: str
         :param unique_skills: Return only unique skills
         :type unique_skills: bool
+        :param user_id: Filter logs by external user identifier (exact match)
+        :type user_id: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -143,14 +158,17 @@ class ExecutionLogsApi:
             date_to=date_to,
             executed_item_id=executed_item_id,
             execution_type=execution_type,
+            has_session_id=has_session_id,
             include=include,
             max_score=max_score,
             min_score=min_score,
             ordering=ordering,
             page_size=page_size,
             search=search,
+            session_id=session_id,
             tags=tags,
             unique_skills=unique_skills,
+            user_id=user_id,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -184,6 +202,9 @@ class ExecutionLogsApi:
                 description="* `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy"
             ),
         ] = None,
+        has_session_id: Annotated[
+            Optional[StrictBool], Field(description="Filter logs that have a session identifier")
+        ] = None,
         include: Annotated[
             Optional[StrictStr],
             Field(
@@ -203,8 +224,14 @@ class ExecutionLogsApi:
         ] = None,
         page_size: Annotated[Optional[StrictInt], Field(description="Number of results to return per page.")] = None,
         search: Annotated[Optional[StrictStr], Field(description="Filter with skill name or id")] = None,
+        session_id: Annotated[
+            Optional[StrictStr], Field(description="Filter logs by external session identifier (exact match)")
+        ] = None,
         tags: Annotated[Optional[StrictStr], Field(description="Filter logs by tag names (comma-separated)")] = None,
         unique_skills: Annotated[Optional[StrictBool], Field(description="Return only unique skills")] = None,
+        user_id: Annotated[
+            Optional[StrictStr], Field(description="Filter logs by external user identifier (exact match)")
+        ] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -229,6 +256,8 @@ class ExecutionLogsApi:
         :type executed_item_id: str
         :param execution_type: * `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy
         :type execution_type: str
+        :param has_session_id: Filter logs that have a session identifier
+        :type has_session_id: bool
         :param include: Comma-separated list of additional fields to include in the response. Supports: llm_output, variables, evaluation_context
         :type include: str
         :param max_score: Filter logs by maximum score, inclusive, excludes null scores
@@ -241,10 +270,14 @@ class ExecutionLogsApi:
         :type page_size: int
         :param search: Filter with skill name or id
         :type search: str
+        :param session_id: Filter logs by external session identifier (exact match)
+        :type session_id: str
         :param tags: Filter logs by tag names (comma-separated)
         :type tags: str
         :param unique_skills: Return only unique skills
         :type unique_skills: bool
+        :param user_id: Filter logs by external user identifier (exact match)
+        :type user_id: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -273,14 +306,17 @@ class ExecutionLogsApi:
             date_to=date_to,
             executed_item_id=executed_item_id,
             execution_type=execution_type,
+            has_session_id=has_session_id,
             include=include,
             max_score=max_score,
             min_score=min_score,
             ordering=ordering,
             page_size=page_size,
             search=search,
+            session_id=session_id,
             tags=tags,
             unique_skills=unique_skills,
+            user_id=user_id,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -314,6 +350,9 @@ class ExecutionLogsApi:
                 description="* `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy"
             ),
         ] = None,
+        has_session_id: Annotated[
+            Optional[StrictBool], Field(description="Filter logs that have a session identifier")
+        ] = None,
         include: Annotated[
             Optional[StrictStr],
             Field(
@@ -333,8 +372,14 @@ class ExecutionLogsApi:
         ] = None,
         page_size: Annotated[Optional[StrictInt], Field(description="Number of results to return per page.")] = None,
         search: Annotated[Optional[StrictStr], Field(description="Filter with skill name or id")] = None,
+        session_id: Annotated[
+            Optional[StrictStr], Field(description="Filter logs by external session identifier (exact match)")
+        ] = None,
         tags: Annotated[Optional[StrictStr], Field(description="Filter logs by tag names (comma-separated)")] = None,
         unique_skills: Annotated[Optional[StrictBool], Field(description="Return only unique skills")] = None,
+        user_id: Annotated[
+            Optional[StrictStr], Field(description="Filter logs by external user identifier (exact match)")
+        ] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -359,6 +404,8 @@ class ExecutionLogsApi:
         :type executed_item_id: str
         :param execution_type: * `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy
         :type execution_type: str
+        :param has_session_id: Filter logs that have a session identifier
+        :type has_session_id: bool
         :param include: Comma-separated list of additional fields to include in the response. Supports: llm_output, variables, evaluation_context
         :type include: str
         :param max_score: Filter logs by maximum score, inclusive, excludes null scores
@@ -371,10 +418,14 @@ class ExecutionLogsApi:
         :type page_size: int
         :param search: Filter with skill name or id
         :type search: str
+        :param session_id: Filter logs by external session identifier (exact match)
+        :type session_id: str
         :param tags: Filter logs by tag names (comma-separated)
         :type tags: str
         :param unique_skills: Return only unique skills
         :type unique_skills: bool
+        :param user_id: Filter logs by external user identifier (exact match)
+        :type user_id: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -403,14 +454,17 @@ class ExecutionLogsApi:
             date_to=date_to,
             executed_item_id=executed_item_id,
             execution_type=execution_type,
+            has_session_id=has_session_id,
             include=include,
             max_score=max_score,
             min_score=min_score,
             ordering=ordering,
             page_size=page_size,
             search=search,
+            session_id=session_id,
             tags=tags,
             unique_skills=unique_skills,
+            user_id=user_id,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -430,14 +484,17 @@ class ExecutionLogsApi:
         date_to,
         executed_item_id,
         execution_type,
+        has_session_id,
         include,
         max_score,
         min_score,
         ordering,
         page_size,
         search,
+        session_id,
         tags,
         unique_skills,
+        user_id,
         _request_auth,
         _content_type,
         _headers,
@@ -477,6 +534,9 @@ class ExecutionLogsApi:
         if execution_type is not None:
             _query_params.append(("execution_type", execution_type))
 
+        if has_session_id is not None:
+            _query_params.append(("has_session_id", has_session_id))
+
         if include is not None:
             _query_params.append(("include", include))
 
@@ -495,11 +555,17 @@ class ExecutionLogsApi:
         if search is not None:
             _query_params.append(("search", search))
 
+        if session_id is not None:
+            _query_params.append(("session_id", session_id))
+
         if tags is not None:
             _query_params.append(("tags", tags))
 
         if unique_skills is not None:
             _query_params.append(("unique_skills", unique_skills))
+
+        if user_id is not None:
+            _query_params.append(("user_id", user_id))
 
         # process the header parameters
         # process the form parameters
@@ -738,6 +804,468 @@ class ExecutionLogsApi:
         return self.api_client.param_serialize(
             method="GET",
             resource_path="/v1/execution-logs/{log_id}/",
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth,
+        )
+
+    @validate_call
+    async def execution_logs_session_ids_retrieve(
+        self,
+        starts_with: Annotated[
+            Optional[StrictStr], Field(description="Filter session_ids that start with this prefix")
+        ] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> List[str]:
+        """execution_logs_session_ids_retrieve
+
+        Get unique session_ids from execution logs for the organization (max 30 results).
+
+        :param starts_with: Filter session_ids that start with this prefix
+        :type starts_with: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._execution_logs_session_ids_retrieve_serialize(
+            starts_with=starts_with,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            "200": "List[str]",
+        }
+        response_data = await self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+    @validate_call
+    async def execution_logs_session_ids_retrieve_with_http_info(
+        self,
+        starts_with: Annotated[
+            Optional[StrictStr], Field(description="Filter session_ids that start with this prefix")
+        ] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[List[str]]:
+        """execution_logs_session_ids_retrieve
+
+        Get unique session_ids from execution logs for the organization (max 30 results).
+
+        :param starts_with: Filter session_ids that start with this prefix
+        :type starts_with: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._execution_logs_session_ids_retrieve_serialize(
+            starts_with=starts_with,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            "200": "List[str]",
+        }
+        response_data = await self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+    @validate_call
+    async def execution_logs_session_ids_retrieve_without_preload_content(
+        self,
+        starts_with: Annotated[
+            Optional[StrictStr], Field(description="Filter session_ids that start with this prefix")
+        ] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """execution_logs_session_ids_retrieve
+
+        Get unique session_ids from execution logs for the organization (max 30 results).
+
+        :param starts_with: Filter session_ids that start with this prefix
+        :type starts_with: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._execution_logs_session_ids_retrieve_serialize(
+            starts_with=starts_with,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            "200": "List[str]",
+        }
+        response_data = await self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        return response_data.response
+
+    def _execution_logs_session_ids_retrieve_serialize(
+        self,
+        starts_with,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+        _host = None
+
+        _collection_formats: Dict[str, str] = {}
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        # process the query parameters
+        if starts_with is not None:
+            _query_params.append(("starts_with", starts_with))
+
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+        # set the HTTP header `Accept`
+        _header_params["Accept"] = self.api_client.select_header_accept(["application/json"])
+
+        # authentication setting
+        _auth_settings: List[str] = ["publicApiKey"]
+
+        return self.api_client.param_serialize(
+            method="GET",
+            resource_path="/v1/execution-logs/session-ids/",
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth,
+        )
+
+    @validate_call
+    async def execution_logs_user_ids_retrieve(
+        self,
+        starts_with: Annotated[
+            Optional[StrictStr], Field(description="Filter user_ids that start with this prefix")
+        ] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> List[str]:
+        """execution_logs_user_ids_retrieve
+
+        Get unique user_ids from execution logs for the organization (max 30 results).
+
+        :param starts_with: Filter user_ids that start with this prefix
+        :type starts_with: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._execution_logs_user_ids_retrieve_serialize(
+            starts_with=starts_with,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            "200": "List[str]",
+        }
+        response_data = await self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+    @validate_call
+    async def execution_logs_user_ids_retrieve_with_http_info(
+        self,
+        starts_with: Annotated[
+            Optional[StrictStr], Field(description="Filter user_ids that start with this prefix")
+        ] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[List[str]]:
+        """execution_logs_user_ids_retrieve
+
+        Get unique user_ids from execution logs for the organization (max 30 results).
+
+        :param starts_with: Filter user_ids that start with this prefix
+        :type starts_with: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._execution_logs_user_ids_retrieve_serialize(
+            starts_with=starts_with,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            "200": "List[str]",
+        }
+        response_data = await self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+    @validate_call
+    async def execution_logs_user_ids_retrieve_without_preload_content(
+        self,
+        starts_with: Annotated[
+            Optional[StrictStr], Field(description="Filter user_ids that start with this prefix")
+        ] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """execution_logs_user_ids_retrieve
+
+        Get unique user_ids from execution logs for the organization (max 30 results).
+
+        :param starts_with: Filter user_ids that start with this prefix
+        :type starts_with: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._execution_logs_user_ids_retrieve_serialize(
+            starts_with=starts_with,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            "200": "List[str]",
+        }
+        response_data = await self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        return response_data.response
+
+    def _execution_logs_user_ids_retrieve_serialize(
+        self,
+        starts_with,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+        _host = None
+
+        _collection_formats: Dict[str, str] = {}
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        # process the query parameters
+        if starts_with is not None:
+            _query_params.append(("starts_with", starts_with))
+
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+        # set the HTTP header `Accept`
+        _header_params["Accept"] = self.api_client.select_header_accept(["application/json"])
+
+        # authentication setting
+        _auth_settings: List[str] = ["publicApiKey"]
+
+        return self.api_client.param_serialize(
+            method="GET",
+            resource_path="/v1/execution-logs/user-ids/",
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

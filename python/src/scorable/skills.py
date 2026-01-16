@@ -43,6 +43,7 @@ from .generated.openapi_aclient.models.evaluator_calibration_output import (
 )
 from .generated.openapi_aclient.models.evaluator_list_output import EvaluatorListOutput as AEvaluatorListOutput
 from .generated.openapi_aclient.models.input_variable_request import InputVariableRequest as AInputVariableRequest
+from .generated.openapi_aclient.models.messages_request import MessagesRequest as AMessagesRequest
 from .generated.openapi_aclient.models.objective_request import ObjectiveRequest as AObjectiveRequest
 from .generated.openapi_aclient.models.patched_evaluator_request import (
     PatchedEvaluatorRequest as APatchedEvaluatorRequest,
@@ -66,6 +67,7 @@ from .generated.openapi_client.models.evaluator_execution_request import Evaluat
 from .generated.openapi_client.models.evaluator_execution_result import EvaluatorExecutionResult
 from .generated.openapi_client.models.evaluator_list_output import EvaluatorListOutput
 from .generated.openapi_client.models.input_variable_request import InputVariableRequest
+from .generated.openapi_client.models.messages_request import MessagesRequest
 from .generated.openapi_client.models.model_params_request import ModelParamsRequest
 from .generated.openapi_client.models.objective_request import ObjectiveRequest
 from .generated.openapi_client.models.patched_evaluator_request import PatchedEvaluatorRequest
@@ -233,6 +235,7 @@ class Evaluator(AOpenAPIEvaluator):
         self,
         response: Optional[str] = None,
         request: Optional[str] = None,
+        messages: Optional[MessagesRequest] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
@@ -258,10 +261,11 @@ class Evaluator(AOpenAPIEvaluator):
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
+          messages: Optional multi-turn conversation messages.
         """
 
-        if not response and not request:
-            raise ValueError("Either response or request must be provided")
+        if not response and not request and not messages:
+            raise ValueError("Either response, request, or messages must be provided")
 
         api_instance = EvaluatorsApi(_client)
 
@@ -276,6 +280,7 @@ class Evaluator(AOpenAPIEvaluator):
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            messages=messages,
         )
         return api_instance.evaluators_execute_create(
             id=self.id,
@@ -308,6 +313,7 @@ class AEvaluator(AOpenAPIEvaluator):
         self,
         response: Optional[str] = None,
         request: Optional[str] = None,
+        messages: Optional[AMessagesRequest] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
@@ -333,10 +339,11 @@ class AEvaluator(AOpenAPIEvaluator):
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
+          messages: Optional multi-turn conversation messages.
         """
 
-        if not response and not request:
-            raise ValueError("Either response or request must be provided")
+        if not response and not request and not messages:
+            raise ValueError("Either response, request, or messages must be provided")
 
         api_instance = AEvaluatorsApi(_client)
 
@@ -351,6 +358,7 @@ class AEvaluator(AOpenAPIEvaluator):
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            messages=messages,
         )
         return await api_instance.evaluators_execute_create(
             id=self.id,
@@ -475,6 +483,7 @@ class PresetEvaluatorRunner:
         self,
         response: Optional[str] = None,
         request: Optional[str] = None,
+        messages: Optional[MessagesRequest] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
@@ -500,10 +509,11 @@ class PresetEvaluatorRunner:
             user_id: Optional user identifier for tracking purposes.
             session_id: Optional session identifier for tracking purposes.
             system_prompt: Optional system prompt that was used for the LLM call.
+            messages: Optional multi-turn conversation messages.
         """
 
-        if not response and not request:
-            raise ValueError("Either response or request must be provided")
+        if not response and not request and not messages:
+            raise ValueError("Either response, request, or messages must be provided")
 
         api_instance = EvaluatorsApi(_client)
 
@@ -518,6 +528,7 @@ class PresetEvaluatorRunner:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            messages=messages,
         )
         return api_instance.evaluators_execute_create(
             id=self.evaluator_id,
@@ -546,6 +557,7 @@ class APresetEvaluatorRunner:
         self,
         response: Optional[str] = None,
         request: Optional[str] = None,
+        messages: Optional[AMessagesRequest] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
@@ -571,10 +583,11 @@ class APresetEvaluatorRunner:
             user_id: Optional user identifier for tracking purposes.
             session_id: Optional session identifier for tracking purposes.
             system_prompt: Optional system prompt that was used for the LLM call.
+            messages: Optional multi-turn conversation messages.
         """
 
-        if not response and not request:
-            raise ValueError("Either response or request must be provided")
+        if not response and not request and not messages:
+            raise ValueError("Either response, request, or messages must be provided")
 
         api_instance = AEvaluatorsApi(_client)
 
@@ -589,6 +602,7 @@ class APresetEvaluatorRunner:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            messages=messages,
         )
         return await api_instance.evaluators_execute_create(
             id=self.evaluator_id,
@@ -637,6 +651,7 @@ class Evaluators:
         *,
         request: Optional[str] = None,
         response: Optional[str] = None,
+        messages: Optional[MessagesRequest] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         evaluator_version_id: Optional[str] = None,
@@ -664,11 +679,12 @@ class Evaluators:
             user_id: Optional user identifier for tracking purposes.
             session_id: Optional session identifier for tracking purposes.
             system_prompt: Optional system prompt that was used for the LLM call.
+            messages: Optional multi-turn conversation messages.
             _request_timeout: Optional timeout for the request.
         """
 
-        if not response and not request:
-            raise ValueError("Either response or request must be provided")
+        if not response and not request and not messages:
+            raise ValueError("Either response, request, or messages must be provided")
 
         api_instance = EvaluatorsApi(_client)
 
@@ -683,6 +699,7 @@ class Evaluators:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            messages=messages,
         )
         return api_instance.evaluators_execute_create(
             id=evaluator_id,
@@ -697,6 +714,7 @@ class Evaluators:
         *,
         request: Optional[str] = None,
         response: Optional[str] = None,
+        messages: Optional[AMessagesRequest] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         evaluator_version_id: Optional[str] = None,
@@ -724,11 +742,12 @@ class Evaluators:
             user_id: Optional user identifier for tracking purposes.
             session_id: Optional session identifier for tracking purposes.
             system_prompt: Optional system prompt that was used for the LLM call.
+            messages: Optional multi-turn conversation messages.
             _request_timeout: Optional timeout for the request.
         """
 
-        if not response and not request:
-            raise ValueError("Either response or request must be provided")
+        if not response and not request and not messages:
+            raise ValueError("Either response, request, or messages must be provided")
 
         api_instance = AEvaluatorsApi(_client)
         evaluator_execution_request = AEvaluatorExecutionRequest(
@@ -742,6 +761,7 @@ class Evaluators:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            messages=messages,
         )
         return await api_instance.evaluators_execute_create(
             id=evaluator_id,
@@ -1536,6 +1556,7 @@ class Evaluators:
         *,
         request: Optional[str] = None,
         response: Optional[str] = None,
+        messages: Optional[MessagesRequest] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         evaluator_version_id: Optional[str] = None,
@@ -1563,11 +1584,12 @@ class Evaluators:
             user_id: Optional user identifier for tracking purposes.
             session_id: Optional session identifier for tracking purposes.
             system_prompt: Optional system prompt that was used for the LLM call.
+            messages: Optional multi-turn conversation messages.
             _request_timeout: Optional timeout for the request.
         """
 
-        if not response and not request:
-            raise ValueError("Either response or request must be provided")
+        if not response and not request and not messages:
+            raise ValueError("Either response, request, or messages must be provided")
 
         api_instance = EvaluatorsApi(_client)
 
@@ -1582,6 +1604,7 @@ class Evaluators:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            messages=messages,
         )
         return api_instance.evaluators_execute_by_name_create(
             name=name,
@@ -1614,6 +1637,7 @@ class Evaluators:
         *,
         request: Optional[str] = None,
         response: Optional[str] = None,
+        messages: Optional[AMessagesRequest] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         evaluator_version_id: Optional[str] = None,
@@ -1641,11 +1665,12 @@ class Evaluators:
             user_id: Optional user identifier for tracking purposes.
             session_id: Optional session identifier for tracking purposes.
             system_prompt: Optional system prompt that was used for the LLM call.
+            messages: Optional multi-turn conversation messages.
             _request_timeout: Optional timeout for the request.
         """
 
-        if not response and not request:
-            raise ValueError("Either response or request must be provided")
+        if not response and not request and not messages:
+            raise ValueError("Either response, request, or messages must be provided")
 
         api_instance = AEvaluatorsApi(_client)
         evaluator_execution_request = AEvaluatorExecutionRequest(
@@ -1659,6 +1684,7 @@ class Evaluators:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            messages=messages,
         )
         return await api_instance.evaluators_execute_by_name_create(
             name=name,

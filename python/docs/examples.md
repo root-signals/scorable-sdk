@@ -48,9 +48,16 @@ An evaluator behaviour can be adjusted by providing demonstrations.
 ```
 
 
+## Multi-turn conversation evaluation
+
+Evaluators can assess multi-turn conversations to evaluate agent behavior across an entire interaction. This is useful for evaluating chatbots, customer service agents, and other conversational AI systems.
+
+```{literalinclude} ../examples/multi_turn_conversation.py
+```
+
 ## Retrieval Augmented Generation (RAG) evaluation
 
-For RAG, there are special evaluators that can separately measure the different intermediate components of a RAG pipeline, in addition to the final output. 
+For RAG, there are special evaluators that can separately measure the different intermediate components of a RAG pipeline, in addition to the final output.
 
 ```{literalinclude} ../examples/run_rag.py
 ```
@@ -60,6 +67,13 @@ For RAG, there are special evaluators that can separately measure the different 
 You can form a judge by describing your application and optionally the stage you want to evaluate. A judge is a collection of evaluators that can evaluate a component of your application.
 
 ```{literalinclude} ../examples/simple_judge.py
+```
+
+## Evaluate multi-turn conversations with judges
+
+Judges can also evaluate multi-turn conversations, applying multiple evaluators to assess different aspects of the interaction.
+
+```{literalinclude} ../examples/judge_multi_turn.py
 ```
 
 ## Create a judge

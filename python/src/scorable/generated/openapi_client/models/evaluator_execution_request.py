@@ -21,25 +21,29 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Annotated, Self
 
+from scorable.generated.openapi_client.models.messages_request import MessagesRequest
+
 
 class EvaluatorExecutionRequest(BaseModel):
     """
     EvaluatorExecutionRequest
     """  # noqa: E501
 
+    messages: Optional[MessagesRequest] = None
     request: Optional[StrictStr] = ""
     response: Optional[StrictStr] = ""
     contexts: Optional[List[Annotated[str, Field(min_length=1, strict=True)]]] = None
     expected_output: Optional[Annotated[str, Field(strict=True, max_length=3500000)]] = None
     tags: Optional[List[Annotated[str, Field(min_length=1, strict=True, max_length=1000)]]] = None
     evaluator_version_id: Optional[StrictStr] = None
-    user_id: Optional[Annotated[str, Field(strict=True, max_length=255)]] = ""
-    session_id: Optional[Annotated[str, Field(strict=True, max_length=255)]] = ""
-    system_prompt: Optional[Annotated[str, Field(strict=True, max_length=3500000)]] = ""
+    user_id: Optional[Annotated[str, Field(strict=True, max_length=255)]] = None
+    session_id: Optional[Annotated[str, Field(strict=True, max_length=255)]] = None
+    system_prompt: Optional[Annotated[str, Field(strict=True, max_length=3500000)]] = None
     variables: Optional[Dict[str, Annotated[str, Field(min_length=1, strict=True)]]] = Field(
         default=None, description="Extra variables to be used in the execution of the evaluator. Optional."
     )
     __properties: ClassVar[List[str]] = [
+        "messages",
         "request",
         "response",
         "contexts",
@@ -89,6 +93,14 @@ class EvaluatorExecutionRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of messages
+        if self.messages:
+            _dict["messages"] = self.messages.to_dict()
+        # set to None if messages (nullable) is None
+        # and model_fields_set contains the field
+        if self.messages is None and "messages" in self.model_fields_set:
+            _dict["messages"] = None
+
         # set to None if expected_output (nullable) is None
         # and model_fields_set contains the field
         if self.expected_output is None and "expected_output" in self.model_fields_set:
@@ -127,15 +139,16 @@ class EvaluatorExecutionRequest(BaseModel):
 
         _obj = cls.model_validate(
             {
+                "messages": MessagesRequest.from_dict(obj["messages"]) if obj.get("messages") is not None else None,
                 "request": obj.get("request") if obj.get("request") is not None else "",
                 "response": obj.get("response") if obj.get("response") is not None else "",
                 "contexts": obj.get("contexts"),
                 "expected_output": obj.get("expected_output"),
                 "tags": obj.get("tags"),
                 "evaluator_version_id": obj.get("evaluator_version_id"),
-                "user_id": obj.get("user_id") if obj.get("user_id") is not None else "",
-                "session_id": obj.get("session_id") if obj.get("session_id") is not None else "",
-                "system_prompt": obj.get("system_prompt") if obj.get("system_prompt") is not None else "",
+                "user_id": obj.get("user_id"),
+                "session_id": obj.get("session_id"),
+                "system_prompt": obj.get("system_prompt"),
                 "variables": obj.get("variables"),
             }
         )

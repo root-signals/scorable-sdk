@@ -992,6 +992,24 @@ paths:
                   - List of documents
                   - containing the company's financial reports
                 summary: Execute a RAG evaluator (for example, Answer Correctness)
+              ExecuteAMulti-turnEvaluator:
+                value:
+                  messages:
+                    target: agent_behavior
+                    turns:
+                    - role: user
+                      content: Hello, I need help with my order
+                    - role: assistant
+                      content: I'd be happy to help! What's your order number?
+                    - role: user
+                      content: It's ORDER-12345
+                    - role: assistant
+                      content: '{''order_number'': ''ORDER-12345'', ''status'': ''shipped'',
+                        ''eta'': ''Jan 20''}'
+                      tool_name: order_lookup
+                    - role: assistant
+                      content: I found your order. It's currently in transit.
+                summary: Execute a multi-turn evaluator
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/EvaluatorExecutionRequest'
@@ -1006,6 +1024,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EvaluatorExecutionResult'
+              examples:
+                ExecuteAMulti-turnEvaluator:
+                  value:
+                    messages:
+                      target: agent_behavior
+                      turns:
+                      - role: user
+                        content: Hello, I need help with my order
+                      - role: assistant
+                        content: I'd be happy to help! What's your order number?
+                      - role: user
+                        content: It's ORDER-12345
+                      - role: assistant
+                        content: '{''order_number'': ''ORDER-12345'', ''status'':
+                          ''shipped'', ''eta'': ''Jan 20''}'
+                        tool_name: order_lookup
+                      - role: assistant
+                        content: I found your order. It's currently in transit.
+                  summary: Execute a multi-turn evaluator
           description: ''
   /v1/evaluators/execute/by-name/:
     post:
@@ -1211,6 +1248,11 @@ paths:
           * `test` - test
           * `proxy` - proxy
       - in: query
+        name: has_session_id
+        schema:
+          type: boolean
+        description: Filter logs that have a session identifier
+      - in: query
         name: include
         schema:
           type: string
@@ -1246,6 +1288,11 @@ paths:
           default: ''
         description: Filter with skill name or id
       - in: query
+        name: session_id
+        schema:
+          type: string
+        description: Filter logs by external session identifier (exact match)
+      - in: query
         name: tags
         schema:
           type: string
@@ -1257,6 +1304,11 @@ paths:
           type: boolean
           default: false
         description: Return only unique skills
+      - in: query
+        name: user_id
+        schema:
+          type: string
+        description: Filter logs by external user identifier (exact match)
       tags:
       - execution-logs
       security:
@@ -1288,6 +1340,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ExecutionLogDetails'
+          description: ''
+  /v1/execution-logs/session-ids/:
+    get:
+      operationId: execution_logs_session_ids_retrieve
+      description: Get unique session_ids from execution logs for the organization
+        (max 30 results).
+      parameters:
+      - in: query
+        name: starts_with
+        schema:
+          type: string
+        description: Filter session_ids that start with this prefix
+      tags:
+      - execution-logs
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+          description: ''
+  /v1/execution-logs/user-ids/:
+    get:
+      operationId: execution_logs_user_ids_retrieve
+      description: Get unique user_ids from execution logs for the organization (max
+        30 results).
+      parameters:
+      - in: query
+        name: starts_with
+        schema:
+          type: string
+        description: Filter user_ids that start with this prefix
+      tags:
+      - execution-logs
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
           description: ''
   /v1/judges/:
     get:
@@ -1528,6 +1628,26 @@ paths:
                 summary: Example with a context
                 description: The context is a list of strings that will be used to
                   help the LLM answer the question.
+              ExampleWithMulti-turnContent:
+                value:
+                  messages:
+                    target: agent_behavior
+                    turns:
+                    - role: user
+                      content: Hello, I need help with my order
+                    - role: assistant
+                      content: I'd be happy to help! What's your order number?
+                    - role: user
+                      content: It's ORDER-12345
+                    - role: assistant
+                      content: '{''order_number'': ''ORDER-12345'', ''status'': ''shipped'',
+                        ''eta'': ''Jan 20''}'
+                      tool_name: order_lookup
+                    - role: assistant
+                      content: I found your order. It's currently in transit.
+                      contexts:
+                      - 'Order #12345: Status=shipped, ETA=Jan 20'
+                summary: Example with multi-turn content
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/JudgeExecutionRequest'
@@ -1542,6 +1662,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JudgeExecutionResponse'
+              examples:
+                ExampleWithMulti-turnContent:
+                  value:
+                    messages:
+                      target: agent_behavior
+                      turns:
+                      - role: user
+                        content: Hello, I need help with my order
+                      - role: assistant
+                        content: I'd be happy to help! What's your order number?
+                      - role: user
+                        content: It's ORDER-12345
+                      - role: assistant
+                        content: '{''order_number'': ''ORDER-12345'', ''status'':
+                          ''shipped'', ''eta'': ''Jan 20''}'
+                        tool_name: order_lookup
+                      - role: assistant
+                        content: I found your order. It's currently in transit.
+                        contexts:
+                        - 'Order #12345: Status=shipped, ETA=Jan 20'
+                  summary: Example with multi-turn content
           description: ''
   /v1/judges/{judge_id}/openai/chat/completions:
     post:
@@ -3185,6 +3326,10 @@ components:
     EvaluatorExecutionRequest:
       type: object
       properties:
+        messages:
+          allOf:
+          - $ref: '#/components/schemas/MessagesRequest'
+          nullable: true
         request:
           type: string
           default: ''
@@ -3212,17 +3357,14 @@ components:
         user_id:
           type: string
           nullable: true
-          default: ''
           maxLength: 255
         session_id:
           type: string
           nullable: true
-          default: ''
           maxLength: 255
         system_prompt:
           type: string
           nullable: true
-          default: ''
           maxLength: 3500000
         variables:
           type: object
@@ -3480,6 +3622,11 @@ components:
           type: string
           readOnly: true
           nullable: true
+        messages:
+          allOf:
+          - $ref: '#/components/schemas/MessagesLog'
+          readOnly: true
+          nullable: true
         cost:
           type: number
           format: double
@@ -3605,6 +3752,7 @@ components:
       - id
       - justification
       - llm_output
+      - messages
       - model
       - model_call_duration
       - owner
@@ -3771,6 +3919,16 @@ components:
         original_preference:
           allOf:
           - $ref: '#/components/schemas/ResultPreferenceSignifierRequest'
+          nullable: true
+        target:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TargetEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        original_turns:
+          type: array
+          items:
+            $ref: '#/components/schemas/TurnInputRequest'
           nullable: true
       required:
       - kind
@@ -3986,6 +4144,10 @@ components:
     JudgeBatchExecutionInputRequest:
       type: object
       properties:
+        messages:
+          allOf:
+          - $ref: '#/components/schemas/MessagesRequest'
+          nullable: true
         request:
           type: string
           default: ''
@@ -4007,17 +4169,14 @@ components:
         user_id:
           type: string
           nullable: true
-          default: ''
           maxLength: 255
         session_id:
           type: string
           nullable: true
-          default: ''
           maxLength: 255
         system_prompt:
           type: string
           nullable: true
-          default: ''
           maxLength: 3500000
     JudgeBatchExecutionItem:
       type: object
@@ -4175,6 +4334,10 @@ components:
     JudgeExecutionRequest:
       type: object
       properties:
+        messages:
+          allOf:
+          - $ref: '#/components/schemas/MessagesRequest'
+          nullable: true
         request:
           type: string
           default: ''
@@ -4199,17 +4362,14 @@ components:
         user_id:
           type: string
           nullable: true
-          default: ''
           maxLength: 255
         session_id:
           type: string
           nullable: true
-          default: ''
           maxLength: 255
         system_prompt:
           type: string
           nullable: true
-          default: ''
           maxLength: 3500000
         judge_version_id:
           type: string
@@ -4400,6 +4560,10 @@ components:
     JudgeRectifierRequestRequest:
       type: object
       properties:
+        messages:
+          allOf:
+          - $ref: '#/components/schemas/MessagesRequest'
+          nullable: true
         request:
           type: string
           default: ''
@@ -4424,17 +4588,14 @@ components:
         user_id:
           type: string
           nullable: true
-          default: ''
           maxLength: 255
         session_id:
           type: string
           nullable: true
-          default: ''
           maxLength: 255
         system_prompt:
           type: string
           nullable: true
-          default: ''
           maxLength: 3500000
         judge_version_id:
           type: string
@@ -4516,10 +4677,80 @@ components:
       enum:
       - input_output_pair
       - single_content
+      - multi_turn_content
       type: string
       description: |-
         * `input_output_pair` - input_output_pair
         * `single_content` - single_content
+        * `multi_turn_content` - multi_turn_content
+    MessageLogTurn:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        content:
+          type: string
+        contexts:
+          type: array
+          items:
+            type: string
+          description: RAG contexts (only for assistant turns)
+        tool_name:
+          type: string
+          description: Tool name (only for assistant turns)
+          maxLength: 4096
+        evaluation_justification:
+          type: string
+          description: Turn-specific justification of the evaluation
+      required:
+      - content
+      - role
+    MessageTurnRequest:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        content:
+          type: string
+          minLength: 1
+        contexts:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          nullable: true
+        tool_name:
+          type: string
+          nullable: true
+      required:
+      - content
+      - role
+    MessagesLog:
+      type: object
+      properties:
+        turns:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageLogTurn'
+        target:
+          type: string
+      required:
+      - target
+      - turns
+    MessagesRequest:
+      type: object
+      description: Serializer for multi-turn messages.
+      properties:
+        turns:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageTurnRequest'
+        target:
+          allOf:
+          - $ref: '#/components/schemas/TargetEnum'
+          default: agent_behavior
+      required:
+      - turns
     Model:
       type: object
       properties:
@@ -5467,6 +5698,14 @@ components:
           description: Approach-specific guidance or rubric content
       required:
       - expectation
+    RoleEnum:
+      enum:
+      - user
+      - assistant
+      type: string
+      description: |-
+        * `user` - user
+        * `assistant` - assistant
     SkillExecutionValidatorResult:
       type: object
       properties:
@@ -5619,6 +5858,38 @@ components:
         * `listed` - listed
         * `public` - public
         * `public_unlisted` - public_unlisted
+    TargetEnum:
+      enum:
+      - agent_behavior
+      - user_behavior
+      type: string
+      description: |-
+        * `agent_behavior` - agent_behavior
+        * `user_behavior` - user_behavior
+    TurnInputRequest:
+      type: object
+      properties:
+        index:
+          type: integer
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        content:
+          type: string
+          minLength: 1
+        contexts:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          nullable: true
+        tool_name:
+          type: string
+          nullable: true
+          minLength: 1
+      required:
+      - content
+      - index
+      - role
     ValidationResultStatus:
       enum:
       - pending

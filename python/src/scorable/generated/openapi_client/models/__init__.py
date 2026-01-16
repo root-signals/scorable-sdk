@@ -94,6 +94,10 @@ from scorable.generated.openapi_client.models.judge_rectifier_request_request im
 from scorable.generated.openapi_client.models.judge_rectifier_response import JudgeRectifierResponse
 from scorable.generated.openapi_client.models.judge_request import JudgeRequest
 from scorable.generated.openapi_client.models.kind_enum import KindEnum
+from scorable.generated.openapi_client.models.message_log_turn import MessageLogTurn
+from scorable.generated.openapi_client.models.message_turn_request import MessageTurnRequest
+from scorable.generated.openapi_client.models.messages_log import MessagesLog
+from scorable.generated.openapi_client.models.messages_request import MessagesRequest
 from scorable.generated.openapi_client.models.model import Model
 from scorable.generated.openapi_client.models.model_enum import ModelEnum
 from scorable.generated.openapi_client.models.model_list import ModelList
@@ -153,6 +157,7 @@ from scorable.generated.openapi_client.models.result_preference_signifier_evalua
 from scorable.generated.openapi_client.models.result_preference_signifier_request import (
     ResultPreferenceSignifierRequest,
 )
+from scorable.generated.openapi_client.models.role_enum import RoleEnum
 from scorable.generated.openapi_client.models.skill_execution_validator_result import SkillExecutionValidatorResult
 from scorable.generated.openapi_client.models.skill_test_data_request import SkillTestDataRequest
 from scorable.generated.openapi_client.models.skill_test_data_request_dataset_range import (
@@ -164,4 +169,6 @@ from scorable.generated.openapi_client.models.status_change import StatusChange
 from scorable.generated.openapi_client.models.status_change_request import StatusChangeRequest
 from scorable.generated.openapi_client.models.status_change_status_enum import StatusChangeStatusEnum
 from scorable.generated.openapi_client.models.status_enum import StatusEnum
+from scorable.generated.openapi_client.models.target_enum import TargetEnum
+from scorable.generated.openapi_client.models.turn_input_request import TurnInputRequest
 from scorable.generated.openapi_client.models.validation_result_status import ValidationResultStatus

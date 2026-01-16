@@ -40,6 +40,7 @@ from .generated.openapi_aclient.models.judge_execution_response import (
     JudgeExecutionResponse as AJudgeExecutionResponse,
 )
 from .generated.openapi_aclient.models.judge_list import JudgeList as AJudgeList
+from .generated.openapi_aclient.models.messages_request import MessagesRequest as AMessagesRequest
 from .generated.openapi_aclient.models.paginated_judge_list_list import (
     PaginatedJudgeListList as APaginatedJudgeListList,
 )
@@ -53,6 +54,7 @@ from .generated.openapi_client.models.judge import Judge as OpenApiJudge
 from .generated.openapi_client.models.judge_execution_request import JudgeExecutionRequest
 from .generated.openapi_client.models.judge_execution_response import JudgeExecutionResponse
 from .generated.openapi_client.models.judge_list import JudgeList
+from .generated.openapi_client.models.messages_request import MessagesRequest
 from .generated.openapi_client.models.paginated_judge_list_list import PaginatedJudgeListList
 from .generated.openapi_client.models.patched_judge_request import PatchedJudgeRequest
 from .utils import ClientContextCallable, with_async_client, with_sync_client
@@ -81,8 +83,9 @@ class Judge(OpenApiJudge):
     def run(
         self,
         *,
-        response: str,
+        response: Optional[str] = None,
         request: Optional[str] = None,
+        messages: Optional[MessagesRequest] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -104,6 +107,7 @@ class Judge(OpenApiJudge):
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
+          messages: Optional multi-turn conversation messages.
           _request_timeout: Optional timeout for the request
         """
         api_instance = JudgesApi(_client)
@@ -116,6 +120,7 @@ class Judge(OpenApiJudge):
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            messages=messages,
         )
         return api_instance.judges_execute_create(
             judge_id=self.id,
@@ -147,8 +152,9 @@ class AJudge(AOpenApiJudge):
     async def arun(
         self,
         *,
-        response: str,
+        response: Optional[str] = None,
         request: Optional[str] = None,
+        messages: Optional[AMessagesRequest] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -170,6 +176,7 @@ class AJudge(AOpenApiJudge):
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
+          messages: Optional multi-turn conversation messages.
           _request_timeout: Optional timeout for the request
         """
         api_instance = AJudgesApi(_client)
@@ -182,6 +189,7 @@ class AJudge(AOpenApiJudge):
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            messages=messages,
         )
         return await api_instance.judges_execute_create(
             judge_id=self.id,

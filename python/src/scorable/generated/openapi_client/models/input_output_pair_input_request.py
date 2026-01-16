@@ -25,6 +25,8 @@ from scorable.generated.openapi_client.models.kind_enum import KindEnum
 from scorable.generated.openapi_client.models.result_preference_signifier_request import (
     ResultPreferenceSignifierRequest,
 )
+from scorable.generated.openapi_client.models.target_enum import TargetEnum
+from scorable.generated.openapi_client.models.turn_input_request import TurnInputRequest
 
 
 class InputOutputPairInputRequest(BaseModel):
@@ -37,12 +39,16 @@ class InputOutputPairInputRequest(BaseModel):
     original_response: Optional[Annotated[str, Field(min_length=1, strict=True)]] = None
     original_content: Optional[Annotated[str, Field(min_length=1, strict=True)]] = None
     original_preference: Optional[ResultPreferenceSignifierRequest] = None
+    target: Optional[TargetEnum] = None
+    original_turns: Optional[List[TurnInputRequest]] = None
     __properties: ClassVar[List[str]] = [
         "kind",
         "original_input",
         "original_response",
         "original_content",
         "original_preference",
+        "target",
+        "original_turns",
     ]
 
     model_config = ConfigDict(
@@ -85,6 +91,13 @@ class InputOutputPairInputRequest(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of original_preference
         if self.original_preference:
             _dict["original_preference"] = self.original_preference.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in original_turns (list)
+        _items = []
+        if self.original_turns:
+            for _item in self.original_turns:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict["original_turns"] = _items
         # set to None if original_input (nullable) is None
         # and model_fields_set contains the field
         if self.original_input is None and "original_input" in self.model_fields_set:
@@ -105,6 +118,16 @@ class InputOutputPairInputRequest(BaseModel):
         if self.original_preference is None and "original_preference" in self.model_fields_set:
             _dict["original_preference"] = None
 
+        # set to None if target (nullable) is None
+        # and model_fields_set contains the field
+        if self.target is None and "target" in self.model_fields_set:
+            _dict["target"] = None
+
+        # set to None if original_turns (nullable) is None
+        # and model_fields_set contains the field
+        if self.original_turns is None and "original_turns" in self.model_fields_set:
+            _dict["original_turns"] = None
+
         return _dict
 
     @classmethod
@@ -124,6 +147,10 @@ class InputOutputPairInputRequest(BaseModel):
                 "original_content": obj.get("original_content"),
                 "original_preference": ResultPreferenceSignifierRequest.from_dict(obj["original_preference"])
                 if obj.get("original_preference") is not None
+                else None,
+                "target": obj.get("target"),
+                "original_turns": [TurnInputRequest.from_dict(_item) for _item in obj["original_turns"]]
+                if obj.get("original_turns") is not None
                 else None,
             }
         )
