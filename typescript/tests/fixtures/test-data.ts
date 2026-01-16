@@ -142,4 +142,42 @@ export class TestDataFactory {
       context: 'Geography question about European capitals',
     };
   }
+
+  static getTestMultiTurnMessages() {
+    return {
+      target: 'agent_behavior' as const,
+      turns: [
+        {
+          role: 'user' as const,
+          content: 'Hello, I need help with my order',
+        },
+        {
+          role: 'assistant' as const,
+          content: "I'd be happy to help! What's your order number?",
+        },
+        {
+          role: 'user' as const,
+          content: "It's ORDER-12345",
+        },
+        {
+          role: 'assistant' as const,
+          content: "{'order_number': 'ORDER-12345', 'status': 'shipped', 'eta': 'Jan 20'}",
+          tool_name: 'order_lookup',
+        },
+        {
+          role: 'assistant' as const,
+          content: 'I found your order. It is currently in transit and should arrive by Jan 20.',
+        },
+      ],
+    };
+  }
+
+  static getTestMultiTurnExecutionInputs() {
+    return {
+      messages: this.getTestMultiTurnMessages(),
+      contexts: ['Return policy: 30 days for full refund'],
+      user_id: 'user-123',
+      session_id: 'session-456',
+    };
+  }
 }

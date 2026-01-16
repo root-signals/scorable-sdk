@@ -147,6 +147,77 @@ try {
 }
 ```
 
+### Multi-Turn Conversations
+
+Evaluate entire conversation flows instead of single request/response pairs:
+
+```typescript
+import { Scorable } from '@root-signals/scorable';
+
+const client = new Scorable({ apiKey: process.env.SCORABLE_API_KEY! });
+
+// Execute evaluator with a multi-turn conversation
+const result = await client.evaluators.executeByName(
+  'Helpfulness',
+  {
+    messages: {
+      target: 'agent_behavior', // or 'user_behavior'
+      turns: [
+        {
+          role: 'user',
+          content: 'Hello, I need help with my order'
+        },
+        {
+          role: 'assistant',
+          content: "I'd be happy to help! What's your order number?"
+        },
+        {
+          role: 'user',
+          content: "It's ORDER-12345"
+        },
+        {
+          role: 'assistant',
+          content: "{'order_number': 'ORDER-12345', 'status': 'shipped', 'eta': 'Jan 20'}",
+          tool_name: 'order_lookup' // Optional: name of tool used
+        },
+        {
+          role: 'assistant',
+          content: 'I found your order. It is currently in transit and should arrive by Jan 20.'
+        }
+      ]
+    },
+    // Optional: RAG contexts can be provided per turn or globally
+    contexts: ['Return policy: 30 days...'],
+    user_id: 'user-123',
+    session_id: 'session-456'
+  }
+);
+
+console.log(`Score: ${result.score} / 1.0`);
+console.log(`Justification: ${result.justification}`);
+
+// You can also use multi-turn conversations with judges
+const judgeResults = await client.judges.executeByName(
+  'Customer Service Quality',
+  {
+    messages: {
+      target: 'agent_behavior',
+      turns: [
+        { role: 'user', content: 'My product is defective' },
+        { role: 'assistant', content: 'I apologize for the inconvenience. Can you describe the issue?' },
+        { role: 'user', content: 'The screen is cracked' },
+        { role: 'assistant', content: "I'll process a replacement right away." }
+      ]
+    }
+  }
+);
+
+console.log(judgeResults);
+```
+
+**Important:** You must provide either `messages` OR `request`/`response`, not both.
+
+
 ### Custom Evaluators
 
 ```typescript

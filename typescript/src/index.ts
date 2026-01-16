@@ -1,6 +1,9 @@
 // Main exports
 export { Scorable } from './client.js';
 
+// Import components for type aliases
+import type { components } from './generated/types.js';
+
 // Types
 export type {
   ClientConfig,
@@ -52,6 +55,12 @@ export type {
 
 // Additional resources
 export { DatasetsResource } from './resources/datasets.js';
+
+// Multi-turn conversation types
+export type Messages = components['schemas']['MessagesRequest'];
+export type Turn = components['schemas']['MessageTurnRequest'];
+export type Target = components['schemas']['TargetEnum'];
+export type Role = components['schemas']['RoleEnum'];
 
 // Generated types (re-export for advanced usage)
 export type { paths, components } from './generated/types.js';
