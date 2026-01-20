@@ -19,19 +19,18 @@ from enum import Enum
 from typing_extensions import Self
 
 
-class KindEnum(str, Enum):
+class TargetEnum(str, Enum):
     """
-    * `input_output_pair` - input_output_pair * `single_content` - single_content * `multi_turn_content` - multi_turn_content
+    * `agent_behavior` - agent_behavior * `user_behavior` - user_behavior
     """
 
     """
     allowed enum values
     """
-    INPUT_OUTPUT_PAIR = "input_output_pair"
-    SINGLE_CONTENT = "single_content"
-    MULTI_TURN_CONTENT = "multi_turn_content"
+    AGENT_BEHAVIOR = "agent_behavior"
+    USER_BEHAVIOR = "user_behavior"
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of KindEnum from a JSON string"""
+        """Create an instance of TargetEnum from a JSON string"""
         return cls(json.loads(json_str))

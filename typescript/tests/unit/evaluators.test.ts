@@ -164,6 +164,94 @@ describe('EvaluatorsResource', () => {
     });
   });
 
+  describe('multi-turn conversations', () => {
+    it('should execute evaluator with multi-turn messages', async () => {
+      const evaluatorId = 'eval-123';
+      const multiTurnData = TestDataFactory.getTestMultiTurnExecutionInputs();
+
+      mockClient.setMockResponse('POST', '/v1/evaluators/execute/{id}/', {
+        data: mockResponses.evaluators.execution,
+        error: undefined,
+      });
+
+      const result = await client.evaluators.execute(evaluatorId, multiTurnData);
+
+      expect(result.score).toBe(0.85);
+      expect(result.justification).toBeDefined();
+      expect(mockClient.POST).toHaveBeenCalledWith('/v1/evaluators/execute/{id}/', {
+        params: { path: { id: evaluatorId } },
+        body: multiTurnData,
+      });
+    });
+
+    it('should execute evaluator by name with multi-turn messages', async () => {
+      const evaluatorName = 'Helpfulness';
+      const multiTurnData = TestDataFactory.getTestMultiTurnExecutionInputs();
+
+      mockClient.setMockResponse('POST', '/v1/evaluators/execute/by-name/', {
+        data: mockResponses.evaluators.execution,
+        error: undefined,
+      });
+
+      const result = await client.evaluators.executeByName(evaluatorName, multiTurnData);
+
+      expect(result.score).toBe(0.85);
+      expect(result.justification).toBeDefined();
+      expect(mockClient.POST).toHaveBeenCalledWith('/v1/evaluators/execute/by-name/', {
+        params: { query: { name: evaluatorName } },
+        body: multiTurnData,
+      });
+    });
+
+    it('should handle multi-turn messages with tool calls', async () => {
+      const evaluatorId = 'eval-123';
+      const messages = TestDataFactory.getTestMultiTurnMessages();
+
+      const executionData = {
+        messages,
+        user_id: 'test-user',
+        session_id: 'test-session',
+      };
+
+      mockClient.setMockResponse('POST', '/v1/evaluators/execute/{id}/', {
+        data: mockResponses.evaluators.execution,
+        error: undefined,
+      });
+
+      const result = await client.evaluators.execute(evaluatorId, executionData);
+
+      expect(result.score).toBeDefined();
+      expect(mockClient.POST).toHaveBeenCalledWith('/v1/evaluators/execute/{id}/', {
+        params: { path: { id: evaluatorId } },
+        body: executionData,
+      });
+    });
+
+    it('should handle multi-turn messages with different targets', async () => {
+      const evaluatorId = 'eval-123';
+      const messages = {
+        target: 'user_behavior' as const,
+        turns: [
+          { role: 'user' as const, content: 'First user message' },
+          { role: 'assistant' as const, content: 'Response' },
+          { role: 'user' as const, content: 'Second user message' },
+        ],
+      };
+
+      mockClient.setMockResponse('POST', '/v1/evaluators/execute/{id}/', {
+        data: mockResponses.evaluators.execution,
+        error: undefined,
+      });
+
+      await client.evaluators.execute(evaluatorId, { messages });
+
+      expect(mockClient.POST).toHaveBeenCalledWith('/v1/evaluators/execute/{id}/', {
+        params: { path: { id: evaluatorId } },
+        body: { messages },
+      });
+    });
+  });
+
   describe('error handling', () => {
     it('should throw ScorableError on API errors', async () => {
       mockClient.setMockError('GET', '/v1/evaluators/', {

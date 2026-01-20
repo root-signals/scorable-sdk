@@ -1,5 +1,6 @@
 import { RetryConfig } from '../utils/retry.js';
 import { RateLimitConfig } from '../utils/rate-limit.js';
+import type { components } from '../generated/types.js';
 
 export interface ClientConfig {
   apiKey: string;
@@ -82,6 +83,7 @@ export class ScorableError extends Error {
 }
 
 export interface ExecutionPayload {
+  messages?: components['schemas']['MessagesRequest'];
   request?: string;
   response?: string;
   contexts?: string[];

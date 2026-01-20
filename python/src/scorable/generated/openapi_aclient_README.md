@@ -106,6 +106,8 @@ Class | Method | HTTP request | Description
 *EvaluatorsApi* | [**evaluators_versions_list**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_versions_list) | **GET** /v1/evaluators/versions/{id}/ | 
 *ExecutionLogsApi* | [**execution_logs_list**](scorable/generated/openapi_aclient/docs/ExecutionLogsApi.md#execution_logs_list) | **GET** /v1/execution-logs/ | 
 *ExecutionLogsApi* | [**execution_logs_retrieve**](scorable/generated/openapi_aclient/docs/ExecutionLogsApi.md#execution_logs_retrieve) | **GET** /v1/execution-logs/{log_id}/ | 
+*ExecutionLogsApi* | [**execution_logs_session_ids_retrieve**](scorable/generated/openapi_aclient/docs/ExecutionLogsApi.md#execution_logs_session_ids_retrieve) | **GET** /v1/execution-logs/session-ids/ | 
+*ExecutionLogsApi* | [**execution_logs_user_ids_retrieve**](scorable/generated/openapi_aclient/docs/ExecutionLogsApi.md#execution_logs_user_ids_retrieve) | **GET** /v1/execution-logs/user-ids/ | 
 *JudgesApi* | [**judges_batch_execute_create**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_batch_execute_create) | **POST** /v1/judges/{judge_id}/batch-execute/ | 
 *JudgesApi* | [**judges_batch_executions_list**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_batch_executions_list) | **GET** /v1/judges/batch-executions/ | 
 *JudgesApi* | [**judges_batch_executions_retrieve**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_batch_executions_retrieve) | **GET** /v1/judges/batch-executions/{id}/ | 
@@ -208,6 +210,10 @@ Class | Method | HTTP request | Description
  - [JudgeRectifierResponse](scorable/generated/openapi_aclient/docs/JudgeRectifierResponse.md)
  - [JudgeRequest](scorable/generated/openapi_aclient/docs/JudgeRequest.md)
  - [KindEnum](scorable/generated/openapi_aclient/docs/KindEnum.md)
+ - [MessageLogTurn](scorable/generated/openapi_aclient/docs/MessageLogTurn.md)
+ - [MessageTurnRequest](scorable/generated/openapi_aclient/docs/MessageTurnRequest.md)
+ - [MessagesLog](scorable/generated/openapi_aclient/docs/MessagesLog.md)
+ - [MessagesRequest](scorable/generated/openapi_aclient/docs/MessagesRequest.md)
  - [Model](scorable/generated/openapi_aclient/docs/Model.md)
  - [ModelEnum](scorable/generated/openapi_aclient/docs/ModelEnum.md)
  - [ModelList](scorable/generated/openapi_aclient/docs/ModelList.md)
@@ -257,6 +263,7 @@ Class | Method | HTTP request | Description
  - [ReferenceVariableRequest](scorable/generated/openapi_aclient/docs/ReferenceVariableRequest.md)
  - [ResultPreferenceSignifierEvaluationApproachEnum](scorable/generated/openapi_aclient/docs/ResultPreferenceSignifierEvaluationApproachEnum.md)
  - [ResultPreferenceSignifierRequest](scorable/generated/openapi_aclient/docs/ResultPreferenceSignifierRequest.md)
+ - [RoleEnum](scorable/generated/openapi_aclient/docs/RoleEnum.md)
  - [SkillExecutionValidatorResult](scorable/generated/openapi_aclient/docs/SkillExecutionValidatorResult.md)
  - [SkillTestDataRequest](scorable/generated/openapi_aclient/docs/SkillTestDataRequest.md)
  - [SkillTestDataRequestDatasetRange](scorable/generated/openapi_aclient/docs/SkillTestDataRequestDatasetRange.md)
@@ -266,6 +273,8 @@ Class | Method | HTTP request | Description
  - [StatusChangeRequest](scorable/generated/openapi_aclient/docs/StatusChangeRequest.md)
  - [StatusChangeStatusEnum](scorable/generated/openapi_aclient/docs/StatusChangeStatusEnum.md)
  - [StatusEnum](scorable/generated/openapi_aclient/docs/StatusEnum.md)
+ - [TargetEnum](scorable/generated/openapi_aclient/docs/TargetEnum.md)
+ - [TurnInputRequest](scorable/generated/openapi_aclient/docs/TurnInputRequest.md)
  - [ValidationResultStatus](scorable/generated/openapi_aclient/docs/ValidationResultStatus.md)
 
 

@@ -4356,6 +4356,7 @@ class JudgesApi:
         """judges_refine_create
 
         Execute a judge as rectifier to improve the response. The rectifier will analyze the original response using the judge's evaluators and attempt to improve it based on their feedback.  When stream=false (default): Returns complete response with both original and improved results. When stream=true: Streams results as Server-Sent Events (SSE):   1. First chunk: Original evaluation results   2. Final chunk: Improved response and final evaluation results
+
         :param judge_id: (required)
         :type judge_id: str
         :param judge_rectifier_request_request:

@@ -371,6 +371,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/execution-logs/session-ids/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get unique session_ids from execution logs for the organization (max 30 results). */
+    get: operations['execution_logs_session_ids_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/execution-logs/user-ids/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get unique user_ids from execution logs for the organization (max 30 results). */
+    get: operations['execution_logs_user_ids_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/judges/': {
     parameters: {
       query?: never;
@@ -1058,6 +1092,7 @@ export interface components {
       justification?: string | null;
     };
     EvaluatorExecutionRequest: {
+      messages?: components['schemas']['MessagesRequest'] | null;
       /** @default  */
       request?: string;
       /** @default  */
@@ -1066,11 +1101,8 @@ export interface components {
       expected_output?: string | null;
       tags?: string[];
       evaluator_version_id?: string | null;
-      /** @default  */
       user_id?: string | null;
-      /** @default  */
       session_id?: string | null;
-      /** @default  */
       system_prompt?: string | null;
       /**
        * @description Extra variables to be used in the execution of the evaluator. Optional.
@@ -1189,6 +1221,7 @@ export interface components {
     };
     ExecutionLogDetails: {
       readonly chat_id: string | null;
+      readonly messages: components['schemas']['MessagesLog'] | null;
       /** Format: double */
       readonly cost: number | null;
       /** Format: date-time */
@@ -1287,6 +1320,8 @@ export interface components {
       original_response?: string | null;
       original_content?: string | null;
       original_preference?: components['schemas']['ResultPreferenceSignifierRequest'] | null;
+      target?: (components['schemas']['TargetEnum'] | components['schemas']['NullEnum']) | null;
+      original_turns?: components['schemas']['TurnInputRequest'][] | null;
     };
     InputVariable: {
       /** Format: uuid */
@@ -1381,6 +1416,7 @@ export interface components {
       readonly items: components['schemas']['JudgeBatchExecutionItem'][];
     };
     JudgeBatchExecutionInputRequest: {
+      messages?: components['schemas']['MessagesRequest'] | null;
       /** @default  */
       request: string;
       /** @default  */
@@ -1388,12 +1424,9 @@ export interface components {
       contexts?: string[];
       expected_output?: string | null;
       evaluator_version_id?: string | null;
-      /** @default  */
-      user_id: string | null;
-      /** @default  */
-      session_id: string | null;
-      /** @default  */
-      system_prompt: string | null;
+      user_id?: string | null;
+      session_id?: string | null;
+      system_prompt?: string | null;
     };
     JudgeBatchExecutionItem: {
       /** @description Position in the batch (0-indexed) */
@@ -1453,6 +1486,7 @@ export interface components {
       status_url: string;
     };
     JudgeExecutionRequest: {
+      messages?: components['schemas']['MessagesRequest'] | null;
       /** @default  */
       request: string;
       /** @default  */
@@ -1460,11 +1494,8 @@ export interface components {
       contexts?: string[];
       expected_output?: string | null;
       tags?: string[];
-      /** @default  */
       user_id?: string | null;
-      /** @default  */
       session_id?: string | null;
-      /** @default  */
       system_prompt?: string | null;
       /** Format: uuid */
       judge_version_id?: string | null;
@@ -1561,6 +1592,7 @@ export interface components {
       };
     };
     JudgeRectifierRequestRequest: {
+      messages?: components['schemas']['MessagesRequest'] | null;
       /** @default  */
       request: string;
       /** @default  */
@@ -1568,11 +1600,8 @@ export interface components {
       contexts?: string[];
       expected_output?: string | null;
       tags?: string[];
-      /** @default  */
       user_id?: string | null;
-      /** @default  */
       session_id?: string | null;
-      /** @default  */
       system_prompt?: string | null;
       /** Format: uuid */
       judge_version_id?: string | null;
@@ -1625,9 +1654,36 @@ export interface components {
     /**
      * @description * `input_output_pair` - input_output_pair
      *     * `single_content` - single_content
+     *     * `multi_turn_content` - multi_turn_content
      * @enum {string}
      */
-    KindEnum: 'input_output_pair' | 'single_content';
+    KindEnum: 'input_output_pair' | 'single_content' | 'multi_turn_content';
+    MessageLogTurn: {
+      role: components['schemas']['RoleEnum'];
+      content: string;
+      /** @description RAG contexts (only for assistant turns) */
+      contexts?: string[];
+      /** @description Tool name (only for assistant turns) */
+      tool_name?: string;
+      /** @description Turn-specific justification of the evaluation */
+      evaluation_justification?: string;
+    };
+    MessageTurnRequest: {
+      role: components['schemas']['RoleEnum'];
+      content: string;
+      contexts?: string[] | null;
+      tool_name?: string | null;
+    };
+    MessagesLog: {
+      turns: components['schemas']['MessageLogTurn'][];
+      target: string;
+    };
+    /** @description Serializer for multi-turn messages. */
+    MessagesRequest: {
+      turns: components['schemas']['MessageTurnRequest'][];
+      /** @default agent_behavior */
+      target: components['schemas']['TargetEnum'];
+    };
     Model: {
       readonly id: string;
       max_output_token_count?: number;
@@ -2088,6 +2144,12 @@ export interface components {
       /** @description Approach-specific guidance or rubric content */
       expectation: string;
     };
+    /**
+     * @description * `user` - user
+     *     * `assistant` - assistant
+     * @enum {string}
+     */
+    RoleEnum: 'user' | 'assistant';
     SkillExecutionValidatorResult: {
       /** Format: uuid */
       readonly evaluator_id: string | null;
@@ -2149,6 +2211,19 @@ export interface components {
      * @enum {string}
      */
     StatusEnum: 'unlisted' | 'listed' | 'public' | 'public_unlisted';
+    /**
+     * @description * `agent_behavior` - agent_behavior
+     *     * `user_behavior` - user_behavior
+     * @enum {string}
+     */
+    TargetEnum: 'agent_behavior' | 'user_behavior';
+    TurnInputRequest: {
+      index: number;
+      role: components['schemas']['RoleEnum'];
+      content: string;
+      contexts?: string[] | null;
+      tool_name?: string | null;
+    };
     /**
      * @description * `pending` - Pending
      *     * `finished` - Finished
@@ -3003,6 +3078,8 @@ export interface operations {
          *     * `proxy` - proxy
          */
         execution_type?: 'evaluator' | 'experiment' | 'judge' | 'proxy' | 'skill' | 'test';
+        /** @description Filter logs that have a session identifier */
+        has_session_id?: boolean;
         /** @description Comma-separated list of additional fields to include in the response. Supports: llm_output, variables, evaluation_context */
         include?: string;
         /** @description Filter logs by maximum score, inclusive, excludes null scores */
@@ -3015,10 +3092,14 @@ export interface operations {
         page_size?: number;
         /** @description Filter with skill name or id */
         search?: string;
+        /** @description Filter logs by external session identifier (exact match) */
+        session_id?: string;
         /** @description Filter logs by tag names (comma-separated) */
         tags?: string;
         /** @description Return only unique skills */
         unique_skills?: boolean;
+        /** @description Filter logs by external user identifier (exact match) */
+        user_id?: string;
       };
       header?: never;
       path?: never;
@@ -3053,6 +3134,50 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['ExecutionLogDetails'];
+        };
+      };
+    };
+  };
+  execution_logs_session_ids_retrieve: {
+    parameters: {
+      query?: {
+        /** @description Filter session_ids that start with this prefix */
+        starts_with?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': string[];
+        };
+      };
+    };
+  };
+  execution_logs_user_ids_retrieve: {
+    parameters: {
+      query?: {
+        /** @description Filter user_ids that start with this prefix */
+        starts_with?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': string[];
         };
       };
     };

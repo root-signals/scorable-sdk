@@ -28,6 +28,7 @@ from scorable.generated.openapi_client.models.execution_log_details_evaluation_c
 from scorable.generated.openapi_client.models.execution_log_details_evaluator_latencies_inner import (
     ExecutionLogDetailsEvaluatorLatenciesInner,
 )
+from scorable.generated.openapi_client.models.messages_log import MessagesLog
 from scorable.generated.openapi_client.models.model_params import ModelParams
 from scorable.generated.openapi_client.models.nested_user_details import NestedUserDetails
 from scorable.generated.openapi_client.models.skill_execution_validator_result import SkillExecutionValidatorResult
@@ -39,6 +40,7 @@ class ExecutionLogDetails(BaseModel):
     """  # noqa: E501
 
     chat_id: Optional[StrictStr]
+    messages: Optional[MessagesLog]
     cost: Optional[Union[StrictFloat, StrictInt]]
     created_at: Optional[datetime]
     evaluation_context: ExecutionLogDetailsEvaluationContext
@@ -66,6 +68,7 @@ class ExecutionLogDetails(BaseModel):
     variables: Optional[Dict[str, StrictStr]]
     __properties: ClassVar[List[str]] = [
         "chat_id",
+        "messages",
         "cost",
         "created_at",
         "evaluation_context",
@@ -144,10 +147,12 @@ class ExecutionLogDetails(BaseModel):
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
+        * OpenAPI `readOnly` fields are excluded.
         """
         excluded_fields: Set[str] = set(
             [
                 "chat_id",
+                "messages",
                 "cost",
                 "created_at",
                 "evaluator_latencies",
@@ -177,6 +182,9 @@ class ExecutionLogDetails(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of messages
+        if self.messages:
+            _dict["messages"] = self.messages.to_dict()
         # override the default output from pydantic by calling `to_dict()` of evaluation_context
         if self.evaluation_context:
             _dict["evaluation_context"] = self.evaluation_context.to_dict()
@@ -204,6 +212,11 @@ class ExecutionLogDetails(BaseModel):
         # and model_fields_set contains the field
         if self.chat_id is None and "chat_id" in self.model_fields_set:
             _dict["chat_id"] = None
+
+        # set to None if messages (nullable) is None
+        # and model_fields_set contains the field
+        if self.messages is None and "messages" in self.model_fields_set:
+            _dict["messages"] = None
 
         # set to None if cost (nullable) is None
         # and model_fields_set contains the field
@@ -264,6 +277,7 @@ class ExecutionLogDetails(BaseModel):
         _obj = cls.model_validate(
             {
                 "chat_id": obj.get("chat_id"),
+                "messages": MessagesLog.from_dict(obj["messages"]) if obj.get("messages") is not None else None,
                 "cost": obj.get("cost"),
                 "created_at": obj.get("created_at"),
                 "evaluation_context": ExecutionLogDetailsEvaluationContext.from_dict(obj["evaluation_context"])

@@ -258,4 +258,115 @@ describe('JudgesResource', () => {
       });
     });
   });
+
+  describe('multi-turn conversations', () => {
+    it('should execute judge with multi-turn messages', async () => {
+      const judgeId = 'judge-123';
+      const multiTurnData = TestDataFactory.getTestMultiTurnExecutionInputs();
+
+      mockClient.setMockResponse('POST', '/v1/judges/{judge_id}/execute/', {
+        data: mockResponses.judges.execution,
+        error: undefined,
+      });
+
+      const result = await client.judges.execute(judgeId, multiTurnData);
+
+      expect(result.evaluator_results).toBeDefined();
+      expect(Array.isArray(result.evaluator_results)).toBe(true);
+      expect(mockClient.POST).toHaveBeenCalledWith('/v1/judges/{judge_id}/execute/', {
+        params: { path: { judge_id: judgeId } },
+        body: multiTurnData,
+      });
+    });
+
+    it('should execute judge by name with multi-turn messages', async () => {
+      const judgeName = 'Customer Service Quality';
+      const multiTurnData = TestDataFactory.getTestMultiTurnExecutionInputs();
+
+      mockClient.setMockResponse('POST', '/v1/judges/execute/by-name/', {
+        data: mockResponses.judges.execution,
+        error: undefined,
+      });
+
+      const result = await client.judges.executeByName(judgeName, multiTurnData);
+
+      expect(result.evaluator_results).toBeDefined();
+      expect(Array.isArray(result.evaluator_results)).toBe(true);
+      expect(mockClient.POST).toHaveBeenCalledWith('/v1/judges/execute/by-name/', {
+        params: { query: { name: judgeName } },
+        body: multiTurnData,
+      });
+    });
+
+    it('should handle multi-turn messages with agent_behavior target', async () => {
+      const judgeId = 'judge-123';
+      const messages = {
+        target: 'agent_behavior' as const,
+        turns: [
+          { role: 'user' as const, content: 'My product is defective' },
+          { role: 'assistant' as const, content: 'I apologize for the inconvenience.' },
+        ],
+      };
+
+      mockClient.setMockResponse('POST', '/v1/judges/{judge_id}/execute/', {
+        data: mockResponses.judges.execution,
+        error: undefined,
+      });
+
+      await client.judges.execute(judgeId, { messages });
+
+      expect(mockClient.POST).toHaveBeenCalledWith('/v1/judges/{judge_id}/execute/', {
+        params: { path: { judge_id: judgeId } },
+        body: { messages },
+      });
+    });
+
+    it('should handle multi-turn messages with user_behavior target', async () => {
+      const judgeId = 'judge-123';
+      const messages = {
+        target: 'user_behavior' as const,
+        turns: [
+          { role: 'user' as const, content: 'User message 1' },
+          { role: 'assistant' as const, content: 'Response 1' },
+          { role: 'user' as const, content: 'User message 2' },
+        ],
+      };
+
+      mockClient.setMockResponse('POST', '/v1/judges/{judge_id}/execute/', {
+        data: mockResponses.judges.execution,
+        error: undefined,
+      });
+
+      await client.judges.execute(judgeId, { messages });
+
+      expect(mockClient.POST).toHaveBeenCalledWith('/v1/judges/{judge_id}/execute/', {
+        params: { path: { judge_id: judgeId } },
+        body: { messages },
+      });
+    });
+
+    it('should handle multi-turn messages with contexts and metadata', async () => {
+      const judgeId = 'judge-123';
+      const executionData = {
+        messages: TestDataFactory.getTestMultiTurnMessages(),
+        contexts: ['Company policy documents'],
+        user_id: 'user-456',
+        session_id: 'session-789',
+        tags: ['production', 'v1.0'],
+      };
+
+      mockClient.setMockResponse('POST', '/v1/judges/{judge_id}/execute/', {
+        data: mockResponses.judges.execution,
+        error: undefined,
+      });
+
+      const result = await client.judges.execute(judgeId, executionData);
+
+      expect(result.evaluator_results).toBeDefined();
+      expect(mockClient.POST).toHaveBeenCalledWith('/v1/judges/{judge_id}/execute/', {
+        params: { path: { judge_id: judgeId } },
+        body: executionData,
+      });
+    });
+  });
 });
