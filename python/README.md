@@ -126,14 +126,6 @@ Check the full list of *Root* evaluators from the [Root evaluators documentation
         </a>
       </td>
     </tr>
-    <tr>
-      <td style="text-align: right;"><em>RAG Hallucination Detection with Root Judge</em></td>
-      <td>
-        <a href="https://colab.research.google.com/drive/1A1mmE2jHVntSJiXzBIpMpDjxrtgWC8uq?usp=sharing">
-          <img alt="RAG Hallucination Detection in Colab" src="https://colab.research.google.com/assets/colab-badge.svg">
-        </a>
-      </td>
-    </tr>
   </tbody>
 </table>
 
