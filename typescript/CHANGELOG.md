@@ -1,3 +1,7 @@
+## 0.2.0
+
+- Add multi-turn conversation evaluation support
+
 ## 0.1.6
 
 - Add user_id and session_id to evaluator and judge runs
