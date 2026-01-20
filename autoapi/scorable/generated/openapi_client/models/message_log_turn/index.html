@@ -1,0 +1,588 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../../../../genindex.html"><link rel="search" title="Search" href="../../../../../../search.html"><link rel="next" title="scorable.generated.openapi_client.models.messages_log" href="../messages_log/index.html"><link rel="prev" title="scorable.generated.openapi_client.models.kind_enum" href="../kind_enum/index.html">
+
+    <!-- Generated with Sphinx 9.0.4 and Furo 2025.12.19 -->
+        <title>scorable.generated.openapi_client.models.message_log_turn - Scorable Python SDK documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../../../index.html"><div class="brand">Scorable Python SDK  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../../../index.html">
+  
+  <span class="sidebar-brand-text">Scorable Python SDK  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../examples.html">SDK features using concrete examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../async_support.html">Asynchronous support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../setup.html">Authentication and setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../../../../index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../../../../index.html">scorable</a><input aria-label="Toggle navigation of scorable" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../../client/index.html">scorable.client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../datasets/index.html">scorable.datasets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../execution_logs/index.html">scorable.execution_logs</a></li>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="../../../index.html">scorable.generated</a><input aria-label="Toggle navigation of scorable.generated" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../../openapi_aclient/index.html">scorable.generated.openapi_aclient</a><input aria-label="Toggle navigation of scorable.generated.openapi_aclient" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../openapi_aclient/api/index.html">scorable.generated.openapi_aclient.api</a></li>
+<li class="toctree-l5 has-children"><a class="reference internal" href="../../../openapi_aclient/models/index.html">scorable.generated.openapi_aclient.models</a><input aria-label="Toggle navigation of scorable.generated.openapi_aclient.models" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/batch_execution_status/index.html">scorable.generated.openapi_aclient.models.batch_execution_status</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/data_set_create/index.html">scorable.generated.openapi_aclient.models.data_set_create</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/data_set_list/index.html">scorable.generated.openapi_aclient.models.data_set_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/data_set_type/index.html">scorable.generated.openapi_aclient.models.data_set_type</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluation_agent/index.html">scorable.generated.openapi_aclient.models.evaluation_agent</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluation_agent_evaluation_approach_enum/index.html">scorable.generated.openapi_aclient.models.evaluation_agent_evaluation_approach_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluation_agent_execute_response/index.html">scorable.generated.openapi_aclient.models.evaluation_agent_execute_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluation_agent_generate_request_evaluation_approach_enum/index.html">scorable.generated.openapi_aclient.models.evaluation_agent_generate_request_evaluation_approach_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluation_batch_job_serializer/index.html">scorable.generated.openapi_aclient.models.evaluation_batch_job_serializer</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluation_job_response/index.html">scorable.generated.openapi_aclient.models.evaluation_job_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluator/index.html">scorable.generated.openapi_aclient.models.evaluator</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluator_calibration_output/index.html">scorable.generated.openapi_aclient.models.evaluator_calibration_output</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluator_calibration_result/index.html">scorable.generated.openapi_aclient.models.evaluator_calibration_result</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluator_demonstrations/index.html">scorable.generated.openapi_aclient.models.evaluator_demonstrations</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluator_execution_result/index.html">scorable.generated.openapi_aclient.models.evaluator_execution_result</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluator_inputs_value/index.html">scorable.generated.openapi_aclient.models.evaluator_inputs_value</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluator_inputs_value_items/index.html">scorable.generated.openapi_aclient.models.evaluator_inputs_value_items</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluator_list_output/index.html">scorable.generated.openapi_aclient.models.evaluator_list_output</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluator_reference/index.html">scorable.generated.openapi_aclient.models.evaluator_reference</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/evaluator_result/index.html">scorable.generated.openapi_aclient.models.evaluator_result</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/execution_log_details/index.html">scorable.generated.openapi_aclient.models.execution_log_details</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/execution_log_details_evaluation_context/index.html">scorable.generated.openapi_aclient.models.execution_log_details_evaluation_context</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/execution_log_details_evaluator_latencies_inner/index.html">scorable.generated.openapi_aclient.models.execution_log_details_evaluator_latencies_inner</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/execution_log_list/index.html">scorable.generated.openapi_aclient.models.execution_log_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/execution_log_list_evaluation_context/index.html">scorable.generated.openapi_aclient.models.execution_log_list_evaluation_context</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/id/index.html">scorable.generated.openapi_aclient.models.id</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/input_variable/index.html">scorable.generated.openapi_aclient.models.input_variable</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/job_status/index.html">scorable.generated.openapi_aclient.models.job_status</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/judge/index.html">scorable.generated.openapi_aclient.models.judge</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/judge_batch_execution_detail/index.html">scorable.generated.openapi_aclient.models.judge_batch_execution_detail</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/judge_batch_execution_item/index.html">scorable.generated.openapi_aclient.models.judge_batch_execution_item</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/judge_batch_execution_item_input/index.html">scorable.generated.openapi_aclient.models.judge_batch_execution_item_input</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/judge_batch_execution_item_status_enum/index.html">scorable.generated.openapi_aclient.models.judge_batch_execution_item_status_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/judge_batch_execution_list_item/index.html">scorable.generated.openapi_aclient.models.judge_batch_execution_list_item</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/judge_batch_execution_response/index.html">scorable.generated.openapi_aclient.models.judge_batch_execution_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/judge_execution_response/index.html">scorable.generated.openapi_aclient.models.judge_execution_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/judge_files_inner/index.html">scorable.generated.openapi_aclient.models.judge_files_inner</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/judge_generator_response/index.html">scorable.generated.openapi_aclient.models.judge_generator_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/judge_generator_visibility_enum/index.html">scorable.generated.openapi_aclient.models.judge_generator_visibility_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/judge_list/index.html">scorable.generated.openapi_aclient.models.judge_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/judge_rectifier_response/index.html">scorable.generated.openapi_aclient.models.judge_rectifier_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/kind_enum/index.html">scorable.generated.openapi_aclient.models.kind_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/message_log_turn/index.html">scorable.generated.openapi_aclient.models.message_log_turn</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/messages_log/index.html">scorable.generated.openapi_aclient.models.messages_log</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/model/index.html">scorable.generated.openapi_aclient.models.model</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/model_enum/index.html">scorable.generated.openapi_aclient.models.model_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/model_list/index.html">scorable.generated.openapi_aclient.models.model_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/model_list_visibility_enum/index.html">scorable.generated.openapi_aclient.models.model_list_visibility_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/model_params/index.html">scorable.generated.openapi_aclient.models.model_params</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/model_test_response/index.html">scorable.generated.openapi_aclient.models.model_test_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/nested_evaluator/index.html">scorable.generated.openapi_aclient.models.nested_evaluator</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/nested_evaluator_objective/index.html">scorable.generated.openapi_aclient.models.nested_evaluator_objective</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/nested_judge/index.html">scorable.generated.openapi_aclient.models.nested_judge</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/nested_objective/index.html">scorable.generated.openapi_aclient.models.nested_objective</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/nested_objective_evaluator/index.html">scorable.generated.openapi_aclient.models.nested_objective_evaluator</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/nested_objective_list/index.html">scorable.generated.openapi_aclient.models.nested_objective_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/nested_user_details/index.html">scorable.generated.openapi_aclient.models.nested_user_details</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/nested_vector_objective/index.html">scorable.generated.openapi_aclient.models.nested_vector_objective</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/null_enum/index.html">scorable.generated.openapi_aclient.models.null_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/objective/index.html">scorable.generated.openapi_aclient.models.objective</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/objective_list/index.html">scorable.generated.openapi_aclient.models.objective_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/objective_validator/index.html">scorable.generated.openapi_aclient.models.objective_validator</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/paginated_data_set_list_list/index.html">scorable.generated.openapi_aclient.models.paginated_data_set_list_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/paginated_evaluation_agent_list/index.html">scorable.generated.openapi_aclient.models.paginated_evaluation_agent_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/paginated_evaluation_batch_job_serializer_list/index.html">scorable.generated.openapi_aclient.models.paginated_evaluation_batch_job_serializer_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/paginated_evaluator_list/index.html">scorable.generated.openapi_aclient.models.paginated_evaluator_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/paginated_evaluator_list_output_list/index.html">scorable.generated.openapi_aclient.models.paginated_evaluator_list_output_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/paginated_execution_log_list_list/index.html">scorable.generated.openapi_aclient.models.paginated_execution_log_list_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/paginated_judge_batch_execution_list_item_list/index.html">scorable.generated.openapi_aclient.models.paginated_judge_batch_execution_list_item_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/paginated_judge_list_list/index.html">scorable.generated.openapi_aclient.models.paginated_judge_list_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/paginated_model_list_list/index.html">scorable.generated.openapi_aclient.models.paginated_model_list_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/paginated_objective_list/index.html">scorable.generated.openapi_aclient.models.paginated_objective_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/paginated_objective_list_list/index.html">scorable.generated.openapi_aclient.models.paginated_objective_list_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/provider/index.html">scorable.generated.openapi_aclient.models.provider</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/reasoning_effort_enum/index.html">scorable.generated.openapi_aclient.models.reasoning_effort_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/reference_variable/index.html">scorable.generated.openapi_aclient.models.reference_variable</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/result_preference_signifier_evaluation_approach_enum/index.html">scorable.generated.openapi_aclient.models.result_preference_signifier_evaluation_approach_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/role_enum/index.html">scorable.generated.openapi_aclient.models.role_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/skill_execution_validator_result/index.html">scorable.generated.openapi_aclient.models.skill_execution_validator_result</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/skill_test_data_request_dataset_range/index.html">scorable.generated.openapi_aclient.models.skill_test_data_request_dataset_range</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/skill_type_enum/index.html">scorable.generated.openapi_aclient.models.skill_type_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/status_change/index.html">scorable.generated.openapi_aclient.models.status_change</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/status_change_status_enum/index.html">scorable.generated.openapi_aclient.models.status_change_status_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/status_enum/index.html">scorable.generated.openapi_aclient.models.status_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/target_enum/index.html">scorable.generated.openapi_aclient.models.target_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../openapi_aclient/models/validation_result_status/index.html">scorable.generated.openapi_aclient.models.validation_result_status</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4 current has-children"><a class="reference internal" href="../../index.html">scorable.generated.openapi_client</a><input aria-label="Toggle navigation of scorable.generated.openapi_client" checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="../../api/index.html">scorable.generated.openapi_client.api</a></li>
+<li class="toctree-l5 current has-children"><a class="reference internal" href="../index.html">scorable.generated.openapi_client.models</a><input aria-label="Toggle navigation of scorable.generated.openapi_client.models" checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l6"><a class="reference internal" href="../batch_execution_status/index.html">scorable.generated.openapi_client.models.batch_execution_status</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../data_set_create/index.html">scorable.generated.openapi_client.models.data_set_create</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../data_set_list/index.html">scorable.generated.openapi_client.models.data_set_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../data_set_type/index.html">scorable.generated.openapi_client.models.data_set_type</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluation_agent/index.html">scorable.generated.openapi_client.models.evaluation_agent</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluation_agent_evaluation_approach_enum/index.html">scorable.generated.openapi_client.models.evaluation_agent_evaluation_approach_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluation_agent_execute_response/index.html">scorable.generated.openapi_client.models.evaluation_agent_execute_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluation_agent_generate_request_evaluation_approach_enum/index.html">scorable.generated.openapi_client.models.evaluation_agent_generate_request_evaluation_approach_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluation_batch_job_serializer/index.html">scorable.generated.openapi_client.models.evaluation_batch_job_serializer</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluation_job_response/index.html">scorable.generated.openapi_client.models.evaluation_job_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluator/index.html">scorable.generated.openapi_client.models.evaluator</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluator_calibration_output/index.html">scorable.generated.openapi_client.models.evaluator_calibration_output</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluator_calibration_result/index.html">scorable.generated.openapi_client.models.evaluator_calibration_result</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluator_demonstrations/index.html">scorable.generated.openapi_client.models.evaluator_demonstrations</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluator_execution_result/index.html">scorable.generated.openapi_client.models.evaluator_execution_result</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluator_inputs_value/index.html">scorable.generated.openapi_client.models.evaluator_inputs_value</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluator_inputs_value_items/index.html">scorable.generated.openapi_client.models.evaluator_inputs_value_items</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluator_list_output/index.html">scorable.generated.openapi_client.models.evaluator_list_output</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluator_reference/index.html">scorable.generated.openapi_client.models.evaluator_reference</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../evaluator_result/index.html">scorable.generated.openapi_client.models.evaluator_result</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../execution_log_details/index.html">scorable.generated.openapi_client.models.execution_log_details</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../execution_log_details_evaluation_context/index.html">scorable.generated.openapi_client.models.execution_log_details_evaluation_context</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../execution_log_details_evaluator_latencies_inner/index.html">scorable.generated.openapi_client.models.execution_log_details_evaluator_latencies_inner</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../execution_log_list/index.html">scorable.generated.openapi_client.models.execution_log_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../execution_log_list_evaluation_context/index.html">scorable.generated.openapi_client.models.execution_log_list_evaluation_context</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../id/index.html">scorable.generated.openapi_client.models.id</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../input_variable/index.html">scorable.generated.openapi_client.models.input_variable</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../job_status/index.html">scorable.generated.openapi_client.models.job_status</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../judge/index.html">scorable.generated.openapi_client.models.judge</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../judge_batch_execution_detail/index.html">scorable.generated.openapi_client.models.judge_batch_execution_detail</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../judge_batch_execution_item/index.html">scorable.generated.openapi_client.models.judge_batch_execution_item</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../judge_batch_execution_item_input/index.html">scorable.generated.openapi_client.models.judge_batch_execution_item_input</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../judge_batch_execution_item_status_enum/index.html">scorable.generated.openapi_client.models.judge_batch_execution_item_status_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../judge_batch_execution_list_item/index.html">scorable.generated.openapi_client.models.judge_batch_execution_list_item</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../judge_batch_execution_response/index.html">scorable.generated.openapi_client.models.judge_batch_execution_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../judge_execution_response/index.html">scorable.generated.openapi_client.models.judge_execution_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../judge_files_inner/index.html">scorable.generated.openapi_client.models.judge_files_inner</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../judge_generator_response/index.html">scorable.generated.openapi_client.models.judge_generator_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../judge_generator_visibility_enum/index.html">scorable.generated.openapi_client.models.judge_generator_visibility_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../judge_list/index.html">scorable.generated.openapi_client.models.judge_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../judge_rectifier_response/index.html">scorable.generated.openapi_client.models.judge_rectifier_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../kind_enum/index.html">scorable.generated.openapi_client.models.kind_enum</a></li>
+<li class="toctree-l6 current current-page"><a class="current reference internal" href="#">scorable.generated.openapi_client.models.message_log_turn</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../messages_log/index.html">scorable.generated.openapi_client.models.messages_log</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../model/index.html">scorable.generated.openapi_client.models.model</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../model_enum/index.html">scorable.generated.openapi_client.models.model_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../model_list/index.html">scorable.generated.openapi_client.models.model_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../model_list_visibility_enum/index.html">scorable.generated.openapi_client.models.model_list_visibility_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../model_params/index.html">scorable.generated.openapi_client.models.model_params</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../model_test_response/index.html">scorable.generated.openapi_client.models.model_test_response</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../nested_evaluator/index.html">scorable.generated.openapi_client.models.nested_evaluator</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../nested_evaluator_objective/index.html">scorable.generated.openapi_client.models.nested_evaluator_objective</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../nested_judge/index.html">scorable.generated.openapi_client.models.nested_judge</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../nested_objective/index.html">scorable.generated.openapi_client.models.nested_objective</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../nested_objective_evaluator/index.html">scorable.generated.openapi_client.models.nested_objective_evaluator</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../nested_objective_list/index.html">scorable.generated.openapi_client.models.nested_objective_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../nested_user_details/index.html">scorable.generated.openapi_client.models.nested_user_details</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../nested_vector_objective/index.html">scorable.generated.openapi_client.models.nested_vector_objective</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../null_enum/index.html">scorable.generated.openapi_client.models.null_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../objective/index.html">scorable.generated.openapi_client.models.objective</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../objective_list/index.html">scorable.generated.openapi_client.models.objective_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../objective_validator/index.html">scorable.generated.openapi_client.models.objective_validator</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../paginated_data_set_list_list/index.html">scorable.generated.openapi_client.models.paginated_data_set_list_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../paginated_evaluation_agent_list/index.html">scorable.generated.openapi_client.models.paginated_evaluation_agent_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../paginated_evaluation_batch_job_serializer_list/index.html">scorable.generated.openapi_client.models.paginated_evaluation_batch_job_serializer_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../paginated_evaluator_list/index.html">scorable.generated.openapi_client.models.paginated_evaluator_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../paginated_evaluator_list_output_list/index.html">scorable.generated.openapi_client.models.paginated_evaluator_list_output_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../paginated_execution_log_list_list/index.html">scorable.generated.openapi_client.models.paginated_execution_log_list_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../paginated_judge_batch_execution_list_item_list/index.html">scorable.generated.openapi_client.models.paginated_judge_batch_execution_list_item_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../paginated_judge_list_list/index.html">scorable.generated.openapi_client.models.paginated_judge_list_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../paginated_model_list_list/index.html">scorable.generated.openapi_client.models.paginated_model_list_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../paginated_objective_list/index.html">scorable.generated.openapi_client.models.paginated_objective_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../paginated_objective_list_list/index.html">scorable.generated.openapi_client.models.paginated_objective_list_list</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../provider/index.html">scorable.generated.openapi_client.models.provider</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../reasoning_effort_enum/index.html">scorable.generated.openapi_client.models.reasoning_effort_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../reference_variable/index.html">scorable.generated.openapi_client.models.reference_variable</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../result_preference_signifier_evaluation_approach_enum/index.html">scorable.generated.openapi_client.models.result_preference_signifier_evaluation_approach_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../role_enum/index.html">scorable.generated.openapi_client.models.role_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../skill_execution_validator_result/index.html">scorable.generated.openapi_client.models.skill_execution_validator_result</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../skill_test_data_request_dataset_range/index.html">scorable.generated.openapi_client.models.skill_test_data_request_dataset_range</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../skill_type_enum/index.html">scorable.generated.openapi_client.models.skill_type_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../status_change/index.html">scorable.generated.openapi_client.models.status_change</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../status_change_status_enum/index.html">scorable.generated.openapi_client.models.status_change_status_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../status_enum/index.html">scorable.generated.openapi_client.models.status_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../target_enum/index.html">scorable.generated.openapi_client.models.target_enum</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../validation_result_status/index.html">scorable.generated.openapi_client.models.validation_result_status</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../judges/index.html">scorable.judges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../models/index.html">scorable.models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../multiturn/index.html">scorable.multiturn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../objectives/index.html">scorable.objectives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../skills/index.html">scorable.skills</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../../../../../_sources/autoapi/scorable/generated/openapi_client/models/message_log_turn/index.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-scorable.generated.openapi_client.models.message_log_turn">
+<span id="scorable-generated-openapi-client-models-message-log-turn"></span><h1>scorable.generated.openapi_client.models.message_log_turn<a class="headerlink" href="#module-scorable.generated.openapi_client.models.message_log_turn" title="Link to this heading">¶</a></h1>
+<p>Scorable API</p>
+<p>Scorable JSON API provides a way to access Scorable using provisioned API token</p>
+<p>The version of the OpenAPI document: 1.0.0 (latest)
+Generated by OpenAPI Generator (<a class="reference external" href="https://openapi-generator.tech">https://openapi-generator.tech</a>)</p>
+<p>Do not edit the class manually.</p>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn" title="scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MessageLogTurn</span></code></a></p></td>
+<td><p>MessageLogTurn</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">scorable.generated.openapi_client.models.message_log_turn.</span></span><span class="sig-name descname"><span class="pre">MessageLogTurn</span></span><a class="headerlink" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
+<p>MessageLogTurn</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.content">
+<span class="sig-name descname"><span class="pre">content</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.StrictStr</span></span><a class="headerlink" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.content" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.contexts">
+<span class="sig-name descname"><span class="pre">contexts</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pydantic.StrictStr</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.contexts" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.evaluation_justification">
+<span class="sig-name descname"><span class="pre">evaluation_justification</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.StrictStr</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.evaluation_justification" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><a class="headerlink" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.model_config" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.role">
+<span class="sig-name descname"><span class="pre">role</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../role_enum/index.html#scorable.generated.openapi_client.models.role_enum.RoleEnum" title="scorable.generated.openapi_client.models.role_enum.RoleEnum"><span class="pre">scorable.generated.openapi_client.models.role_enum.RoleEnum</span></a></span><a class="headerlink" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.role" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.tool_name">
+<span class="sig-name descname"><span class="pre">tool_name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">typing_extensions.Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Field</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="k"><span class="pre">True</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">max_length</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">4096</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.tool_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../messages_log/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">scorable.generated.openapi_client.models.messages_log</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../kind_enum/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">scorable.generated.openapi_client.models.kind_enum</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, Root Signals Ltd
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">scorable.generated.openapi_client.models.message_log_turn</a><ul>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn"><code class="docutils literal notranslate"><span class="pre">MessageLogTurn</span></code></a><ul>
+<li><a class="reference internal" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.content"><code class="docutils literal notranslate"><span class="pre">MessageLogTurn.content</span></code></a></li>
+<li><a class="reference internal" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.contexts"><code class="docutils literal notranslate"><span class="pre">MessageLogTurn.contexts</span></code></a></li>
+<li><a class="reference internal" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.evaluation_justification"><code class="docutils literal notranslate"><span class="pre">MessageLogTurn.evaluation_justification</span></code></a></li>
+<li><a class="reference internal" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.model_config"><code class="docutils literal notranslate"><span class="pre">MessageLogTurn.model_config</span></code></a></li>
+<li><a class="reference internal" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.role"><code class="docutils literal notranslate"><span class="pre">MessageLogTurn.role</span></code></a></li>
+<li><a class="reference internal" href="#scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn.tool_name"><code class="docutils literal notranslate"><span class="pre">MessageLogTurn.tool_name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

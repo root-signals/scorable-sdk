@@ -87,6 +87,10 @@ Module Contents
       :type:  pydantic.StrictStr
 
 
+   .. py:attribute:: messages
+      :type:  Optional[scorable.generated.openapi_client.models.messages_log.MessagesLog]
+
+
    .. py:attribute:: model
       :type:  pydantic.StrictStr
 

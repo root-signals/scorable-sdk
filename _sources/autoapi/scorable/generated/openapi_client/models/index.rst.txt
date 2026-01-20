@@ -64,6 +64,8 @@ Submodules
    /autoapi/scorable/generated/openapi_client/models/judge_list/index
    /autoapi/scorable/generated/openapi_client/models/judge_rectifier_response/index
    /autoapi/scorable/generated/openapi_client/models/kind_enum/index
+   /autoapi/scorable/generated/openapi_client/models/message_log_turn/index
+   /autoapi/scorable/generated/openapi_client/models/messages_log/index
    /autoapi/scorable/generated/openapi_client/models/model/index
    /autoapi/scorable/generated/openapi_client/models/model_enum/index
    /autoapi/scorable/generated/openapi_client/models/model_list/index
@@ -97,12 +99,14 @@ Submodules
    /autoapi/scorable/generated/openapi_client/models/reasoning_effort_enum/index
    /autoapi/scorable/generated/openapi_client/models/reference_variable/index
    /autoapi/scorable/generated/openapi_client/models/result_preference_signifier_evaluation_approach_enum/index
+   /autoapi/scorable/generated/openapi_client/models/role_enum/index
    /autoapi/scorable/generated/openapi_client/models/skill_execution_validator_result/index
    /autoapi/scorable/generated/openapi_client/models/skill_test_data_request_dataset_range/index
    /autoapi/scorable/generated/openapi_client/models/skill_type_enum/index
    /autoapi/scorable/generated/openapi_client/models/status_change/index
    /autoapi/scorable/generated/openapi_client/models/status_change_status_enum/index
    /autoapi/scorable/generated/openapi_client/models/status_enum/index
+   /autoapi/scorable/generated/openapi_client/models/target_enum/index
    /autoapi/scorable/generated/openapi_client/models/validation_result_status/index
 
 

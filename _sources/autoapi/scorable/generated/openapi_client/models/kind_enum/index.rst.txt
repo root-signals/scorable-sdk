@@ -32,11 +32,16 @@ Module Contents
    Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
 
-   * `input_output_pair` - input_output_pair * `single_content` - single_content
+   * `input_output_pair` - input_output_pair * `single_content` - single_content * `multi_turn_content` - multi_turn_content
 
 
    .. py:attribute:: INPUT_OUTPUT_PAIR
       :value: 'input_output_pair'
+
+
+
+   .. py:attribute:: MULTI_TURN_CONTENT
+      :value: 'multi_turn_content'
 
 
 

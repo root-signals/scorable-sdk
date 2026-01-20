@@ -28,7 +28,7 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: arun(*, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: arun(*, response: Optional[str] = None, request: Optional[str] = None, messages: Optional[scorable.generated.openapi_aclient.models.messages_request.MessagesRequest] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
       :async:
 
 
@@ -42,6 +42,7 @@ Module Contents
       :param user_id: Optional user identifier for tracking purposes.
       :param session_id: Optional session identifier for tracking purposes.
       :param system_prompt: Optional system prompt that was used for the LLM call.
+      :param messages: Optional multi-turn conversation messages.
       :param _request_timeout: Optional timeout for the request
 
 
@@ -61,7 +62,7 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: run(*, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: run(*, response: Optional[str] = None, request: Optional[str] = None, messages: Optional[scorable.generated.openapi_client.models.messages_request.MessagesRequest] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
 
       Run the judge.
 
@@ -73,6 +74,7 @@ Module Contents
       :param user_id: Optional user identifier for tracking purposes.
       :param session_id: Optional session identifier for tracking purposes.
       :param system_prompt: Optional system prompt that was used for the LLM call.
+      :param messages: Optional multi-turn conversation messages.
       :param _request_timeout: Optional timeout for the request
 
 

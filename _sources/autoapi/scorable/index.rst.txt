@@ -28,6 +28,7 @@ Submodules
    /autoapi/scorable/generated/index
    /autoapi/scorable/judges/index
    /autoapi/scorable/models/index
+   /autoapi/scorable/multiturn/index
    /autoapi/scorable/objectives/index
    /autoapi/scorable/skills/index
 
