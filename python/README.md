@@ -33,10 +33,6 @@
     <img src="https://img.shields.io/badge/HuggingFace-FF9D00?style=for-the-badge&logo=huggingface&logoColor=white&scale=2" />
   </a>
 
-  <a href="https://discord.gg/QbDAAmW9yz">
-    <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white&scale=2" />
-  </a>
-
   <a href="https://sdk.scorable.ai/en/latest/">
     <img src="https://img.shields.io/badge/Documentation-E53935?style=for-the-badge&logo=readthedocs&logoColor=white&scale=2" />
   </a>
@@ -128,7 +124,3 @@ Check the full list of *Root* evaluators from the [Root evaluators documentation
     </tr>
   </tbody>
 </table>
-
-## 🌍 Community
-
-💬 Welcome to our [Discord Server](https://discord.gg/EhazTQsFnj)! It's a great place to ask questions, get help, and discuss ideas.
