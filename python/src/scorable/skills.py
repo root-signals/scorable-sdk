@@ -1728,6 +1728,10 @@ class Evaluators:
         "Answer_Willingness",
         "Information_Density",
         "Planning_Efficiency",
+        "Faithfulness_to_Citations",
+        "Translation_Quality",
+        "Context_Completeness",
+        "Summarization_Quality",
     ]
 
     class Eval(Enum):
@@ -1765,6 +1769,10 @@ class Evaluators:
         Answer_Willingness = "c81034ae-9439-4c93-bab3-d159eaf072bf"
         Information_Density = "789a3dd8-7794-4f01-b229-3a99088c82fc"
         Planning_Efficiency = "ed3e16c2-2d4e-4ec2-b4af-b4b54a24009d"
+        Faithfulness_to_Citations = "2569dddd-9b2c-4811-b35a-06fcfdc62d7a"
+        Translation_Quality = "44e6722e-43e0-4791-a84f-0e1480adccd6"
+        Context_Completeness = "7c8f9e3a-1b2d-4c5e-9f8a-6d7c4b3e2a1f"
+        Summarization_Quality = "e7548186-af7c-49ef-be24-eda7c47adb6d"
 
     def __getattr__(self, name: Union[EvaluatorName, str]) -> Union["PresetEvaluatorRunner", "APresetEvaluatorRunner"]:
         if name in self.Eval.__members__:
