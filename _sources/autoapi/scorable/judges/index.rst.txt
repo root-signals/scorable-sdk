@@ -28,7 +28,7 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: arun(*, response: Optional[str] = None, request: Optional[str] = None, messages: Optional[scorable.generated.openapi_aclient.models.messages_request.MessagesRequest] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: arun(*, response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
       :async:
 
 
@@ -36,13 +36,13 @@ Module Contents
 
       :param response: LLM output to evaluate
       :param request: The prompt sent to the LLM. Optional.
+      :param turns: Optional multi-turn conversation as a list of turns.
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output
       :param tags: Optional tags to add to the judge execution
       :param user_id: Optional user identifier for tracking purposes.
       :param session_id: Optional session identifier for tracking purposes.
       :param system_prompt: Optional system prompt that was used for the LLM call.
-      :param messages: Optional multi-turn conversation messages.
       :param _request_timeout: Optional timeout for the request
 
 
@@ -62,19 +62,19 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: run(*, response: Optional[str] = None, request: Optional[str] = None, messages: Optional[scorable.generated.openapi_client.models.messages_request.MessagesRequest] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: run(*, response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
 
       Run the judge.
 
       :param response: LLM output to evaluate
       :param request: The prompt sent to the LLM. Optional.
+      :param turns: Optional multi-turn conversation as a list of turns.
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output
       :param tags: Optional tags to add to the judge execution
       :param user_id: Optional user identifier for tracking purposes.
       :param session_id: Optional session identifier for tracking purposes.
       :param system_prompt: Optional system prompt that was used for the LLM call.
-      :param messages: Optional multi-turn conversation messages.
       :param _request_timeout: Optional timeout for the request
 
 
@@ -163,7 +163,7 @@ Module Contents
 
 
 
-   .. py:method:: arun(judge_id: str, *, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: arun(judge_id: str, *, response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
       :async:
 
 
@@ -172,6 +172,7 @@ Module Contents
       :param judge_id: ID of the judge to run
       :param response: LLM output to evaluate
       :param request: The prompt sent to the LLM. Optional.
+      :param turns: Optional multi-turn conversation as a list of turns.
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output
       :param tags: Optional tags to add to the judge execution
@@ -182,7 +183,7 @@ Module Contents
 
 
 
-   .. py:method:: arun_by_name(name: str, *, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: arun_by_name(name: str, *, response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_execution_response.JudgeExecutionResponse
       :async:
 
 
@@ -191,6 +192,7 @@ Module Contents
       :param name: Name of the judge to run
       :param response: LLM output to evaluate
       :param request: The prompt sent to the LLM. Optional.
+      :param turns: Optional multi-turn conversation as a list of turns.
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output
       :param tags: Optional tags to add to the judge execution
@@ -273,13 +275,14 @@ Module Contents
 
 
 
-   .. py:method:: run(judge_id: str, *, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: run(judge_id: str, *, response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
 
       Run a judge directly by ID.
 
       :param judge_id: ID of the judge to run
       :param response: LLM output to evaluate
       :param request: The prompt sent to the LLM. Optional.
+      :param turns: Optional multi-turn conversation as a list of turns.
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output
       :param tags: Optional tags to add to the judge execution
@@ -290,13 +293,14 @@ Module Contents
 
 
 
-   .. py:method:: run_by_name(name: str, *, response: str, request: Optional[str] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
+   .. py:method:: run_by_name(name: str, *, response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_execution_response.JudgeExecutionResponse
 
       Run a judge by name.
 
       :param name: Name of the judge to run
       :param response: LLM output to evaluate
       :param request: The prompt sent to the LLM. Optional.
+      :param turns: Optional multi-turn conversation as a list of turns.
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output
       :param tags: Optional tags to add to the judge execution

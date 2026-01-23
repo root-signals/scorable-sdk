@@ -250,7 +250,6 @@
 <li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_aclient/models/judge_rectifier_response/index.html">scorable.generated.openapi_aclient.models.judge_rectifier_response</a></li>
 <li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_aclient/models/kind_enum/index.html">scorable.generated.openapi_aclient.models.kind_enum</a></li>
 <li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_aclient/models/message_log_turn/index.html">scorable.generated.openapi_aclient.models.message_log_turn</a></li>
-<li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_aclient/models/messages_log/index.html">scorable.generated.openapi_aclient.models.messages_log</a></li>
 <li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_aclient/models/model/index.html">scorable.generated.openapi_aclient.models.model</a></li>
 <li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_aclient/models/model_enum/index.html">scorable.generated.openapi_aclient.models.model_enum</a></li>
 <li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_aclient/models/model_list/index.html">scorable.generated.openapi_aclient.models.model_list</a></li>
@@ -343,7 +342,6 @@
 <li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_client/models/judge_rectifier_response/index.html">scorable.generated.openapi_client.models.judge_rectifier_response</a></li>
 <li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_client/models/kind_enum/index.html">scorable.generated.openapi_client.models.kind_enum</a></li>
 <li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_client/models/message_log_turn/index.html">scorable.generated.openapi_client.models.message_log_turn</a></li>
-<li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_client/models/messages_log/index.html">scorable.generated.openapi_client.models.messages_log</a></li>
 <li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_client/models/model/index.html">scorable.generated.openapi_client.models.model</a></li>
 <li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_client/models/model_enum/index.html">scorable.generated.openapi_client.models.model_enum</a></li>
 <li class="toctree-l6"><a class="reference internal" href="autoapi/scorable/generated/openapi_client/models/model_list/index.html">scorable.generated.openapi_client.models.model_list</a></li>
@@ -632,32 +630,29 @@ Full list of examples is available <a class="reference external" href="https://g
 <h2>Multi-turn conversation evaluation<a class="headerlink" href="#multi-turn-conversation-evaluation" title="Link to this heading">¶</a></h2>
 <p>Evaluators can assess multi-turn conversations to evaluate agent behavior across an entire interaction. This is useful for evaluating chatbots, customer service agents, and other conversational AI systems.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scorable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scorable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scorable.multiturn</span><span class="w"> </span><span class="kn">import</span> <span class="n">Messages</span><span class="p">,</span> <span class="n">Target</span><span class="p">,</span> <span class="n">Turn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scorable.multiturn</span><span class="w"> </span><span class="kn">import</span> <span class="n">Turn</span>
 
 <span class="c1"># Connect to the Scorable API</span>
 <span class="n">client</span> <span class="o">=</span> <span class="n">Scorable</span><span class="p">()</span>
 
 <span class="c1"># Create a multi-turn conversation to evaluate</span>
-<span class="n">messages</span> <span class="o">=</span> <span class="n">Messages</span><span class="p">(</span>
-    <span class="n">target</span><span class="o">=</span><span class="n">Target</span><span class="o">.</span><span class="n">AGENT_BEHAVIOR</span><span class="p">,</span>
-    <span class="n">turns</span><span class="o">=</span><span class="p">[</span>
-        <span class="n">Turn</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hello, I need help with my order&quot;</span><span class="p">),</span>
-        <span class="n">Turn</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;I&#39;d be happy to help! What&#39;s your order number?&quot;</span><span class="p">),</span>
-        <span class="n">Turn</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;It&#39;s ORDER-12345&quot;</span><span class="p">),</span>
-        <span class="n">Turn</span><span class="p">(</span>
-            <span class="n">role</span><span class="o">=</span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
-            <span class="n">content</span><span class="o">=</span><span class="s2">&quot;{&#39;order_number&#39;: &#39;ORDER-12345&#39;, &#39;status&#39;: &#39;shipped&#39;, &#39;eta&#39;: &#39;Jan 20&#39;}&quot;</span><span class="p">,</span>
-            <span class="n">tool_name</span><span class="o">=</span><span class="s2">&quot;order_lookup&quot;</span><span class="p">,</span>
-        <span class="p">),</span>
-        <span class="n">Turn</span><span class="p">(</span>
-            <span class="n">role</span><span class="o">=</span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
-            <span class="n">content</span><span class="o">=</span><span class="s2">&quot;I found your order. It&#39;s currently in transit.&quot;</span><span class="p">,</span>
-        <span class="p">),</span>
-    <span class="p">],</span>
-<span class="p">)</span>
+<span class="n">turns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Turn</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hello, I need help with my order&quot;</span><span class="p">),</span>
+    <span class="n">Turn</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;I&#39;d be happy to help! What&#39;s your order number?&quot;</span><span class="p">),</span>
+    <span class="n">Turn</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;It&#39;s ORDER-12345&quot;</span><span class="p">),</span>
+    <span class="n">Turn</span><span class="p">(</span>
+        <span class="n">role</span><span class="o">=</span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+        <span class="n">content</span><span class="o">=</span><span class="s2">&quot;{&#39;order_number&#39;: &#39;ORDER-12345&#39;, &#39;status&#39;: &#39;shipped&#39;, &#39;eta&#39;: &#39;Jan 20&#39;}&quot;</span><span class="p">,</span>
+        <span class="n">tool_name</span><span class="o">=</span><span class="s2">&quot;order_lookup&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">Turn</span><span class="p">(</span>
+        <span class="n">role</span><span class="o">=</span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+        <span class="n">content</span><span class="o">=</span><span class="s2">&quot;I found your order. It&#39;s currently in transit.&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">]</span>
 
 <span class="c1"># Evaluate the multi-turn conversation</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">evaluators</span><span class="o">.</span><span class="n">Helpfulness</span><span class="p">(</span><span class="n">messages</span><span class="o">=</span><span class="n">messages</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">evaluators</span><span class="o">.</span><span class="n">Helpfulness</span><span class="p">(</span><span class="n">turns</span><span class="o">=</span><span class="n">turns</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Score: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">score</span><span class="si">}</span><span class="s2"> / 1.0&quot;</span><span class="p">)</span>  <span class="c1"># A normalized score between 0 and 1</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">justification</span><span class="p">)</span>  <span class="c1"># The reasoning for the score</span>
@@ -742,28 +737,26 @@ Full list of examples is available <a class="reference external" href="https://g
 <p>Judges can also evaluate multi-turn conversations, applying multiple evaluators to assess different aspects of the interaction.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scorable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scorable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scorable.generated.openapi_client.models.evaluator_reference_request</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvaluatorReferenceRequest</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scorable.multiturn</span><span class="w"> </span><span class="kn">import</span> <span class="n">Messages</span><span class="p">,</span> <span class="n">Target</span><span class="p">,</span> <span class="n">Turn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scorable.multiturn</span><span class="w"> </span><span class="kn">import</span> <span class="n">Turn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scorable.skills</span><span class="w"> </span><span class="kn">import</span> <span class="n">Evaluators</span>
 
 <span class="n">client</span> <span class="o">=</span> <span class="n">Scorable</span><span class="p">()</span>
 
-<span class="n">messages</span> <span class="o">=</span> <span class="n">Messages</span><span class="p">(</span>
-    <span class="n">target</span><span class="o">=</span><span class="n">Target</span><span class="o">.</span><span class="n">AGENT_BEHAVIOR</span><span class="p">,</span>
-    <span class="n">turns</span><span class="o">=</span><span class="p">[</span>
-        <span class="n">Turn</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hello, I need help with my order&quot;</span><span class="p">),</span>
-        <span class="n">Turn</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;I&#39;d be happy to help! What&#39;s your order number?&quot;</span><span class="p">),</span>
-        <span class="n">Turn</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;It&#39;s ORDER-12345&quot;</span><span class="p">),</span>
-        <span class="n">Turn</span><span class="p">(</span>
-            <span class="n">role</span><span class="o">=</span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
-            <span class="n">content</span><span class="o">=</span><span class="s2">&quot;{&#39;order_number&#39;: &#39;ORDER-12345&#39;, &#39;status&#39;: &#39;shipped&#39;, &#39;eta&#39;: &#39;Jan 20&#39;}&quot;</span><span class="p">,</span>
-            <span class="n">tool_name</span><span class="o">=</span><span class="s2">&quot;order_lookup&quot;</span><span class="p">,</span>
-        <span class="p">),</span>
-        <span class="n">Turn</span><span class="p">(</span>
-            <span class="n">role</span><span class="o">=</span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
-            <span class="n">content</span><span class="o">=</span><span class="s2">&quot;I found your order. It&#39;s currently in transit.&quot;</span><span class="p">,</span>
-        <span class="p">),</span>
-    <span class="p">],</span>
-<span class="p">)</span>
+<span class="c1"># Create a multi-turn conversation to evaluate</span>
+<span class="n">turns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Turn</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hello, I need help with my order&quot;</span><span class="p">),</span>
+    <span class="n">Turn</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;I&#39;d be happy to help! What&#39;s your order number?&quot;</span><span class="p">),</span>
+    <span class="n">Turn</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;It&#39;s ORDER-12345&quot;</span><span class="p">),</span>
+    <span class="n">Turn</span><span class="p">(</span>
+        <span class="n">role</span><span class="o">=</span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+        <span class="n">content</span><span class="o">=</span><span class="s2">&quot;{&#39;order_number&#39;: &#39;ORDER-12345&#39;, &#39;status&#39;: &#39;shipped&#39;, &#39;eta&#39;: &#39;Jan 20&#39;}&quot;</span><span class="p">,</span>
+        <span class="n">tool_name</span><span class="o">=</span><span class="s2">&quot;order_lookup&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">Turn</span><span class="p">(</span>
+        <span class="n">role</span><span class="o">=</span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+        <span class="n">content</span><span class="o">=</span><span class="s2">&quot;I found your order. It&#39;s currently in transit.&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">]</span>
 
 <span class="n">evaluator_references</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">EvaluatorReferenceRequest</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">Evaluators</span><span class="o">.</span><span class="n">Eval</span><span class="o">.</span><span class="n">Truthfulness</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>
@@ -777,7 +770,7 @@ Full list of examples is available <a class="reference external" href="https://g
 <span class="p">)</span>
 
 <span class="c1"># Run the judge on the multi-turn conversation</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">judge</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">messages</span><span class="o">=</span><span class="n">messages</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">judge</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">turns</span><span class="o">=</span><span class="n">turns</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evaluation results for </span><span class="si">{</span><span class="n">judge</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">evaluator_result</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">evaluator_results</span><span class="p">:</span>

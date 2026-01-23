@@ -45,6 +45,8 @@ Module Contents
 
    .. py:attribute:: evaluation_justification
       :type:  Optional[pydantic.StrictStr]
+      :value: None
+
 
 
    .. py:attribute:: model_config
@@ -55,6 +57,8 @@ Module Contents
 
 
    .. py:attribute:: tool_name
-      :type:  Optional[typing_extensions.Annotated[str, Field(strict=True, max_length=4096)]]
+      :type:  Optional[pydantic.StrictStr]
+      :value: None
+
 
 

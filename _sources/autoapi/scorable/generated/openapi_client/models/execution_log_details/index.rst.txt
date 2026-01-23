@@ -87,10 +87,6 @@ Module Contents
       :type:  pydantic.StrictStr
 
 
-   .. py:attribute:: messages
-      :type:  Optional[scorable.generated.openapi_client.models.messages_log.MessagesLog]
-
-
    .. py:attribute:: model
       :type:  pydantic.StrictStr
 
@@ -140,6 +136,10 @@ Module Contents
 
    .. py:attribute:: tags
       :type:  List[pydantic.StrictStr]
+
+
+   .. py:attribute:: turns
+      :type:  Optional[List[scorable.generated.openapi_client.models.message_log_turn.MessageLogTurn]]
 
 
    .. py:attribute:: user_id

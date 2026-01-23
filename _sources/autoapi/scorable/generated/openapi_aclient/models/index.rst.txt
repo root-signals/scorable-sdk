@@ -65,7 +65,6 @@ Submodules
    /autoapi/scorable/generated/openapi_aclient/models/judge_rectifier_response/index
    /autoapi/scorable/generated/openapi_aclient/models/kind_enum/index
    /autoapi/scorable/generated/openapi_aclient/models/message_log_turn/index
-   /autoapi/scorable/generated/openapi_aclient/models/messages_log/index
    /autoapi/scorable/generated/openapi_aclient/models/model/index
    /autoapi/scorable/generated/openapi_aclient/models/model_enum/index
    /autoapi/scorable/generated/openapi_aclient/models/model_list/index

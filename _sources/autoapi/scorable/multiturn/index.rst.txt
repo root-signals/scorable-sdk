@@ -9,3 +9,16 @@ scorable.multiturn
 
 
 
+Attributes
+----------
+
+.. autoapisummary::
+
+   scorable.multiturn.Turns
+
+
+Module Contents
+---------------
+
+.. py:data:: Turns
+

@@ -44,8 +44,3 @@ We use ESLint and Prettier to maintain consistent code style. Run `npm run fix-a
 - Run `npm test` to execute all tests
 - Integration tests require a valid API key
 
-## Questions?
-
-Join our [Discord community](https://discord.gg/rootsignals) to ask questions, share ideas, or get help with your contributions.
-
-Thanks again for contributing! 🚀
