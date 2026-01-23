@@ -226,30 +226,6 @@ describe('EvaluatorsResource', () => {
         body: executionData,
       });
     });
-
-    it('should handle multi-turn messages with different targets', async () => {
-      const evaluatorId = 'eval-123';
-      const messages = {
-        target: 'user_behavior' as const,
-        turns: [
-          { role: 'user' as const, content: 'First user message' },
-          { role: 'assistant' as const, content: 'Response' },
-          { role: 'user' as const, content: 'Second user message' },
-        ],
-      };
-
-      mockClient.setMockResponse('POST', '/v1/evaluators/execute/{id}/', {
-        data: mockResponses.evaluators.execution,
-        error: undefined,
-      });
-
-      await client.evaluators.execute(evaluatorId, { messages });
-
-      expect(mockClient.POST).toHaveBeenCalledWith('/v1/evaluators/execute/{id}/', {
-        params: { path: { id: evaluatorId } },
-        body: { messages },
-      });
-    });
   });
 
   describe('error handling', () => {

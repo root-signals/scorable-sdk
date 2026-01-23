@@ -83,7 +83,7 @@ export class ScorableError extends Error {
 }
 
 export interface ExecutionPayload {
-  messages?: components['schemas']['MessagesRequest'];
+  turns?: components['schemas']['MessageTurnRequest'][];
   request?: string;
   response?: string;
   contexts?: string[];

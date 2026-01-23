@@ -98,7 +98,6 @@ from scorable.generated.openapi_aclient.models.judge_request import JudgeRequest
 from scorable.generated.openapi_aclient.models.kind_enum import KindEnum
 from scorable.generated.openapi_aclient.models.message_log_turn import MessageLogTurn
 from scorable.generated.openapi_aclient.models.message_turn_request import MessageTurnRequest
-from scorable.generated.openapi_aclient.models.messages_log import MessagesLog
 from scorable.generated.openapi_aclient.models.messages_request import MessagesRequest
 from scorable.generated.openapi_aclient.models.model import Model
 from scorable.generated.openapi_aclient.models.model_enum import ModelEnum

@@ -156,9 +156,7 @@ const client = new Scorable({ apiKey: process.env.SCORABLE_API_KEY! });
 const result = await client.evaluators.executeByName(
   'Helpfulness',
   {
-    messages: {
-      target: 'agent_behavior', // or 'user_behavior'
-      turns: [
+    turns: [
         {
           role: 'user',
           content: 'Hello, I need help with my order'
@@ -180,8 +178,7 @@ const result = await client.evaluators.executeByName(
           role: 'assistant',
           content: 'I found your order. It is currently in transit and should arrive by Jan 20.'
         }
-      ]
-    },
+    ],
     // Optional: RAG contexts can be provided per turn or globally
     contexts: ['Return policy: 30 days...'],
     user_id: 'user-123',
@@ -196,22 +193,19 @@ console.log(`Justification: ${result.justification}`);
 const judgeResults = await client.judges.executeByName(
   'Customer Service Quality',
   {
-    messages: {
-      target: 'agent_behavior',
-      turns: [
-        { role: 'user', content: 'My product is defective' },
-        { role: 'assistant', content: 'I apologize for the inconvenience. Can you describe the issue?' },
-        { role: 'user', content: 'The screen is cracked' },
-        { role: 'assistant', content: "I'll process a replacement right away." }
-      ]
-    }
+    turns: [
+      { role: 'user', content: 'My product is defective' },
+      { role: 'assistant', content: 'I apologize for the inconvenience. Can you describe the issue?' },
+      { role: 'user', content: 'The screen is cracked' },
+      { role: 'assistant', content: "I'll process a replacement right away." }
+    ],
   }
 );
 
 console.log(judgeResults);
 ```
 
-**Important:** You must provide either `messages` OR `request`/`response`, not both.
+**Important:** You must provide either `turns` OR `request`/`response`, not both.
 
 
 ### Custom Evaluators

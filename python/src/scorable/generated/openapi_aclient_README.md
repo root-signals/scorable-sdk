@@ -212,7 +212,6 @@ Class | Method | HTTP request | Description
  - [KindEnum](scorable/generated/openapi_aclient/docs/KindEnum.md)
  - [MessageLogTurn](scorable/generated/openapi_aclient/docs/MessageLogTurn.md)
  - [MessageTurnRequest](scorable/generated/openapi_aclient/docs/MessageTurnRequest.md)
- - [MessagesLog](scorable/generated/openapi_aclient/docs/MessagesLog.md)
  - [MessagesRequest](scorable/generated/openapi_aclient/docs/MessagesRequest.md)
  - [Model](scorable/generated/openapi_aclient/docs/Model.md)
  - [ModelEnum](scorable/generated/openapi_aclient/docs/ModelEnum.md)

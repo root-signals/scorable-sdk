@@ -40,7 +40,9 @@ from .generated.openapi_aclient.models.judge_execution_response import (
     JudgeExecutionResponse as AJudgeExecutionResponse,
 )
 from .generated.openapi_aclient.models.judge_list import JudgeList as AJudgeList
-from .generated.openapi_aclient.models.messages_request import MessagesRequest as AMessagesRequest
+from .generated.openapi_aclient.models.message_turn_request import (
+    MessageTurnRequest as AMessageTurnRequest,
+)
 from .generated.openapi_aclient.models.paginated_judge_list_list import (
     PaginatedJudgeListList as APaginatedJudgeListList,
 )
@@ -54,7 +56,7 @@ from .generated.openapi_client.models.judge import Judge as OpenApiJudge
 from .generated.openapi_client.models.judge_execution_request import JudgeExecutionRequest
 from .generated.openapi_client.models.judge_execution_response import JudgeExecutionResponse
 from .generated.openapi_client.models.judge_list import JudgeList
-from .generated.openapi_client.models.messages_request import MessagesRequest
+from .generated.openapi_client.models.message_turn_request import MessageTurnRequest
 from .generated.openapi_client.models.paginated_judge_list_list import PaginatedJudgeListList
 from .generated.openapi_client.models.patched_judge_request import PatchedJudgeRequest
 from .utils import ClientContextCallable, with_async_client, with_sync_client
@@ -85,7 +87,7 @@ class Judge(OpenApiJudge):
         *,
         response: Optional[str] = None,
         request: Optional[str] = None,
-        messages: Optional[MessagesRequest] = None,
+        turns: Optional[List[MessageTurnRequest]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -101,26 +103,26 @@ class Judge(OpenApiJudge):
         Args:
           response: LLM output to evaluate
           request: The prompt sent to the LLM. Optional.
+          turns: Optional multi-turn conversation as a list of turns.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
-          messages: Optional multi-turn conversation messages.
           _request_timeout: Optional timeout for the request
         """
         api_instance = JudgesApi(_client)
         execution_request = JudgeExecutionRequest(
             request=request,
             response=response,
+            turns=turns,
             contexts=contexts,
             expected_output=expected_output,
             tags=tags,
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
-            messages=messages,
         )
         return api_instance.judges_execute_create(
             judge_id=self.id,
@@ -154,7 +156,7 @@ class AJudge(AOpenApiJudge):
         *,
         response: Optional[str] = None,
         request: Optional[str] = None,
-        messages: Optional[AMessagesRequest] = None,
+        turns: Optional[List[AMessageTurnRequest]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -170,13 +172,13 @@ class AJudge(AOpenApiJudge):
         Args:
           response: LLM output to evaluate
           request: The prompt sent to the LLM. Optional.
+          turns: Optional multi-turn conversation as a list of turns.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
-          messages: Optional multi-turn conversation messages.
           _request_timeout: Optional timeout for the request
         """
         api_instance = AJudgesApi(_client)
@@ -185,11 +187,11 @@ class AJudge(AOpenApiJudge):
             expected_output=expected_output,
             request=request,
             response=response,
+            turns=turns,
             tags=tags,
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
-            messages=messages,
         )
         return await api_instance.judges_execute_create(
             judge_id=self.id,
@@ -563,8 +565,9 @@ class Judges:
         self,
         judge_id: str,
         *,
-        response: str,
+        response: Optional[str] = None,
         request: Optional[str] = None,
+        turns: Optional[List[MessageTurnRequest]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -581,6 +584,7 @@ class Judges:
           judge_id: ID of the judge to run
           response: LLM output to evaluate
           request: The prompt sent to the LLM. Optional.
+          turns: Optional multi-turn conversation as a list of turns.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
@@ -593,6 +597,7 @@ class Judges:
         execution_request = JudgeExecutionRequest(
             request=request,
             response=response,
+            turns=turns,
             contexts=contexts,
             expected_output=expected_output,
             tags=tags,
@@ -611,8 +616,9 @@ class Judges:
         self,
         judge_id: str,
         *,
-        response: str,
+        response: Optional[str] = None,
         request: Optional[str] = None,
+        turns: Optional[List[AMessageTurnRequest]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -629,6 +635,7 @@ class Judges:
           judge_id: ID of the judge to run
           response: LLM output to evaluate
           request: The prompt sent to the LLM. Optional.
+          turns: Optional multi-turn conversation as a list of turns.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
@@ -643,6 +650,7 @@ class Judges:
             expected_output=expected_output,
             request=request,
             response=response,
+            turns=turns,
             tags=tags,
             user_id=user_id,
             session_id=session_id,
@@ -659,8 +667,9 @@ class Judges:
         self,
         name: str,
         *,
-        response: str,
+        response: Optional[str] = None,
         request: Optional[str] = None,
+        turns: Optional[List[MessageTurnRequest]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -677,6 +686,7 @@ class Judges:
           name: Name of the judge to run
           response: LLM output to evaluate
           request: The prompt sent to the LLM. Optional.
+          turns: Optional multi-turn conversation as a list of turns.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
@@ -689,6 +699,7 @@ class Judges:
         execution_request = JudgeExecutionRequest(
             request=request,
             response=response,
+            turns=turns,
             contexts=contexts,
             expected_output=expected_output,
             tags=tags,
@@ -707,8 +718,9 @@ class Judges:
         self,
         name: str,
         *,
-        response: str,
+        response: Optional[str] = None,
         request: Optional[str] = None,
+        turns: Optional[List[AMessageTurnRequest]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -725,6 +737,7 @@ class Judges:
           name: Name of the judge to run
           response: LLM output to evaluate
           request: The prompt sent to the LLM. Optional.
+          turns: Optional multi-turn conversation as a list of turns.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
@@ -739,6 +752,7 @@ class Judges:
             expected_output=expected_output,
             request=request,
             response=response,
+            turns=turns,
             tags=tags,
             user_id=user_id,
             session_id=session_id,

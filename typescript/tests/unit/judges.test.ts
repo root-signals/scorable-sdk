@@ -298,57 +298,10 @@ describe('JudgesResource', () => {
       });
     });
 
-    it('should handle multi-turn messages with agent_behavior target', async () => {
-      const judgeId = 'judge-123';
-      const messages = {
-        target: 'agent_behavior' as const,
-        turns: [
-          { role: 'user' as const, content: 'My product is defective' },
-          { role: 'assistant' as const, content: 'I apologize for the inconvenience.' },
-        ],
-      };
-
-      mockClient.setMockResponse('POST', '/v1/judges/{judge_id}/execute/', {
-        data: mockResponses.judges.execution,
-        error: undefined,
-      });
-
-      await client.judges.execute(judgeId, { messages });
-
-      expect(mockClient.POST).toHaveBeenCalledWith('/v1/judges/{judge_id}/execute/', {
-        params: { path: { judge_id: judgeId } },
-        body: { messages },
-      });
-    });
-
-    it('should handle multi-turn messages with user_behavior target', async () => {
-      const judgeId = 'judge-123';
-      const messages = {
-        target: 'user_behavior' as const,
-        turns: [
-          { role: 'user' as const, content: 'User message 1' },
-          { role: 'assistant' as const, content: 'Response 1' },
-          { role: 'user' as const, content: 'User message 2' },
-        ],
-      };
-
-      mockClient.setMockResponse('POST', '/v1/judges/{judge_id}/execute/', {
-        data: mockResponses.judges.execution,
-        error: undefined,
-      });
-
-      await client.judges.execute(judgeId, { messages });
-
-      expect(mockClient.POST).toHaveBeenCalledWith('/v1/judges/{judge_id}/execute/', {
-        params: { path: { judge_id: judgeId } },
-        body: { messages },
-      });
-    });
-
     it('should handle multi-turn messages with contexts and metadata', async () => {
       const judgeId = 'judge-123';
       const executionData = {
-        messages: TestDataFactory.getTestMultiTurnMessages(),
+        turns: TestDataFactory.getTestMultiTurnMessages(),
         contexts: ['Company policy documents'],
         user_id: 'user-456',
         session_id: 'session-789',

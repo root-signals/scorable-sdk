@@ -21,7 +21,7 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Annotated, Self
 
-from scorable.generated.openapi_client.models.messages_request import MessagesRequest
+from scorable.generated.openapi_client.models.message_turn_request import MessageTurnRequest
 
 
 class JudgeExecutionRequest(BaseModel):
@@ -29,9 +29,9 @@ class JudgeExecutionRequest(BaseModel):
     JudgeExecutionRequest
     """  # noqa: E501
 
-    messages: Optional[MessagesRequest] = None
-    request: Optional[StrictStr] = ""
-    response: Optional[StrictStr] = ""
+    turns: Optional[List[MessageTurnRequest]] = None
+    request: Optional[StrictStr] = None
+    response: Optional[StrictStr] = None
     contexts: Optional[List[Annotated[str, Field(min_length=1, strict=True)]]] = None
     expected_output: Optional[Annotated[str, Field(strict=True, max_length=3500000)]] = None
     tags: Optional[List[Annotated[str, Field(min_length=1, strict=True, max_length=1000)]]] = None
@@ -40,7 +40,7 @@ class JudgeExecutionRequest(BaseModel):
     system_prompt: Optional[Annotated[str, Field(strict=True, max_length=3500000)]] = None
     judge_version_id: Optional[StrictStr] = None
     __properties: ClassVar[List[str]] = [
-        "messages",
+        "turns",
         "request",
         "response",
         "contexts",
@@ -89,13 +89,27 @@ class JudgeExecutionRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of messages
-        if self.messages:
-            _dict["messages"] = self.messages.to_dict()
-        # set to None if messages (nullable) is None
+        # override the default output from pydantic by calling `to_dict()` of each item in turns (list)
+        _items = []
+        if self.turns:
+            for _item in self.turns:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict["turns"] = _items
+        # set to None if turns (nullable) is None
         # and model_fields_set contains the field
-        if self.messages is None and "messages" in self.model_fields_set:
-            _dict["messages"] = None
+        if self.turns is None and "turns" in self.model_fields_set:
+            _dict["turns"] = None
+
+        # set to None if request (nullable) is None
+        # and model_fields_set contains the field
+        if self.request is None and "request" in self.model_fields_set:
+            _dict["request"] = None
+
+        # set to None if response (nullable) is None
+        # and model_fields_set contains the field
+        if self.response is None and "response" in self.model_fields_set:
+            _dict["response"] = None
 
         # set to None if expected_output (nullable) is None
         # and model_fields_set contains the field
@@ -135,9 +149,11 @@ class JudgeExecutionRequest(BaseModel):
 
         _obj = cls.model_validate(
             {
-                "messages": MessagesRequest.from_dict(obj["messages"]) if obj.get("messages") is not None else None,
-                "request": obj.get("request") if obj.get("request") is not None else "",
-                "response": obj.get("response") if obj.get("response") is not None else "",
+                "turns": [MessageTurnRequest.from_dict(_item) for _item in obj["turns"]]
+                if obj.get("turns") is not None
+                else None,
+                "request": obj.get("request"),
+                "response": obj.get("response"),
                 "contexts": obj.get("contexts"),
                 "expected_output": obj.get("expected_output"),
                 "tags": obj.get("tags"),

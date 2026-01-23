@@ -27,7 +27,7 @@ from scorable.generated.openapi_client.models.target_enum import TargetEnum
 
 class MessagesRequest(BaseModel):
     """
-    Serializer for multi-turn messages.
+    Serializer for multi-turn messages.  DEPRECATED: This serializer is deprecated and will be removed in Fall 2026. Use the `turns` field directly on EvaluatorExecutionSerializerBase instead. Both formats are currently supported for backwards compatibility.
     """  # noqa: E501
 
     turns: List[MessageTurnRequest]
