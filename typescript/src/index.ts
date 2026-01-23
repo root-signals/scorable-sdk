@@ -57,7 +57,6 @@ export type {
 export { DatasetsResource } from './resources/datasets.js';
 
 // Multi-turn conversation types
-export type Messages = components['schemas']['MessagesRequest'];
 export type Turn = components['schemas']['MessageTurnRequest'];
 export type Target = components['schemas']['TargetEnum'];
 export type Role = components['schemas']['RoleEnum'];

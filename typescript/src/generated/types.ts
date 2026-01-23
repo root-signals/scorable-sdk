@@ -1092,11 +1092,9 @@ export interface components {
       justification?: string | null;
     };
     EvaluatorExecutionRequest: {
-      messages?: components['schemas']['MessagesRequest'] | null;
-      /** @default  */
-      request?: string;
-      /** @default  */
-      response?: string;
+      turns?: components['schemas']['MessageTurnRequest'][] | null;
+      request?: string | null;
+      response?: string | null;
       contexts?: string[];
       expected_output?: string | null;
       tags?: string[];
@@ -1221,9 +1219,9 @@ export interface components {
     };
     ExecutionLogDetails: {
       readonly chat_id: string | null;
-      readonly messages: components['schemas']['MessagesLog'] | null;
       /** Format: double */
       readonly cost: number | null;
+      readonly turns: components['schemas']['MessageLogTurn'][] | null;
       /** Format: date-time */
       readonly created_at: string | null;
       readonly evaluation_context: {
@@ -1417,10 +1415,9 @@ export interface components {
     };
     JudgeBatchExecutionInputRequest: {
       messages?: components['schemas']['MessagesRequest'] | null;
-      /** @default  */
-      request: string;
-      /** @default  */
-      response: string;
+      turns?: components['schemas']['MessageTurnRequest'][] | null;
+      request?: string | null;
+      response?: string | null;
       contexts?: string[];
       expected_output?: string | null;
       evaluator_version_id?: string | null;
@@ -1486,11 +1483,9 @@ export interface components {
       status_url: string;
     };
     JudgeExecutionRequest: {
-      messages?: components['schemas']['MessagesRequest'] | null;
-      /** @default  */
-      request: string;
-      /** @default  */
-      response: string;
+      turns?: components['schemas']['MessageTurnRequest'][] | null;
+      request?: string | null;
+      response?: string | null;
       contexts?: string[];
       expected_output?: string | null;
       tags?: string[];
@@ -1592,11 +1587,9 @@ export interface components {
       };
     };
     JudgeRectifierRequestRequest: {
-      messages?: components['schemas']['MessagesRequest'] | null;
-      /** @default  */
-      request: string;
-      /** @default  */
-      response: string;
+      turns?: components['schemas']['MessageTurnRequest'][] | null;
+      request?: string | null;
+      response?: string | null;
       contexts?: string[];
       expected_output?: string | null;
       tags?: string[];
@@ -1663,10 +1656,8 @@ export interface components {
       content: string;
       /** @description RAG contexts (only for assistant turns) */
       contexts?: string[];
-      /** @description Tool name (only for assistant turns) */
-      tool_name?: string;
-      /** @description Turn-specific justification of the evaluation */
-      evaluation_justification?: string;
+      tool_name?: string | null;
+      evaluation_justification?: string | null;
     };
     MessageTurnRequest: {
       role: components['schemas']['RoleEnum'];
@@ -1674,11 +1665,13 @@ export interface components {
       contexts?: string[] | null;
       tool_name?: string | null;
     };
-    MessagesLog: {
-      turns: components['schemas']['MessageLogTurn'][];
-      target: string;
-    };
-    /** @description Serializer for multi-turn messages. */
+    /**
+     * @description Serializer for multi-turn messages.
+     *
+     *     DEPRECATED: This serializer is deprecated and will be removed in Fall 2026.
+     *     Use the `turns` field directly on EvaluatorExecutionSerializerBase instead.
+     *     Both formats are currently supported for backwards compatibility.
+     */
     MessagesRequest: {
       turns: components['schemas']['MessageTurnRequest'][];
       /** @default agent_behavior */
