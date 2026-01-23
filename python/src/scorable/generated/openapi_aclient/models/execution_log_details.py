@@ -28,7 +28,7 @@ from scorable.generated.openapi_aclient.models.execution_log_details_evaluation_
 from scorable.generated.openapi_aclient.models.execution_log_details_evaluator_latencies_inner import (
     ExecutionLogDetailsEvaluatorLatenciesInner,
 )
-from scorable.generated.openapi_aclient.models.messages_log import MessagesLog
+from scorable.generated.openapi_aclient.models.message_log_turn import MessageLogTurn
 from scorable.generated.openapi_aclient.models.model_params import ModelParams
 from scorable.generated.openapi_aclient.models.nested_user_details import NestedUserDetails
 from scorable.generated.openapi_aclient.models.skill_execution_validator_result import SkillExecutionValidatorResult
@@ -40,8 +40,8 @@ class ExecutionLogDetails(BaseModel):
     """  # noqa: E501
 
     chat_id: Optional[StrictStr]
-    messages: Optional[MessagesLog]
     cost: Optional[Union[StrictFloat, StrictInt]]
+    turns: Optional[List[MessageLogTurn]]
     created_at: Optional[datetime]
     evaluation_context: ExecutionLogDetailsEvaluationContext
     evaluator_latencies: Optional[List[ExecutionLogDetailsEvaluatorLatenciesInner]]
@@ -68,8 +68,8 @@ class ExecutionLogDetails(BaseModel):
     variables: Optional[Dict[str, StrictStr]]
     __properties: ClassVar[List[str]] = [
         "chat_id",
-        "messages",
         "cost",
+        "turns",
         "created_at",
         "evaluation_context",
         "evaluator_latencies",
@@ -152,8 +152,8 @@ class ExecutionLogDetails(BaseModel):
         excluded_fields: Set[str] = set(
             [
                 "chat_id",
-                "messages",
                 "cost",
+                "turns",
                 "created_at",
                 "evaluator_latencies",
                 "executed_item_id",
@@ -182,9 +182,13 @@ class ExecutionLogDetails(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of messages
-        if self.messages:
-            _dict["messages"] = self.messages.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in turns (list)
+        _items = []
+        if self.turns:
+            for _item in self.turns:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict["turns"] = _items
         # override the default output from pydantic by calling `to_dict()` of evaluation_context
         if self.evaluation_context:
             _dict["evaluation_context"] = self.evaluation_context.to_dict()
@@ -213,15 +217,15 @@ class ExecutionLogDetails(BaseModel):
         if self.chat_id is None and "chat_id" in self.model_fields_set:
             _dict["chat_id"] = None
 
-        # set to None if messages (nullable) is None
-        # and model_fields_set contains the field
-        if self.messages is None and "messages" in self.model_fields_set:
-            _dict["messages"] = None
-
         # set to None if cost (nullable) is None
         # and model_fields_set contains the field
         if self.cost is None and "cost" in self.model_fields_set:
             _dict["cost"] = None
+
+        # set to None if turns (nullable) is None
+        # and model_fields_set contains the field
+        if self.turns is None and "turns" in self.model_fields_set:
+            _dict["turns"] = None
 
         # set to None if created_at (nullable) is None
         # and model_fields_set contains the field
@@ -277,8 +281,10 @@ class ExecutionLogDetails(BaseModel):
         _obj = cls.model_validate(
             {
                 "chat_id": obj.get("chat_id"),
-                "messages": MessagesLog.from_dict(obj["messages"]) if obj.get("messages") is not None else None,
                 "cost": obj.get("cost"),
+                "turns": [MessageLogTurn.from_dict(_item) for _item in obj["turns"]]
+                if obj.get("turns") is not None
+                else None,
                 "created_at": obj.get("created_at"),
                 "evaluation_context": ExecutionLogDetailsEvaluationContext.from_dict(obj["evaluation_context"])
                 if obj.get("evaluation_context") is not None

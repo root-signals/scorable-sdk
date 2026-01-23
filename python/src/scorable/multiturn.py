@@ -1,7 +1,13 @@
 """Multi-turn conversation support for Scorable evaluators and judges."""
 
-from .generated.openapi_client.models.message_turn_request import MessageTurnRequest as Turn
-from .generated.openapi_client.models.messages_request import MessagesRequest as Messages
-from .generated.openapi_client.models.target_enum import TargetEnum as Target
+from typing import List
 
-__all__ = ["Messages", "Turn", "Target"]
+from .generated.openapi_client.models.message_turn_request import MessageTurnRequest as Turn
+
+# Type alias for multi-turn conversations (just a list of turns)
+Turns = List[Turn]
+
+__all__ = [
+    "Turn",
+    "Turns",
+]

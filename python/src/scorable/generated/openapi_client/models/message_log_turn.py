@@ -19,7 +19,7 @@ import re  # noqa: F401
 from typing import Any, ClassVar, Dict, List, Optional, Set
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing_extensions import Annotated, Self
+from typing_extensions import Self
 
 from scorable.generated.openapi_client.models.role_enum import RoleEnum
 
@@ -32,12 +32,8 @@ class MessageLogTurn(BaseModel):
     role: RoleEnum
     content: StrictStr
     contexts: Optional[List[StrictStr]] = Field(default=None, description="RAG contexts (only for assistant turns)")
-    tool_name: Optional[Annotated[str, Field(strict=True, max_length=4096)]] = Field(
-        default=None, description="Tool name (only for assistant turns)"
-    )
-    evaluation_justification: Optional[StrictStr] = Field(
-        default=None, description="Turn-specific justification of the evaluation"
-    )
+    tool_name: Optional[StrictStr] = None
+    evaluation_justification: Optional[StrictStr] = None
     __properties: ClassVar[List[str]] = ["role", "content", "contexts", "tool_name", "evaluation_justification"]
 
     model_config = ConfigDict(
@@ -77,6 +73,16 @@ class MessageLogTurn(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # set to None if tool_name (nullable) is None
+        # and model_fields_set contains the field
+        if self.tool_name is None and "tool_name" in self.model_fields_set:
+            _dict["tool_name"] = None
+
+        # set to None if evaluation_justification (nullable) is None
+        # and model_fields_set contains the field
+        if self.evaluation_justification is None and "evaluation_justification" in self.model_fields_set:
+            _dict["evaluation_justification"] = None
+
         return _dict
 
     @classmethod

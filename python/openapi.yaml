@@ -994,21 +994,21 @@ paths:
                 summary: Execute a RAG evaluator (for example, Answer Correctness)
               ExecuteAMulti-turnEvaluator:
                 value:
-                  messages:
-                    target: agent_behavior
-                    turns:
-                    - role: user
-                      content: Hello, I need help with my order
-                    - role: assistant
-                      content: I'd be happy to help! What's your order number?
-                    - role: user
-                      content: It's ORDER-12345
-                    - role: assistant
-                      content: '{''order_number'': ''ORDER-12345'', ''status'': ''shipped'',
-                        ''eta'': ''Jan 20''}'
-                      tool_name: order_lookup
-                    - role: assistant
-                      content: I found your order. It's currently in transit.
+                  turns:
+                  - role: user
+                    content: Hello, I need help with my order
+                  - role: assistant
+                    content: I'd be happy to help! What's your order number?
+                  - role: user
+                    content: It's ORDER-12345
+                  - role: assistant
+                    content: '{''order_number'': ''ORDER-12345'', ''status'': ''shipped'',
+                      ''eta'': ''Jan 20''}'
+                    tool_name: order_lookup
+                  - role: assistant
+                    content: I found your order. It's currently in transit.
+                    contexts:
+                    - 'Order #12345: Status=shipped, ETA=Jan 20'
                 summary: Execute a multi-turn evaluator
           application/x-www-form-urlencoded:
             schema:
@@ -1027,21 +1027,21 @@ paths:
               examples:
                 ExecuteAMulti-turnEvaluator:
                   value:
-                    messages:
-                      target: agent_behavior
-                      turns:
-                      - role: user
-                        content: Hello, I need help with my order
-                      - role: assistant
-                        content: I'd be happy to help! What's your order number?
-                      - role: user
-                        content: It's ORDER-12345
-                      - role: assistant
-                        content: '{''order_number'': ''ORDER-12345'', ''status'':
-                          ''shipped'', ''eta'': ''Jan 20''}'
-                        tool_name: order_lookup
-                      - role: assistant
-                        content: I found your order. It's currently in transit.
+                    turns:
+                    - role: user
+                      content: Hello, I need help with my order
+                    - role: assistant
+                      content: I'd be happy to help! What's your order number?
+                    - role: user
+                      content: It's ORDER-12345
+                    - role: assistant
+                      content: '{''order_number'': ''ORDER-12345'', ''status'': ''shipped'',
+                        ''eta'': ''Jan 20''}'
+                      tool_name: order_lookup
+                    - role: assistant
+                      content: I found your order. It's currently in transit.
+                      contexts:
+                      - 'Order #12345: Status=shipped, ETA=Jan 20'
                   summary: Execute a multi-turn evaluator
           description: ''
   /v1/evaluators/execute/by-name/:
@@ -1630,23 +1630,21 @@ paths:
                   help the LLM answer the question.
               ExampleWithMulti-turnContent:
                 value:
-                  messages:
-                    target: agent_behavior
-                    turns:
-                    - role: user
-                      content: Hello, I need help with my order
-                    - role: assistant
-                      content: I'd be happy to help! What's your order number?
-                    - role: user
-                      content: It's ORDER-12345
-                    - role: assistant
-                      content: '{''order_number'': ''ORDER-12345'', ''status'': ''shipped'',
-                        ''eta'': ''Jan 20''}'
-                      tool_name: order_lookup
-                    - role: assistant
-                      content: I found your order. It's currently in transit.
-                      contexts:
-                      - 'Order #12345: Status=shipped, ETA=Jan 20'
+                  turns:
+                  - role: user
+                    content: Hello, I need help with my order
+                  - role: assistant
+                    content: I'd be happy to help! What's your order number?
+                  - role: user
+                    content: It's ORDER-12345
+                  - role: assistant
+                    content: '{''order_number'': ''ORDER-12345'', ''status'': ''shipped'',
+                      ''eta'': ''Jan 20''}'
+                    tool_name: order_lookup
+                  - role: assistant
+                    content: I found your order. It's currently in transit.
+                    contexts:
+                    - 'Order #12345: Status=shipped, ETA=Jan 20'
                 summary: Example with multi-turn content
           application/x-www-form-urlencoded:
             schema:
@@ -1665,23 +1663,21 @@ paths:
               examples:
                 ExampleWithMulti-turnContent:
                   value:
-                    messages:
-                      target: agent_behavior
-                      turns:
-                      - role: user
-                        content: Hello, I need help with my order
-                      - role: assistant
-                        content: I'd be happy to help! What's your order number?
-                      - role: user
-                        content: It's ORDER-12345
-                      - role: assistant
-                        content: '{''order_number'': ''ORDER-12345'', ''status'':
-                          ''shipped'', ''eta'': ''Jan 20''}'
-                        tool_name: order_lookup
-                      - role: assistant
-                        content: I found your order. It's currently in transit.
-                        contexts:
-                        - 'Order #12345: Status=shipped, ETA=Jan 20'
+                    turns:
+                    - role: user
+                      content: Hello, I need help with my order
+                    - role: assistant
+                      content: I'd be happy to help! What's your order number?
+                    - role: user
+                      content: It's ORDER-12345
+                    - role: assistant
+                      content: '{''order_number'': ''ORDER-12345'', ''status'': ''shipped'',
+                        ''eta'': ''Jan 20''}'
+                      tool_name: order_lookup
+                    - role: assistant
+                      content: I found your order. It's currently in transit.
+                      contexts:
+                      - 'Order #12345: Status=shipped, ETA=Jan 20'
                   summary: Example with multi-turn content
           description: ''
   /v1/judges/{judge_id}/openai/chat/completions:
@@ -3326,16 +3322,17 @@ components:
     EvaluatorExecutionRequest:
       type: object
       properties:
-        messages:
-          allOf:
-          - $ref: '#/components/schemas/MessagesRequest'
+        turns:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageTurnRequest'
           nullable: true
         request:
           type: string
-          default: ''
+          nullable: true
         response:
           type: string
-          default: ''
+          nullable: true
         contexts:
           type: array
           items:
@@ -3622,14 +3619,15 @@ components:
           type: string
           readOnly: true
           nullable: true
-        messages:
-          allOf:
-          - $ref: '#/components/schemas/MessagesLog'
-          readOnly: true
-          nullable: true
         cost:
           type: number
           format: double
+          readOnly: true
+          nullable: true
+        turns:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageLogTurn'
           readOnly: true
           nullable: true
         created_at:
@@ -3752,7 +3750,6 @@ components:
       - id
       - justification
       - llm_output
-      - messages
       - model
       - model_call_duration
       - owner
@@ -3762,6 +3759,7 @@ components:
       - session_id
       - system_prompt
       - tags
+      - turns
       - user_id
       - variables
     ExecutionLogList:
@@ -4148,12 +4146,17 @@ components:
           allOf:
           - $ref: '#/components/schemas/MessagesRequest'
           nullable: true
+        turns:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageTurnRequest'
+          nullable: true
         request:
           type: string
-          default: ''
+          nullable: true
         response:
           type: string
-          default: ''
+          nullable: true
         contexts:
           type: array
           items:
@@ -4334,16 +4337,17 @@ components:
     JudgeExecutionRequest:
       type: object
       properties:
-        messages:
-          allOf:
-          - $ref: '#/components/schemas/MessagesRequest'
+        turns:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageTurnRequest'
           nullable: true
         request:
           type: string
-          default: ''
+          nullable: true
         response:
           type: string
-          default: ''
+          nullable: true
         contexts:
           type: array
           items:
@@ -4560,16 +4564,17 @@ components:
     JudgeRectifierRequestRequest:
       type: object
       properties:
-        messages:
-          allOf:
-          - $ref: '#/components/schemas/MessagesRequest'
+        turns:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageTurnRequest'
           nullable: true
         request:
           type: string
-          default: ''
+          nullable: true
         response:
           type: string
-          default: ''
+          nullable: true
         contexts:
           type: array
           items:
@@ -4697,11 +4702,10 @@ components:
           description: RAG contexts (only for assistant turns)
         tool_name:
           type: string
-          description: Tool name (only for assistant turns)
-          maxLength: 4096
+          nullable: true
         evaluation_justification:
           type: string
-          description: Turn-specific justification of the evaluation
+          nullable: true
       required:
       - content
       - role
@@ -4725,21 +4729,14 @@ components:
       required:
       - content
       - role
-    MessagesLog:
-      type: object
-      properties:
-        turns:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageLogTurn'
-        target:
-          type: string
-      required:
-      - target
-      - turns
     MessagesRequest:
       type: object
-      description: Serializer for multi-turn messages.
+      description: |-
+        Serializer for multi-turn messages.
+
+        DEPRECATED: This serializer is deprecated and will be removed in Fall 2026.
+        Use the `turns` field directly on EvaluatorExecutionSerializerBase instead.
+        Both formats are currently supported for backwards compatibility.
       properties:
         turns:
           type: array
