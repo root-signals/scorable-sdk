@@ -1,3 +1,7 @@
+## 0.2.1
+
+- Simplify multi-turn api
+
 ## 0.2.0
 
 - Add multi-turn conversation evaluation support
