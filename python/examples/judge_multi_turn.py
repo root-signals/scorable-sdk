@@ -22,7 +22,7 @@ turns = [
 ]
 
 evaluator_references = [
-    EvaluatorReferenceRequest(id=Evaluators.Eval.Truthfulness.value),
+    EvaluatorReferenceRequest(id=Evaluators.Eval.Planning_Efficiency.value),
     EvaluatorReferenceRequest(id=Evaluators.Eval.Relevance.value),
 ]
 
