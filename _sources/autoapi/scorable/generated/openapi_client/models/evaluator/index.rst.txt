@@ -83,7 +83,7 @@ Module Contents
 
 
    .. py:attribute:: name
-      :type:  typing_extensions.Annotated[str, Field(min_length=2, strict=True, max_length=1000)]
+      :type:  Annotated[str, Field(min_length=2, strict=True, max_length=1000)]
 
 
    .. py:attribute:: objective
@@ -95,7 +95,7 @@ Module Contents
 
 
    .. py:attribute:: prompt
-      :type:  typing_extensions.Annotated[str, Field(strict=True, max_length=500000)]
+      :type:  Annotated[str, Field(strict=True, max_length=500000)]
 
 
    .. py:attribute:: reference_variables

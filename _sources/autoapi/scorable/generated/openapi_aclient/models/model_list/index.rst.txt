@@ -43,7 +43,7 @@ Module Contents
 
 
    .. py:attribute:: name
-      :type:  typing_extensions.Annotated[str, Field(strict=True, max_length=100)]
+      :type:  Annotated[str, Field(strict=True, max_length=100)]
 
 
    .. py:attribute:: owner

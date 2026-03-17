@@ -43,7 +43,7 @@ Module Contents
 
 
    .. py:attribute:: name
-      :type:  Optional[typing_extensions.Annotated[str, Field(strict=True, max_length=1000)]]
+      :type:  Optional[Annotated[str, Field(strict=True, max_length=1000)]]
       :value: None
 
 

@@ -40,7 +40,7 @@ Module Contents
 
 
    .. py:attribute:: intent
-      :type:  Optional[typing_extensions.Annotated[str, Field(strict=True, max_length=100000)]]
+      :type:  Optional[Annotated[str, Field(strict=True, max_length=100000)]]
       :value: None
 
 

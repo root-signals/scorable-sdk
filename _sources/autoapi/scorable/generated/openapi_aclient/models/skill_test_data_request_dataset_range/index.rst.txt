@@ -36,13 +36,13 @@ Module Contents
 
 
    .. py:attribute:: end
-      :type:  Optional[typing_extensions.Annotated[int, Field(strict=True, ge=0)]]
+      :type:  Optional[Annotated[int, Field(strict=True, ge=0)]]
 
 
    .. py:attribute:: model_config
 
 
    .. py:attribute:: start
-      :type:  Optional[typing_extensions.Annotated[int, Field(strict=True, ge=0)]]
+      :type:  Optional[Annotated[int, Field(strict=True, ge=0)]]
 
 

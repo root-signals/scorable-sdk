@@ -40,13 +40,13 @@ Module Contents
 
 
    .. py:attribute:: max_output_token_count
-      :type:  Optional[typing_extensions.Annotated[int, Field(strict=True, ge=800)]]
+      :type:  Optional[Annotated[int, Field(strict=True, ge=800)]]
       :value: None
 
 
 
    .. py:attribute:: max_token_count
-      :type:  Optional[typing_extensions.Annotated[int, Field(le=2147483647, strict=True, ge=0)]]
+      :type:  Optional[Annotated[int, Field(le=2147483647, strict=True, ge=0)]]
       :value: None
 
 
@@ -61,11 +61,11 @@ Module Contents
 
 
    .. py:attribute:: name
-      :type:  typing_extensions.Annotated[str, Field(strict=True, max_length=100)]
+      :type:  Annotated[str, Field(strict=True, max_length=100)]
 
 
    .. py:attribute:: url
-      :type:  Optional[typing_extensions.Annotated[str, Field(strict=True, max_length=1024)]]
+      :type:  Optional[Annotated[str, Field(strict=True, max_length=1024)]]
       :value: None
 
 

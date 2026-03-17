@@ -85,11 +85,11 @@ Module Contents
 
 
    .. py:attribute:: request_preview
-      :type:  typing_extensions.Annotated[str, Field(strict=True, max_length=500)]
+      :type:  Annotated[str, Field(strict=True, max_length=500)]
 
 
    .. py:attribute:: response_preview
-      :type:  typing_extensions.Annotated[str, Field(strict=True, max_length=500)]
+      :type:  Annotated[str, Field(strict=True, max_length=500)]
 
 
    .. py:attribute:: score

@@ -57,6 +57,6 @@ Module Contents
 
 
    .. py:attribute:: score
-      :type:  Union[typing_extensions.Annotated[float, Field(le=1, strict=True, ge=0)], typing_extensions.Annotated[int, Field(le=1, strict=True, ge=0)]]
+      :type:  Union[Annotated[float, Field(le=1, strict=True, ge=0)], Annotated[int, Field(le=1, strict=True, ge=0)]]
 
 

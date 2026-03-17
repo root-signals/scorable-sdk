@@ -51,7 +51,7 @@ Module Contents
 
 
    .. py:attribute:: name
-      :type:  typing_extensions.Annotated[str, Field(strict=True, max_length=1000)]
+      :type:  Annotated[str, Field(strict=True, max_length=1000)]
 
 
    .. py:attribute:: skill

@@ -63,7 +63,7 @@ Module Contents
 
 
    .. py:attribute:: name
-      :type:  typing_extensions.Annotated[str, Field(min_length=3, strict=True, max_length=512)]
+      :type:  Annotated[str, Field(min_length=3, strict=True, max_length=512)]
 
 
    .. py:attribute:: objective
@@ -71,7 +71,7 @@ Module Contents
 
 
    .. py:attribute:: stage
-      :type:  Optional[typing_extensions.Annotated[str, Field(strict=True, max_length=255)]]
+      :type:  Optional[Annotated[str, Field(strict=True, max_length=255)]]
       :value: None
 
 

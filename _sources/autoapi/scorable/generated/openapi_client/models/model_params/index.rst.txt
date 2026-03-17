@@ -39,7 +39,7 @@ Module Contents
 
 
    .. py:attribute:: temperature
-      :type:  Optional[Union[typing_extensions.Annotated[float, Field(le=1, strict=True, ge=0)], typing_extensions.Annotated[int, Field(le=1, strict=True, ge=0)]]]
+      :type:  Optional[Union[Annotated[float, Field(le=1, strict=True, ge=0)], Annotated[int, Field(le=1, strict=True, ge=0)]]]
       :value: None
 
 
