@@ -2,7 +2,7 @@ import { Command } from "commander";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printInfo, printSuccess, printError, printJson } from "../../output.js";
 import { CliError } from "../../types.js";
-import type { JudgeExecutionPayload } from "@root-signals/scorable";
+import type { ExecutionPayload } from "@root-signals/scorable";
 
 async function readStdinDefault(): Promise<string> {
   const chunks: Buffer[] = [];
@@ -10,8 +10,8 @@ async function readStdinDefault(): Promise<string> {
   return Buffer.concat(chunks).toString().trim();
 }
 
-export async function executeJudge(
-  judgeId: string,
+export async function executeEvaluator(
+  evaluatorId: string,
   opts: {
     request?: string;
     response?: string;
@@ -22,6 +22,7 @@ export async function executeJudge(
     userId?: string;
     sessionId?: string;
     systemPrompt?: string;
+    variables?: string;
   },
   readStdin = readStdinDefault,
 ): Promise<void> {
@@ -64,19 +65,31 @@ export async function executeJudge(
     }
   }
 
-  printInfo(`Attempting to execute judge ${judgeId} with payload:`);
+  if (opts.variables) {
+    try {
+      payload["variables"] = JSON.parse(opts.variables) as Record<string, unknown>;
+    } catch {
+      printError("Invalid JSON for --variables.");
+      return;
+    }
+  }
+
+  printInfo(`Attempting to execute evaluator ${evaluatorId} with payload:`);
   printJson(payload);
 
   const client = getSdkClient(apiKey);
-  const result = await client.judges.execute(judgeId, payload as unknown as JudgeExecutionPayload);
-  printSuccess("Judge execution successful!");
+  const result = await client.evaluators.execute(
+    evaluatorId,
+    payload as unknown as ExecutionPayload,
+  );
+  printSuccess("Evaluator execution successful!");
   printJson(result);
 }
 
-export function registerExecuteCommand(judge: Command): void {
-  judge
-    .command("execute <judgeId>")
-    .description("Execute a judge with interaction details")
+export function registerExecuteCommand(evaluator: Command): void {
+  evaluator
+    .command("execute <evaluatorId>")
+    .description("Execute an evaluator with interaction details")
     .option("--request <text>", "Request text")
     .option("--response <text>", "Response text to evaluate")
     .option("--contexts <json>", "JSON list of context strings. E.g., '[\"ctx1\"]'")
@@ -94,9 +107,13 @@ export function registerExecuteCommand(judge: Command): void {
       "--turns <json>",
       'JSON array of conversation turns. E.g., \'[{"role":"user","content":"Hello"}]\'',
     )
-    .action(async (judgeId: string, opts: Record<string, unknown>) => {
+    .option(
+      "--variables <json>",
+      'JSON object of extra template variables. E.g., \'{"lang":"EN"}\'',
+    )
+    .action(async (evaluatorId: string, opts: Record<string, unknown>) => {
       try {
-        await executeJudge(judgeId, opts as Parameters<typeof executeJudge>[1]);
+        await executeEvaluator(evaluatorId, opts as Parameters<typeof executeEvaluator>[1]);
       } catch (e) {
         if (e instanceof CliError) throw e;
         printError(e instanceof Error ? e.message : String(e));

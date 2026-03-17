@@ -1,0 +1,88 @@
+import { Command } from "commander";
+import { requireApiKey, getSdkClient } from "../../auth.js";
+import { printInfo, printSuccess, printError, printJson } from "../../output.js";
+import { CliError } from "../../types.js";
+import type { EvaluatorCreateParams } from "@root-signals/scorable";
+
+export function registerCreateCommand(evaluator: Command): void {
+  evaluator
+    .command("create")
+    .description("Create a new evaluator")
+    .requiredOption("--name <name>", "The name for the new evaluator")
+    .requiredOption(
+      "--scoring-criteria <text>",
+      "The scoring criteria prompt. Must contain {{ request }} and/or {{ response }} as placeholders.",
+    )
+    .option(
+      "--intent <intent>",
+      "The intent for the evaluator (mutually exclusive with --objective-id)",
+    )
+    .option("--objective-id <id>", "Objective ID (mutually exclusive with --intent)")
+    .option("--system-message <text>", "System message for the evaluator")
+    .option("--models <json>", "JSON array of model names. E.g., '[\"gpt-4\"]'")
+    .option("--overwrite", "Overwrite if evaluator with same name exists")
+    .option("--objective-version-id <id>", "Objective version ID")
+    .action(
+      async (opts: {
+        name: string;
+        scoringCriteria: string;
+        intent?: string;
+        objectiveId?: string;
+        systemMessage?: string;
+        models?: string;
+        overwrite?: boolean;
+        objectiveVersionId?: string;
+      }) => {
+        if (!opts.intent && !opts.objectiveId) {
+          printError("Either --intent or --objective-id is required.");
+          return;
+        }
+
+        if (
+          !/\{\{\s*request\s*\}\}/.test(opts.scoringCriteria) &&
+          !/\{\{\s*response\s*\}\}/.test(opts.scoringCriteria)
+        ) {
+          printError(
+            "The --scoring-criteria must contain at least one of {{ request }} or {{ response }} as a placeholder.\n" +
+              'Example: "Does the {{ response }} directly answer the user\'s question?"',
+          );
+          return;
+        }
+
+        const payload: EvaluatorCreateParams = {
+          name: opts.name,
+          predicate: opts.scoringCriteria,
+        };
+
+        if (opts.intent) payload.intent = opts.intent;
+        if (opts.objectiveId) payload.objective_id = opts.objectiveId;
+        if (opts.systemMessage) payload.system_message = opts.systemMessage;
+        if (opts.overwrite !== undefined) payload.overwrite = opts.overwrite;
+        if (opts.objectiveVersionId) payload.objective_version_id = opts.objectiveVersionId;
+
+        if (opts.models) {
+          try {
+            payload.models = JSON.parse(opts.models) as string[];
+          } catch {
+            printError("Invalid JSON format for --models.");
+            return;
+          }
+        }
+
+        printInfo("Attempting to create evaluator with payload:");
+        printJson(payload);
+
+        try {
+          const apiKey = await requireApiKey();
+          const client = getSdkClient(apiKey);
+          const result = await client.evaluators.create(payload);
+          printSuccess("Evaluator created successfully!");
+          printJson(result);
+        } catch (e) {
+          if (e instanceof CliError) throw e;
+          printError(e instanceof Error ? e.message : String(e));
+          return;
+        }
+      },
+    );
+}

@@ -15,6 +15,7 @@ export async function executeJudgeByName(
   opts: {
     request?: string;
     response?: string;
+    turns?: string;
     contexts?: string;
     expectedOutput?: string;
     tag?: string[];
@@ -27,12 +28,12 @@ export async function executeJudgeByName(
   const apiKey = await requireApiKey();
 
   let response = opts.response;
-  if (!opts.request && !response && !process.stdin.isTTY) {
+  if (!opts.request && !response && !opts.turns && !process.stdin.isTTY) {
     response = await readStdin();
   }
 
-  if (!opts.request && !response) {
-    printError("Either --request or --response must be provided.");
+  if (!opts.request && !response && !opts.turns) {
+    printError("Either --request, --response, or --turns must be provided.");
     return;
   }
 
@@ -44,6 +45,15 @@ export async function executeJudgeByName(
   if (opts.userId) payload["user_id"] = opts.userId;
   if (opts.sessionId) payload["session_id"] = opts.sessionId;
   if (opts.systemPrompt) payload["system_prompt"] = opts.systemPrompt;
+
+  if (opts.turns) {
+    try {
+      payload["turns"] = JSON.parse(opts.turns) as unknown[];
+    } catch {
+      printError("Invalid JSON for --turns.");
+      return;
+    }
+  }
 
   if (opts.contexts) {
     try {
@@ -83,6 +93,10 @@ export function registerExecuteByNameCommand(judge: Command): void {
     .option("--user-id <id>", "User identifier for tracking purposes")
     .option("--session-id <id>", "Session identifier for tracking purposes")
     .option("--system-prompt <text>", "System prompt that was used for the LLM call")
+    .option(
+      "--turns <json>",
+      'JSON array of conversation turns. E.g., \'[{"role":"user","content":"Hello"}]\'',
+    )
     .action(async (judgeName: string, opts: Record<string, unknown>) => {
       try {
         await executeJudgeByName(judgeName, opts as Parameters<typeof executeJudgeByName>[1]);

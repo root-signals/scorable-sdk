@@ -1,9 +1,28 @@
+export interface ExecutionLog {
+  id: string;
+  executed_item_name: string;
+  execution_type: string;
+  score: number | null;
+  cost: number | null;
+  created_at: string | null;
+  session_id?: string;
+  user_id?: string;
+  tags?: string[];
+}
+
+export interface Evaluator {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at?: string | null;
+  prompt?: string;
+}
+
 export interface Judge {
   id: string;
   name: string;
   intent: string;
   created_at: string;
-  status?: string;
   stage?: string;
   evaluator_references?: Array<{ id: string }>;
 }
