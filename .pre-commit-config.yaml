@@ -24,3 +24,12 @@ repos:
         types_or: [javascript, ts, json, yaml]
         pass_filenames: false
         entry: npm --prefix typescript run ci-pr-check
+
+
+      - id: check-cli
+        name: "Run CLI checks"
+        language: system
+        files: ^cli/
+        types_or: [javascript, ts, json, yaml]
+        pass_filenames: false
+        entry: npm --prefix cli run check-all

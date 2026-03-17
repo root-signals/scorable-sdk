@@ -52,7 +52,6 @@ jobs:
           cp -r typescript/docs/* deploy_docs/ts/
           mkdir deploy_docs/cli
           cp cli/install.sh deploy_docs/cli/install.sh
-          cp cli/cli.py deploy_docs/cli/cli.py
 
       # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages 🚀
