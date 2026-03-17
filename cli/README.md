@@ -2,8 +2,6 @@
   <img width="600" alt="Scorable logo" src="https://scorable.ai/images/scorable-color.svg" loading="lazy">
 </h1>
 
-  <!-- This is commented so it is easier to sync with the docs/index.rst -->
-
 <p align="center" class="large-text">
   <i><strong>Measurement & Control for LLM Automations</strong></i>
 </p>
@@ -26,193 +24,183 @@
   </a>
 </p>
 
-The `scorable` CLI is a powerful command-line tool for interacting with the Scorable API. It provides a convenient way to manage and execute your Judges directly from the terminal.
+The `scorable` CLI is a command-line tool for interacting with the Scorable API. It lets you manage and execute Judges and run prompt testing experiments directly from the terminal.
+
+Requires **Node.js 20 or higher**.
 
 ## Installation
-
-You can install the `scorable` CLI using the following command, which downloads and installs the script to `/usr/local/bin`:
 
 ```bash
 curl -sSL https://scorable.ai/cli/install.sh | sh
 ```
 
-Alternatively, you can install and run the CLI using `uvx`:
+Or install directly with npm:
 
 ```bash
-uvx scorable-cli judge list
+npm install -g @root-signals/scorable-cli
+```
+
+Or run without installing via npx:
+
+```bash
+npx @root-signals/scorable-cli judge list
 ```
 
 ## Authentication
 
-Before using the CLI, you must set your Scorable API key as an environment variable:
+Set your Scorable API key as an environment variable:
 
 ```bash
-# Sign up for a free account at https://scorable.ai/register
 export SCORABLE_API_KEY="your-api-key"
 ```
 
+Get a free API key at [scorable.ai/register](https://scorable.ai/register).
+
 ### Temporary API keys
 
-If no API key is set, the CLI can create a temporary key interactively and save it to `~/.scorable/settings.json` as `temporary_api_key`. Permanent keys should be set via the `SCORABLE_API_KEY` environment variable, which takes precedence.
+If no API key is set, the CLI will offer to create a temporary key interactively (in TTY sessions) and save it to `~/.scorable/settings.json`. The `SCORABLE_API_KEY` environment variable always takes precedence.
 
-## Usage
+## Judge Management
 
-The CLI is organized into a main command, `scorable`, with subcommands for different functionalities. The primary resource you'll interact with is the `judge`.
-
-### Judge Management
-
-All Judge-related commands are available under the `scorable judge` subcommand.
-
-#### `list`
-
-List all available Judges, with options for filtering and pagination.
+### List judges
 
 ```bash
 scorable judge list
 ```
 
-**Options:**
+Options: `--page-size`, `--cursor`, `--search`, `--name`, `--ordering`, `--is-preset / --not-is-preset`, `--is-public / --not-is-public`, `--show-global / --not-show-global`
 
-*   `--page-size`: Number of results to return per page.
-*   `--cursor`: The pagination cursor value.
-*   `--search`: A search term to filter by.
-*   `--name`: Filter by exact judge name.
-*   `--ordering`: Which field to use for ordering the results.
-*   `--is-preset / --not-is-preset`: Filter by preset status.
-*   `--is-public / --not-is-public`: Filter by public status.
-*   `--show-global / --not-show-global`: Filter by global status.
-
-#### `get`
-
-Retrieve a specific Judge by its ID.
+### Get a judge
 
 ```bash
 scorable judge get <judge_id>
 ```
 
-#### `create`
-
-Create a new Judge.
+### Create a judge
 
 ```bash
-scorable judge create --name "My New Judge" --intent "To evaluate the quality of LLM responses."
+scorable judge create --name "My Judge" --intent "Evaluate response quality."
 ```
 
-**Options:**
+Options: `--name` (required), `--intent` (required), `--stage`, `--evaluator-references` (JSON string, e.g. `'[{"id": "eval-id"}]'`)
 
-*   `--name`: The name for the new judge (required).
-*   `--intent`: The intent for the new judge (required).
-*   `--stage`: The stage for the new judge.
-*   `--evaluator-references`: JSON string for evaluator references. E.g., `'[{"id": "eval-id"}]'`
-
-#### `update`
-
-Update an existing Judge.
+### Update a judge
 
 ```bash
-scorable judge update <judge_id> --name "My Updated Judge Name"
+scorable judge update <judge_id> --name "Updated Name"
 ```
 
-**Options:**
+Options: `--name`, `--stage`, `--evaluator-references` (use `"[]"` to clear)
 
-*   `--name`: The new name for the judge.
-*   `--stage`: The new stage for the judge.
-*   `--evaluator-references`: JSON string to update evaluator references. Use `"[]"` to clear.
-
-#### `delete`
-
-Delete a Judge by its ID. You will be prompted for confirmation.
+### Delete a judge
 
 ```bash
 scorable judge delete <judge_id>
 ```
 
-#### `duplicate`
+Prompts for confirmation. Use `--yes` to skip.
 
-Duplicate an existing Judge.
+### Duplicate a judge
 
 ```bash
 scorable judge duplicate <judge_id>
 ```
 
-### Judge Execution
+## Judge Execution
 
-#### `execute`
-
-Execute a Judge with specific inputs.
+### Execute by ID
 
 ```bash
 scorable judge execute <judge_id> --request "What is the capital of France?" --response "Paris"
 ```
 
-**Options:**
+Options: `--request`, `--response`, `--contexts` (JSON list), `--expected-output`, `--tag` (repeatable), `--user-id`, `--session-id`, `--system-prompt`
 
-*   `--request`: Request text.
-*   `--response`: Response text to evaluate.
-*   `--contexts`: JSON list of context strings. E.g., `'["Retreived document from a knowledge base"]'`
-*   `--expected-output`: Expected output text.
-*   `--tag`: Add one or more tags.
-*   `--user-id`: User identifier for tracking purposes.
-*   `--session-id`: Session identifier for tracking purposes.
-*   `--system-prompt`: System prompt that was used for the LLM call.
-
-**Using stdin input:**
-
-You can pipe input directly to the `--response` parameter:
+Pipe input via stdin:
 
 ```bash
 echo "Paris" | scorable judge execute <judge_id> --request "What is the capital of France?"
-```
-
-```bash
 cat response.txt | scorable judge execute <judge_id>
 ```
 
-**With tracking parameters:**
+### Execute by name
 
 ```bash
-scorable judge execute <judge_id> \
-  --response "Paris" \
-  --user-id "user-123" \
-  --session-id "session-456" \
-  --system-prompt "You are a helpful assistant."
+scorable judge execute-by-name "My Judge" --request "What is the capital of France?" --response "Paris"
 ```
 
-#### `execute-by-name`
+Accepts the same options as `execute`. Stdin piping works the same way.
 
-Execute a Judge by its name.
+### Execute via OpenAI-compatible API
 
 ```bash
-scorable judge execute-by-name "My New Judge" --request "What is the capital of France?" --response "Paris"
+scorable judge exec-openai <judge_id> \
+  --model gpt-4o \
+  --messages '[{"role": "user", "content": "Hello"}, {"role": "assistant", "content": "Hi there"}]'
 ```
 
-**Options:**
-
-*   `--request`: Request text.
-*   `--response`: Response text to evaluate.
-*   `--contexts`: JSON list of context strings. E.g., `'["ctx1"]'`
-*   `--expected-output`: Expected output text.
-*   `--tag`: Add one or more tags.
-*   `--user-id`: User identifier for tracking purposes.
-*   `--session-id`: Session identifier for tracking purposes.
-*   `--system-prompt`: System prompt that was used for the LLM call.
-
-Input can also be piped in similar way as with `execute`.
-
-### Prompt testing
-
-Initialize a prompt testing experiment config and run it.
+Generic variant (judge ID in the `model` field):
 
 ```bash
-scorable prompt-test init
-scorable prompt-test run
+scorable judge exec-openai-generic \
+  --model <judge_id_or_name> \
+  --messages '[{"role": "user", "content": "Hello"}, {"role": "assistant", "content": "Hi there"}]'
 ```
+
+## Prompt Testing
+
+Initialize a config file and run experiments:
+
+```bash
+scorable pt init
+scorable pt run
+```
+
+Use a custom config path:
+
+```bash
+scorable pt run --config path/to/prompt-tests.yaml
+```
+
+The `prompt-test` command is an alias for `pt`.
+
+### Config file format
+
+```yaml
+prompts:
+  - "Extract info from: {{text}}"
+
+inputs:
+  - vars:
+      text: "John Doe, john@example.com"
+
+# Or use a dataset instead of inline inputs:
+# dataset_id: "<uuid>"
+
+models:
+  - gpt-4o-mini
+  - gemini-2.5-flash-lite
+
+evaluators:
+  - name: Precision
+  - name: Confidentiality
+
+# Optional: enforce structured output
+# response_schema:
+#   type: object
+#   properties:
+#     name: { type: string }
+```
+
+Results are displayed in a table and a browser link is printed for the full comparison view.
 
 ## Development
 
-This project uses `uv` for dependency management. To set up the development environment, run:
-
 ```bash
-. .venv/bin/activate
-uv pip sync pyproject.toml
+npm install
+npm run build       # compile TypeScript
+npm test            # run tests
+npm run typecheck   # type-check without emitting
+npm run lint        # lint with oxlint
+npm run fmt         # format with oxfmt
 ```

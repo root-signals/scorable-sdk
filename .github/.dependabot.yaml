@@ -24,3 +24,10 @@ updates:
       interval: "daily"
       time: "23:00"
 
+  - package-ecosystem: "npm"
+    directory: "/cli"
+    open-pull-requests-limit: 1
+    schedule:
+      interval: "daily"
+      time: "23:00"
+
