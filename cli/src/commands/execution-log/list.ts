@@ -1,6 +1,7 @@
 import { Command } from "commander";
+import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printMessage, printExecutionLogTable, handleSdkError } from "../../output.js";
+import { printMessage, printExecutionLogTable, handleSdkError } from "../../output.js";
 import type { ExecutionLogListParams } from "@root-signals/scorable";
 
 export function registerListCommand(executionLog: Command): void {
@@ -50,11 +51,11 @@ export function registerListCommand(executionLog: Command): void {
         if (opts.createdAtBefore !== undefined) params.created_at_before = opts.createdAtBefore;
         if (opts.ownerEmail !== undefined) params.owner__email = opts.ownerEmail;
 
-        printInfo(`Fetching execution logs...`);
-
+        const spinner = ora("Fetching...").start();
         try {
           const client = getSdkClient(apiKey);
           const response = await client.executionLogs.list(params);
+          spinner.stop();
 
           if (!response.results.length) {
             printMessage("No execution logs found.");
@@ -63,6 +64,7 @@ export function registerListCommand(executionLog: Command): void {
 
           printExecutionLogTable(response.results, response.next);
         } catch (e) {
+          spinner.stop();
           handleSdkError(e);
         }
       },

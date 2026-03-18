@@ -48,17 +48,27 @@ npx @root-signals/scorable-cli judge list
 
 ## Authentication
 
-Set your Scorable API key as an environment variable:
+Get a free API key at [scorable.ai/register](https://scorable.ai/register), then save it using one of:
 
 ```bash
-export SCORABLE_API_KEY="your-api-key"
+# Interactively
+scorable auth set-key
+
+# From argument
+scorable auth set-key sk-your-api-key
 ```
 
-Get a free API key at [scorable.ai/register](https://scorable.ai/register).
+The key is written to `~/.scorable/settings.json`
+
+Alternatively, set it as an environment variable — this takes precedence over the saved key:
+
+```bash
+export SCORABLE_API_KEY="sk-your-api-key"
+```
 
 ### Temporary API keys
 
-If no API key is set, the CLI will offer to create a temporary key interactively (in TTY sessions) and save it to `~/.scorable/settings.json`. The `SCORABLE_API_KEY` environment variable always takes precedence.
+If no API key is set, the CLI will offer to create a temporary key interactively (in TTY sessions) and save it to `~/.scorable/settings.json`.
 
 ## Judge Management
 

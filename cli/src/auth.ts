@@ -13,7 +13,7 @@ function settingsPath(): string {
   return join(configDir(), "settings.json");
 }
 
-function loadSettings(): Record<string, unknown> {
+export function loadSettings(): Record<string, unknown> {
   try {
     const path = settingsPath();
     if (!existsSync(path)) return {};
@@ -24,13 +24,14 @@ function loadSettings(): Record<string, unknown> {
   }
 }
 
-export function saveSettings(settings: Record<string, unknown>): void {
+export function saveSettings(settings: Record<string, unknown>): boolean {
   try {
     const dir = configDir();
     mkdirSync(dir, { recursive: true, mode: 0o700 });
     writeFileSync(settingsPath(), JSON.stringify(settings, null, 2), { mode: 0o600 });
+    return true;
   } catch {
-    // ignore write failures silently
+    return false;
   }
 }
 
@@ -38,6 +39,7 @@ export function getApiKey(): string | undefined {
   const fromEnv = process.env["SCORABLE_API_KEY"];
   if (fromEnv) return fromEnv;
   const settings = loadSettings();
+  if (settings["api_key"]) return settings["api_key"] as string;
   return settings["temporary_api_key"] as string | undefined;
 }
 
@@ -60,6 +62,7 @@ export async function requireApiKey(): Promise<string> {
   } else {
     printInfo("Run: export SCORABLE_API_KEY='<your_key>'");
   }
+  printInfo("Or run: scorable auth set-key <your-key>");
 
   if (process.stdin.isTTY && process.stdout.isTTY) {
     const { confirm } = await import("@inquirer/prompts");
@@ -87,7 +90,10 @@ export async function requireApiKey(): Promise<string> {
       process.env["SCORABLE_API_KEY"] = tempKey;
       const settings = loadSettings();
       settings["temporary_api_key"] = tempKey;
-      saveSettings(settings);
+      if (!saveSettings(settings)) {
+        printError("Failed to save temporary API key to ~/.scorable/settings.json");
+        throw new CliError(1, "Failed to save temporary API key");
+      }
       printSuccess("Temporary API key saved to ~/.scorable/settings.json");
 
       if (shell.includes("fish")) {

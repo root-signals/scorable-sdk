@@ -1,6 +1,7 @@
 import { Command } from "commander";
+import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
+import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import { isTurnArray, isStringArray, isStringRecord } from "../../utils.js";
 import type { ExecutionPayload } from "@root-signals/scorable";
 
@@ -89,13 +90,17 @@ export async function executeEvaluatorByName(
     }
   }
 
-  printInfo(`Attempting to execute evaluator '${evaluatorName}' with payload:`);
-  printJson(payload);
-
-  const client = getSdkClient(apiKey);
-  const result = await client.evaluators.executeByName(evaluatorName, payload);
-  printSuccess("Evaluator execution by name successful!");
-  printJson(result);
+  const spinner = ora("Running evaluator...").start();
+  try {
+    const client = getSdkClient(apiKey);
+    const result = await client.evaluators.executeByName(evaluatorName, payload);
+    spinner.stop();
+    printSuccess("Evaluator execution by name successful!");
+    printJson(result);
+  } catch (e) {
+    spinner.stop();
+    throw e;
+  }
 }
 
 export function registerExecuteByNameCommand(evaluator: Command): void {

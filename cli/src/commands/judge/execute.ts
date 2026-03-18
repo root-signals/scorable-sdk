@@ -1,6 +1,7 @@
 import { Command } from "commander";
+import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
+import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import { isTurnArray, isStringArray } from "../../utils.js";
 import type { JudgeExecutionPayload } from "@root-signals/scorable";
 
@@ -74,13 +75,17 @@ export async function executeJudge(
     }
   }
 
-  printInfo(`Attempting to execute judge ${judgeId} with payload:`);
-  printJson(payload);
-
-  const client = getSdkClient(apiKey);
-  const result = await client.judges.execute(judgeId, payload);
-  printSuccess("Judge execution successful!");
-  printJson(result);
+  const spinner = ora("Running judge...").start();
+  try {
+    const client = getSdkClient(apiKey);
+    const result = await client.judges.execute(judgeId, payload);
+    spinner.stop();
+    printSuccess("Judge execution successful!");
+    printJson(result);
+  } catch (e) {
+    spinner.stop();
+    throw e;
+  }
 }
 
 export function registerExecuteCommand(judge: Command): void {

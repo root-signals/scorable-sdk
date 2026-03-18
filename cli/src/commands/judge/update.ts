@@ -1,4 +1,5 @@
 import { Command } from "commander";
+import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import type { UpdateJudgeData } from "@root-signals/scorable";
@@ -40,15 +41,15 @@ export function registerUpdateCommand(judge: Command): void {
           return;
         }
 
-        printInfo(`Attempting to update judge ${judgeId} with PATCH payload:`);
-        printJson(payload);
-
+        const spinner = ora("Updating...").start();
         try {
           const client = getSdkClient(apiKey);
           const result = await client.judges.update(judgeId, payload);
+          spinner.stop();
           printSuccess(`Judge ${judgeId} updated successfully!`);
           printJson(result);
         } catch (e) {
+          spinner.stop();
           handleSdkError(e);
         }
       },

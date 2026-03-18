@@ -1,6 +1,7 @@
 import { Command } from "commander";
+import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
+import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import type { CreateJudgeData } from "@root-signals/scorable";
 
 export function registerCreateCommand(judge: Command): void {
@@ -37,15 +38,15 @@ export function registerCreateCommand(judge: Command): void {
           }
         }
 
-        printInfo("Attempting to create judge with payload:");
-        printJson(payload);
-
+        const spinner = ora("Creating...").start();
         try {
           const client = getSdkClient(apiKey);
           const result = await client.judges.create(payload);
+          spinner.stop();
           printSuccess("Judge created successfully!");
           printJson(result);
         } catch (e) {
+          spinner.stop();
           handleSdkError(e);
         }
       },
