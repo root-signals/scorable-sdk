@@ -15,29 +15,25 @@ export function registerListCommand(judge: Command): void {
     .action(async (opts: Record<string, unknown>) => {
       const apiKey = await requireApiKey();
 
-      const params: Record<string, unknown> = { is_public: false };
-      if (opts["pageSize"] !== undefined) params["page_size"] = opts["pageSize"];
-      if (opts["cursor"] !== undefined) params["cursor"] = opts["cursor"];
-      if (opts["search"] !== undefined) params["search"] = opts["search"];
-      if (opts["name"] !== undefined) params["name"] = opts["name"];
-      if (opts["ordering"] !== undefined) params["ordering"] = opts["ordering"];
+      const params: JudgeListParams & { name?: string } = { is_public: false };
+      if (opts["pageSize"] !== undefined) params.page_size = opts["pageSize"] as number;
+      if (opts["cursor"] !== undefined) params.cursor = opts["cursor"] as string;
+      if (opts["search"] !== undefined) params.search = opts["search"] as string;
+      if (opts["name"] !== undefined) params.name = opts["name"] as string;
+      if (opts["ordering"] !== undefined) params.ordering = opts["ordering"] as string;
 
-      const actual = Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined));
-      printInfo(`Fetching judges with params: ${JSON.stringify(actual)}...`);
+      printInfo(`Fetching judges with params: ${JSON.stringify(params)}...`);
 
       try {
         const client = getSdkClient(apiKey);
-        const response = await client.judges.list(actual as unknown as JudgeListParams);
+        const response = await client.judges.list(params);
 
         if (!response.results.length) {
           printMessage("No judges found.");
           return;
         }
 
-        printJudgeTable(
-          response.results as unknown as import("../../types.js").Judge[],
-          response.next,
-        );
+        printJudgeTable(response.results, response.next);
       } catch (e) {
         handleSdkError(e);
       }

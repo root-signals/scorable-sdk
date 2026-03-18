@@ -15,29 +15,25 @@ export function registerListCommand(evaluator: Command): void {
     .action(async (opts: Record<string, unknown>) => {
       const apiKey = await requireApiKey();
 
-      const params: Record<string, unknown> = {};
-      if (opts["pageSize"] !== undefined) params["page_size"] = opts["pageSize"];
-      if (opts["cursor"] !== undefined) params["cursor"] = opts["cursor"];
-      if (opts["search"] !== undefined) params["search"] = opts["search"];
-      if (opts["name"] !== undefined) params["name"] = opts["name"];
-      if (opts["ordering"] !== undefined) params["ordering"] = opts["ordering"];
+      const params: EvaluatorListParams & { name?: string } = {};
+      if (opts["pageSize"] !== undefined) params.page_size = opts["pageSize"] as number;
+      if (opts["cursor"] !== undefined) params.cursor = opts["cursor"] as string;
+      if (opts["search"] !== undefined) params.search = opts["search"] as string;
+      if (opts["name"] !== undefined) params.name = opts["name"] as string;
+      if (opts["ordering"] !== undefined) params.ordering = opts["ordering"] as string;
 
-      const actual = Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined));
-      printInfo(`Fetching evaluators with params: ${JSON.stringify(actual)}...`);
+      printInfo(`Fetching evaluators with params: ${JSON.stringify(params)}...`);
 
       try {
         const client = getSdkClient(apiKey);
-        const response = await client.evaluators.list(actual as unknown as EvaluatorListParams);
+        const response = await client.evaluators.list(params);
 
         if (!response.results.length) {
           printMessage("No evaluators found.");
           return;
         }
 
-        printEvaluatorTable(
-          response.results as unknown as import("../../types.js").Evaluator[],
-          response.next,
-        );
+        printEvaluatorTable(response.results, response.next);
       } catch (e) {
         handleSdkError(e);
       }

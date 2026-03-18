@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import Table from "cli-table3";
 import { CliError } from "./types.js";
-import type { Judge, Evaluator, ExecutionLog } from "./types.js";
+import type { Judge, EvaluatorListItem, ExecutionLogList } from "@root-signals/scorable";
 
 export function printJson(data: unknown): void {
   console.log(JSON.stringify(data, null, 2));
@@ -59,7 +59,7 @@ export function printJudgeTable(judges: Judge[], nextCursor?: string): void {
   }
 }
 
-export function printEvaluatorTable(evaluators: Evaluator[], nextCursor?: string): void {
+export function printEvaluatorTable(evaluators: EvaluatorListItem[], nextCursor?: string): void {
   const table = new Table({
     head: ["ID", "Name", "Created At"],
     style: { head: ["cyan"] },
@@ -80,7 +80,7 @@ export function printEvaluatorTable(evaluators: Evaluator[], nextCursor?: string
   }
 }
 
-export function printExecutionLogTable(logs: ExecutionLog[], nextCursor?: string): void {
+export function printExecutionLogTable(logs: ExecutionLogList[], nextCursor?: string): void {
   const table = new Table({
     head: ["ID", "Item Name", "Type", "Score", "Created At"],
     style: { head: ["cyan"] },

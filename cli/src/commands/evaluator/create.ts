@@ -18,7 +18,10 @@ export function registerCreateCommand(evaluator: Command): void {
     )
     .option("--objective-id <id>", "Objective ID (mutually exclusive with --intent)")
     .option("--system-message <text>", "System message for the evaluator")
-    .option("--models <json>", "JSON array of model names. E.g., '[\"gpt-4\"]'")
+    .option(
+      "--models <json>",
+      "JSON array of model names, in priority order. E.g., '[\"gpt-5-mini\"]'",
+    )
     .option("--overwrite", "Overwrite if evaluator with same name exists")
     .option("--objective-version-id <id>", "Objective version ID")
     .action(

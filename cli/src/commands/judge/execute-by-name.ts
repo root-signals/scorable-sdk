@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
+import { isTurnArray, isStringArray } from "../../utils.js";
 import type { JudgeExecutionPayload } from "@root-signals/scorable";
 
 async function readStdinDefault(): Promise<string> {
@@ -36,18 +37,23 @@ export async function executeJudgeByName(
     return;
   }
 
-  const payload: Record<string, unknown> = {};
-  if (opts.request) payload["request"] = opts.request;
-  if (response) payload["response"] = response;
-  if (opts.expectedOutput) payload["expected_output"] = opts.expectedOutput;
-  if (opts.tag?.length) payload["tags"] = opts.tag;
-  if (opts.userId) payload["user_id"] = opts.userId;
-  if (opts.sessionId) payload["session_id"] = opts.sessionId;
-  if (opts.systemPrompt) payload["system_prompt"] = opts.systemPrompt;
+  const payload: JudgeExecutionPayload = {};
+  if (opts.request) payload.request = opts.request;
+  if (response) payload.response = response;
+  if (opts.expectedOutput) payload.expected_output = opts.expectedOutput;
+  if (opts.tag?.length) payload.tags = opts.tag;
+  if (opts.userId) payload.user_id = opts.userId;
+  if (opts.sessionId) payload.session_id = opts.sessionId;
+  if (opts.systemPrompt) payload.system_prompt = opts.systemPrompt;
 
   if (opts.turns) {
     try {
-      payload["turns"] = JSON.parse(opts.turns) as unknown[];
+      const parsed: unknown = JSON.parse(opts.turns);
+      if (!isTurnArray(parsed)) {
+        printError("Invalid JSON for --turns.");
+        return;
+      }
+      payload.turns = parsed;
     } catch {
       printError("Invalid JSON for --turns.");
       return;
@@ -56,7 +62,12 @@ export async function executeJudgeByName(
 
   if (opts.contexts) {
     try {
-      payload["contexts"] = JSON.parse(opts.contexts) as unknown[];
+      const parsed: unknown = JSON.parse(opts.contexts);
+      if (!isStringArray(parsed)) {
+        printError("Invalid JSON for --contexts. Skipping.");
+        return;
+      }
+      payload.contexts = parsed;
     } catch {
       printError("Invalid JSON for --contexts. Skipping.");
       return;
@@ -67,10 +78,7 @@ export async function executeJudgeByName(
   printJson(payload);
 
   const client = getSdkClient(apiKey);
-  const result = await client.judges.executeByName(
-    judgeName,
-    payload as unknown as JudgeExecutionPayload,
-  );
+  const result = await client.judges.executeByName(judgeName, payload);
   printSuccess("Judge execution by name successful!");
   printJson(result);
 }

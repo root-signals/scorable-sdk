@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
+import { isTurnArray, isStringArray, isStringRecord } from "../../utils.js";
 import type { ExecutionPayload } from "@root-signals/scorable";
 
 async function readStdinDefault(): Promise<string> {
@@ -37,18 +38,23 @@ export async function executeEvaluator(
     return;
   }
 
-  const payload: Record<string, unknown> = {};
-  if (opts.request) payload["request"] = opts.request;
-  if (response) payload["response"] = response;
-  if (opts.expectedOutput) payload["expected_output"] = opts.expectedOutput;
-  if (opts.tag?.length) payload["tags"] = opts.tag;
-  if (opts.userId) payload["user_id"] = opts.userId;
-  if (opts.sessionId) payload["session_id"] = opts.sessionId;
-  if (opts.systemPrompt) payload["system_prompt"] = opts.systemPrompt;
+  const payload: ExecutionPayload = {};
+  if (opts.request) payload.request = opts.request;
+  if (response) payload.response = response;
+  if (opts.expectedOutput) payload.expected_output = opts.expectedOutput;
+  if (opts.tag?.length) payload.tags = opts.tag;
+  if (opts.userId) payload.user_id = opts.userId;
+  if (opts.sessionId) payload.session_id = opts.sessionId;
+  if (opts.systemPrompt) payload.system_prompt = opts.systemPrompt;
 
   if (opts.turns) {
     try {
-      payload["turns"] = JSON.parse(opts.turns) as unknown[];
+      const parsed: unknown = JSON.parse(opts.turns);
+      if (!isTurnArray(parsed)) {
+        printError("Invalid JSON for --turns.");
+        return;
+      }
+      payload.turns = parsed;
     } catch {
       printError("Invalid JSON for --turns.");
       return;
@@ -57,7 +63,12 @@ export async function executeEvaluator(
 
   if (opts.contexts) {
     try {
-      payload["contexts"] = JSON.parse(opts.contexts) as unknown[];
+      const parsed: unknown = JSON.parse(opts.contexts);
+      if (!isStringArray(parsed)) {
+        printError("Invalid JSON for --contexts. Skipping.");
+        return;
+      }
+      payload.contexts = parsed;
     } catch {
       printError("Invalid JSON for --contexts. Skipping.");
       return;
@@ -66,7 +77,12 @@ export async function executeEvaluator(
 
   if (opts.variables) {
     try {
-      payload["variables"] = JSON.parse(opts.variables) as Record<string, unknown>;
+      const parsed: unknown = JSON.parse(opts.variables);
+      if (!isStringRecord(parsed)) {
+        printError("Invalid JSON for --variables.");
+        return;
+      }
+      payload.variables = parsed;
     } catch {
       printError("Invalid JSON for --variables.");
       return;
@@ -77,10 +93,7 @@ export async function executeEvaluator(
   printJson(payload);
 
   const client = getSdkClient(apiKey);
-  const result = await client.evaluators.execute(
-    evaluatorId,
-    payload as unknown as ExecutionPayload,
-  );
+  const result = await client.evaluators.execute(evaluatorId, payload);
   printSuccess("Evaluator execution successful!");
   printJson(result);
 }

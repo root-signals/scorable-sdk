@@ -49,10 +49,7 @@ export function registerListCommand(executionLog: Command): void {
           return;
         }
 
-        printExecutionLogTable(
-          response.results as unknown as import("../../types.js").ExecutionLog[],
-          response.next,
-        );
+        printExecutionLogTable(response.results, response.next);
       } catch (e) {
         handleSdkError(e);
       }
