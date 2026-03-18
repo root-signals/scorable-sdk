@@ -93,6 +93,36 @@ export function registerExecuteCommand(judge: Command): void {
       "--turns <json>",
       'JSON array of conversation turns. E.g., \'[{"role":"user","content":"Hello"}]\'',
     )
+    .addHelpText(
+      "after",
+      `
+Examples:
+  # Evaluate a customer service response about return policy
+  $ scorable judge execute <judgeId> \\
+      --request "What's your return policy?" \\
+      --response "We have a 30-day return policy. If you're not satisfied, you can return within 30 days for a full refund."
+
+  # RAG evaluation with context documents
+  $ scorable judge execute <judgeId> \\
+      --request "What's your return policy for electronics?" \\
+      --response "You can return electronics within 30 days, unused and in original packaging." \\
+      --contexts '["Returns for electronics are accepted within 30 days. Item must be unused, in original packaging, with valid receipt."]'
+
+  # Multi-turn conversation evaluation
+  $ scorable judge execute <judgeId> \\
+      --turns '[{"role":"user","content":"Hello, I need help with my order"},{"role":"assistant","content":"I\\'d be happy to help! What\\'s your order number?"},{"role":"user","content":"It\\'s ORDER-12345"},{"role":"assistant","content":"I found your order. It\\'s currently in transit."}]'
+
+  # With tracking metadata and tags
+  $ scorable judge execute <judgeId> \\
+      --request "How do I reset my password?" \\
+      --response "Click the Forgot Password link on the login page and follow the instructions." \\
+      --user-id user_123 --session-id session_abc \\
+      --tag production --tag v1.23
+
+  # Pipe the LLM response from stdin
+  $ echo "You can cancel your subscription from account settings under billing." | \\
+      scorable judge execute <judgeId> --request "How do I cancel my subscription?"`,
+    )
     .action(async (judgeId: string, opts: Record<string, unknown>) => {
       try {
         await executeJudge(judgeId, opts as Parameters<typeof executeJudge>[1]);

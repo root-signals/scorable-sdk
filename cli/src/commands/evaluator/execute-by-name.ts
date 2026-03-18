@@ -110,6 +110,34 @@ export function registerExecuteByNameCommand(evaluator: Command): void {
       "--variables <json>",
       'JSON object of extra template variables. E.g., \'{"lang":"EN"}\'',
     )
+    .addHelpText(
+      "after",
+      `
+Examples:
+  # Check helpfulness of a support response
+  $ scorable evaluator execute-by-name "Helpfulness" \\
+      --request "Where can I find the application instructions?" \\
+      --response "You can find the instructions from our Careers page."
+
+  # Network troubleshooting accuracy check
+  $ scorable evaluator execute-by-name "Network Troubleshooting" \\
+      --request "My internet is not working." \\
+      --response "Let's check the basics. Ensure the Ethernet cable is securely connected, then run \`ping 8.8.8.8\` and share the results."
+
+  # Faithfulness against retrieved context
+  $ scorable evaluator execute-by-name "Faithfulness" \\
+      --request "What is your return policy for electronics?" \\
+      --response "You can return electronics within 30 days, unused and in original packaging." \\
+      --contexts '["Returns for electronics: 30 days, unused, original packaging, valid receipt required."]'
+
+  # Multi-turn conversation
+  $ scorable evaluator execute-by-name "Helpfulness" \\
+      --turns '[{"role":"user","content":"Hello, I need help with my order"},{"role":"assistant","content":"I\\'d be happy to help! What\\'s your order number?"},{"role":"user","content":"It\\'s ORDER-12345"}]'
+
+  # Pipe a response from your app via stdin
+  $ ./my-app respond "Do you offer refunds?" | \\
+      scorable evaluator execute-by-name "Helpfulness" --request "Do you offer refunds?"`,
+    )
     .action(async (evaluatorName: string, opts: Record<string, unknown>) => {
       try {
         await executeEvaluatorByName(

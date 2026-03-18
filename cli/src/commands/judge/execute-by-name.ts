@@ -96,6 +96,29 @@ export function registerExecuteByNameCommand(judge: Command): void {
       "--turns <json>",
       'JSON array of conversation turns. E.g., \'[{"role":"user","content":"Hello"}]\'',
     )
+    .addHelpText(
+      "after",
+      `
+Examples:
+  # Evaluate a customer service response
+  $ scorable judge execute-by-name "Customer Service Judge" \\
+      --request "My order hasn't arrived and it's been two weeks." \\
+      --response "I completely understand your frustration. Let me immediately look into your order status and arrange expedited shipping at no extra cost."
+
+  # With context documents
+  $ scorable judge execute-by-name "E-commerce Support Judge" \\
+      --request "What's your return policy for electronics?" \\
+      --response "You can return electronics within 30 days, unused and in original packaging." \\
+      --contexts '["Returns for electronics: 30 days, unused, original packaging, valid receipt required."]'
+
+  # Multi-turn conversation
+  $ scorable judge execute-by-name "Customer Service Judge" \\
+      --turns '[{"role":"user","content":"I haven\\'t received my refund and it\\'s been 10 days."},{"role":"assistant","content":"Thank you for contacting us. I will investigate this immediately and provide an update within 24 hours."}]'
+
+  # Pipe the LLM response from stdin
+  $ echo "We offer a 30-day money-back guarantee on all purchases." | \\
+      scorable judge execute-by-name "Custom Returns Policy Judge" --request "Do you offer refunds?"`,
+    )
     .action(async (judgeName: string, opts: Record<string, unknown>) => {
       try {
         await executeJudgeByName(judgeName, opts as Parameters<typeof executeJudgeByName>[1]);

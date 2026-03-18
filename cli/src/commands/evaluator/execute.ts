@@ -110,6 +110,38 @@ export function registerExecuteCommand(evaluator: Command): void {
       "--variables <json>",
       'JSON object of extra template variables. E.g., \'{"lang":"EN"}\'',
     )
+    .addHelpText(
+      "after",
+      `
+Examples:
+  # Check helpfulness of a support response
+  $ scorable evaluator execute <evaluatorId> \\
+      --request "Where can I find the application instructions?" \\
+      --response "You can find the instructions from our Careers page."
+
+  # Evaluate network troubleshooting response
+  $ scorable evaluator execute <evaluatorId> \\
+      --request "My internet is not working." \\
+      --response "Let's check the basics. Ensure the Ethernet cable is securely connected, then run \`ping 8.8.8.8\` in a terminal and share the results."
+
+  # RAG faithfulness check with context documents
+  $ scorable evaluator execute <evaluatorId> \\
+      --request "Was the number of pensioners working above 100k in 2023?" \\
+      --response "Yes, 150,000 pensioners were working in 2023." \\
+      --expected-output "In 2023, 150k pensioners were still working." \\
+      --contexts '["More than 150,000 pensioners were employed in 2023, the centre\\'s statistics reveal."]'
+
+  # Multi-turn conversation evaluation
+  $ scorable evaluator execute <evaluatorId> \\
+      --turns '[{"role":"user","content":"Hello, I need help with my order"},{"role":"assistant","content":"I\\'d be happy to help! What\\'s your order number?"},{"role":"user","content":"It\\'s ORDER-12345"},{"role":"assistant","content":"I found your order. It\\'s currently in transit."}]'
+
+  # With custom template variables and tracking
+  $ scorable evaluator execute <evaluatorId> \\
+      --request "How do I cancel my subscription?" \\
+      --response "You can cancel anytime from account settings under billing." \\
+      --variables '{"topic":"subscription"}' \\
+      --user-id user_123 --session-id session_abc --tag production`,
+    )
     .action(async (evaluatorId: string, opts: Record<string, unknown>) => {
       try {
         await executeEvaluator(evaluatorId, opts as Parameters<typeof executeEvaluator>[1]);
