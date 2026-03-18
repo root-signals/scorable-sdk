@@ -1,7 +1,13 @@
 import { Command } from "commander";
 import { requireApiKey } from "../../auth.js";
-import { printInfo, printSuccess, printError, printWarning, printJson } from "../../output.js";
-import { CliError } from "../../types.js";
+import {
+  printInfo,
+  printSuccess,
+  printError,
+  printWarning,
+  printJson,
+  handleSdkError,
+} from "../../output.js";
 import { apiRequest } from "../../client.js";
 
 export function registerExecOpenaiGenericCommand(judge: Command): void {
@@ -46,8 +52,7 @@ export function registerExecOpenaiGenericCommand(judge: Command): void {
           printJson(result);
         }
       } catch (e) {
-        if (e instanceof CliError) throw e;
-        printError(e instanceof Error ? e.message : String(e));
+        handleSdkError(e);
       }
     });
 }

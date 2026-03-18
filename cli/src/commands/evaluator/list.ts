@@ -1,7 +1,6 @@
 import { Command } from "commander";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printMessage, printError, printEvaluatorTable } from "../../output.js";
-import { CliError } from "../../types.js";
+import { printInfo, printMessage, printEvaluatorTable, handleSdkError } from "../../output.js";
 import type { EvaluatorListParams } from "@root-signals/scorable";
 
 export function registerListCommand(evaluator: Command): void {
@@ -13,10 +12,6 @@ export function registerListCommand(evaluator: Command): void {
     .option("--search <term>", "A search term to filter by")
     .option("--name <name>", "Filter by exact evaluator name")
     .option("--ordering <field>", "Which field to use for ordering the results")
-    .option("--is-preset", "Filter preset evaluators (true)")
-    .option("--not-is-preset", "Exclude preset evaluators (false)")
-    .option("--is-public", "Filter public evaluators (true)")
-    .option("--not-is-public", "Exclude public evaluators (false)")
     .action(async (opts: Record<string, unknown>) => {
       const apiKey = await requireApiKey();
 
@@ -26,12 +21,6 @@ export function registerListCommand(evaluator: Command): void {
       if (opts["search"] !== undefined) params["search"] = opts["search"];
       if (opts["name"] !== undefined) params["name"] = opts["name"];
       if (opts["ordering"] !== undefined) params["ordering"] = opts["ordering"];
-
-      const isPreset = opts["isPreset"] ? true : opts["notIsPreset"] ? false : undefined;
-      if (isPreset !== undefined) params["is_preset"] = isPreset;
-
-      const isPublic = opts["isPublic"] ? true : opts["notIsPublic"] ? false : undefined;
-      if (isPublic !== undefined) params["is_public"] = isPublic;
 
       const actual = Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined));
       printInfo(`Fetching evaluators with params: ${JSON.stringify(actual)}...`);
@@ -50,8 +39,7 @@ export function registerListCommand(evaluator: Command): void {
           response.next,
         );
       } catch (e) {
-        if (e instanceof CliError) throw e;
-        printError(e instanceof Error ? e.message : String(e));
+        handleSdkError(e);
       }
     });
 }

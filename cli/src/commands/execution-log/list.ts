@@ -1,7 +1,6 @@
 import { Command } from "commander";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printMessage, printError, printExecutionLogTable } from "../../output.js";
-import { CliError } from "../../types.js";
+import { printInfo, printMessage, printExecutionLogTable, handleSdkError } from "../../output.js";
 import type { ExecutionLogListParams } from "@root-signals/scorable";
 
 export function registerListCommand(executionLog: Command): void {
@@ -55,8 +54,7 @@ export function registerListCommand(executionLog: Command): void {
           response.next,
         );
       } catch (e) {
-        if (e instanceof CliError) throw e;
-        printError(e instanceof Error ? e.message : String(e));
+        handleSdkError(e);
       }
     });
 }

@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import Table from "cli-table3";
+import { CliError } from "./types.js";
 import type { Judge, Evaluator, ExecutionLog } from "./types.js";
 
 export function printJson(data: unknown): void {
@@ -8,6 +9,13 @@ export function printJson(data: unknown): void {
 
 export function printError(msg: string): void {
   console.error(chalk.bold.red("Error:") + " " + msg);
+}
+
+export function handleSdkError(e: unknown): never {
+  if (e instanceof CliError) throw e;
+  const message = e instanceof Error ? e.message || String(e) : String(e);
+  printError(message);
+  throw new CliError(1, message);
 }
 
 export function printSuccess(msg: string): void {

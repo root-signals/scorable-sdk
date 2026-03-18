@@ -1,7 +1,6 @@
 import { Command } from "commander";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printSuccess, printError, printJson } from "../../output.js";
-import { CliError } from "../../types.js";
+import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import type { ExecutionPayload } from "@root-signals/scorable";
 
 async function readStdinDefault(): Promise<string> {
@@ -118,8 +117,7 @@ export function registerExecuteByNameCommand(evaluator: Command): void {
           opts as Parameters<typeof executeEvaluatorByName>[1],
         );
       } catch (e) {
-        if (e instanceof CliError) throw e;
-        printError(e instanceof Error ? e.message : String(e));
+        handleSdkError(e);
       }
     });
 }

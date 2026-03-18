@@ -136,7 +136,8 @@ describe("TestJudgeGet", () => {
   it("test_get_judge_not_found", async () => {
     mockGet.mockRejectedValue(new Error("Not found"));
     const result = await runCli(["judge", "get", "nonexistent"]);
-    expect(result.exitCode).toBe(0); // SDK errors print and exit 0 (matches Python)
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain("Not found");
   });
 });
 

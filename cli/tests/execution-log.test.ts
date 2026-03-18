@@ -142,7 +142,7 @@ describe("TestExecutionLogGet", () => {
   it("test_get_log_not_found", async () => {
     mockGet.mockRejectedValue(new Error("Not found"));
     const result = await runCli(["execution-log", "get", "nonexistent"]);
-    expect(result.exitCode).toBe(0);
+    expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toContain("Not found");
   });
 });

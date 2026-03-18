@@ -1,7 +1,6 @@
 import { Command } from "commander";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printSuccess, printError, printJson } from "../../output.js";
-import { CliError } from "../../types.js";
+import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import type { JudgeExecutionPayload } from "@root-signals/scorable";
 
 async function readStdinDefault(): Promise<string> {
@@ -98,8 +97,7 @@ export function registerExecuteCommand(judge: Command): void {
       try {
         await executeJudge(judgeId, opts as Parameters<typeof executeJudge>[1]);
       } catch (e) {
-        if (e instanceof CliError) throw e;
-        printError(e instanceof Error ? e.message : String(e));
+        handleSdkError(e);
       }
     });
 }

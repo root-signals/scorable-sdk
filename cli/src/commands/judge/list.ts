@@ -1,7 +1,6 @@
 import { Command } from "commander";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printMessage, printError, printJudgeTable } from "../../output.js";
-import { CliError } from "../../types.js";
+import { printInfo, printMessage, printJudgeTable, handleSdkError } from "../../output.js";
 import type { JudgeListParams } from "@root-signals/scorable";
 
 export function registerListCommand(judge: Command): void {
@@ -40,8 +39,7 @@ export function registerListCommand(judge: Command): void {
           response.next,
         );
       } catch (e) {
-        if (e instanceof CliError) throw e;
-        printError(e instanceof Error ? e.message : String(e));
+        handleSdkError(e);
       }
     });
 }

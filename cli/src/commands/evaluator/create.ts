@@ -1,7 +1,6 @@
 import { Command } from "commander";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printSuccess, printError, printJson } from "../../output.js";
-import { CliError } from "../../types.js";
+import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import type { EvaluatorCreateParams } from "@root-signals/scorable";
 
 export function registerCreateCommand(evaluator: Command): void {
@@ -79,9 +78,7 @@ export function registerCreateCommand(evaluator: Command): void {
           printSuccess("Evaluator created successfully!");
           printJson(result);
         } catch (e) {
-          if (e instanceof CliError) throw e;
-          printError(e instanceof Error ? e.message : String(e));
-          return;
+          handleSdkError(e);
         }
       },
     );

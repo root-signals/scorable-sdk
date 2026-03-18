@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printSuccess } from "../../output.js";
+import { printInfo, printSuccess, handleSdkError } from "../../output.js";
 import { CliError } from "../../types.js";
 
 export function registerDeleteCommand(evaluator: Command): void {
@@ -35,8 +35,7 @@ export function registerDeleteCommand(evaluator: Command): void {
         await client.evaluators.delete(evaluatorId);
         printSuccess(`Evaluator ${evaluatorId} deleted successfully.`);
       } catch (e) {
-        if (e instanceof CliError) throw e;
-        throw new CliError(1, e instanceof Error ? e.message : String(e));
+        handleSdkError(e);
       }
     });
 }

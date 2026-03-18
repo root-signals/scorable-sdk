@@ -82,7 +82,14 @@ describe("TestEvaluatorList", () => {
 
   it("test_list_evaluators_with_pagination", async () => {
     mockList.mockResolvedValue({
-      results: [{ id: "eval-123", name: "Test Evaluator 1", status: "active", created_at: "" }],
+      results: [
+        {
+          id: "eval-123",
+          name: "Test Evaluator 1",
+          status: "active",
+          created_at: "",
+        },
+      ],
       next: "cursor=next_page_token",
     });
     const result = await runCli(["evaluator", "list"]);
@@ -92,7 +99,14 @@ describe("TestEvaluatorList", () => {
 
   it("test_list_evaluators_with_filters", async () => {
     mockList.mockResolvedValue({
-      results: [{ id: "eval-123", name: "Test Evaluator 1", status: "active", created_at: "" }],
+      results: [
+        {
+          id: "eval-123",
+          name: "Test Evaluator 1",
+          status: "active",
+          created_at: "",
+        },
+      ],
     });
     const result = await runCli([
       "evaluator",
@@ -103,7 +117,6 @@ describe("TestEvaluatorList", () => {
       "test",
       "--name",
       "Test Evaluator",
-      "--is-preset",
     ]);
     expect(result.exitCode).toBe(0);
     expect(mockList).toHaveBeenCalledWith(
@@ -111,7 +124,6 @@ describe("TestEvaluatorList", () => {
         page_size: 10,
         search: "test",
         name: "Test Evaluator",
-        is_preset: true,
       }),
     );
   });
@@ -130,7 +142,8 @@ describe("TestEvaluatorGet", () => {
   it("test_get_evaluator_not_found", async () => {
     mockGet.mockRejectedValue(new Error("Not found"));
     const result = await runCli(["evaluator", "get", "nonexistent"]);
-    expect(result.exitCode).toBe(0); // SDK errors print and exit 0
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain("Not found");
   });
 });
 
@@ -514,7 +527,9 @@ describe("TestEvaluatorExecuteByName", () => {
     expect(mockReadStdin).toHaveBeenCalled();
     expect(mockExecuteByName).toHaveBeenCalledWith(
       "Test Evaluator",
-      expect.objectContaining({ response: "Test response from stdin for named evaluator" }),
+      expect.objectContaining({
+        response: "Test response from stdin for named evaluator",
+      }),
     );
   });
 
@@ -533,7 +548,9 @@ describe("TestEvaluatorExecuteByName", () => {
     expect(mockReadStdin).not.toHaveBeenCalled();
     expect(mockExecuteByName).toHaveBeenCalledWith(
       "Test Evaluator",
-      expect.objectContaining({ response: "Response from flag for named evaluator" }),
+      expect.objectContaining({
+        response: "Response from flag for named evaluator",
+      }),
     );
   });
 });
@@ -542,7 +559,11 @@ describe("TestEvaluatorExecuteByName", () => {
 
 describe("TestEvaluatorDuplicate", () => {
   it("test_duplicate_evaluator_success", async () => {
-    const duplicated = { ...sampleEvaluator, id: "eval-456", name: "Test Evaluator (Copy)" };
+    const duplicated = {
+      ...sampleEvaluator,
+      id: "eval-456",
+      name: "Test Evaluator (Copy)",
+    };
     mockDuplicate.mockResolvedValue(duplicated);
     const result = await runCli(["evaluator", "duplicate", "eval-123"]);
     expect(result.exitCode).toBe(0);
