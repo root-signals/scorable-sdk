@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Add update() and delete() methods to EvaluatorsResource
+
 ## 0.2.1
 
 - Simplify multi-turn api
