@@ -127,11 +127,26 @@ Examples:
   $ echo "We offer a 30-day money-back guarantee on all purchases." | \\
       scorable judge execute-by-name "Custom Returns Policy Judge" --request "Do you offer refunds?"`,
     )
-    .action(async (judgeName: string, opts: Record<string, unknown>) => {
-      try {
-        await executeJudgeByName(judgeName, opts as Parameters<typeof executeJudgeByName>[1]);
-      } catch (e) {
-        handleSdkError(e);
-      }
-    });
+    .action(
+      async (
+        judgeName: string,
+        opts: {
+          request?: string;
+          response?: string;
+          turns?: string;
+          contexts?: string;
+          expectedOutput?: string;
+          tag: string[];
+          userId?: string;
+          sessionId?: string;
+          systemPrompt?: string;
+        },
+      ) => {
+        try {
+          await executeJudgeByName(judgeName, opts);
+        } catch (e) {
+          handleSdkError(e);
+        }
+      },
+    );
 }

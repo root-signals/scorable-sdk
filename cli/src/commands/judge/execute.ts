@@ -134,11 +134,26 @@ Examples:
   $ echo "You can cancel your subscription from account settings under billing." | \\
       scorable judge execute <judgeId> --request "How do I cancel my subscription?"`,
     )
-    .action(async (judgeId: string, opts: Record<string, unknown>) => {
-      try {
-        await executeJudge(judgeId, opts as Parameters<typeof executeJudge>[1]);
-      } catch (e) {
-        handleSdkError(e);
-      }
-    });
+    .action(
+      async (
+        judgeId: string,
+        opts: {
+          request?: string;
+          response?: string;
+          turns?: string;
+          contexts?: string;
+          expectedOutput?: string;
+          tag: string[];
+          userId?: string;
+          sessionId?: string;
+          systemPrompt?: string;
+        },
+      ) => {
+        try {
+          await executeJudge(judgeId, opts);
+        } catch (e) {
+          handleSdkError(e);
+        }
+      },
+    );
 }

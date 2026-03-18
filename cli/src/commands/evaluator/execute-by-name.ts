@@ -151,14 +151,27 @@ Examples:
   $ ./my-app respond "Do you offer refunds?" | \\
       scorable evaluator execute-by-name "Helpfulness" --request "Do you offer refunds?"`,
     )
-    .action(async (evaluatorName: string, opts: Record<string, unknown>) => {
-      try {
-        await executeEvaluatorByName(
-          evaluatorName,
-          opts as Parameters<typeof executeEvaluatorByName>[1],
-        );
-      } catch (e) {
-        handleSdkError(e);
-      }
-    });
+    .action(
+      async (
+        evaluatorName: string,
+        opts: {
+          request?: string;
+          response?: string;
+          turns?: string;
+          contexts?: string;
+          expectedOutput?: string;
+          tag: string[];
+          userId?: string;
+          sessionId?: string;
+          systemPrompt?: string;
+          variables?: string;
+        },
+      ) => {
+        try {
+          await executeEvaluatorByName(evaluatorName, opts);
+        } catch (e) {
+          handleSdkError(e);
+        }
+      },
+    );
 }

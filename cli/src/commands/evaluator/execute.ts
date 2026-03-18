@@ -155,11 +155,27 @@ Examples:
       --variables '{"topic":"subscription"}' \\
       --user-id user_123 --session-id session_abc --tag production`,
     )
-    .action(async (evaluatorId: string, opts: Record<string, unknown>) => {
-      try {
-        await executeEvaluator(evaluatorId, opts as Parameters<typeof executeEvaluator>[1]);
-      } catch (e) {
-        handleSdkError(e);
-      }
-    });
+    .action(
+      async (
+        evaluatorId: string,
+        opts: {
+          request?: string;
+          response?: string;
+          turns?: string;
+          contexts?: string;
+          expectedOutput?: string;
+          tag: string[];
+          userId?: string;
+          sessionId?: string;
+          systemPrompt?: string;
+          variables?: string;
+        },
+      ) => {
+        try {
+          await executeEvaluator(evaluatorId, opts);
+        } catch (e) {
+          handleSdkError(e);
+        }
+      },
+    );
 }

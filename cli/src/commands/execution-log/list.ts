@@ -19,39 +19,52 @@ export function registerListCommand(executionLog: Command): void {
     .option("--created-at-after <date>", "Filter logs created after this date (ISO 8601)")
     .option("--created-at-before <date>", "Filter logs created before this date (ISO 8601)")
     .option("--owner-email <email>", "Filter by owner email")
-    .action(async (opts: Record<string, unknown>) => {
-      const apiKey = await requireApiKey();
+    .action(
+      async (opts: {
+        pageSize?: number;
+        cursor?: string;
+        search?: string;
+        evaluatorId?: string;
+        judgeId?: string;
+        model?: string;
+        tags?: string;
+        scoreMin?: number;
+        scoreMax?: number;
+        createdAtAfter?: string;
+        createdAtBefore?: string;
+        ownerEmail?: string;
+      }) => {
+        const apiKey = await requireApiKey();
 
-      const params: ExecutionLogListParams = {};
-      if (opts["pageSize"] !== undefined) params.page_size = opts["pageSize"] as number;
-      if (opts["cursor"] !== undefined) params.cursor = opts["cursor"] as string;
-      if (opts["search"] !== undefined) params.search = opts["search"] as string;
-      if (opts["evaluatorId"] !== undefined) params.evaluator_id = opts["evaluatorId"] as string;
-      if (opts["judgeId"] !== undefined) params.judge_id = opts["judgeId"] as string;
-      if (opts["model"] !== undefined) params.model = opts["model"] as string;
-      if (opts["tags"] !== undefined) params.tags = opts["tags"] as string;
-      if (opts["scoreMin"] !== undefined) params.score_min = opts["scoreMin"] as number;
-      if (opts["scoreMax"] !== undefined) params.score_max = opts["scoreMax"] as number;
-      if (opts["createdAtAfter"] !== undefined)
-        params.created_at_after = opts["createdAtAfter"] as string;
-      if (opts["createdAtBefore"] !== undefined)
-        params.created_at_before = opts["createdAtBefore"] as string;
-      if (opts["ownerEmail"] !== undefined) params.owner__email = opts["ownerEmail"] as string;
+        const params: ExecutionLogListParams = {};
+        if (opts.pageSize !== undefined) params.page_size = opts.pageSize;
+        if (opts.cursor !== undefined) params.cursor = opts.cursor;
+        if (opts.search !== undefined) params.search = opts.search;
+        if (opts.evaluatorId !== undefined) params.evaluator_id = opts.evaluatorId;
+        if (opts.judgeId !== undefined) params.judge_id = opts.judgeId;
+        if (opts.model !== undefined) params.model = opts.model;
+        if (opts.tags !== undefined) params.tags = opts.tags;
+        if (opts.scoreMin !== undefined) params.score_min = opts.scoreMin;
+        if (opts.scoreMax !== undefined) params.score_max = opts.scoreMax;
+        if (opts.createdAtAfter !== undefined) params.created_at_after = opts.createdAtAfter;
+        if (opts.createdAtBefore !== undefined) params.created_at_before = opts.createdAtBefore;
+        if (opts.ownerEmail !== undefined) params.owner__email = opts.ownerEmail;
 
-      printInfo(`Fetching execution logs...`);
+        printInfo(`Fetching execution logs...`);
 
-      try {
-        const client = getSdkClient(apiKey);
-        const response = await client.executionLogs.list(params);
+        try {
+          const client = getSdkClient(apiKey);
+          const response = await client.executionLogs.list(params);
 
-        if (!response.results.length) {
-          printMessage("No execution logs found.");
-          return;
+          if (!response.results.length) {
+            printMessage("No execution logs found.");
+            return;
+          }
+
+          printExecutionLogTable(response.results, response.next);
+        } catch (e) {
+          handleSdkError(e);
         }
-
-        printExecutionLogTable(response.results, response.next);
-      } catch (e) {
-        handleSdkError(e);
-      }
-    });
+      },
+    );
 }

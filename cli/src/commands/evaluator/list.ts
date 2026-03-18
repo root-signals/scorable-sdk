@@ -12,30 +12,38 @@ export function registerListCommand(evaluator: Command): void {
     .option("--search <term>", "A search term to filter by")
     .option("--name <name>", "Filter by exact evaluator name")
     .option("--ordering <field>", "Which field to use for ordering the results")
-    .action(async (opts: Record<string, unknown>) => {
-      const apiKey = await requireApiKey();
+    .action(
+      async (opts: {
+        pageSize?: number;
+        cursor?: string;
+        search?: string;
+        name?: string;
+        ordering?: string;
+      }) => {
+        const apiKey = await requireApiKey();
 
-      const params: EvaluatorListParams & { name?: string } = {};
-      if (opts["pageSize"] !== undefined) params.page_size = opts["pageSize"] as number;
-      if (opts["cursor"] !== undefined) params.cursor = opts["cursor"] as string;
-      if (opts["search"] !== undefined) params.search = opts["search"] as string;
-      if (opts["name"] !== undefined) params.name = opts["name"] as string;
-      if (opts["ordering"] !== undefined) params.ordering = opts["ordering"] as string;
+        const params: EvaluatorListParams & { name?: string } = {};
+        if (opts.pageSize !== undefined) params.page_size = opts.pageSize;
+        if (opts.cursor !== undefined) params.cursor = opts.cursor;
+        if (opts.search !== undefined) params.search = opts.search;
+        if (opts.name !== undefined) params.name = opts.name;
+        if (opts.ordering !== undefined) params.ordering = opts.ordering;
 
-      printInfo(`Fetching evaluators with params: ${JSON.stringify(params)}...`);
+        printInfo(`Fetching evaluators with params: ${JSON.stringify(params)}...`);
 
-      try {
-        const client = getSdkClient(apiKey);
-        const response = await client.evaluators.list(params);
+        try {
+          const client = getSdkClient(apiKey);
+          const response = await client.evaluators.list(params);
 
-        if (!response.results.length) {
-          printMessage("No evaluators found.");
-          return;
+          if (!response.results.length) {
+            printMessage("No evaluators found.");
+            return;
+          }
+
+          printEvaluatorTable(response.results, response.next);
+        } catch (e) {
+          handleSdkError(e);
         }
-
-        printEvaluatorTable(response.results, response.next);
-      } catch (e) {
-        handleSdkError(e);
-      }
-    });
+      },
+    );
 }

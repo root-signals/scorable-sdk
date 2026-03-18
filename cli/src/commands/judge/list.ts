@@ -12,30 +12,38 @@ export function registerListCommand(judge: Command): void {
     .option("--search <term>", "A search term to filter by")
     .option("--name <name>", "Filter by exact judge name")
     .option("--ordering <field>", "Which field to use for ordering the results")
-    .action(async (opts: Record<string, unknown>) => {
-      const apiKey = await requireApiKey();
+    .action(
+      async (opts: {
+        pageSize?: number;
+        cursor?: string;
+        search?: string;
+        name?: string;
+        ordering?: string;
+      }) => {
+        const apiKey = await requireApiKey();
 
-      const params: JudgeListParams & { name?: string } = { is_public: false };
-      if (opts["pageSize"] !== undefined) params.page_size = opts["pageSize"] as number;
-      if (opts["cursor"] !== undefined) params.cursor = opts["cursor"] as string;
-      if (opts["search"] !== undefined) params.search = opts["search"] as string;
-      if (opts["name"] !== undefined) params.name = opts["name"] as string;
-      if (opts["ordering"] !== undefined) params.ordering = opts["ordering"] as string;
+        const params: JudgeListParams & { name?: string } = { is_public: false };
+        if (opts.pageSize !== undefined) params.page_size = opts.pageSize;
+        if (opts.cursor !== undefined) params.cursor = opts.cursor;
+        if (opts.search !== undefined) params.search = opts.search;
+        if (opts.name !== undefined) params.name = opts.name;
+        if (opts.ordering !== undefined) params.ordering = opts.ordering;
 
-      printInfo(`Fetching judges with params: ${JSON.stringify(params)}...`);
+        printInfo(`Fetching judges with params: ${JSON.stringify(params)}...`);
 
-      try {
-        const client = getSdkClient(apiKey);
-        const response = await client.judges.list(params);
+        try {
+          const client = getSdkClient(apiKey);
+          const response = await client.judges.list(params);
 
-        if (!response.results.length) {
-          printMessage("No judges found.");
-          return;
+          if (!response.results.length) {
+            printMessage("No judges found.");
+            return;
+          }
+
+          printJudgeTable(response.results, response.next);
+        } catch (e) {
+          handleSdkError(e);
         }
-
-        printJudgeTable(response.results, response.next);
-      } catch (e) {
-        handleSdkError(e);
-      }
-    });
+      },
+    );
 }
