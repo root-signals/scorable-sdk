@@ -24,7 +24,7 @@
   </a>
 </p>
 
-The `scorable` CLI is a command-line tool for interacting with the Scorable API. It lets you manage and execute Judges and run prompt testing experiments directly from the terminal.
+The `scorable` CLI is a command-line tool for interacting with the Scorable API. It lets you manage and execute Judges and Evaluators, view execution logs, and run prompt testing experiments directly from the terminal.
 
 Requires **Node.js 20 or higher**.
 
@@ -68,7 +68,7 @@ If no API key is set, the CLI will offer to create a temporary key interactively
 scorable judge list
 ```
 
-Options: `--page-size`, `--cursor`, `--search`, `--name`, `--ordering`, `--is-preset / --not-is-preset`, `--is-public / --not-is-public`, `--show-global / --not-show-global`
+Options: `--page-size`, `--cursor`, `--search`, `--name`, `--ordering`
 
 ### Get a judge
 
@@ -114,13 +114,19 @@ scorable judge duplicate <judge_id>
 scorable judge execute <judge_id> --request "What is the capital of France?" --response "Paris"
 ```
 
-Options: `--request`, `--response`, `--contexts` (JSON list), `--expected-output`, `--tag` (repeatable), `--user-id`, `--session-id`, `--system-prompt`
+Options: `--request`, `--response`, `--turns` (JSON array of conversation turns), `--contexts` (JSON list), `--expected-output`, `--tag` (repeatable), `--user-id`, `--session-id`, `--system-prompt`
 
-Pipe input via stdin:
+Pipe a response via stdin:
 
 ```bash
 echo "Paris" | scorable judge execute <judge_id> --request "What is the capital of France?"
 cat response.txt | scorable judge execute <judge_id>
+```
+
+For multi-turn conversations, pass the full history as a JSON array:
+
+```bash
+scorable judge execute <judge_id> --turns '[{"role":"user","content":"Hi"},{"role":"assistant","content":"Hello!"}]'
 ```
 
 ### Execute by name
@@ -129,22 +135,97 @@ cat response.txt | scorable judge execute <judge_id>
 scorable judge execute-by-name "My Judge" --request "What is the capital of France?" --response "Paris"
 ```
 
-Accepts the same options as `execute`. Stdin piping works the same way.
+Accepts the same options as `execute`. Stdin piping and `--turns` work the same way.
 
-### Execute via OpenAI-compatible API
+## Evaluator Management
+
+### List evaluators
 
 ```bash
-scorable judge exec-openai <judge_id> \
-  --model gpt-4o \
-  --messages '[{"role": "user", "content": "Hello"}, {"role": "assistant", "content": "Hi there"}]'
+scorable evaluator list
 ```
 
-Generic variant (judge ID in the `model` field):
+Options: `--page-size`, `--cursor`, `--search`, `--name`, `--ordering`
+
+### Get an evaluator
 
 ```bash
-scorable judge exec-openai-generic \
-  --model <judge_id_or_name> \
-  --messages '[{"role": "user", "content": "Hello"}, {"role": "assistant", "content": "Hi there"}]'
+scorable evaluator get <evaluator_id>
+```
+
+### Create an evaluator
+
+```bash
+scorable evaluator create \
+  --name "My Evaluator" \
+  --scoring-criteria "Does the {{ response }} directly answer the user's question?" \
+  --intent "Evaluate response relevance"
+```
+
+Options: `--name` (required), `--scoring-criteria` (required — must contain `{{ request }}` and/or `{{ response }}`), `--intent` or `--objective-id` (one required), `--system-message`, `--models` (JSON array), `--overwrite`, `--objective-version-id`
+
+### Update an evaluator
+
+```bash
+scorable evaluator update <evaluator_id> --name "Updated Name"
+```
+
+Options: `--name`, `--scoring-criteria`, `--system-message`, `--models` (JSON array), `--objective-id`, `--objective-version-id`
+
+### Delete an evaluator
+
+```bash
+scorable evaluator delete <evaluator_id>
+```
+
+Prompts for confirmation. Use `--yes` to skip.
+
+### Duplicate an evaluator
+
+```bash
+scorable evaluator duplicate <evaluator_id>
+```
+
+## Evaluator Execution
+
+### Execute by ID
+
+```bash
+scorable evaluator execute <evaluator_id> --request "What is 2+2?" --response "4"
+```
+
+Options: `--request`, `--response`, `--turns` (JSON array of conversation turns), `--contexts` (JSON list), `--expected-output`, `--tag` (repeatable), `--user-id`, `--session-id`, `--system-prompt`, `--variables` (JSON object of extra template variables)
+
+Stdin piping and `--turns` work the same way as for judge execution.
+
+For evaluators with custom template placeholders beyond `{{request}}`/`{{response}}`:
+
+```bash
+scorable evaluator execute <evaluator_id> --request "Hello" --variables '{"lang":"EN","topic":"science"}'
+```
+
+### Execute by name
+
+```bash
+scorable evaluator execute-by-name "My Evaluator" --request "What is 2+2?" --response "4"
+```
+
+Accepts the same options as `execute`, including `--variables`.
+
+## Execution Logs
+
+### List execution logs
+
+```bash
+scorable execution-log list
+```
+
+Options: `--page-size`, `--cursor`, `--search`, `--evaluator-id`, `--judge-id`, `--model`, `--tags`, `--score-min`, `--score-max`, `--created-at-after`, `--created-at-before`, `--owner-email`
+
+### Get an execution log
+
+```bash
+scorable execution-log get <log_id>
 ```
 
 ## Prompt Testing

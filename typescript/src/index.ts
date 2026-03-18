@@ -19,6 +19,8 @@ export type {
   EvaluatorDetail,
   ExecutionResult,
   EvaluatorListParams,
+  EvaluatorCreateParams,
+  EvaluatorUpdateParams,
 } from './resources/evaluators.js';
 
 export type {

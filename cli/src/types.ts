@@ -1,18 +1,3 @@
-export interface Judge {
-  id: string;
-  name: string;
-  intent: string;
-  created_at: string;
-  status?: string;
-  stage?: string;
-  evaluator_references?: Array<{ id: string }>;
-}
-
-export interface JudgeListResponse {
-  results: Judge[];
-  next?: string;
-}
-
 export interface PromptTestTask {
   id: string;
   status: string;

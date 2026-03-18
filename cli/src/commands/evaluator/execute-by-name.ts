@@ -1,8 +1,8 @@
 import { Command } from "commander";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
-import { isTurnArray, isStringArray } from "../../utils.js";
-import type { JudgeExecutionPayload } from "@root-signals/scorable";
+import { isTurnArray, isStringArray, isStringRecord } from "../../utils.js";
+import type { ExecutionPayload } from "@root-signals/scorable";
 
 async function readStdinDefault(): Promise<string> {
   const chunks: Buffer[] = [];
@@ -10,8 +10,8 @@ async function readStdinDefault(): Promise<string> {
   return Buffer.concat(chunks).toString().trim();
 }
 
-export async function executeJudge(
-  judgeId: string,
+export async function executeEvaluatorByName(
+  evaluatorName: string,
   opts: {
     request?: string;
     response?: string;
@@ -22,6 +22,7 @@ export async function executeJudge(
     userId?: string;
     sessionId?: string;
     systemPrompt?: string;
+    variables?: string;
   },
   readStdin = readStdinDefault,
 ): Promise<void> {
@@ -37,7 +38,7 @@ export async function executeJudge(
     return;
   }
 
-  const payload: JudgeExecutionPayload = {};
+  const payload: ExecutionPayload = {};
   if (opts.request) payload.request = opts.request;
   if (response) payload.response = response;
   if (opts.expectedOutput) payload.expected_output = opts.expectedOutput;
@@ -74,19 +75,33 @@ export async function executeJudge(
     }
   }
 
-  printInfo(`Attempting to execute judge ${judgeId} with payload:`);
+  if (opts.variables) {
+    try {
+      const parsed: unknown = JSON.parse(opts.variables);
+      if (!isStringRecord(parsed)) {
+        printError("Invalid JSON for --variables.");
+        return;
+      }
+      payload.variables = parsed;
+    } catch {
+      printError("Invalid JSON for --variables.");
+      return;
+    }
+  }
+
+  printInfo(`Attempting to execute evaluator '${evaluatorName}' with payload:`);
   printJson(payload);
 
   const client = getSdkClient(apiKey);
-  const result = await client.judges.execute(judgeId, payload);
-  printSuccess("Judge execution successful!");
+  const result = await client.evaluators.executeByName(evaluatorName, payload);
+  printSuccess("Evaluator execution by name successful!");
   printJson(result);
 }
 
-export function registerExecuteCommand(judge: Command): void {
-  judge
-    .command("execute <judgeId>")
-    .description("Execute a judge with interaction details")
+export function registerExecuteByNameCommand(evaluator: Command): void {
+  evaluator
+    .command("execute-by-name <evaluatorName>")
+    .description("Execute an evaluator by name with interaction details")
     .option("--request <text>", "Request text")
     .option("--response <text>", "Response text to evaluate")
     .option("--contexts <json>", "JSON list of context strings. E.g., '[\"ctx1\"]'")
@@ -104,39 +119,41 @@ export function registerExecuteCommand(judge: Command): void {
       "--turns <json>",
       'JSON array of conversation turns. E.g., \'[{"role":"user","content":"Hello"}]\'',
     )
+    .option(
+      "--variables <json>",
+      'JSON object of extra template variables. E.g., \'{"lang":"EN"}\'',
+    )
     .addHelpText(
       "after",
       `
 Examples:
-  # Evaluate a customer service response about return policy
-  $ scorable judge execute <judgeId> \\
-      --request "What's your return policy?" \\
-      --response "We have a 30-day return policy. If you're not satisfied, you can return within 30 days for a full refund."
+  # Check helpfulness of a support response
+  $ scorable evaluator execute-by-name "Helpfulness" \\
+      --request "Where can I find the application instructions?" \\
+      --response "You can find the instructions from our Careers page."
 
-  # RAG evaluation with context documents
-  $ scorable judge execute <judgeId> \\
-      --request "What's your return policy for electronics?" \\
+  # Network troubleshooting accuracy check
+  $ scorable evaluator execute-by-name "Network Troubleshooting" \\
+      --request "My internet is not working." \\
+      --response "Let's check the basics. Ensure the Ethernet cable is securely connected, then run \`ping 8.8.8.8\` and share the results."
+
+  # Faithfulness against retrieved context
+  $ scorable evaluator execute-by-name "Faithfulness" \\
+      --request "What is your return policy for electronics?" \\
       --response "You can return electronics within 30 days, unused and in original packaging." \\
-      --contexts '["Returns for electronics are accepted within 30 days. Item must be unused, in original packaging, with valid receipt."]'
+      --contexts '["Returns for electronics: 30 days, unused, original packaging, valid receipt required."]'
 
-  # Multi-turn conversation evaluation
-  $ scorable judge execute <judgeId> \\
-      --turns '[{"role":"user","content":"Hello, I need help with my order"},{"role":"assistant","content":"I\\'d be happy to help! What\\'s your order number?"},{"role":"user","content":"It\\'s ORDER-12345"},{"role":"assistant","content":"I found your order. It\\'s currently in transit."}]'
+  # Multi-turn conversation
+  $ scorable evaluator execute-by-name "Helpfulness" \\
+      --turns '[{"role":"user","content":"Hello, I need help with my order"},{"role":"assistant","content":"I\\'d be happy to help! What\\'s your order number?"},{"role":"user","content":"It\\'s ORDER-12345"}]'
 
-  # With tracking metadata and tags
-  $ scorable judge execute <judgeId> \\
-      --request "How do I reset my password?" \\
-      --response "Click the Forgot Password link on the login page and follow the instructions." \\
-      --user-id user_123 --session-id session_abc \\
-      --tag production --tag v1.23
-
-  # Pipe the LLM response from stdin
-  $ echo "You can cancel your subscription from account settings under billing." | \\
-      scorable judge execute <judgeId> --request "How do I cancel my subscription?"`,
+  # Pipe a response from your app via stdin
+  $ ./my-app respond "Do you offer refunds?" | \\
+      scorable evaluator execute-by-name "Helpfulness" --request "Do you offer refunds?"`,
     )
     .action(
       async (
-        judgeId: string,
+        evaluatorName: string,
         opts: {
           request?: string;
           response?: string;
@@ -147,10 +164,11 @@ Examples:
           userId?: string;
           sessionId?: string;
           systemPrompt?: string;
+          variables?: string;
         },
       ) => {
         try {
-          await executeJudge(judgeId, opts);
+          await executeEvaluatorByName(evaluatorName, opts);
         } catch (e) {
           handleSdkError(e);
         }

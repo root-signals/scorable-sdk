@@ -4,7 +4,7 @@ import yaml from "js-yaml";
 import Table from "cli-table3";
 import { requireApiKey } from "../../auth.js";
 import { apiRequest } from "../../client.js";
-import { printInfo, printSuccess, printWarning, printError } from "../../output.js";
+import { printInfo, printSuccess, printWarning, printError, handleSdkError } from "../../output.js";
 import { CliError } from "../../types.js";
 import type { PromptTest, PromptTestConfig } from "../../types.js";
 
@@ -205,11 +205,6 @@ export async function runPromptTests(
       );
     }
   }
-
-  const ids = finalTests.map((t) => t.id).join(",");
-  printInfo(
-    `\nView full results in the browser:\nhttps://scorable.ai/prompt-testing/compare?ids=${ids}`,
-  );
 }
 
 export function registerRunCommand(pt: Command): void {
@@ -221,8 +216,7 @@ export function registerRunCommand(pt: Command): void {
       try {
         await runPromptTests(opts.output, opts.config);
       } catch (e) {
-        if (e instanceof CliError) throw e;
-        throw new CliError(1, e instanceof Error ? e.message : String(e));
+        handleSdkError(e);
       }
     });
 }

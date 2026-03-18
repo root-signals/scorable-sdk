@@ -1,7 +1,6 @@
 import { Command } from "commander";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printSuccess, printError, printJson } from "../../output.js";
-import { CliError } from "../../types.js";
+import { printInfo, printSuccess, printJson, handleSdkError } from "../../output.js";
 
 export function registerGetCommand(judge: Command): void {
   judge
@@ -17,10 +16,7 @@ export function registerGetCommand(judge: Command): void {
         printSuccess(`Judge '${result.name}' details:`);
         printJson(result);
       } catch (e) {
-        if (e instanceof CliError) throw e;
-        const message = e instanceof Error ? e.message || String(e) : String(e);
-        printError(message);
-        return;
+        handleSdkError(e);
       }
     });
 }

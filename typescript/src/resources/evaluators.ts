@@ -37,6 +37,18 @@ export interface EvaluatorCreateParams {
   objective_version_id?: string;
 }
 
+export interface EvaluatorUpdateParams {
+  name?: string;
+  prompt?: string;
+  models?: string[];
+  status?: components['schemas']['StatusEnum'];
+  system_message?: string;
+  objective_id?: string;
+  objective_version_id?: string;
+  change_note?: string;
+  overwrite?: boolean;
+}
+
 export class EvaluatorsResource {
   constructor(private _client: Client) {}
 
@@ -146,6 +158,39 @@ export class EvaluatorsResource {
     }
 
     return data;
+  }
+
+  async update(id: string, params: EvaluatorUpdateParams): Promise<EvaluatorDetail> {
+    const { data, error } = await this._client.PATCH('/v1/evaluators/{id}/', {
+      params: { path: { id } },
+      body: { overwrite: false, ...params },
+    });
+
+    if (error) {
+      throw new ScorableError(
+        (error as ApiError)?.status ?? 500,
+        'UPDATE_EVALUATOR_FAILED',
+        error,
+        `Failed to update evaluator ${id}`,
+      );
+    }
+
+    return data;
+  }
+
+  async delete(id: string): Promise<void> {
+    const { error } = await this._client.DELETE('/v1/evaluators/{id}/', {
+      params: { path: { id } },
+    });
+
+    if (error) {
+      throw new ScorableError(
+        (error as ApiError)?.status ?? 500,
+        'DELETE_EVALUATOR_FAILED',
+        error,
+        `Failed to delete evaluator ${id}`,
+      );
+    }
   }
 
   async create(params: EvaluatorCreateParams): Promise<EvaluatorWithExecute> {

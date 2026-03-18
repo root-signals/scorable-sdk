@@ -4,6 +4,8 @@ import { fileURLToPath } from "node:url";
 import { Command } from "commander";
 import { registerJudgeCommands } from "./commands/judge/index.js";
 import { registerPromptTestCommands } from "./commands/prompt-test/index.js";
+import { registerEvaluatorCommands } from "./commands/evaluator/index.js";
+import { registerExecutionLogCommands } from "./commands/execution-log/index.js";
 
 export function createCli(): Command {
   const program = new Command()
@@ -13,6 +15,8 @@ export function createCli(): Command {
 
   registerJudgeCommands(program);
   registerPromptTestCommands(program);
+  registerEvaluatorCommands(program);
+  registerExecutionLogCommands(program);
 
   return program;
 }

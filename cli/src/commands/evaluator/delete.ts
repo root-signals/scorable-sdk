@@ -3,12 +3,12 @@ import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printInfo, printSuccess, handleSdkError } from "../../output.js";
 import { CliError } from "../../types.js";
 
-export function registerDeleteCommand(judge: Command): void {
-  judge
-    .command("delete <judgeId>")
-    .description("Delete a judge by its ID")
+export function registerDeleteCommand(evaluator: Command): void {
+  evaluator
+    .command("delete <evaluatorId>")
+    .description("Delete an evaluator by its ID")
     .option("--yes", "Skip confirmation prompt")
-    .action(async (judgeId: string, opts: { yes?: boolean }) => {
+    .action(async (evaluatorId: string, opts: { yes?: boolean }) => {
       const apiKey = await requireApiKey();
 
       if (!opts.yes) {
@@ -20,7 +20,7 @@ export function registerDeleteCommand(judge: Command): void {
         }
         const { confirm } = await import("@inquirer/prompts");
         const ok = await confirm({
-          message: "Are you sure you want to delete this judge?",
+          message: "Are you sure you want to delete this evaluator?",
           default: false,
         });
         if (!ok) {
@@ -28,12 +28,12 @@ export function registerDeleteCommand(judge: Command): void {
         }
       }
 
-      printInfo(`Deleting judge ${judgeId}...`);
+      printInfo(`Deleting evaluator ${evaluatorId}...`);
 
       try {
         const client = getSdkClient(apiKey);
-        await client.judges.delete(judgeId);
-        printSuccess(`Judge ${judgeId} deleted successfully.`);
+        await client.evaluators.delete(evaluatorId);
+        printSuccess(`Evaluator ${evaluatorId} deleted successfully.`);
       } catch (e) {
         handleSdkError(e);
       }

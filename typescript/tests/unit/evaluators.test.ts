@@ -164,6 +164,54 @@ describe('EvaluatorsResource', () => {
     });
   });
 
+  describe('update', () => {
+    it('should update evaluator successfully', async () => {
+      const evaluatorId = 'eval-123';
+      const updateParams = { name: 'Updated Evaluator', prompt: 'New scoring criteria' };
+      const updatedEvaluator = TestDataFactory.createEvaluator({
+        id: evaluatorId,
+        name: 'Updated Evaluator',
+      });
+
+      mockClient.PATCH.mockResolvedValueOnce({ data: updatedEvaluator, error: undefined });
+
+      const result = await client.evaluators.update(evaluatorId, updateParams);
+
+      expect(result.id).toBe(evaluatorId);
+      expect(mockClient.PATCH).toHaveBeenCalledWith('/v1/evaluators/{id}/', {
+        params: { path: { id: evaluatorId } },
+        body: { overwrite: false, ...updateParams },
+      });
+    });
+
+    it('should throw on API error', async () => {
+      mockClient.PATCH.mockResolvedValueOnce({ data: undefined, error: { detail: 'Not found.' } });
+
+      await expect(client.evaluators.update('bad-id', { name: 'x' })).rejects.toThrow(
+        'Failed to update evaluator bad-id',
+      );
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete evaluator successfully', async () => {
+      const evaluatorId = 'eval-123';
+
+      await expect(client.evaluators.delete(evaluatorId)).resolves.toBeUndefined();
+      expect(mockClient.DELETE).toHaveBeenCalledWith('/v1/evaluators/{id}/', {
+        params: { path: { id: evaluatorId } },
+      });
+    });
+
+    it('should throw on API error', async () => {
+      mockClient.DELETE.mockResolvedValueOnce({ data: undefined, error: { detail: 'Not found.' } });
+
+      await expect(client.evaluators.delete('bad-id')).rejects.toThrow(
+        'Failed to delete evaluator bad-id',
+      );
+    });
+  });
+
   describe('multi-turn conversations', () => {
     it('should execute evaluator with multi-turn messages', async () => {
       const evaluatorId = 'eval-123';

@@ -1,7 +1,6 @@
 import { Command } from "commander";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printSuccess, printError, printJson } from "../../output.js";
-import { CliError } from "../../types.js";
+import { printInfo, printSuccess, printJson, handleSdkError } from "../../output.js";
 
 export function registerDuplicateCommand(judge: Command): void {
   judge
@@ -17,8 +16,7 @@ export function registerDuplicateCommand(judge: Command): void {
         printSuccess(`Judge ${judgeId} duplicated successfully!`);
         printJson(result);
       } catch (e) {
-        if (e instanceof CliError) throw e;
-        printError(e instanceof Error ? e.message : String(e));
+        handleSdkError(e);
       }
     });
 }

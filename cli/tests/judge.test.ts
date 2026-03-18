@@ -91,10 +91,16 @@ describe("TestJudgeList", () => {
       "test",
       "--name",
       "Test Judge",
-      "--is-preset",
     ]);
     expect(result.exitCode).toBe(0);
-    expect(mockList).toHaveBeenCalledOnce();
+    expect(mockList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        page_size: 10,
+        search: "test",
+        name: "Test Judge",
+        is_public: false,
+      }),
+    );
   });
 
   it("test_list_judges_empty", async () => {
@@ -130,7 +136,8 @@ describe("TestJudgeGet", () => {
   it("test_get_judge_not_found", async () => {
     mockGet.mockRejectedValue(new Error("Not found"));
     const result = await runCli(["judge", "get", "nonexistent"]);
-    expect(result.exitCode).toBe(0); // SDK errors print and exit 0 (matches Python)
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain("Not found");
   });
 });
 
@@ -215,14 +222,20 @@ describe("TestJudgeUpdate", () => {
     const result = await runCli(["judge", "update", "judge-123", "--name", "Updated Judge"]);
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("Judge judge-123 updated successfully");
-    expect(mockUpdate).toHaveBeenCalledOnce();
+    expect(mockUpdate).toHaveBeenCalledWith(
+      "judge-123",
+      expect.objectContaining({ name: "Updated Judge" }),
+    );
   });
 
   it("test_update_judge_stage", async () => {
     mockUpdate.mockResolvedValue(sampleJudge);
     const result = await runCli(["judge", "update", "judge-123", "--stage", "production"]);
     expect(result.exitCode).toBe(0);
-    expect(mockUpdate).toHaveBeenCalledOnce();
+    expect(mockUpdate).toHaveBeenCalledWith(
+      "judge-123",
+      expect.objectContaining({ stage: "production" }),
+    );
   });
 
   it("test_update_judge_evaluator_references", async () => {
@@ -235,7 +248,10 @@ describe("TestJudgeUpdate", () => {
       '[{"id": "eval-456"}]',
     ]);
     expect(result.exitCode).toBe(0);
-    expect(mockUpdate).toHaveBeenCalledOnce();
+    expect(mockUpdate).toHaveBeenCalledWith(
+      "judge-123",
+      expect.objectContaining({ evaluator_references: [{ id: "eval-456" }] }),
+    );
   });
 
   it("test_update_judge_clear_evaluator_references", async () => {
@@ -335,7 +351,28 @@ describe("TestJudgeExecute", () => {
   it("test_execute_judge_no_request_or_response", async () => {
     const result = await runCli(["judge", "execute", "judge-123"]);
     expect(result.exitCode).toBe(0);
-    expect(result.stderr).toContain("Either --request or --response must be provided");
+    expect(result.stderr).toContain("Either --request, --response, or --turns must be provided");
+  });
+
+  it("test_execute_judge_with_turns", async () => {
+    mockExecute.mockResolvedValue({ result: "success", score: 0.9 });
+    const turns = JSON.stringify([
+      { role: "user", content: "Hello" },
+      { role: "assistant", content: "Hi there!" },
+    ]);
+    const result = await runCli(["judge", "execute", "judge-123", "--turns", turns]);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("Judge execution successful");
+    expect(mockExecute).toHaveBeenCalledWith(
+      "judge-123",
+      expect.objectContaining({ turns: expect.any(Array) }),
+    );
+  });
+
+  it("test_execute_judge_invalid_turns_json", async () => {
+    const result = await runCli(["judge", "execute", "judge-123", "--turns", "invalid-json"]);
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toContain("Invalid JSON for --turns");
   });
 
   it("test_execute_judge_invalid_contexts_json", async () => {
@@ -403,7 +440,19 @@ describe("TestJudgeExecuteByName", () => {
   it("test_execute_judge_by_name_no_request_or_response", async () => {
     const result = await runCli(["judge", "execute-by-name", "Test Judge"]);
     expect(result.exitCode).toBe(0);
-    expect(result.stderr).toContain("Either --request or --response must be provided");
+    expect(result.stderr).toContain("Either --request, --response, or --turns must be provided");
+  });
+
+  it("test_execute_judge_by_name_with_turns", async () => {
+    mockExecuteByName.mockResolvedValue({ result: "success", score: 0.9 });
+    const turns = JSON.stringify([{ role: "user", content: "Hello" }]);
+    const result = await runCli(["judge", "execute-by-name", "Test Judge", "--turns", turns]);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("Judge execution by name successful");
+    expect(mockExecuteByName).toHaveBeenCalledWith(
+      "Test Judge",
+      expect.objectContaining({ turns: expect.any(Array) }),
+    );
   });
 
   it("test_execute_judge_by_name_with_stdin_input", async () => {
