@@ -1,3 +1,7 @@
+## 0.2.1
+
+- Fix dependency on @root-signals/scorable to ^0.3.0 (required for evaluator update and delete commands)
+
 ## 0.2.0
 
 - Add full evaluator command group: list, get, create, update, delete, execute, execute-by-name, duplicate
