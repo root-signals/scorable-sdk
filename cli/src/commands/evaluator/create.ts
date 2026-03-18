@@ -1,6 +1,7 @@
 import { Command } from "commander";
+import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
+import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import type { EvaluatorCreateParams } from "@root-signals/scorable";
 
 export function registerCreateCommand(evaluator: Command): void {
@@ -71,16 +72,16 @@ export function registerCreateCommand(evaluator: Command): void {
           }
         }
 
-        printInfo("Attempting to create evaluator with payload:");
-        printJson(payload);
-
+        const spinner = ora("Creating...").start();
         try {
           const apiKey = await requireApiKey();
           const client = getSdkClient(apiKey);
           const result = await client.evaluators.create(payload);
+          spinner.stop();
           printSuccess("Evaluator created successfully!");
           printJson(result);
         } catch (e) {
+          spinner.stop();
           handleSdkError(e);
         }
       },

@@ -1,3 +1,12 @@
+## 0.3.0
+
+- Add `scorable auth set-key <apiKey>` command to persistently save an API key to `~/.scorable/settings.json`
+- Add `--version` / `-V` flag
+- Add loading spinners on all commands; remove noisy request payload dumps before API calls
+- Prioritise saved `api_key` over `temporary_api_key` when resolving credentials
+- Improve auth error hint to mention `scorable auth set-key`
+- Improve README and `--help` output to emphasise authentication as a required first step
+
 ## 0.2.1
 
 - Fix dependency on @root-signals/scorable to ^0.3.0 (required for evaluator update and delete commands)

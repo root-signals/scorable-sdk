@@ -1,6 +1,7 @@
 import { Command } from "commander";
+import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printMessage, printEvaluatorTable, handleSdkError } from "../../output.js";
+import { printMessage, printEvaluatorTable, handleSdkError } from "../../output.js";
 import type { EvaluatorListParams } from "@root-signals/scorable";
 
 export function registerListCommand(evaluator: Command): void {
@@ -29,11 +30,11 @@ export function registerListCommand(evaluator: Command): void {
         if (opts.name !== undefined) params.name = opts.name;
         if (opts.ordering !== undefined) params.ordering = opts.ordering;
 
-        printInfo(`Fetching evaluators with params: ${JSON.stringify(params)}...`);
-
+        const spinner = ora("Fetching...").start();
         try {
           const client = getSdkClient(apiKey);
           const response = await client.evaluators.list(params);
+          spinner.stop();
 
           if (!response.results.length) {
             printMessage("No evaluators found.");
@@ -42,6 +43,7 @@ export function registerListCommand(evaluator: Command): void {
 
           printEvaluatorTable(response.results, response.next);
         } catch (e) {
+          spinner.stop();
           handleSdkError(e);
         }
       },

@@ -1,4 +1,5 @@
 import { Command } from "commander";
+import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import type { EvaluatorUpdateParams } from "@root-signals/scorable";
@@ -49,15 +50,15 @@ export function registerUpdateCommand(evaluator: Command): void {
           return;
         }
 
-        printInfo(`Attempting to update evaluator ${evaluatorId} with PATCH payload:`);
-        printJson(payload);
-
+        const spinner = ora("Updating...").start();
         try {
           const client = getSdkClient(apiKey);
           const result = await client.evaluators.update(evaluatorId, payload);
+          spinner.stop();
           printSuccess(`Evaluator ${evaluatorId} updated successfully!`);
           printJson(result);
         } catch (e) {
+          spinner.stop();
           handleSdkError(e);
         }
       },

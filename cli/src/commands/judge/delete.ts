@@ -1,6 +1,7 @@
 import { Command } from "commander";
+import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printInfo, printSuccess, handleSdkError } from "../../output.js";
+import { printSuccess, handleSdkError } from "../../output.js";
 import { CliError } from "../../types.js";
 
 export function registerDeleteCommand(judge: Command): void {
@@ -28,13 +29,14 @@ export function registerDeleteCommand(judge: Command): void {
         }
       }
 
-      printInfo(`Deleting judge ${judgeId}...`);
-
+      const spinner = ora("Deleting...").start();
       try {
         const client = getSdkClient(apiKey);
         await client.judges.delete(judgeId);
+        spinner.stop();
         printSuccess(`Judge ${judgeId} deleted successfully.`);
       } catch (e) {
+        spinner.stop();
         handleSdkError(e);
       }
     });
