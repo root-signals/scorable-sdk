@@ -1,3 +1,18 @@
+## 0.4.0
+
+- Add `scorable judge generate` command to generate a judge from an intent using AI
+  - Supports `--intent` (required), `--name`, `--stage`, `--visibility`, `--overwrite`, `--judge-id`, `--reasoning-effort`
+  - Add `--extra-contexts` for providing key-value context to improve generation
+  - Add `--context-aware` to enable hallucination/context-drift evaluators for RAG applications
+  - Handles `multiple_stages` response (lists stages, prompts to re-run with `--stage`)
+  - Handles `missing_context_from_system_goal` response (lists missing fields, prompts to re-run with `--extra-contexts`)
+- Add `scorable auth demo-key` command to create and save a free demo API key
+- Make temporary key creation explicit — `requireApiKey()` now fails fast with clear instructions instead of silently creating a demo key
+- Add coloured CLI banner with logo mark, version, and tagline
+- Replace text labels with symbols in all output (`✔` success, `✖` error, `›` info, `⚠` warning)
+- Use Unicode box-drawing table borders and bold cyan headers throughout
+- Bump `@root-signals/scorable` dependency to `^0.3.1`
+
 ## 0.3.0
 
 - Add `scorable auth set-key <apiKey>` command to persistently save an API key to `~/.scorable/settings.json`

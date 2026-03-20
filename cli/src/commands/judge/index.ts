@@ -7,6 +7,7 @@ import { registerDeleteCommand } from "./delete.js";
 import { registerExecuteCommand } from "./execute.js";
 import { registerExecuteByNameCommand } from "./execute-by-name.js";
 import { registerDuplicateCommand } from "./duplicate.js";
+import { registerGenerateCommand } from "./generate.js";
 import { registerExecOpenaiCommand } from "./exec-openai.js";
 import { registerExecOpenaiGenericCommand } from "./exec-openai-generic.js";
 
@@ -21,6 +22,7 @@ export function registerJudgeCommands(program: Command): void {
   registerExecuteCommand(judge);
   registerExecuteByNameCommand(judge);
   registerDuplicateCommand(judge);
+  registerGenerateCommand(judge);
   registerExecOpenaiCommand(judge);
   registerExecOpenaiGenericCommand(judge);
 

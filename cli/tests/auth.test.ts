@@ -10,6 +10,8 @@ vi.mock("@inquirer/prompts");
 // Mock node:fs so tests control settings file existence
 const mockExistsSync = vi.fn();
 const mockReadFileSync = vi.fn();
+const mockWriteFileSync = vi.fn();
+const mockMkdirSync = vi.fn();
 
 vi.mock("node:fs", async () => {
   const actual = await vi.importActual<typeof import("node:fs")>("node:fs");
@@ -17,6 +19,8 @@ vi.mock("node:fs", async () => {
     ...actual,
     existsSync: (...args: Parameters<typeof actual.existsSync>) => mockExistsSync(...args),
     readFileSync: (...args: Parameters<typeof actual.readFileSync>) => mockReadFileSync(...args),
+    writeFileSync: (...args: Parameters<typeof actual.writeFileSync>) => mockWriteFileSync(...args),
+    mkdirSync: (...args: Parameters<typeof actual.mkdirSync>) => mockMkdirSync(...args),
   };
 });
 
@@ -39,7 +43,7 @@ describe("TestApiRequest", () => {
     vi.unstubAllEnvs(); // ensure no SCORABLE_API_KEY
     const result = await runCli(["judge", "list"]);
     expect(result.exitCode).toBe(1);
-    expect(result.stderr).toContain("SCORABLE_API_KEY environment variable not set");
+    expect(result.stderr).toContain("No API key found");
   });
 
   it("test_request_timeout", async () => {
@@ -170,18 +174,87 @@ describe("TestHelperFunctions", () => {
     const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
     printError("Test error");
-    expect(errSpy).toHaveBeenCalledWith(expect.stringContaining("Error:"));
+    expect(errSpy).toHaveBeenCalledWith(expect.stringContaining("Test error"));
 
     printSuccess("Test success");
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Success:"));
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Test success"));
 
     printInfo("Test info");
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Info:"));
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Test info"));
 
     printWarning("Test warning");
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Warning:"));
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("Test warning"));
 
     logSpy.mockRestore();
     errSpy.mockRestore();
+  });
+});
+
+// --- TestAuthDemoKey ---
+
+describe("TestAuthDemoKey", () => {
+  it("test_demo_key_success", async () => {
+    vi.unstubAllEnvs();
+    mockExistsSync.mockReturnValue(false);
+    mockReadFileSync.mockReturnValue("{}");
+    mockWriteFileSync.mockReturnValue(undefined);
+    mockMkdirSync.mockReturnValue(undefined);
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ api_key: "demo-key-abc123" }),
+      }),
+    );
+
+    const result = await runCli(["auth", "demo-key"]);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("Demo key saved");
+  });
+
+  it("test_demo_key_api_failure", async () => {
+    vi.unstubAllEnvs();
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 500,
+        json: () => Promise.resolve({}),
+      }),
+    );
+
+    const result = await runCli(["auth", "demo-key"]);
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain("Failed to create demo key");
+  });
+
+  it("test_demo_key_network_error", async () => {
+    vi.unstubAllEnvs();
+
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Network unreachable")));
+
+    const result = await runCli(["auth", "demo-key"]);
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain("Failed to create demo key");
+  });
+
+  it("test_demo_key_missing_api_key_in_response", async () => {
+    vi.unstubAllEnvs();
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ some_other_field: "value" }),
+      }),
+    );
+
+    const result = await runCli(["auth", "demo-key"]);
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain("Failed to create demo key");
   });
 });

@@ -15,6 +15,7 @@ const mockDelete = vi.fn();
 const mockExecute = vi.fn();
 const mockExecuteByName = vi.fn();
 const mockDuplicate = vi.fn();
+const mockGenerate = vi.fn();
 
 const sampleJudge = {
   id: "judge-123",
@@ -38,6 +39,7 @@ beforeEach(() => {
         execute: mockExecute,
         executeByName: mockExecuteByName,
         duplicate: mockDuplicate,
+        generate: mockGenerate,
       },
     } as unknown as Scorable;
   });
@@ -499,5 +501,119 @@ describe("TestJudgeDuplicate", () => {
     const result = await runCli(["judge", "duplicate", "judge-123"]);
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("Judge judge-123 duplicated successfully");
+  });
+});
+
+// --- TestJudgeGenerate ---
+
+describe("TestJudgeGenerate", () => {
+  it("test_generate_judge_success", async () => {
+    mockGenerate.mockResolvedValue({ judge_id: "judge-abc", error_code: null });
+    const result = await runCli(["judge", "generate", "--intent", "Evaluate response quality"]);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("Judge generated successfully");
+  });
+
+  it("test_generate_judge_missing_intent", async () => {
+    const result = await runCli(["judge", "generate"]);
+    expect(result.exitCode).not.toBe(0);
+  });
+
+  it("test_generate_judge_multiple_stages", async () => {
+    mockGenerate.mockResolvedValue({
+      judge_id: null,
+      error_code: "multiple_stages",
+      stages: ["intent capture", "response generation"],
+    });
+    const result = await runCli([
+      "judge",
+      "generate",
+      "--intent",
+      "Evaluate a customer support pipeline",
+    ]);
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stdout).toContain("Multiple evaluation stages detected");
+    expect(result.stdout).toContain("intent capture");
+    expect(result.stdout).toContain("response generation");
+    expect(result.stdout).toContain("--stage");
+  });
+
+  it("test_generate_judge_missing_context", async () => {
+    mockGenerate.mockResolvedValue({
+      judge_id: "judge-abc",
+      error_code: null,
+      missing_context_from_system_goal: [
+        { form_field_name: "Tone Of Voice", form_field_description: "Describe the brand tone" },
+        { form_field_name: "Domain", form_field_description: "Describe the application domain" },
+      ],
+    });
+    const result = await runCli(["judge", "generate", "--intent", "Evaluate chatbot responses"]);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("additional context would improve it");
+    expect(result.stdout).toContain("Tone Of Voice");
+    expect(result.stdout).toContain("Re-run with --judge-id");
+  });
+
+  it("test_generate_judge_invalid_extra_contexts_json", async () => {
+    const result = await runCli([
+      "judge",
+      "generate",
+      "--intent",
+      "Evaluate responses",
+      "--extra-contexts",
+      "invalid-json",
+    ]);
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain("Invalid --extra-contexts JSON");
+  });
+
+  it("test_generate_judge_with_judge_id_and_extra_contexts", async () => {
+    mockGenerate.mockResolvedValue({ judge_id: "judge-abc", error_code: null });
+    const result = await runCli([
+      "judge",
+      "generate",
+      "--intent",
+      "Evaluate hotel chatbot responses",
+      "--judge-id",
+      "judge-abc",
+      "--extra-contexts",
+      '{"Domain":"hotel","Tone":"formal"}',
+    ]);
+    expect(result.exitCode).toBe(0);
+    expect(mockGenerate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        judge_id: "judge-abc",
+        extra_contexts: { Domain: "hotel", Tone: "formal" },
+      }),
+    );
+  });
+
+  it("test_generate_judge_with_context_aware", async () => {
+    mockGenerate.mockResolvedValue({ judge_id: "judge-abc", error_code: null });
+    const result = await runCli([
+      "judge",
+      "generate",
+      "--intent",
+      "Evaluate RAG responses",
+      "--context-aware",
+    ]);
+    expect(result.exitCode).toBe(0);
+    expect(mockGenerate).toHaveBeenCalledWith(
+      expect.objectContaining({ enable_context_aware_evaluators: true }),
+    );
+  });
+
+  it("test_generate_judge_api_error", async () => {
+    mockGenerate.mockRejectedValue(new Error("Generation failed"));
+    const result = await runCli(["judge", "generate", "--intent", "Evaluate responses"]);
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain("Generation failed");
+  });
+
+  it("test_generate_judge_other_error_code", async () => {
+    mockGenerate.mockResolvedValue({ judge_id: null, error_code: "invalid_intent" });
+    const result = await runCli(["judge", "generate", "--intent", "Evaluate responses"]);
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain("invalid_intent");
   });
 });
