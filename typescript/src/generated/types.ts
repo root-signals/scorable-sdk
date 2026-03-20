@@ -1520,6 +1520,8 @@ export interface components {
       overwrite: boolean | null;
       /** @description The name of the judge to generate. If not provided, a name will be generated for you. */
       name?: string | null;
+      /** @description Set to true if the application uses RAG (document chunks) to enable context-aware evaluators (hallucination detection, context drift, etc.). */
+      enable_context_aware_evaluators?: boolean | null;
     };
     JudgeGeneratorResponse: {
       /** Format: uuid */
@@ -1527,6 +1529,13 @@ export interface components {
       /** Format: uuid */
       judge_version_id: string;
       error_code?: string | null;
+      stages?: string[] | null;
+      missing_context_from_system_goal?:
+        | {
+            form_field_name: string;
+            form_field_description: string;
+          }[]
+        | null;
     };
     /**
      * @description * `global` - global

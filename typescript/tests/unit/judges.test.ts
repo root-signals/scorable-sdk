@@ -224,10 +224,13 @@ describe('JudgesResource', () => {
           intent,
           visibility: 'unlisted',
           stage: 'response generation',
-          strict: true,
+          strict: null,
           extra_contexts: { domain: 'Ecommerce selling clothing' },
           overwrite: true,
           name: 'Test Judge',
+          judge_id: null,
+          generating_model_params: null,
+          enable_context_aware_evaluators: null,
         },
       });
     });
@@ -250,10 +253,13 @@ describe('JudgesResource', () => {
           intent: 'Evaluate responses for helpfulness',
           visibility: 'unlisted',
           stage: null,
-          strict: true,
+          strict: null,
           extra_contexts: null,
           overwrite: false,
           name: null,
+          judge_id: null,
+          generating_model_params: null,
+          enable_context_aware_evaluators: null,
         },
       });
     });
