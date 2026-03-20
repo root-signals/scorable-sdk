@@ -40,7 +40,7 @@ main() {
 
   echo "Installing the Scorable CLI..."
 
-  # Check for Node.js >= 18
+  # Check for Node.js >= 20
   if ! command_exists node; then
     echo "Error: Node.js is not installed." >&2
     echo "Install it from https://nodejs.org/ (version $MIN_NODE_MAJOR or higher required)." >&2
@@ -67,7 +67,11 @@ main() {
 
   echo ""
   echo "Scorable CLI installed successfully!"
-  echo "Run it with: SCORABLE_API_KEY=<your-api-key> $INSTALL_NAME judge list"
+  echo ""
+  echo "Get started:"
+  echo "  $INSTALL_NAME auth demo-key        # create a free demo key"
+  echo "  $INSTALL_NAME auth set-key <key>   # or set your own API key"
+  echo "  $INSTALL_NAME judge list           # list your judges"
   echo ""
   echo "To uninstall, run: npm uninstall -g $PACKAGE"
 }
