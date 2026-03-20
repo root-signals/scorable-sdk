@@ -1,10 +1,29 @@
 import { Command } from "commander";
 import { readFileSync, writeFileSync } from "node:fs";
 import yaml from "js-yaml";
+import chalk from "chalk";
 import Table from "cli-table3";
 import { requireApiKey } from "../../auth.js";
 import { apiRequest } from "../../client.js";
 import { printInfo, printSuccess, printWarning, printError, handleSdkError } from "../../output.js";
+
+const UNICODE_CHARS = {
+  top: "─",
+  "top-mid": "┬",
+  "top-left": "┌",
+  "top-right": "┐",
+  bottom: "─",
+  "bottom-mid": "┴",
+  "bottom-left": "└",
+  "bottom-right": "┘",
+  left: "│",
+  "left-mid": "├",
+  mid: "─",
+  "mid-mid": "┼",
+  right: "│",
+  "right-mid": "┤",
+  middle: "│",
+};
 import { CliError } from "../../types.js";
 import type { PromptTest, PromptTestConfig } from "../../types.js";
 
@@ -15,8 +34,8 @@ function isPromptTestComplete(exp: PromptTest): boolean {
 
 function displayProgressTable(experiments: PromptTest[]): void {
   const table = new Table({
-    head: ["Prompt Test ID", "Status", "Tasks Completed"],
-    style: { head: ["cyan"] },
+    head: ["Prompt Test ID", "Status", "Tasks Completed"].map((h) => chalk.bold.cyan(h)),
+    chars: UNICODE_CHARS,
   });
 
   for (const exp of experiments) {
@@ -55,8 +74,8 @@ function displayAggregatedResults(experiments: PromptTest[]): void {
       "Latency (s)",
       "Output",
       ...sortedEvalIds.map((id) => allEvaluators.get(id)!),
-    ],
-    style: { head: ["cyan"] },
+    ].map((h) => chalk.bold.cyan(h)),
+    chars: UNICODE_CHARS,
     wordWrap: true,
   });
 

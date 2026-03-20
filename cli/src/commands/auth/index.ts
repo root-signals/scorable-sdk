@@ -1,5 +1,6 @@
 import { Command } from "commander";
-import { loadSettings, saveSettings } from "../../auth.js";
+import ora from "ora";
+import { loadSettings, saveSettings, createDemoKey } from "../../auth.js";
 import { printSuccess, printError } from "../../output.js";
 import { CliError } from "../../types.js";
 
@@ -41,5 +42,30 @@ export function registerAuthCommands(program: Command): void {
         throw new CliError(1, "Failed to save API key");
       }
       printSuccess("API key saved to ~/.scorable/settings.json");
+    });
+
+  auth
+    .command("demo-key")
+    .description("Create a free demo API key and save it to ~/.scorable/settings.json")
+    .action(async () => {
+      const spinner = ora("Creating demo key...").start();
+      try {
+        const key = await createDemoKey();
+        spinner.stop();
+
+        const settings = loadSettings();
+        settings["temporary_api_key"] = key;
+        if (!saveSettings(settings)) {
+          printError("Failed to save demo key to ~/.scorable/settings.json");
+          throw new CliError(1, "Failed to save demo key");
+        }
+
+        printSuccess(`Demo key saved to ~/.scorable/settings.json`);
+      } catch (e) {
+        spinner.stop();
+        if (e instanceof CliError) throw e;
+        printError(`Failed to create demo key: ${e instanceof Error ? e.message : String(e)}`);
+        throw new CliError(1, "Failed to create demo key");
+      }
     });
 }

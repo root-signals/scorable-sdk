@@ -3,12 +3,30 @@ import Table from "cli-table3";
 import { CliError } from "./types.js";
 import type { Judge, EvaluatorListItem, ExecutionLogList } from "@root-signals/scorable";
 
+const UNICODE_CHARS = {
+  top: "─",
+  "top-mid": "┬",
+  "top-left": "┌",
+  "top-right": "┐",
+  bottom: "─",
+  "bottom-mid": "┴",
+  "bottom-left": "└",
+  "bottom-right": "┘",
+  left: "│",
+  "left-mid": "├",
+  mid: "─",
+  "mid-mid": "┼",
+  right: "│",
+  "right-mid": "┤",
+  middle: "│",
+};
+
 export function printJson(data: unknown): void {
   console.log(JSON.stringify(data, null, 2));
 }
 
 export function printError(msg: string): void {
-  console.error(chalk.bold.red("Error:") + " " + msg);
+  console.error(chalk.red("✖") + " " + msg);
 }
 
 export function handleSdkError(e: unknown): never {
@@ -19,15 +37,15 @@ export function handleSdkError(e: unknown): never {
 }
 
 export function printSuccess(msg: string): void {
-  console.log(chalk.bold.green("Success:") + " " + msg);
+  console.log(chalk.green("✔") + " " + msg);
 }
 
 export function printInfo(msg: string): void {
-  console.log(chalk.bold.blue("Info:") + " " + msg);
+  console.log(chalk.cyan("›") + " " + msg);
 }
 
 export function printWarning(msg: string): void {
-  console.log(chalk.bold.yellow("Warning:") + " " + msg);
+  console.log(chalk.yellow("⚠") + " " + msg);
 }
 
 export function printMessage(msg: string): void {
@@ -40,8 +58,8 @@ function truncate(s: string, max: number): string {
 
 export function printJudgeTable(judges: Judge[], nextCursor?: string): void {
   const table = new Table({
-    head: ["ID", "Name", "Intent", "Created At"],
-    style: { head: ["cyan"] },
+    head: ["ID", "Name", "Intent", "Created At"].map((h) => chalk.bold.cyan(h)),
+    chars: UNICODE_CHARS,
     colWidths: [38, 30, 52, 12],
     wordWrap: true,
   });
@@ -61,8 +79,8 @@ export function printJudgeTable(judges: Judge[], nextCursor?: string): void {
 
 export function printEvaluatorTable(evaluators: EvaluatorListItem[], nextCursor?: string): void {
   const table = new Table({
-    head: ["ID", "Name", "Created At"],
-    style: { head: ["cyan"] },
+    head: ["ID", "Name", "Created At"].map((h) => chalk.bold.cyan(h)),
+    chars: UNICODE_CHARS,
     colWidths: [38, 30, 12],
     wordWrap: true,
   });
@@ -82,8 +100,8 @@ export function printEvaluatorTable(evaluators: EvaluatorListItem[], nextCursor?
 
 export function printExecutionLogTable(logs: ExecutionLogList[], nextCursor?: string): void {
   const table = new Table({
-    head: ["ID", "Item Name", "Type", "Score", "Created At"],
-    style: { head: ["cyan"] },
+    head: ["ID", "Item Name", "Type", "Score", "Created At"].map((h) => chalk.bold.cyan(h)),
+    chars: UNICODE_CHARS,
     colWidths: [38, 30, 15, 8, 12],
     wordWrap: true,
   });
