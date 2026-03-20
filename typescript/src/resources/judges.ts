@@ -24,6 +24,22 @@ export interface UpdateJudgeData {
 
 export type JudgeExecutionPayload = components['schemas']['JudgeExecutionRequest'];
 export type JudgeRefinementPayload = components['schemas']['JudgeRectifierRequestRequest'];
+export type JudgeGeneratorResponse = components['schemas']['JudgeGeneratorResponse'];
+
+export interface JudgeGenerateParams {
+  intent: string;
+  visibility?: components['schemas']['JudgeGeneratorVisibilityEnum'];
+  stage?: string;
+  overwrite?: boolean;
+  name?: string;
+  judge_id?: string;
+  extra_contexts?: { [key: string]: string | null } | null;
+  generating_model_params?: {
+    reasoning_effort: components['schemas']['ReasoningEffortEnum'];
+    temperature?: number;
+  };
+  enable_context_aware_evaluators?: boolean;
+}
 
 export interface JudgeListParams extends ListParams {
   is_preset?: boolean;
@@ -186,26 +202,27 @@ export class JudgesResource {
    */
   async generate({
     intent,
+    visibility = 'unlisted',
     stage,
     overwrite,
     extra_contexts,
     name,
-  }: {
-    intent: string;
-    stage?: string;
-    overwrite?: boolean;
-    extra_contexts?: { [key: string]: string | null } | null;
-    name?: string;
-  }): Promise<{ judge_id: string; error_code?: string | null }> {
+    judge_id,
+    generating_model_params,
+    enable_context_aware_evaluators,
+  }: JudgeGenerateParams): Promise<JudgeGeneratorResponse> {
     const { data, error } = await this._client.POST('/v1/judges/generate/', {
       body: {
-        overwrite: overwrite ?? false,
         intent,
-        visibility: 'unlisted' as const,
+        visibility,
+        overwrite: overwrite ?? false,
         stage: stage ?? null,
-        strict: true,
+        strict: null,
         extra_contexts: extra_contexts ?? null,
         name: name ?? null,
+        judge_id: judge_id ?? null,
+        generating_model_params: generating_model_params ?? null,
+        enable_context_aware_evaluators: enable_context_aware_evaluators ?? null,
       },
     });
 
