@@ -74,6 +74,18 @@ export SCORABLE_API_KEY="sk-your-api-key"
 
 The key lookup order is: `SCORABLE_API_KEY` env var → `api_key` in `~/.scorable/settings.json` → `temporary_api_key` in `~/.scorable/settings.json`.
 
+## Scorable Skills for AI Coding Agents
+
+Install Scorable skills into your project so your AI coding agent (Claude Code, Cursor, etc.) can integrate evaluators automatically:
+
+```bash
+scorable skills-add
+```
+
+Once installed, open your coding agent in your AI powered project and use the prompt:
+
+> "Integrate scorable evaluators"
+
 ## Judge Management
 
 ### List judges
