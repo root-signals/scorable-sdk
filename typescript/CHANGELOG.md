@@ -1,3 +1,7 @@
+## 0.3.2
+
+- Patch high-severity dependency vulnerabilities (undici 7.24+, flatted 3.4.2+, minimatch, rollup 4.59+)
+
 ## 0.3.1
 
 - Expose `visibility`, `generating_model_params`, `judge_id`, `extra_contexts`, and `enable_context_aware_evaluators` in `judges.generate()`
