@@ -1,3 +1,7 @@
+## 1.7.2
+
+- Patch high-severity dependency vulnerabilities (cryptography 46.0.5, urllib3 2.6.3)
+
 ## 1.7.1
 
 - Simplify multi-turn api
