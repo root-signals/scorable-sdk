@@ -10,6 +10,6 @@ function buildPtGroup(name: string): Command {
 }
 
 export function registerPromptTestCommands(program: Command): void {
-  program.addCommand(buildPtGroup("pt"));
+  program.addCommand(buildPtGroup("pt"), { hidden: true });
   program.addCommand(buildPtGroup("prompt-test"));
 }
