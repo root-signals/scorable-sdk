@@ -9,6 +9,7 @@ import { registerPromptTestCommands } from "./commands/prompt-test/index.js";
 import { registerEvaluatorCommands } from "./commands/evaluator/index.js";
 import { registerExecutionLogCommands } from "./commands/execution-log/index.js";
 import { registerAuthCommands } from "./commands/auth/index.js";
+import { registerSkillsAddCommand } from "./commands/skills-add.js";
 
 const { version } = createRequire(import.meta.url)("../package.json") as {
   version: string;
@@ -40,7 +41,9 @@ function buildGettingStarted(): string {
     `  ${num("1")} Authenticate ${chalk.dim("(pick one)")}:`,
     `       ${cmd("$ scorable auth demo-key")}           ${chalk.dim("# for quick testing")}`,
     `       ${cmd("$ scorable auth set-key <api-key>")}  ${chalk.dim("# permanent key")}`,
-    `  ${num("2")} Explore resources:`,
+    `  ${num("2")} Install skills for your AI coding agent:`,
+    `       ${cmd("$ scorable skills-add")}`,
+    `  ${num("3")} Explore resources:`,
     `       ${cmd("$ scorable judge list")}`,
     `       ${cmd("$ scorable evaluator list")}`,
     "",
@@ -64,6 +67,7 @@ export function createCli(): Command {
   registerEvaluatorCommands(program);
   registerExecutionLogCommands(program);
   registerAuthCommands(program);
+  registerSkillsAddCommand(program);
 
   return program;
 }
