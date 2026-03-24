@@ -25,7 +25,7 @@
 </p>
 
 <p align="center">
-  <video src="usage.mp4" width="800" autoplay loop muted></video>
+  <video src="https://github.com/user-attachments/assets/3475573e-b20c-405b-acc6-ee48709998fa" width="800" autoplay loop muted></video>
 </p>
 
 The `scorable` CLI is a command-line tool for interacting with the Scorable API. It lets you manage and execute Judges and Evaluators, view execution logs, and run prompt testing experiments directly from the terminal.
