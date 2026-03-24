@@ -1,6 +1,6 @@
 {
   "name": "@root-signals/scorable",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "TypeScript SDK for Scorable API",
   "type": "module",
   "main": "dist/index.js",
@@ -55,7 +55,24 @@
   },
   "optionalDependencies": {
     "form-data": "^4.0.5",
-    "undici": "^7.16.0"
+    "undici": "^7.24.5"
+  },
+  "overrides": {
+    "flatted": ">=3.4.2",
+    "rollup": ">=4.60.0",
+    "minimatch": ">=9.0.9",
+    "@eslint/config-array": {
+      "minimatch": ">=3.1.4"
+    },
+    "@eslint/eslintrc": {
+      "minimatch": ">=3.1.4"
+    },
+    "eslint": {
+      "minimatch": ">=3.1.4"
+    },
+    "@redocly/openapi-core": {
+      "minimatch": ">=5.1.8"
+    }
   },
   "devDependencies": {
     "@types/node": "^24.10.1",

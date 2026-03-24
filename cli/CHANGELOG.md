@@ -1,3 +1,10 @@
+## 0.4.1
+
+- Add `scorable skills-add` command to install Scorable skills for AI coding agents (`npx skills add root-signals/scorable-skills`)
+- Add usage demo video to README
+- Add "Install skills for your AI coding agent" step to `--help` getting-started section
+- Patch high-severity npm dependency vulnerabilities (undici, flatted, minimatch, rollup)
+
 ## 0.4.0
 
 - Add `scorable judge generate` command to generate a judge from an intent using AI
