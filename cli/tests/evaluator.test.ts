@@ -6,6 +6,7 @@ import { executeEvaluatorByName } from "../src/commands/evaluator/execute-by-nam
 
 vi.mock("@root-signals/scorable");
 vi.mock("@inquirer/prompts");
+vi.mock("node:fs");
 
 const mockList = vi.fn();
 const mockGet = vi.fn();
@@ -15,6 +16,7 @@ const mockDelete = vi.fn();
 const mockExecute = vi.fn();
 const mockExecuteByName = vi.fn();
 const mockDuplicate = vi.fn();
+const mockExportYaml = vi.fn();
 
 const sampleEvaluator = {
   id: "eval-123",
@@ -37,6 +39,7 @@ beforeEach(() => {
         execute: mockExecute,
         executeByName: mockExecuteByName,
         duplicate: mockDuplicate,
+        exportYaml: mockExportYaml,
       },
     } as unknown as Scorable;
   });
@@ -568,5 +571,80 @@ describe("TestEvaluatorDuplicate", () => {
     const result = await runCli(["evaluator", "duplicate", "eval-123"]);
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("Evaluator eval-123 duplicated successfully");
+  });
+});
+
+// --- TestEvaluatorExportYaml ---
+
+describe("TestEvaluatorExportYaml", () => {
+  it("test_export_yaml_prints_to_stdout", async () => {
+    const yaml = "name: Test Evaluator\nprompt: Does it work?\n";
+    mockExportYaml.mockResolvedValue(yaml);
+    const result = await runCli(["evaluator", "export-yaml", "eval-123"]);
+    expect(result.exitCode).toBe(0);
+    expect(mockExportYaml).toHaveBeenCalledWith("eval-123");
+  });
+
+  it("test_export_yaml_writes_to_file", async () => {
+    const { writeFileSync } = await import("node:fs");
+    const yaml = "name: Test Evaluator\nprompt: Does it work?\n";
+    mockExportYaml.mockResolvedValue(yaml);
+    const result = await runCli(["evaluator", "export-yaml", "eval-123", "--output", "out.yaml"]);
+    expect(result.exitCode).toBe(0);
+    expect(vi.mocked(writeFileSync)).toHaveBeenCalledWith("out.yaml", yaml, "utf8");
+    expect(result.stdout).toContain("out.yaml");
+  });
+
+  it("test_export_yaml_api_error", async () => {
+    mockExportYaml.mockRejectedValue(new Error("Not found"));
+    const result = await runCli(["evaluator", "export-yaml", "eval-123"]);
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain("Not found");
+  });
+});
+
+// --- TestEvaluatorImportYaml ---
+
+describe("TestEvaluatorImportYaml", () => {
+  it("test_import_yaml_success", async () => {
+    const { readFileSync } = await import("node:fs");
+    const yaml = "name: Imported Evaluator\nprompt: Does it work?\n";
+    vi.mocked(readFileSync).mockReturnValue(yaml);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ name: "Imported Evaluator", id: "eval-new" }),
+      }),
+    );
+    const result = await runCli(["evaluator", "import-yaml", "--file", "eval.yaml"]);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("Imported Evaluator");
+  });
+
+  it("test_import_yaml_file_not_found", async () => {
+    const { readFileSync } = await import("node:fs");
+    vi.mocked(readFileSync).mockImplementation(() => {
+      throw new Error("ENOENT");
+    });
+    const result = await runCli(["evaluator", "import-yaml", "--file", "missing.yaml"]);
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toContain("Could not read file");
+  });
+
+  it("test_import_yaml_api_error", async () => {
+    const { readFileSync } = await import("node:fs");
+    vi.mocked(readFileSync).mockReturnValue("name: Bad Evaluator\n");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 400,
+        text: async () => "Invalid YAML",
+      }),
+    );
+    const result = await runCli(["evaluator", "import-yaml", "--file", "eval.yaml"]);
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toContain("Import failed");
   });
 });

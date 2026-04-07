@@ -1,3 +1,8 @@
+## 0.5.0
+
+- Add `scorable evaluator export-yaml <id>` command to export an evaluator as a YAML file (prints to stdout or `--output <file>`)
+- Add `scorable evaluator import-yaml --file <path>` command to import an evaluator from a YAML file, with `--overwrite` support
+
 ## 0.4.1
 
 - Add `scorable skills-add` command to install Scorable skills for AI coding agents (`npx skills add root-signals/scorable-skills`)
