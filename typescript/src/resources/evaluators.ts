@@ -1,5 +1,6 @@
 import type { paths, components } from '../generated/types.js';
 import {
+  ClientConfig,
   PaginatedResponse,
   ListParams,
   ScorableError,
@@ -13,6 +14,7 @@ export type EvaluatorListItem = components['schemas']['EvaluatorListOutput'];
 export type EvaluatorDetail = components['schemas']['Evaluator'];
 export type ExecutionResult = components['schemas']['EvaluatorExecutionResult'];
 export type EvaluatorRequest = components['schemas']['EvaluatorRequest'];
+export type EvaluatorDemonstration = components['schemas']['EvaluatorDemonstrationsRequest'];
 
 export interface EvaluatorWithExecute extends EvaluatorDetail {
   execute(payload: ExecutionPayload): Promise<ExecutionResult>;
@@ -35,6 +37,7 @@ export interface EvaluatorCreateParams {
   overwrite?: boolean;
   objective_id?: string;
   objective_version_id?: string;
+  evaluator_demonstrations?: EvaluatorDemonstration[];
 }
 
 export interface EvaluatorUpdateParams {
@@ -50,7 +53,10 @@ export interface EvaluatorUpdateParams {
 }
 
 export class EvaluatorsResource {
-  constructor(private _client: Client) {}
+  constructor(
+    private _client: Client,
+    private _config?: ClientConfig,
+  ) {}
 
   /**
    * List all accessible evaluators
@@ -193,6 +199,28 @@ export class EvaluatorsResource {
     }
   }
 
+  /**
+   * Export an evaluator as a portable YAML string.
+   * The returned YAML can be committed to a git repository and later imported
+   * back via the GitHub connector or the import endpoint.
+   */
+  async exportYaml(id: string): Promise<string> {
+    const baseUrl = this._config?.baseUrl ?? 'https://api.scorable.ai';
+    const apiKey = this._config?.apiKey ?? '';
+    const response = await fetch(`${baseUrl}/v1/evaluators/export/${id}/`, {
+      headers: { Authorization: `Api-Key ${apiKey}` },
+    });
+    if (!response.ok) {
+      throw new ScorableError(
+        response.status,
+        'EXPORT_EVALUATOR_FAILED',
+        {},
+        `Failed to export evaluator ${id}`,
+      );
+    }
+    return response.text();
+  }
+
   async create(params: EvaluatorCreateParams): Promise<EvaluatorWithExecute> {
     if (params.objective_id && params.intent) {
       throw new ScorableError(
@@ -251,6 +279,9 @@ export class EvaluatorsResource {
     }
     if (params.objective_version_id) {
       requestBody.objective_version_id = params.objective_version_id;
+    }
+    if (params.evaluator_demonstrations?.length) {
+      requestBody.evaluator_demonstrations = params.evaluator_demonstrations;
     }
 
     const { data, error } = await this._client.POST('/v1/evaluators/', {

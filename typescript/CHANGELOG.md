@@ -1,3 +1,9 @@
+## 0.4.0
+
+- Add `evaluators.exportYaml(id)` method to export an evaluator as a portable YAML string
+- Add `EvaluatorDemonstration` type export
+- Add `evaluator_demonstrations` field to `EvaluatorCreateParams`
+
 ## 0.3.2
 
 - Patch high-severity dependency vulnerabilities (undici 7.24+, flatted 3.4.2+, minimatch, rollup 4.59+)

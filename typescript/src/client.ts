@@ -41,7 +41,7 @@ export class Scorable {
     this.rateLimiter = new RateLimiter(this.config.rateLimit);
 
     // Initialize resources
-    this.evaluators = new EvaluatorsResource(this.client);
+    this.evaluators = new EvaluatorsResource(this.client, this.config);
     this.judges = new JudgesResource(this.client);
     this.objectives = new ObjectivesResource(this.client);
     this.models = new ModelsResource(this.client);
