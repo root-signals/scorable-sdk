@@ -16,7 +16,8 @@ export default [
       globals: {
         setTimeout: 'readonly',
         setImmediate: 'readonly',
-        Buffer: 'readonly'
+        Buffer: 'readonly',
+        fetch: 'readonly'
       }
     },
     plugins: {
