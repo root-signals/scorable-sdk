@@ -7,6 +7,8 @@ import { registerDeleteCommand } from "./delete.js";
 import { registerExecuteCommand } from "./execute.js";
 import { registerExecuteByNameCommand } from "./execute-by-name.js";
 import { registerDuplicateCommand } from "./duplicate.js";
+import { registerExportYamlCommand } from "./export-yaml.js";
+import { registerImportYamlCommand } from "./import-yaml.js";
 
 export function registerEvaluatorCommands(program: Command): void {
   const evaluator = new Command("evaluator").description("Evaluator management commands");
@@ -19,6 +21,8 @@ export function registerEvaluatorCommands(program: Command): void {
   registerExecuteCommand(evaluator);
   registerExecuteByNameCommand(evaluator);
   registerDuplicateCommand(evaluator);
+  registerExportYamlCommand(evaluator);
+  registerImportYamlCommand(evaluator);
 
   program.addCommand(evaluator);
 }
