@@ -12,9 +12,6 @@ type DatasetCreate =
 type DatasetCreateRequest = NonNullable<
   paths['/v1/datasets/']['post']['requestBody']
 >['content']['application/json'];
-type StatusChange =
-  paths['/v1/datasets/status/{id}/']['put']['responses'][200]['content']['application/json'];
-
 type Client = ReturnType<typeof import('openapi-fetch').default<paths>>;
 // List parameters for datasets
 interface ListDatasetsParams {
@@ -205,27 +202,6 @@ export class DatasetsResource {
         `Failed to delete dataset ${id}`,
       );
     }
-  }
-
-  /**
-   * Update dataset status
-   */
-  async updateStatus(id: string, status: 'listed' | 'unlisted'): Promise<StatusChange> {
-    const { data, error } = await this._client.PUT('/v1/datasets/status/{id}/', {
-      params: { path: { id } },
-      body: { status },
-    });
-
-    if (error) {
-      throw new ScorableError(
-        (error as ApiError)?.status ?? 500,
-        'UPDATE_DATASET_STATUS_FAILED',
-        error,
-        `Failed to update dataset status ${id}`,
-      );
-    }
-
-    return data;
   }
 
   /**

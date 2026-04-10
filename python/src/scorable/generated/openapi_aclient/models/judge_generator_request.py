@@ -32,7 +32,7 @@ class JudgeGeneratorRequest(BaseModel):
 
     extra_contexts: Optional[Dict[str, Optional[StrictStr]]] = None
     intent: Annotated[str, Field(min_length=10, strict=True, max_length=20000)]
-    stage: Optional[Annotated[str, Field(min_length=1, strict=True)]] = None
+    stage: Optional[StrictStr] = None
     visibility: JudgeGeneratorVisibilityEnum
     file_id: Optional[StrictStr] = None
     strict: Optional[StrictBool] = True
@@ -41,9 +41,13 @@ class JudgeGeneratorRequest(BaseModel):
     overwrite: Optional[StrictBool] = Field(
         default=True, description="Whether to overwrite an existing judge with the same name"
     )
-    name: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=512)]] = Field(
+    name: Optional[Annotated[str, Field(strict=True, max_length=512)]] = Field(
         default=None,
         description="The name of the judge to generate. If not provided, a name will be generated for you.",
+    )
+    enable_context_aware_evaluators: Optional[StrictBool] = Field(
+        default=False,
+        description="When true, enables context-aware RAG evaluators (requires_contexts=True) even without file upload",
     )
     __properties: ClassVar[List[str]] = [
         "extra_contexts",
@@ -56,6 +60,7 @@ class JudgeGeneratorRequest(BaseModel):
         "judge_id",
         "overwrite",
         "name",
+        "enable_context_aware_evaluators",
     ]
 
     model_config = ConfigDict(
@@ -138,6 +143,11 @@ class JudgeGeneratorRequest(BaseModel):
         if self.name is None and "name" in self.model_fields_set:
             _dict["name"] = None
 
+        # set to None if enable_context_aware_evaluators (nullable) is None
+        # and model_fields_set contains the field
+        if self.enable_context_aware_evaluators is None and "enable_context_aware_evaluators" in self.model_fields_set:
+            _dict["enable_context_aware_evaluators"] = None
+
         return _dict
 
     @classmethod
@@ -163,6 +173,9 @@ class JudgeGeneratorRequest(BaseModel):
                 "judge_id": obj.get("judge_id"),
                 "overwrite": obj.get("overwrite") if obj.get("overwrite") is not None else True,
                 "name": obj.get("name"),
+                "enable_context_aware_evaluators": obj.get("enable_context_aware_evaluators")
+                if obj.get("enable_context_aware_evaluators") is not None
+                else False,
             }
         )
         return _obj

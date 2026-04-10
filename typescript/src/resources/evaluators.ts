@@ -21,8 +21,7 @@ export interface EvaluatorWithExecute extends EvaluatorDetail {
 }
 
 export interface EvaluatorListParams extends ListParams {
-  is_preset?: boolean;
-  is_public?: boolean;
+  include_public?: boolean;
 }
 
 export interface EvaluatorCreateParams {
@@ -31,9 +30,7 @@ export interface EvaluatorCreateParams {
   intent?: string;
   model?: string;
   models?: string[];
-  system_message?: string;
   change_note?: string;
-  status?: components['schemas']['StatusEnum'];
   overwrite?: boolean;
   objective_id?: string;
   objective_version_id?: string;
@@ -44,8 +41,6 @@ export interface EvaluatorUpdateParams {
   name?: string;
   prompt?: string;
   models?: string[];
-  status?: components['schemas']['StatusEnum'];
-  system_message?: string;
   objective_id?: string;
   objective_version_id?: string;
   change_note?: string;
@@ -108,7 +103,7 @@ export class EvaluatorsResource {
   async execute(id: string, payload: ExecutionPayload): Promise<ExecutionResult> {
     const { data, error } = await this._client.POST('/v1/evaluators/execute/{id}/', {
       params: { path: { id } },
-      body: payload,
+      body: { variables: {}, ...payload },
     });
 
     if (error) {
@@ -129,7 +124,7 @@ export class EvaluatorsResource {
   async executeByName(name: string, payload: ExecutionPayload): Promise<ExecutionResult> {
     const { data, error } = await this._client.POST('/v1/evaluators/execute/by-name/', {
       params: { query: { name } },
-      body: payload,
+      body: { variables: {}, ...payload },
     });
 
     if (error) {
@@ -261,14 +256,8 @@ export class EvaluatorsResource {
       overwrite: params.overwrite ?? false,
       prompt: params.predicate,
     };
-    if (params.system_message) {
-      requestBody.system_message = params.system_message;
-    }
     if (params.models) {
       requestBody.models = params.models;
-    }
-    if (params.status) {
-      requestBody.status = params.status;
     }
     if (params.overwrite !== undefined) {
       requestBody.overwrite = params.overwrite;

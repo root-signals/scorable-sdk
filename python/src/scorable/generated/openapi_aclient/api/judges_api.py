@@ -24,6 +24,7 @@ from scorable.generated.openapi_aclient.models.judge import Judge
 from scorable.generated.openapi_aclient.models.judge_batch_execution_detail import JudgeBatchExecutionDetail
 from scorable.generated.openapi_aclient.models.judge_batch_execution_request import JudgeBatchExecutionRequest
 from scorable.generated.openapi_aclient.models.judge_batch_execution_response import JudgeBatchExecutionResponse
+from scorable.generated.openapi_aclient.models.judge_claim_request_request import JudgeClaimRequestRequest
 from scorable.generated.openapi_aclient.models.judge_execution_request import JudgeExecutionRequest
 from scorable.generated.openapi_aclient.models.judge_execution_response import JudgeExecutionResponse
 from scorable.generated.openapi_aclient.models.judge_generator_request import JudgeGeneratorRequest
@@ -32,6 +33,9 @@ from scorable.generated.openapi_aclient.models.judge_invite_request import Judge
 from scorable.generated.openapi_aclient.models.judge_rectifier_request_request import JudgeRectifierRequestRequest
 from scorable.generated.openapi_aclient.models.judge_rectifier_response import JudgeRectifierResponse
 from scorable.generated.openapi_aclient.models.judge_request import JudgeRequest
+from scorable.generated.openapi_aclient.models.judges_synthetic_data_retrieve200_response import (
+    JudgesSyntheticDataRetrieve200Response,
+)
 from scorable.generated.openapi_aclient.models.paginated_judge_batch_execution_list_item_list import (
     PaginatedJudgeBatchExecutionListItemList,
 )
@@ -824,6 +828,240 @@ class JudgesApi:
         return self.api_client.param_serialize(
             method="GET",
             resource_path="/v1/judges/batch-executions/{id}/",
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth,
+        )
+
+    @validate_call
+    async def judges_claim_create(
+        self,
+        judge_claim_request_request: JudgeClaimRequestRequest,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> Judge:
+        """judges_claim_create
+
+        Claim a judge generated as a temporary user, transferring ownership to the authenticated user.
+
+        :param judge_claim_request_request: (required)
+        :type judge_claim_request_request: JudgeClaimRequestRequest
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._judges_claim_create_serialize(
+            judge_claim_request_request=judge_claim_request_request,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            "200": "Judge",
+        }
+        response_data = await self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+    @validate_call
+    async def judges_claim_create_with_http_info(
+        self,
+        judge_claim_request_request: JudgeClaimRequestRequest,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[Judge]:
+        """judges_claim_create
+
+        Claim a judge generated as a temporary user, transferring ownership to the authenticated user.
+
+        :param judge_claim_request_request: (required)
+        :type judge_claim_request_request: JudgeClaimRequestRequest
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._judges_claim_create_serialize(
+            judge_claim_request_request=judge_claim_request_request,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            "200": "Judge",
+        }
+        response_data = await self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+    @validate_call
+    async def judges_claim_create_without_preload_content(
+        self,
+        judge_claim_request_request: JudgeClaimRequestRequest,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """judges_claim_create
+
+        Claim a judge generated as a temporary user, transferring ownership to the authenticated user.
+
+        :param judge_claim_request_request: (required)
+        :type judge_claim_request_request: JudgeClaimRequestRequest
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._judges_claim_create_serialize(
+            judge_claim_request_request=judge_claim_request_request,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            "200": "Judge",
+        }
+        response_data = await self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        return response_data.response
+
+    def _judges_claim_create_serialize(
+        self,
+        judge_claim_request_request,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+        _host = None
+
+        _collection_formats: Dict[str, str] = {}
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if judge_claim_request_request is not None:
+            _body_params = judge_claim_request_request
+
+        # set the HTTP header `Accept`
+        _header_params["Accept"] = self.api_client.select_header_accept(["application/json"])
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params["Content-Type"] = _content_type
+        else:
+            _default_content_type = self.api_client.select_header_content_type(
+                ["application/json", "application/x-www-form-urlencoded", "multipart/form-data"]
+            )
+            if _default_content_type is not None:
+                _header_params["Content-Type"] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = ["publicApiKey"]
+
+        return self.api_client.param_serialize(
+            method="POST",
+            resource_path="/v1/judges/claim/",
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -2484,6 +2722,9 @@ class JudgesApi:
             ),
         ] = None,
         featured: Annotated[Optional[StrictBool], Field(description="Filter by is the judge featured or not")] = None,
+        include_public: Annotated[
+            Optional[StrictBool], Field(description="Include public judges from other organizations.")
+        ] = None,
         intent_evaluability_score_gte: Annotated[
             Optional[Union[StrictFloat, StrictInt]],
             Field(
@@ -2491,7 +2732,6 @@ class JudgesApi:
             ),
         ] = None,
         is_preset: Annotated[Optional[StrictBool], Field(description="Filter by is the judge preset or not")] = None,
-        is_public: Annotated[Optional[StrictBool], Field(description="Filter by is the judge public or not")] = None,
         name: Optional[StrictStr] = None,
         ordering: Annotated[
             Optional[StrictStr], Field(description="Which field to use when ordering the results.")
@@ -2518,12 +2758,12 @@ class JudgesApi:
         :type executed_at_gte: datetime
         :param featured: Filter by is the judge featured or not
         :type featured: bool
+        :param include_public: Include public judges from other organizations.
+        :type include_public: bool
         :param intent_evaluability_score_gte: Filter judges where intent_evaluability_score is greater than or equal to the given value
         :type intent_evaluability_score_gte: float
         :param is_preset: Filter by is the judge preset or not
         :type is_preset: bool
-        :param is_public: Filter by is the judge public or not
-        :type is_public: bool
         :param name:
         :type name: str
         :param ordering: Which field to use when ordering the results.
@@ -2558,9 +2798,9 @@ class JudgesApi:
             cursor=cursor,
             executed_at_gte=executed_at_gte,
             featured=featured,
+            include_public=include_public,
             intent_evaluability_score_gte=intent_evaluability_score_gte,
             is_preset=is_preset,
-            is_public=is_public,
             name=name,
             ordering=ordering,
             page_size=page_size,
@@ -2592,6 +2832,9 @@ class JudgesApi:
             ),
         ] = None,
         featured: Annotated[Optional[StrictBool], Field(description="Filter by is the judge featured or not")] = None,
+        include_public: Annotated[
+            Optional[StrictBool], Field(description="Include public judges from other organizations.")
+        ] = None,
         intent_evaluability_score_gte: Annotated[
             Optional[Union[StrictFloat, StrictInt]],
             Field(
@@ -2599,7 +2842,6 @@ class JudgesApi:
             ),
         ] = None,
         is_preset: Annotated[Optional[StrictBool], Field(description="Filter by is the judge preset or not")] = None,
-        is_public: Annotated[Optional[StrictBool], Field(description="Filter by is the judge public or not")] = None,
         name: Optional[StrictStr] = None,
         ordering: Annotated[
             Optional[StrictStr], Field(description="Which field to use when ordering the results.")
@@ -2626,12 +2868,12 @@ class JudgesApi:
         :type executed_at_gte: datetime
         :param featured: Filter by is the judge featured or not
         :type featured: bool
+        :param include_public: Include public judges from other organizations.
+        :type include_public: bool
         :param intent_evaluability_score_gte: Filter judges where intent_evaluability_score is greater than or equal to the given value
         :type intent_evaluability_score_gte: float
         :param is_preset: Filter by is the judge preset or not
         :type is_preset: bool
-        :param is_public: Filter by is the judge public or not
-        :type is_public: bool
         :param name:
         :type name: str
         :param ordering: Which field to use when ordering the results.
@@ -2666,9 +2908,9 @@ class JudgesApi:
             cursor=cursor,
             executed_at_gte=executed_at_gte,
             featured=featured,
+            include_public=include_public,
             intent_evaluability_score_gte=intent_evaluability_score_gte,
             is_preset=is_preset,
-            is_public=is_public,
             name=name,
             ordering=ordering,
             page_size=page_size,
@@ -2700,6 +2942,9 @@ class JudgesApi:
             ),
         ] = None,
         featured: Annotated[Optional[StrictBool], Field(description="Filter by is the judge featured or not")] = None,
+        include_public: Annotated[
+            Optional[StrictBool], Field(description="Include public judges from other organizations.")
+        ] = None,
         intent_evaluability_score_gte: Annotated[
             Optional[Union[StrictFloat, StrictInt]],
             Field(
@@ -2707,7 +2952,6 @@ class JudgesApi:
             ),
         ] = None,
         is_preset: Annotated[Optional[StrictBool], Field(description="Filter by is the judge preset or not")] = None,
-        is_public: Annotated[Optional[StrictBool], Field(description="Filter by is the judge public or not")] = None,
         name: Optional[StrictStr] = None,
         ordering: Annotated[
             Optional[StrictStr], Field(description="Which field to use when ordering the results.")
@@ -2734,12 +2978,12 @@ class JudgesApi:
         :type executed_at_gte: datetime
         :param featured: Filter by is the judge featured or not
         :type featured: bool
+        :param include_public: Include public judges from other organizations.
+        :type include_public: bool
         :param intent_evaluability_score_gte: Filter judges where intent_evaluability_score is greater than or equal to the given value
         :type intent_evaluability_score_gte: float
         :param is_preset: Filter by is the judge preset or not
         :type is_preset: bool
-        :param is_public: Filter by is the judge public or not
-        :type is_public: bool
         :param name:
         :type name: str
         :param ordering: Which field to use when ordering the results.
@@ -2774,9 +3018,9 @@ class JudgesApi:
             cursor=cursor,
             executed_at_gte=executed_at_gte,
             featured=featured,
+            include_public=include_public,
             intent_evaluability_score_gte=intent_evaluability_score_gte,
             is_preset=is_preset,
-            is_public=is_public,
             name=name,
             ordering=ordering,
             page_size=page_size,
@@ -2798,9 +3042,9 @@ class JudgesApi:
         cursor,
         executed_at_gte,
         featured,
+        include_public,
         intent_evaluability_score_gte,
         is_preset,
-        is_public,
         name,
         ordering,
         page_size,
@@ -2837,14 +3081,14 @@ class JudgesApi:
         if featured is not None:
             _query_params.append(("featured", featured))
 
+        if include_public is not None:
+            _query_params.append(("include_public", include_public))
+
         if intent_evaluability_score_gte is not None:
             _query_params.append(("intent_evaluability_score_gte", intent_evaluability_score_gte))
 
         if is_preset is not None:
             _query_params.append(("is_preset", is_preset))
-
-        if is_public is not None:
-            _query_params.append(("is_public", is_public))
 
         if name is not None:
             _query_params.append(("name", name))
@@ -5151,6 +5395,230 @@ class JudgesApi:
         return self.api_client.param_serialize(
             method="GET",
             resource_path="/v1/judges/{id}/",
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth,
+        )
+
+    @validate_call
+    async def judges_synthetic_data_retrieve(
+        self,
+        judge_id: StrictStr,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> JudgesSyntheticDataRetrieve200Response:
+        """judges_synthetic_data_retrieve
+
+        Get synthetic data samples for a judge.
+
+        :param judge_id: (required)
+        :type judge_id: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._judges_synthetic_data_retrieve_serialize(
+            judge_id=judge_id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            "200": "JudgesSyntheticDataRetrieve200Response",
+        }
+        response_data = await self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+    @validate_call
+    async def judges_synthetic_data_retrieve_with_http_info(
+        self,
+        judge_id: StrictStr,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[JudgesSyntheticDataRetrieve200Response]:
+        """judges_synthetic_data_retrieve
+
+        Get synthetic data samples for a judge.
+
+        :param judge_id: (required)
+        :type judge_id: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._judges_synthetic_data_retrieve_serialize(
+            judge_id=judge_id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            "200": "JudgesSyntheticDataRetrieve200Response",
+        }
+        response_data = await self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        await response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+    @validate_call
+    async def judges_synthetic_data_retrieve_without_preload_content(
+        self,
+        judge_id: StrictStr,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """judges_synthetic_data_retrieve
+
+        Get synthetic data samples for a judge.
+
+        :param judge_id: (required)
+        :type judge_id: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """  # noqa: E501
+
+        _param = self._judges_synthetic_data_retrieve_serialize(
+            judge_id=judge_id,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index,
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            "200": "JudgesSyntheticDataRetrieve200Response",
+        }
+        response_data = await self.api_client.call_api(*_param, _request_timeout=_request_timeout)
+        return response_data.response
+
+    def _judges_synthetic_data_retrieve_serialize(
+        self,
+        judge_id,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+        _host = None
+
+        _collection_formats: Dict[str, str] = {}
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[str, str] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if judge_id is not None:
+            _path_params["judge_id"] = judge_id
+        # process the query parameters
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+        # set the HTTP header `Accept`
+        _header_params["Accept"] = self.api_client.select_header_accept(["application/json"])
+
+        # authentication setting
+        _auth_settings: List[str] = ["publicApiKey"]
+
+        return self.api_client.param_serialize(
+            method="GET",
+            resource_path="/v1/judges/{judge_id}/synthetic-data/",
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,

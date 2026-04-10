@@ -25,8 +25,7 @@ from typing_extensions import Annotated, Self
 from scorable.generated.openapi_client.models.evaluator_inputs_value import EvaluatorInputsValue
 from scorable.generated.openapi_client.models.judge_files_inner import JudgeFilesInner
 from scorable.generated.openapi_client.models.nested_evaluator import NestedEvaluator
-from scorable.generated.openapi_client.models.nested_vector_objective import NestedVectorObjective
-from scorable.generated.openapi_client.models.status_enum import StatusEnum
+from scorable.generated.openapi_client.models.visibility_ef8_enum import VisibilityEf8Enum
 
 
 class Judge(BaseModel):
@@ -42,10 +41,10 @@ class Judge(BaseModel):
     inputs: Dict[str, EvaluatorInputsValue] = Field(
         description="Schema defining the input parameters required for execution. The schema consists of variables defined in the prompt template (predicate) and special variables like contexts and expected output."
     )
+    intent: StrictStr = Field(description="Intent for the judge")
     name: Annotated[str, Field(min_length=3, strict=True, max_length=512)]
-    objective: NestedVectorObjective
     stage: Optional[Annotated[str, Field(strict=True, max_length=255)]] = None
-    status: StatusEnum
+    visibility: VisibilityEf8Enum
     version_id: StrictStr
     __properties: ClassVar[List[str]] = [
         "_meta",
@@ -54,10 +53,10 @@ class Judge(BaseModel):
         "files",
         "id",
         "inputs",
+        "intent",
         "name",
-        "objective",
         "stage",
-        "status",
+        "visibility",
         "version_id",
     ]
 
@@ -107,7 +106,7 @@ class Judge(BaseModel):
                 "files",
                 "id",
                 "inputs",
-                "objective",
+                "visibility",
                 "version_id",
             ]
         )
@@ -138,9 +137,6 @@ class Judge(BaseModel):
                 if self.inputs[_key]:
                     _field_dict[_key] = self.inputs[_key].to_dict()
             _dict["inputs"] = _field_dict
-        # override the default output from pydantic by calling `to_dict()` of objective
-        if self.objective:
-            _dict["objective"] = self.objective.to_dict()
         return _dict
 
     @classmethod
@@ -166,12 +162,10 @@ class Judge(BaseModel):
                 "inputs": dict((_k, EvaluatorInputsValue.from_dict(_v)) for _k, _v in obj["inputs"].items())
                 if obj.get("inputs") is not None
                 else None,
+                "intent": obj.get("intent"),
                 "name": obj.get("name"),
-                "objective": NestedVectorObjective.from_dict(obj["objective"])
-                if obj.get("objective") is not None
-                else None,
                 "stage": obj.get("stage"),
-                "status": obj.get("status"),
+                "visibility": obj.get("visibility"),
                 "version_id": obj.get("version_id"),
             }
         )

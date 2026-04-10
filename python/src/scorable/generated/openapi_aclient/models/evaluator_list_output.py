@@ -25,7 +25,7 @@ from typing_extensions import Self
 from scorable.generated.openapi_aclient.models.evaluator_inputs_value import EvaluatorInputsValue
 from scorable.generated.openapi_aclient.models.nested_objective_list import NestedObjectiveList
 from scorable.generated.openapi_aclient.models.nested_user_details import NestedUserDetails
-from scorable.generated.openapi_aclient.models.status_enum import StatusEnum
+from scorable.generated.openapi_aclient.models.visibility_ef8_enum import VisibilityEf8Enum
 
 
 class EvaluatorListOutput(BaseModel):
@@ -41,7 +41,7 @@ class EvaluatorListOutput(BaseModel):
     objective: NestedObjectiveList
     owner: NestedUserDetails
     prompt: StrictStr
-    status: StatusEnum
+    visibility: VisibilityEf8Enum
     updated_at: Optional[datetime]
     updated_by: Optional[NestedUserDetails]
     version_id: StrictStr
@@ -57,7 +57,7 @@ class EvaluatorListOutput(BaseModel):
         "objective",
         "owner",
         "prompt",
-        "status",
+        "visibility",
         "updated_at",
         "updated_by",
         "version_id",
@@ -117,7 +117,7 @@ class EvaluatorListOutput(BaseModel):
                 "objective",
                 "owner",
                 "prompt",
-                "status",
+                "visibility",
                 "updated_at",
                 "updated_by",
                 "version_id",
@@ -184,7 +184,7 @@ class EvaluatorListOutput(BaseModel):
                 else None,
                 "owner": NestedUserDetails.from_dict(obj["owner"]) if obj.get("owner") is not None else None,
                 "prompt": obj.get("prompt"),
-                "status": obj.get("status"),
+                "visibility": obj.get("visibility"),
                 "updated_at": obj.get("updated_at"),
                 "updated_by": NestedUserDetails.from_dict(obj["updated_by"])
                 if obj.get("updated_by") is not None

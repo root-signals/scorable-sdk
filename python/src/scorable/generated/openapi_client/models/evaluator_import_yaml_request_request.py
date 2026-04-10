@@ -16,21 +16,20 @@ from __future__ import annotations
 import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set, Union
+from typing import Any, ClassVar, Dict, List, Optional, Set
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, StrictBool
 from typing_extensions import Annotated, Self
 
 
-class ModelParamsRequest(BaseModel):
+class EvaluatorImportYamlRequestRequest(BaseModel):
     """
-    ModelParamsRequest
+    EvaluatorImportYamlRequestRequest
     """  # noqa: E501
 
-    temperature: Optional[
-        Union[Annotated[float, Field(le=1, strict=True, ge=0)], Annotated[int, Field(le=1, strict=True, ge=0)]]
-    ] = None
-    __properties: ClassVar[List[str]] = ["temperature"]
+    yaml: Annotated[str, Field(min_length=1, strict=True)]
+    overwrite: Optional[StrictBool] = False
+    __properties: ClassVar[List[str]] = ["yaml", "overwrite"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -49,7 +48,7 @@ class ModelParamsRequest(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of ModelParamsRequest from a JSON string"""
+        """Create an instance of EvaluatorImportYamlRequestRequest from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -69,21 +68,18 @@ class ModelParamsRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # set to None if temperature (nullable) is None
-        # and model_fields_set contains the field
-        if self.temperature is None and "temperature" in self.model_fields_set:
-            _dict["temperature"] = None
-
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of ModelParamsRequest from a dict"""
+        """Create an instance of EvaluatorImportYamlRequestRequest from a dict"""
         if obj is None:
             return None
 
         if not isinstance(obj, dict):
             return cls.model_validate(obj)
 
-        _obj = cls.model_validate({"temperature": obj.get("temperature")})
+        _obj = cls.model_validate(
+            {"yaml": obj.get("yaml"), "overwrite": obj.get("overwrite") if obj.get("overwrite") is not None else False}
+        )
         return _obj

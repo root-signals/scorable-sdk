@@ -36,7 +36,6 @@ async function main() {
       // Get the generated judge details
       const aiJudge = await client.judges.get(aiJudgeResult.judge_id);
       console.log(`  📋 Judge Name: ${aiJudge.name}`);
-      console.log(`  📋 Intent: ${aiJudge.objective.intent}`);
       console.log(`  📋 Evaluators: ${aiJudge.evaluators?.length || 0} evaluators`);
       console.log();
 
@@ -127,9 +126,13 @@ async function main() {
       const refinementPayload = {
         request: 'The app keeps crashing when I try to upload photos.',
         response: 'Try restarting your phone.',
-
         expected_output:
           "I understand how frustrating app crashes can be. Let's troubleshoot this step by step. First, please try force-closing the app and reopening it. If that doesn't work, try restarting your device. As a next step, please ensure you have the latest version of the app installed. If the issue persists, I'll escalate this to our technical team for further investigation.",
+        max_iterations: 3,
+        patience: 1,
+        min_improvement: 0.05,
+        threshold: 0.8,
+        stream: false,
       };
 
       console.log('  🎯 Running refinement analysis...');

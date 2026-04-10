@@ -42,7 +42,6 @@ class SkillTestInputRequest(BaseModel):
     input_variables: Optional[List[InputVariableRequest]] = None
     models: Optional[List[Annotated[str, Field(min_length=1, strict=True)]]] = None
     name: Optional[Annotated[str, Field(min_length=1, strict=True)]] = None
-    pii_filter: Optional[StrictBool] = False
     objective: Optional[ObjectiveRequest] = None
     is_evaluator: Optional[StrictBool] = False
     __properties: ClassVar[List[str]] = [
@@ -54,7 +53,6 @@ class SkillTestInputRequest(BaseModel):
         "input_variables",
         "models",
         "name",
-        "pii_filter",
         "objective",
         "is_evaluator",
     ]
@@ -165,7 +163,6 @@ class SkillTestInputRequest(BaseModel):
                 else None,
                 "models": obj.get("models"),
                 "name": obj.get("name"),
-                "pii_filter": obj.get("pii_filter") if obj.get("pii_filter") is not None else False,
                 "objective": ObjectiveRequest.from_dict(obj["objective"]) if obj.get("objective") is not None else None,
                 "is_evaluator": obj.get("is_evaluator") if obj.get("is_evaluator") is not None else False,
             }

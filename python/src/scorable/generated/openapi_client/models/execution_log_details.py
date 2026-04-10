@@ -29,7 +29,6 @@ from scorable.generated.openapi_client.models.execution_log_details_evaluator_la
     ExecutionLogDetailsEvaluatorLatenciesInner,
 )
 from scorable.generated.openapi_client.models.message_log_turn import MessageLogTurn
-from scorable.generated.openapi_client.models.model_params import ModelParams
 from scorable.generated.openapi_client.models.nested_user_details import NestedUserDetails
 from scorable.generated.openapi_client.models.skill_execution_validator_result import SkillExecutionValidatorResult
 
@@ -53,7 +52,6 @@ class ExecutionLogDetails(BaseModel):
     justification: StrictStr
     llm_output: StrictStr
     model_call_duration: Union[StrictFloat, StrictInt]
-    model_params: Optional[ModelParams] = None
     model: StrictStr
     owner: NestedUserDetails
     parent_execution_log_id: Optional[StrictStr] = None
@@ -66,6 +64,7 @@ class ExecutionLogDetails(BaseModel):
     user_id: StrictStr
     evaluator_results: List[SkillExecutionValidatorResult]
     variables: Optional[Dict[str, StrictStr]]
+    classification: Optional[Any]
     __properties: ClassVar[List[str]] = [
         "chat_id",
         "cost",
@@ -81,7 +80,6 @@ class ExecutionLogDetails(BaseModel):
         "justification",
         "llm_output",
         "model_call_duration",
-        "model_params",
         "model",
         "owner",
         "parent_execution_log_id",
@@ -94,6 +92,7 @@ class ExecutionLogDetails(BaseModel):
         "user_id",
         "evaluator_results",
         "variables",
+        "classification",
     ]
 
     model_config = ConfigDict(
@@ -148,6 +147,7 @@ class ExecutionLogDetails(BaseModel):
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
+        * OpenAPI `readOnly` fields are excluded.
         """
         excluded_fields: Set[str] = set(
             [
@@ -174,6 +174,7 @@ class ExecutionLogDetails(BaseModel):
                 "user_id",
                 "evaluator_results",
                 "variables",
+                "classification",
             ]
         )
 
@@ -199,9 +200,6 @@ class ExecutionLogDetails(BaseModel):
                 if _item:
                     _items.append(_item.to_dict())
             _dict["evaluator_latencies"] = _items
-        # override the default output from pydantic by calling `to_dict()` of model_params
-        if self.model_params:
-            _dict["model_params"] = self.model_params.to_dict()
         # override the default output from pydantic by calling `to_dict()` of owner
         if self.owner:
             _dict["owner"] = self.owner.to_dict()
@@ -247,11 +245,6 @@ class ExecutionLogDetails(BaseModel):
         if self.executed_item_version_id is None and "executed_item_version_id" in self.model_fields_set:
             _dict["executed_item_version_id"] = None
 
-        # set to None if model_params (nullable) is None
-        # and model_fields_set contains the field
-        if self.model_params is None and "model_params" in self.model_fields_set:
-            _dict["model_params"] = None
-
         # set to None if parent_execution_log_id (nullable) is None
         # and model_fields_set contains the field
         if self.parent_execution_log_id is None and "parent_execution_log_id" in self.model_fields_set:
@@ -266,6 +259,11 @@ class ExecutionLogDetails(BaseModel):
         # and model_fields_set contains the field
         if self.variables is None and "variables" in self.model_fields_set:
             _dict["variables"] = None
+
+        # set to None if classification (nullable) is None
+        # and model_fields_set contains the field
+        if self.classification is None and "classification" in self.model_fields_set:
+            _dict["classification"] = None
 
         return _dict
 
@@ -302,9 +300,6 @@ class ExecutionLogDetails(BaseModel):
                 "justification": obj.get("justification"),
                 "llm_output": obj.get("llm_output"),
                 "model_call_duration": obj.get("model_call_duration"),
-                "model_params": ModelParams.from_dict(obj["model_params"])
-                if obj.get("model_params") is not None
-                else None,
                 "model": obj.get("model"),
                 "owner": NestedUserDetails.from_dict(obj["owner"]) if obj.get("owner") is not None else None,
                 "parent_execution_log_id": obj.get("parent_execution_log_id"),
@@ -321,6 +316,7 @@ class ExecutionLogDetails(BaseModel):
                 if obj.get("evaluator_results") is not None
                 else None,
                 "variables": obj.get("variables"),
+                "classification": obj.get("classification"),
             }
         )
         return _obj

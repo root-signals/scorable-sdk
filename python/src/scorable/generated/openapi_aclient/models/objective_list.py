@@ -23,7 +23,6 @@ from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Annotated, Self
 
 from scorable.generated.openapi_aclient.models.nested_user_details import NestedUserDetails
-from scorable.generated.openapi_aclient.models.objective_validator import ObjectiveValidator
 from scorable.generated.openapi_aclient.models.status_enum import StatusEnum
 
 
@@ -37,9 +36,8 @@ class ObjectiveList(BaseModel):
     status: Optional[StatusEnum] = None
     owner: NestedUserDetails
     created_at: datetime
-    validators: List[ObjectiveValidator]
     meta: Dict[str, Any] = Field(alias="_meta")
-    __properties: ClassVar[List[str]] = ["id", "intent", "status", "owner", "created_at", "validators", "_meta"]
+    __properties: ClassVar[List[str]] = ["id", "intent", "status", "owner", "created_at", "_meta"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -74,14 +72,12 @@ class ObjectiveList(BaseModel):
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
-        * OpenAPI `readOnly` fields are excluded.
         """
         excluded_fields: Set[str] = set(
             [
                 "id",
                 "owner",
                 "created_at",
-                "validators",
                 "meta",
             ]
         )
@@ -94,13 +90,6 @@ class ObjectiveList(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of owner
         if self.owner:
             _dict["owner"] = self.owner.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of each item in validators (list)
-        _items = []
-        if self.validators:
-            for _item in self.validators:
-                if _item:
-                    _items.append(_item.to_dict())
-            _dict["validators"] = _items
         return _dict
 
     @classmethod
@@ -119,9 +108,6 @@ class ObjectiveList(BaseModel):
                 "status": obj.get("status"),
                 "owner": NestedUserDetails.from_dict(obj["owner"]) if obj.get("owner") is not None else None,
                 "created_at": obj.get("created_at"),
-                "validators": [ObjectiveValidator.from_dict(_item) for _item in obj["validators"]]
-                if obj.get("validators") is not None
-                else None,
                 "_meta": obj.get("_meta"),
             }
         )

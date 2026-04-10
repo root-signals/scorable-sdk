@@ -222,7 +222,7 @@ describe('JudgesResource', () => {
       expect(mockClient.POST).toHaveBeenCalledWith('/v1/judges/generate/', {
         body: {
           intent,
-          visibility: 'unlisted',
+          visibility: 'private',
           stage: 'response generation',
           strict: null,
           extra_contexts: { domain: 'Ecommerce selling clothing' },
@@ -251,7 +251,7 @@ describe('JudgesResource', () => {
       expect(mockClient.POST).toHaveBeenCalledWith('/v1/judges/generate/', {
         body: {
           intent: 'Evaluate responses for helpfulness',
-          visibility: 'unlisted',
+          visibility: 'private',
           stage: null,
           strict: null,
           extra_contexts: null,

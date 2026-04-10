@@ -23,7 +23,6 @@ from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Annotated, Self
 
 from scorable.generated.openapi_client.models.nested_user_details import NestedUserDetails
-from scorable.generated.openapi_client.models.objective_validator import ObjectiveValidator
 from scorable.generated.openapi_client.models.status_enum import StatusEnum
 
 
@@ -36,7 +35,6 @@ class Objective(BaseModel):
     intent: Optional[Annotated[str, Field(strict=True, max_length=100000)]] = None
     status: Optional[StatusEnum] = None
     test_set: Optional[List[List[StrictStr]]] = Field(description="Deprecated: Use test_dataset_id instead.")
-    validators: Optional[List[ObjectiveValidator]] = None
     created_at: datetime
     owner: NestedUserDetails
     version_id: StrictStr
@@ -47,7 +45,6 @@ class Objective(BaseModel):
         "intent",
         "status",
         "test_set",
-        "validators",
         "created_at",
         "owner",
         "version_id",
@@ -107,13 +104,6 @@ class Objective(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each item in validators (list)
-        _items = []
-        if self.validators:
-            for _item in self.validators:
-                if _item:
-                    _items.append(_item.to_dict())
-            _dict["validators"] = _items
         # override the default output from pydantic by calling `to_dict()` of owner
         if self.owner:
             _dict["owner"] = self.owner.to_dict()
@@ -144,9 +134,6 @@ class Objective(BaseModel):
                 "intent": obj.get("intent"),
                 "status": obj.get("status"),
                 "test_set": obj.get("test_set"),
-                "validators": [ObjectiveValidator.from_dict(_item) for _item in obj["validators"]]
-                if obj.get("validators") is not None
-                else None,
                 "created_at": obj.get("created_at"),
                 "owner": NestedUserDetails.from_dict(obj["owner"]) if obj.get("owner") is not None else None,
                 "version_id": obj.get("version_id"),

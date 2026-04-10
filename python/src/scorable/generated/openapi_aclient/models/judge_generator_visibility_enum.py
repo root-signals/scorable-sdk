@@ -21,7 +21,7 @@ from typing_extensions import Self
 
 class JudgeGeneratorVisibilityEnum(str, Enum):
     """
-    * `global` - global * `public` - public * `listed` - listed * `unlisted` - unlisted
+    * `global` - global * `public` - public * `private` - private
     """
 
     """
@@ -29,8 +29,7 @@ class JudgeGeneratorVisibilityEnum(str, Enum):
     """
     GLOBAL = "global"
     PUBLIC = "public"
-    LISTED = "listed"
-    UNLISTED = "unlisted"
+    PRIVATE = "private"
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:

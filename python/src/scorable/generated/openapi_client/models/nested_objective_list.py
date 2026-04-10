@@ -21,7 +21,6 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Annotated, Self
 
-from scorable.generated.openapi_client.models.objective_validator import ObjectiveValidator
 from scorable.generated.openapi_client.models.status_enum import StatusEnum
 
 
@@ -33,8 +32,7 @@ class NestedObjectiveList(BaseModel):
     id: StrictStr
     intent: Optional[Annotated[str, Field(strict=True, max_length=100000)]] = None
     status: Optional[StatusEnum] = None
-    validators: List[ObjectiveValidator]
-    __properties: ClassVar[List[str]] = ["id", "intent", "status", "validators"]
+    __properties: ClassVar[List[str]] = ["id", "intent", "status"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -66,12 +64,10 @@ class NestedObjectiveList(BaseModel):
           were set at model initialization. Other fields with value `None`
           are ignored.
         * OpenAPI `readOnly` fields are excluded.
-        * OpenAPI `readOnly` fields are excluded.
         """
         excluded_fields: Set[str] = set(
             [
                 "id",
-                "validators",
             ]
         )
 
@@ -80,13 +76,6 @@ class NestedObjectiveList(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each item in validators (list)
-        _items = []
-        if self.validators:
-            for _item in self.validators:
-                if _item:
-                    _items.append(_item.to_dict())
-            _dict["validators"] = _items
         return _dict
 
     @classmethod
@@ -98,14 +87,5 @@ class NestedObjectiveList(BaseModel):
         if not isinstance(obj, dict):
             return cls.model_validate(obj)
 
-        _obj = cls.model_validate(
-            {
-                "id": obj.get("id"),
-                "intent": obj.get("intent"),
-                "status": obj.get("status"),
-                "validators": [ObjectiveValidator.from_dict(_item) for _item in obj["validators"]]
-                if obj.get("validators") is not None
-                else None,
-            }
-        )
+        _obj = cls.model_validate({"id": obj.get("id"), "intent": obj.get("intent"), "status": obj.get("status")})
         return _obj

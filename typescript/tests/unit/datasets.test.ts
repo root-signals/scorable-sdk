@@ -135,27 +135,6 @@ describe('DatasetsResource', () => {
     });
   });
 
-  describe('updateStatus', () => {
-    it('should update dataset status successfully', async () => {
-      const datasetId = 'dataset-123';
-      const status = 'public';
-      const updatedDataset = { status: 'public' };
-
-      mockClient.setMockResponse('PUT', `/v1/datasets/status/${datasetId}/`, {
-        data: updatedDataset,
-        error: undefined,
-      });
-
-      const result = await client.datasets.updateStatus(datasetId, status);
-
-      expect(result.status).toBe(status);
-      expect(mockClient.PUT).toHaveBeenCalledWith('/v1/datasets/status/{id}/', {
-        params: { path: { id: datasetId } },
-        body: { status },
-      });
-    });
-  });
-
   describe('download', () => {
     it('should download dataset', async () => {
       const datasetId = 'dataset-123';

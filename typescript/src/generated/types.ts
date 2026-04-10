@@ -4,128 +4,6 @@
  */
 
 export interface paths {
-  '/v1/beta/evaluation-agents/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description List EvaluationAgent definitions. */
-    get: operations['beta_evaluation_agents_list'];
-    put?: never;
-    /** @description Create an EvaluationAgent definition. */
-    post: operations['beta_evaluation_agents_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/beta/evaluation-agents/{id}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get an EvaluationAgent definition details. */
-    get: operations['beta_evaluation_agents_retrieve'];
-    /** @description Update an EvaluationAgent definition. */
-    put: operations['beta_evaluation_agents_update'];
-    post?: never;
-    /** @description Delete an EvaluationAgent definition. */
-    delete: operations['beta_evaluation_agents_destroy'];
-    options?: never;
-    head?: never;
-    patch: operations['beta_evaluation_agents_partial_update'];
-    trace?: never;
-  };
-  '/v1/beta/evaluation-agents/{id}/execute/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Execute an evaluation agent */
-    post: operations['beta_evaluation_agents_execute_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/beta/evaluation-agents/{id}/versions/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['beta_evaluation_agents_versions_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/beta/evaluation-agents/generate/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Generate an evaluation agent */
-    post: operations['beta_evaluation_agents_generate_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/beta/evaluation-jobs/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description List all batch evaluation jobs for your organization. Returns job IDs and creation timestamps that can be used to retrieve evaluation results. */
-    get: operations['list_batch_evaluation_jobs'];
-    put?: never;
-    /** @description Submit a batch evaluation job for asynchronous processing. Use this endpoint for large-scale evaluations that require processing many samples. The job will be queued and processed asynchronously. Use the returned job_id to retrieve results via the batch job results endpoint. */
-    post: operations['create_batch_evaluation_job'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/beta/evaluation-jobs/{job_id}/results/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Retrieve evaluation results for a completed batch job. Returns a Parquet file containing all evaluation results or failure information. Use the job_id from the batch job creation response to download results. The file_type parameter controls whether to retrieve successful evaluations or failures. */
-    get: operations['get_evaluation_batch_job_results'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/v1/datasets/': {
     parameters: {
       query?: never;
@@ -157,23 +35,6 @@ export interface paths {
     post?: never;
     /** @description Delete a dataset. */
     delete: operations['datasets_destroy'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/datasets/status/{id}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** @description Change the status of a dataset */
-    put: operations['datasets_status_update'];
-    post?: never;
-    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -302,7 +163,24 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/v1/evaluators/status/{id}/': {
+  '/v1/evaluators/export/{id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Export an evaluator as a YAML file */
+    get: operations['evaluators_export_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/evaluators/import-yaml/': {
     parameters: {
       query?: never;
       header?: never;
@@ -310,10 +188,9 @@ export interface paths {
       cookie?: never;
     };
     get?: never;
-    /** @description Change the status of an evaluator */
-    put: operations['evaluators_status_update'];
-    /** @description Change the status of an evaluator */
-    post: operations['evaluators_status_create'];
+    put?: never;
+    /** @description Import an evaluator from a YAML string. Creates the evaluator, demonstrations, and calibration dataset in one call. */
+    post: operations['evaluators_import_yaml_create'];
     delete?: never;
     options?: never;
     head?: never;
@@ -549,6 +426,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/judges/{judge_id}/synthetic-data/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get synthetic data samples for a judge. */
+    get: operations['judges_synthetic_data_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/judges/{id}/': {
     parameters: {
       query?: never;
@@ -631,6 +525,23 @@ export interface paths {
     get: operations['judges_batch_executions_retrieve'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/judges/claim/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Claim a judge generated as a temporary user, transferring ownership to the authenticated user. */
+    post: operations['judges_claim_create'];
     delete?: never;
     options?: never;
     head?: never;
@@ -874,128 +785,6 @@ export interface components {
       start: number | null;
       end: number | null;
     };
-    EvaluationAgent: {
-      /** Format: date-time */
-      readonly created_at: string;
-      evaluation_approach?: components['schemas']['EvaluationAgentEvaluationApproachEnum'];
-      /** Format: uuid */
-      readonly id: string;
-      /** @default rs-fast */
-      model: components['schemas']['ModelEnum'];
-      name: string;
-      /** Format: uuid */
-      objective_id: string;
-      readonly objective: components['schemas']['NestedObjective'];
-      scoring_criteria: string;
-      /**
-       * @description Status of the evaluation agent. If not provided, it will be set to unlisted so it is visible only to the owner. Listed statuses are visible to the whole organization.
-       *
-       *     * `unlisted` - unlisted
-       *     * `listed` - listed
-       *     * `public` - public
-       *     * `public_unlisted` - public_unlisted
-       * @default unlisted
-       */
-      status: (components['schemas']['StatusEnum'] | components['schemas']['NullEnum']) | null;
-      /** Format: uuid */
-      readonly version_id: string;
-    };
-    /**
-     * @description * `pointwise_score` - Pointwise Score
-     *     * `pairwise_preference` - Pairwise Preference
-     *     * `meets_all_specified_policy_criteria` - Meets All Specified Policy Criteria
-     *     * `classification` - Classification
-     * @enum {string}
-     */
-    EvaluationAgentEvaluationApproachEnum:
-      | 'pointwise_score'
-      | 'pairwise_preference'
-      | 'meets_all_specified_policy_criteria'
-      | 'classification';
-    EvaluationAgentExecuteRequestRequest: {
-      request?: string | null;
-      response: string;
-      version_id?: string | null;
-      tags?: string[] | null;
-    };
-    EvaluationAgentExecuteResponse: {
-      /** Format: double */
-      score: number | null;
-      justification: string | null;
-      result_text: string | null;
-    };
-    EvaluationAgentGenerateExampleRequest: {
-      request?: string | null;
-      response: string;
-      /** Format: double */
-      score?: number | null;
-      expectation?: string | null;
-    };
-    /**
-     * @description * `pointwise_score` - pointwise_score
-     * @enum {string}
-     */
-    EvaluationAgentGenerateRequestEvaluationApproachEnum: 'pointwise_score';
-    EvaluationAgentGenerateRequestRequest: {
-      examples: components['schemas']['EvaluationAgentGenerateExampleRequest'][];
-      evaluation_approach: components['schemas']['EvaluationAgentGenerateRequestEvaluationApproachEnum'];
-    };
-    EvaluationAgentRequest: {
-      evaluation_approach?: components['schemas']['EvaluationAgentEvaluationApproachEnum'];
-      /** @default rs-fast */
-      model: components['schemas']['ModelEnum'];
-      name: string;
-      /** Format: uuid */
-      objective_id: string;
-      scoring_criteria: string;
-      /**
-       * @description Status of the evaluation agent. If not provided, it will be set to unlisted so it is visible only to the owner. Listed statuses are visible to the whole organization.
-       *
-       *     * `unlisted` - unlisted
-       *     * `listed` - listed
-       *     * `public` - public
-       *     * `public_unlisted` - public_unlisted
-       * @default unlisted
-       */
-      status: (components['schemas']['StatusEnum'] | components['schemas']['NullEnum']) | null;
-    };
-    EvaluationBatchJobSerializer: {
-      job_id: string;
-      /** Format: date-time */
-      created_at: string;
-    };
-    EvaluationJobRequestRequest: {
-      /** @description Will be set automatically */
-      id?: string | null;
-      /** @description Will be set automatically */
-      created_at?: string | null;
-      /** @description Will be set automatically */
-      updated_at?: string | null;
-      /** @description List of content to evaluate in batch */
-      samples: components['schemas']['InputOutputPairInputRequest'][];
-      /** @description Optional name for this batch job */
-      job_name?: string | null;
-      /**
-       * @description Whether to drop existing preference hints during evaluation
-       * @default false
-       */
-      drop_hints: boolean | null;
-      /** @description Optional dataset name to set for the samples. Should be unique */
-      dataset_name?: string | null;
-      /**
-       * @description Use fast agents for evaluation
-       * @default false
-       */
-      fast_mode: boolean | null;
-    };
-    EvaluationJobResponse: {
-      job_id: string;
-      status: components['schemas']['JobStatus'];
-      total_examples: number;
-      results_path?: string | null;
-      failures_path?: string | null;
-      message?: string | null;
-    };
     Evaluator: {
       change_note?: string | null;
       /** Format: date-time */
@@ -1004,17 +793,13 @@ export interface components {
       /** Format: uuid */
       readonly id: string;
       input_variables?: components['schemas']['InputVariable'][];
-      model_params?: components['schemas']['ModelParams'] | null;
       /** @description Primary model (index 0) and an optional list of fallback models to use if the primary model is not available. If not provided, a default model will be used. */
       models?: string[];
       name: string;
       readonly objective: components['schemas']['Objective'] | null;
       readonly owner: components['schemas']['NestedUserDetails'];
       prompt: string;
-      reference_variables?: components['schemas']['ReferenceVariable'][];
-      readonly skill_type: components['schemas']['SkillTypeEnum'];
-      status?: components['schemas']['StatusEnum'];
-      system_message?: string;
+      readonly visibility: components['schemas']['VisibilityEf8Enum'];
       /** Format: date-time */
       readonly updated_at: string | null;
       readonly updated_by: components['schemas']['NestedUserDetails'] | null;
@@ -1106,7 +891,7 @@ export interface components {
        * @description Extra variables to be used in the execution of the evaluator. Optional.
        * @default {}
        */
-      variables?: {
+      variables: {
         [key: string]: string;
       };
     };
@@ -1118,6 +903,11 @@ export interface components {
       cost: number | null;
       execution_log_id: string;
       justification: string | null;
+    };
+    EvaluatorImportYamlRequestRequest: {
+      yaml: string;
+      /** @default false */
+      overwrite: boolean;
     };
     EvaluatorListOutput: {
       /** meta */
@@ -1131,7 +921,7 @@ export interface components {
       readonly objective: components['schemas']['NestedObjectiveList'];
       readonly owner: components['schemas']['NestedUserDetails'];
       readonly prompt: string;
-      readonly status: components['schemas']['StatusEnum'];
+      readonly visibility: components['schemas']['VisibilityEf8Enum'];
       /** Format: date-time */
       readonly updated_at: string | null;
       readonly updated_by: components['schemas']['NestedUserDetails'] | null;
@@ -1186,7 +976,6 @@ export interface components {
       change_note?: string | null;
       evaluator_demonstrations?: components['schemas']['EvaluatorDemonstrationsRequest'][] | null;
       input_variables?: components['schemas']['InputVariableRequest'][];
-      model_params?: components['schemas']['ModelParamsRequest'] | null;
       /** @description Primary model (index 0) and an optional list of fallback models to use if the primary model is not available. If not provided, a default model will be used. */
       models?: string[];
       name: string;
@@ -1203,9 +992,6 @@ export interface components {
        */
       overwrite: boolean;
       prompt: string;
-      reference_variables?: components['schemas']['ReferenceVariableRequest'][];
-      status?: components['schemas']['StatusEnum'];
-      system_message?: string;
     };
     EvaluatorResult: {
       evaluator_name: string;
@@ -1246,7 +1032,6 @@ export interface components {
       readonly llm_output: string;
       /** Format: double */
       model_call_duration: number;
-      model_params?: components['schemas']['ModelParams'] | null;
       readonly model: string;
       readonly owner: components['schemas']['NestedUserDetails'];
       /** Format: uuid */
@@ -1263,6 +1048,7 @@ export interface components {
       readonly variables: {
         [key: string]: string;
       } | null;
+      readonly classification: unknown;
     };
     ExecutionLogList: {
       /** Format: double */
@@ -1312,15 +1098,6 @@ export interface components {
       /** Format: uuid */
       readonly id: string;
     };
-    InputOutputPairInputRequest: {
-      kind: components['schemas']['KindEnum'];
-      original_input?: string | null;
-      original_response?: string | null;
-      original_content?: string | null;
-      original_preference?: components['schemas']['ResultPreferenceSignifierRequest'] | null;
-      target?: (components['schemas']['TargetEnum'] | components['schemas']['NullEnum']) | null;
-      original_turns?: components['schemas']['TurnInputRequest'][] | null;
-    };
     InputVariable: {
       /** Format: uuid */
       readonly id: string;
@@ -1335,15 +1112,6 @@ export interface components {
     InputVariableRequest: {
       name: string;
     };
-    /**
-     * @description * `pending` - pending
-     *     * `running` - running
-     *     * `completed` - completed
-     *     * `failed` - failed
-     *     * `cancelled` - cancelled
-     * @enum {string}
-     */
-    JobStatus: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
     Judge: {
       /** meta */
       readonly _meta: {
@@ -1387,10 +1155,11 @@ export interface components {
           };
         };
       };
+      /** @description Intent for the judge */
+      intent: string;
       name: string;
-      readonly objective: components['schemas']['NestedVectorObjective'];
       stage?: string;
-      status: components['schemas']['StatusEnum'];
+      readonly visibility: components['schemas']['VisibilityEf8Enum'];
       /** Format: uuid */
       readonly version_id: string;
     };
@@ -1482,6 +1251,10 @@ export interface components {
       batch_execution_id: string;
       status_url: string;
     };
+    JudgeClaimRequestRequest: {
+      /** Format: uuid */
+      claim_token: string;
+    };
     JudgeExecutionRequest: {
       turns?: components['schemas']['MessageTurnRequest'][] | null;
       request?: string | null;
@@ -1520,8 +1293,11 @@ export interface components {
       overwrite: boolean | null;
       /** @description The name of the judge to generate. If not provided, a name will be generated for you. */
       name?: string | null;
-      /** @description Set to true if the application uses RAG (document chunks) to enable context-aware evaluators (hallucination detection, context drift, etc.). */
-      enable_context_aware_evaluators?: boolean | null;
+      /**
+       * @description When true, enables context-aware RAG evaluators (requires_contexts=True) even without file upload
+       * @default false
+       */
+      enable_context_aware_evaluators: boolean | null;
     };
     JudgeGeneratorResponse: {
       /** Format: uuid */
@@ -1529,22 +1305,15 @@ export interface components {
       /** Format: uuid */
       judge_version_id: string;
       error_code?: string | null;
-      stages?: string[] | null;
-      missing_context_from_system_goal?:
-        | {
-            form_field_name: string;
-            form_field_description: string;
-          }[]
-        | null;
+      claim_token?: string | null;
     };
     /**
      * @description * `global` - global
      *     * `public` - public
-     *     * `listed` - listed
-     *     * `unlisted` - unlisted
+     *     * `private` - private
      * @enum {string}
      */
-    JudgeGeneratorVisibilityEnum: 'global' | 'public' | 'listed' | 'unlisted';
+    JudgeGeneratorVisibilityEnum: 'global' | 'public' | 'private';
     JudgeInviteRequest: {
       /** @description List of email addresses to send the invite to (maximum 10) */
       emails: string[];
@@ -1561,7 +1330,7 @@ export interface components {
       readonly intent: string;
       /** Format: date-time */
       readonly created_at: string;
-      readonly status: components['schemas']['StatusEnum'];
+      readonly visibility: components['schemas']['VisibilityEf8Enum'];
       /**
        * @description Schema defining the input parameters required for execution. The schema consists of variables defined in the prompt template (predicate) and special variables like contexts and expected output.
        * @example {
@@ -1611,29 +1380,29 @@ export interface components {
        * @description Maximum number of improvement attempts
        * @default 3
        */
-      max_iterations?: number;
+      max_iterations: number;
       /**
        * @description Number of tries without improvement before early stopping
        * @default 1
        */
-      patience?: number;
+      patience: number;
       /**
        * Format: double
        * @description Minimum score improvement required to accept a change
        * @default 0.05
        */
-      min_improvement?: number;
+      min_improvement: number;
       /**
        * Format: double
        * @description Target score to achieve
        * @default 0.8
        */
-      threshold?: number;
+      threshold: number;
       /**
        * @description Enable streaming of intermediate and final results
        * @default false
        */
-      stream?: boolean;
+      stream: boolean;
     };
     JudgeRectifierResponse: {
       /** @description List of results from each evaluator */
@@ -1647,19 +1416,16 @@ export interface components {
     };
     JudgeRequest: {
       evaluator_references?: components['schemas']['EvaluatorReferenceRequest'][];
+      /**
+       * Format: uuid
+       * @description ID of the JudgeFile to attach to this judge. Only one file per judge is supported. Set to null to remove the file.
+       */
+      file_id?: string | null;
       /** @description Intent for the judge */
       intent: string;
       name: string;
       stage?: string;
-      status: components['schemas']['StatusEnum'];
     };
-    /**
-     * @description * `input_output_pair` - input_output_pair
-     *     * `single_content` - single_content
-     *     * `multi_turn_content` - multi_turn_content
-     * @enum {string}
-     */
-    KindEnum: 'input_output_pair' | 'single_content' | 'multi_turn_content';
     MessageLogTurn: {
       role: components['schemas']['RoleEnum'];
       content: string;
@@ -1694,12 +1460,6 @@ export interface components {
       name: string;
       url?: string | null;
     };
-    /**
-     * @description * `rs-fast` - Fast
-     *     * `rs-thorough` - Thorough
-     * @enum {string}
-     */
-    ModelEnum: 'rs-fast' | 'rs-thorough';
     ModelList: {
       /** Format: uuid */
       readonly id: string;
@@ -1715,14 +1475,6 @@ export interface components {
      * @enum {string}
      */
     ModelListVisibilityEnum: 'PUBLIC' | 'PUBLIC_UNLISTED' | 'PRIVATE';
-    ModelParams: {
-      /** Format: double */
-      temperature?: number | null;
-    };
-    ModelParamsRequest: {
-      /** Format: double */
-      temperature?: number | null;
-    };
     ModelRequest: {
       default_key?: string | null;
       max_output_token_count?: number;
@@ -1777,29 +1529,11 @@ export interface components {
       /** Format: uuid */
       version_id: string;
     };
-    NestedObjective: {
-      /** Format: uuid */
-      readonly id: string;
-      readonly intent: string;
-    };
-    NestedObjectiveEvaluator: {
-      /** Format: uuid */
-      readonly id: string;
-      name?: string;
-      requires_expected_output?: boolean;
-      requires_contexts?: boolean;
-    };
-    NestedObjectiveEvaluatorRequest: {
-      name?: string;
-      requires_expected_output?: boolean;
-      requires_contexts?: boolean;
-    };
     NestedObjectiveList: {
       /** Format: uuid */
       readonly id: string;
       intent?: string;
       status?: components['schemas']['StatusEnum'];
-      readonly validators: components['schemas']['ObjectiveValidator'][];
     };
     NestedUserDetails: {
       /**
@@ -1812,16 +1546,6 @@ export interface components {
     NestedUserDetailsRequest: {
       full_name: string;
     };
-    NestedVectorObjective: {
-      /** Format: uuid */
-      readonly id: string;
-      intent: string;
-    };
-    NestedVectorObjectiveRequest: {
-      intent: string;
-    };
-    /** @enum {unknown} */
-    NullEnum: null;
     Objective: {
       /** Format: uuid */
       readonly id: string;
@@ -1829,7 +1553,6 @@ export interface components {
       status?: components['schemas']['StatusEnum'];
       /** @description Deprecated: Use test_dataset_id instead. */
       readonly test_set: string[][] | null;
-      validators?: components['schemas']['ObjectiveValidator'][];
       /** Format: date-time */
       readonly created_at: string;
       readonly owner: components['schemas']['NestedUserDetails'];
@@ -1850,7 +1573,6 @@ export interface components {
       readonly owner: components['schemas']['NestedUserDetails'];
       /** Format: date-time */
       readonly created_at: string;
-      readonly validators: components['schemas']['ObjectiveValidator'][];
       /** meta */
       readonly _meta: {
         [key: string]: unknown;
@@ -1859,23 +1581,10 @@ export interface components {
     ObjectiveRequest: {
       intent?: string;
       status?: components['schemas']['StatusEnum'];
-      validators?: components['schemas']['ObjectiveValidatorRequest'][];
       /** @description Force creation of a new objective. Applies only to PUT requests. */
       force_create?: boolean;
       /** Format: uuid */
       test_dataset_id?: string | null;
-    };
-    ObjectiveValidator: {
-      readonly evaluator: components['schemas']['NestedObjectiveEvaluator'];
-      /** Format: double */
-      threshold?: number;
-    };
-    ObjectiveValidatorRequest: {
-      /** Format: uuid */
-      evaluator_id?: string;
-      evaluator_name?: string;
-      /** Format: double */
-      threshold?: number;
     };
     PaginatedDataSetListList: {
       /**
@@ -1889,32 +1598,6 @@ export interface components {
        */
       previous?: string | null;
       results: components['schemas']['DataSetList'][];
-    };
-    PaginatedEvaluationAgentList: {
-      /**
-       * Format: uri
-       * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
-       */
-      next?: string | null;
-      /**
-       * Format: uri
-       * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
-       */
-      previous?: string | null;
-      results: components['schemas']['EvaluationAgent'][];
-    };
-    PaginatedEvaluationBatchJobSerializerList: {
-      /**
-       * Format: uri
-       * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
-       */
-      next?: string | null;
-      /**
-       * Format: uri
-       * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
-       */
-      previous?: string | null;
-      results: components['schemas']['EvaluationBatchJobSerializer'][];
     };
     PaginatedEvaluatorList: {
       /**
@@ -2020,30 +1703,10 @@ export interface components {
       previous?: string | null;
       results: components['schemas']['ObjectiveList'][];
     };
-    PatchedEvaluationAgentRequest: {
-      evaluation_approach?: components['schemas']['EvaluationAgentEvaluationApproachEnum'];
-      /** @default rs-fast */
-      model: components['schemas']['ModelEnum'];
-      name?: string;
-      /** Format: uuid */
-      objective_id?: string;
-      scoring_criteria?: string;
-      /**
-       * @description Status of the evaluation agent. If not provided, it will be set to unlisted so it is visible only to the owner. Listed statuses are visible to the whole organization.
-       *
-       *     * `unlisted` - unlisted
-       *     * `listed` - listed
-       *     * `public` - public
-       *     * `public_unlisted` - public_unlisted
-       * @default unlisted
-       */
-      status: (components['schemas']['StatusEnum'] | components['schemas']['NullEnum']) | null;
-    };
     PatchedEvaluatorRequest: {
       change_note?: string | null;
       evaluator_demonstrations?: components['schemas']['EvaluatorDemonstrationsRequest'][] | null;
       input_variables?: components['schemas']['InputVariableRequest'][];
-      model_params?: components['schemas']['ModelParamsRequest'] | null;
       /** @description Primary model (index 0) and an optional list of fallback models to use if the primary model is not available. If not provided, a default model will be used. */
       models?: string[];
       name?: string;
@@ -2060,17 +1723,18 @@ export interface components {
        */
       overwrite: boolean;
       prompt?: string;
-      reference_variables?: components['schemas']['ReferenceVariableRequest'][];
-      status?: components['schemas']['StatusEnum'];
-      system_message?: string;
     };
     PatchedJudgeRequest: {
       evaluator_references?: components['schemas']['EvaluatorReferenceRequest'][];
+      /**
+       * Format: uuid
+       * @description ID of the JudgeFile to attach to this judge. Only one file per judge is supported. Set to null to remove the file.
+       */
+      file_id?: string | null;
       /** @description Intent for the judge */
       intent?: string;
       name?: string;
       stage?: string;
-      status?: components['schemas']['StatusEnum'];
     };
     PatchedModelRequest: {
       default_key?: string | null;
@@ -2083,7 +1747,6 @@ export interface components {
     PatchedObjectiveRequest: {
       intent?: string;
       status?: components['schemas']['StatusEnum'];
-      validators?: components['schemas']['ObjectiveValidatorRequest'][];
       /** @description Force creation of a new objective. Applies only to PUT requests. */
       force_create?: boolean;
       /** Format: uuid */
@@ -2106,45 +1769,10 @@ export interface components {
      * @enum {string}
      */
     ReasoningEffortEnum: 'off' | 'low' | 'medium' | 'high';
-    ReferenceVariable: {
-      /** Format: uuid */
-      readonly id: string;
-      /** Format: uuid */
-      dataset: string;
-      /** Format: date-time */
-      readonly created_at: string | null;
-      /** Format: date-time */
-      readonly updated_at: string | null;
-      name: string;
-      /** Format: uuid */
-      readonly skill: string | null;
-    };
     ReferenceVariableRequest: {
       /** Format: uuid */
       dataset: string;
       name: string;
-    };
-    /**
-     * @description * `pointwise_score` - pointwise_score
-     *     * `pairwise_preference` - pairwise_preference
-     *     * `meets_all_specified_policy_criteria` - meets_all_specified_policy_criteria
-     *     * `classification` - classification
-     * @enum {string}
-     */
-    ResultPreferenceSignifierEvaluationApproachEnum:
-      | 'pointwise_score'
-      | 'pairwise_preference'
-      | 'meets_all_specified_policy_criteria'
-      | 'classification';
-    ResultPreferenceSignifierRequest: {
-      evaluation_approach?:
-        | (
-            | components['schemas']['ResultPreferenceSignifierEvaluationApproachEnum']
-            | components['schemas']['NullEnum']
-          )
-        | null;
-      /** @description Approach-specific guidance or rubric content */
-      expectation: string;
     };
     /**
      * @description * `user` - user
@@ -2181,57 +1809,33 @@ export interface components {
       input_variables: components['schemas']['InputVariableRequest'][];
       models?: string[];
       name?: string | null;
-      /** @default false */
-      pii_filter: boolean;
       objective?: components['schemas']['ObjectiveRequest'] | null;
       /** @default false */
       is_evaluator: boolean;
     };
     /**
-     * @description * `managed` - managed
-     *     * `native` - native
-     * @enum {string}
-     */
-    SkillTypeEnum: 'managed' | 'native';
-    StatusChange: {
-      status: components['schemas']['StatusChangeStatusEnum'];
-    };
-    StatusChangeRequest: {
-      status: components['schemas']['StatusChangeStatusEnum'];
-    };
-    /**
-     * @description * `unlisted` - unlisted
-     *     * `listed` - listed
-     * @enum {string}
-     */
-    StatusChangeStatusEnum: 'unlisted' | 'listed';
-    /**
      * @description * `unlisted` - unlisted
      *     * `listed` - listed
      *     * `public` - public
      *     * `public_unlisted` - public_unlisted
+     *     * `private` - private
      * @enum {string}
      */
-    StatusEnum: 'unlisted' | 'listed' | 'public' | 'public_unlisted';
+    StatusEnum: 'unlisted' | 'listed' | 'public' | 'public_unlisted' | 'private';
     /**
      * @description * `agent_behavior` - agent_behavior
      *     * `user_behavior` - user_behavior
      * @enum {string}
      */
     TargetEnum: 'agent_behavior' | 'user_behavior';
-    TurnInputRequest: {
-      index: number;
-      role: components['schemas']['RoleEnum'];
-      content: string;
-      contexts?: string[] | null;
-      tool_name?: string | null;
-    };
     /**
      * @description * `pending` - Pending
      *     * `finished` - Finished
      * @enum {string}
      */
     ValidationResultStatus: 'pending' | 'finished';
+    /** @enum {string} */
+    VisibilityEf8Enum: 'private' | 'public';
   };
   responses: never;
   parameters: never;
@@ -2241,319 +1845,6 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  beta_evaluation_agents_list: {
-    parameters: {
-      query?: {
-        /** @description The pagination cursor value. */
-        cursor?: string;
-        /** @description Which field to use when ordering the results. */
-        ordering?: string;
-        /** @description Number of results to return per page. */
-        page_size?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PaginatedEvaluationAgentList'];
-        };
-      };
-    };
-  };
-  beta_evaluation_agents_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['EvaluationAgentRequest'];
-        'application/x-www-form-urlencoded': components['schemas']['EvaluationAgentRequest'];
-        'multipart/form-data': components['schemas']['EvaluationAgentRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ID'];
-        };
-      };
-    };
-  };
-  beta_evaluation_agents_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['EvaluationAgent'];
-        };
-      };
-    };
-  };
-  beta_evaluation_agents_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['EvaluationAgentRequest'];
-        'application/x-www-form-urlencoded': components['schemas']['EvaluationAgentRequest'];
-        'multipart/form-data': components['schemas']['EvaluationAgentRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['EvaluationAgent'];
-        };
-      };
-    };
-  };
-  beta_evaluation_agents_destroy: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No response body */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  beta_evaluation_agents_partial_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['PatchedEvaluationAgentRequest'];
-        'application/x-www-form-urlencoded': components['schemas']['PatchedEvaluationAgentRequest'];
-        'multipart/form-data': components['schemas']['PatchedEvaluationAgentRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['EvaluationAgent'];
-        };
-      };
-    };
-  };
-  beta_evaluation_agents_execute_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['EvaluationAgentExecuteRequestRequest'];
-        'application/x-www-form-urlencoded': components['schemas']['EvaluationAgentExecuteRequestRequest'];
-        'multipart/form-data': components['schemas']['EvaluationAgentExecuteRequestRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['EvaluationAgentExecuteResponse'];
-        };
-      };
-    };
-  };
-  beta_evaluation_agents_versions_list: {
-    parameters: {
-      query?: {
-        /** @description The pagination cursor value. */
-        cursor?: string;
-        /** @description Number of results to return per page. */
-        page_size?: number;
-      };
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PaginatedEvaluationAgentList'];
-        };
-      };
-    };
-  };
-  beta_evaluation_agents_generate_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['EvaluationAgentGenerateRequestRequest'];
-        'application/x-www-form-urlencoded': components['schemas']['EvaluationAgentGenerateRequestRequest'];
-        'multipart/form-data': components['schemas']['EvaluationAgentGenerateRequestRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ID'];
-        };
-      };
-    };
-  };
-  list_batch_evaluation_jobs: {
-    parameters: {
-      query?: {
-        /** @description The pagination cursor value. */
-        cursor?: string;
-        /** @description Number of results to return per page. */
-        page_size?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PaginatedEvaluationBatchJobSerializerList'];
-        };
-      };
-    };
-  };
-  create_batch_evaluation_job: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['EvaluationJobRequestRequest'];
-        'application/x-www-form-urlencoded': components['schemas']['EvaluationJobRequestRequest'];
-        'multipart/form-data': components['schemas']['EvaluationJobRequestRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['EvaluationJobResponse'];
-        };
-      };
-    };
-  };
-  get_evaluation_batch_job_results: {
-    parameters: {
-      query?: {
-        /** @description Type of file to retrieve: 'results' for successful evaluations, 'failures' for failed ones */
-        file_type?: 'failures' | 'results';
-      };
-      header?: never;
-      path: {
-        /** @description The batch job ID returned from the batch job creation endpoint */
-        job_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Batch job results file in Parquet format */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/parquet': string;
-        };
-      };
-      /** @description Access denied to batch job results */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Batch job not found or results not available */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   datasets_list: {
     parameters: {
       query?: {
@@ -2653,38 +1944,13 @@ export interface operations {
       };
     };
   };
-  datasets_status_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StatusChangeRequest'];
-        'application/x-www-form-urlencoded': components['schemas']['StatusChangeRequest'];
-        'multipart/form-data': components['schemas']['StatusChangeRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['StatusChange'];
-        };
-      };
-    };
-  };
   evaluators_list: {
     parameters: {
       query?: {
         /** @description The pagination cursor value. */
         cursor?: string;
+        /** @description Include public evaluators from other organizations. */
+        include_public?: boolean;
         /** @description Return only Scorable defined evaluators. */
         is_root_evaluator?: boolean;
         /** @description Search for evaluators by name (exact match). */
@@ -2704,13 +1970,6 @@ export interface operations {
          *     * `native` - native
          */
         skill_type?: 'managed' | 'native';
-        /**
-         * @description * `unlisted` - unlisted
-         *     * `listed` - listed
-         *     * `public` - public
-         *     * `public_unlisted` - public_unlisted
-         */
-        status?: 'listed' | 'public' | 'public_unlisted' | 'unlisted';
       };
       header?: never;
       path?: never;
@@ -2981,7 +2240,7 @@ export interface operations {
       };
     };
   };
-  evaluators_status_update: {
+  evaluators_export_retrieve: {
     parameters: {
       query?: never;
       header?: never;
@@ -2990,47 +2249,38 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StatusChangeRequest'];
-        'application/x-www-form-urlencoded': components['schemas']['StatusChangeRequest'];
-        'multipart/form-data': components['schemas']['StatusChangeRequest'];
-      };
-    };
+    requestBody?: never;
     responses: {
+      /** @description No response body */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          'application/json': components['schemas']['StatusChange'];
-        };
+        content?: never;
       };
     };
   };
-  evaluators_status_create: {
+  evaluators_import_yaml_create: {
     parameters: {
       query?: never;
       header?: never;
-      path: {
-        id: string;
-      };
+      path?: never;
       cookie?: never;
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['StatusChangeRequest'];
-        'application/x-www-form-urlencoded': components['schemas']['StatusChangeRequest'];
-        'multipart/form-data': components['schemas']['StatusChangeRequest'];
+        'application/json': components['schemas']['EvaluatorImportYamlRequestRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['EvaluatorImportYamlRequestRequest'];
+        'multipart/form-data': components['schemas']['EvaluatorImportYamlRequestRequest'];
       };
     };
     responses: {
-      200: {
+      201: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['StatusChange'];
+          'application/json': components['schemas']['Evaluator'];
         };
       };
     };
@@ -3193,12 +2443,12 @@ export interface operations {
         executed_at_gte?: string;
         /** @description Filter by is the judge featured or not */
         featured?: boolean;
+        /** @description Include public judges from other organizations. */
+        include_public?: boolean;
         /** @description Filter judges where intent_evaluability_score is greater than or equal to the given value */
         intent_evaluability_score_gte?: number;
         /** @description Filter by is the judge preset or not */
         is_preset?: boolean;
-        /** @description Filter by is the judge public or not */
-        is_public?: boolean;
         name?: string;
         /** @description Which field to use when ordering the results. */
         ordering?: string;
@@ -3457,6 +2707,36 @@ export interface operations {
       };
     };
   };
+  judges_synthetic_data_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        judge_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @enum {string} */
+            status?: 'pending' | 'ready' | 'not_generated';
+            samples?: {
+              /** @enum {string} */
+              quality?: 'high' | 'low';
+              request?: string;
+              response?: string;
+            }[];
+          };
+        };
+      };
+    };
+  };
   judges_retrieve: {
     parameters: {
       query?: never;
@@ -3655,6 +2935,31 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['JudgeBatchExecutionDetail'];
+        };
+      };
+    };
+  };
+  judges_claim_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['JudgeClaimRequestRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['JudgeClaimRequestRequest'];
+        'multipart/form-data': components['schemas']['JudgeClaimRequestRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Judge'];
         };
       };
     };
@@ -3940,8 +3245,8 @@ export interface operations {
       query?: {
         /** @description The pagination cursor value. */
         cursor?: string;
-        /** @description Filter objectives by whether they have validators. */
-        has_validators?: boolean;
+        /** @description Include public resources from other organizations. */
+        include_public?: boolean;
         /** @description Search for objectives by intent (exact match). */
         intent?: string;
         /** @description Which field to use when ordering the results. */

@@ -18,14 +18,10 @@ from scorable.generated.openapi_aclient.models.judge_generator_visibility_enum i
 from scorable.generated.openapi_aclient.models.judge_request import (
     JudgeRequest as AJudgeRequest,
 )
-from scorable.generated.openapi_aclient.models.status_enum import (
-    StatusEnum as AStatusEnum,
-)
 from scorable.generated.openapi_client.models.judge_generator_request import JudgeGeneratorRequest
 from scorable.generated.openapi_client.models.judge_generator_response import JudgeGeneratorResponse
 from scorable.generated.openapi_client.models.judge_generator_visibility_enum import JudgeGeneratorVisibilityEnum
 from scorable.generated.openapi_client.models.judge_request import JudgeRequest
-from scorable.generated.openapi_client.models.status_enum import StatusEnum
 
 from .generated.openapi_aclient import ApiClient as AApiClient
 from .generated.openapi_aclient.api.judges_api import JudgesApi as AJudgesApi
@@ -217,7 +213,7 @@ class Judges:
         self,
         *,
         intent: str,
-        visibility: Literal["public", "unlisted"] = "unlisted",
+        visibility: Literal["private", "public", "global"] = "private",
         judge_id: Optional[str] = None,
         file_id: Optional[str] = None,
         stage: Optional[str] = None,
@@ -234,7 +230,9 @@ class Judges:
         Args:
           intent: Describe what you want the judge to build for.
             Example: I am building a chatbot for ecommerce and I would like to measure the quality of the responses.
-          visibility: Whether the judge should be visible to everyone or only to your organization.
+          visibility: Visibility of the generated judge. "private" (default) means only your
+            organization can see it, "public" means everyone can see it, "global" makes it a
+            globally available preset.
           judge_id: ID of an existing judge. If provided, the existing judge will be edited instead
             of generating a new one.
           file_id: ID of the file to use as context for the judge.
@@ -250,6 +248,11 @@ class Judges:
         Returns:
           Wrapper for the judge id and optionally an error code if the generation failed.
         """
+        _visibility_map = {
+            "global": JudgeGeneratorVisibilityEnum.GLOBAL,
+            "public": JudgeGeneratorVisibilityEnum.PUBLIC,
+            "private": JudgeGeneratorVisibilityEnum.PRIVATE,
+        }
         api_instance = JudgesApi(_client)
         judge_request = JudgeGeneratorRequest(
             intent=intent,
@@ -260,9 +263,7 @@ class Judges:
             name=name,
             judge_id=judge_id,
             file_id=file_id,
-            visibility=JudgeGeneratorVisibilityEnum.GLOBAL
-            if visibility == "public"
-            else JudgeGeneratorVisibilityEnum.UNLISTED,
+            visibility=_visibility_map[visibility],
         )
         return api_instance.judges_generate_create(
             judge_generator_request=judge_request, _request_timeout=_request_timeout
@@ -273,7 +274,7 @@ class Judges:
         self,
         *,
         intent: str,
-        visibility: Literal["public", "unlisted"] = "unlisted",
+        visibility: Literal["private", "public", "global"] = "private",
         judge_id: Optional[str] = None,
         file_id: Optional[str] = None,
         stage: Optional[str] = None,
@@ -290,7 +291,9 @@ class Judges:
         Args:
           intent: Describe what you want the judge to build for.
             Example: I am building a chatbot for ecommerce and I would like to measure the quality of the responses.
-          visibility: Whether the judge should be visible to everyone or only to your organization.
+          visibility: Visibility of the generated judge. "private" (default) means only your
+            organization can see it, "public" means everyone can see it, "global" makes it a
+            globally available preset.
           judge_id: ID of an existing judge. If provided, the existing judge will be edited instead
             of generating a new one.
           file_id: ID of the file to use as context for the judge.
@@ -306,6 +309,11 @@ class Judges:
         Returns:
           Wrapper for the judge id and optionally an error code if the generation failed.
         """
+        _visibility_map = {
+            "global": AJudgeGeneratorVisibilityEnum.GLOBAL,
+            "public": AJudgeGeneratorVisibilityEnum.PUBLIC,
+            "private": AJudgeGeneratorVisibilityEnum.PRIVATE,
+        }
         api_instance = AJudgesApi(_client)
         judge_request = AJudgeGeneratorRequest(
             intent=intent,
@@ -316,9 +324,7 @@ class Judges:
             name=name,
             judge_id=judge_id,
             file_id=file_id,
-            visibility=AJudgeGeneratorVisibilityEnum.GLOBAL
-            if visibility == "public"
-            else AJudgeGeneratorVisibilityEnum.UNLISTED,
+            visibility=_visibility_map[visibility],
         )
         return await api_instance.judges_generate_create(
             judge_generator_request=judge_request, _request_timeout=_request_timeout
@@ -332,7 +338,6 @@ class Judges:
         intent: str,
         evaluator_references: Optional[List[EvaluatorReferenceRequest]] = None,
         stage: Optional[str] = None,
-        status: Literal["unlisted", "listed", "public", "public_unlisted"] = "unlisted",
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> Judge:
@@ -344,7 +349,6 @@ class Judges:
           intent: Intent for the judge
           evaluator_references: List of evaluator references to include in the judge
           stage: Stage for the judge
-          status: Status of the judge
           _request_timeout: Optional timeout for the request
         """
         api_instance = JudgesApi(_client)
@@ -353,7 +357,6 @@ class Judges:
             intent=intent,
             evaluator_references=evaluator_references,
             stage=stage,
-            status=StatusEnum(status),
         )
         return Judge._wrap(
             api_instance.judges_create(judge_request=request, _request_timeout=_request_timeout),
@@ -368,7 +371,6 @@ class Judges:
         intent: str,
         evaluator_references: Optional[List[AEvaluatorReferenceRequest]] = None,
         stage: Optional[str] = None,
-        status: Literal["unlisted", "listed", "public", "public_unlisted"] = "unlisted",
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AJudge:
@@ -380,7 +382,6 @@ class Judges:
           intent: Intent for the judge
           evaluator_references: List of evaluator references to include in the judge
           stage: Stage for the judge
-          status: Status of the judge
           _request_timeout: Optional timeout for the request
         """
         api_instance = AJudgesApi(_client)
@@ -389,7 +390,6 @@ class Judges:
             intent=intent,
             evaluator_references=evaluator_references,
             stage=stage,
-            status=AStatusEnum(status),
         )
         return await AJudge._awrap(
             await api_instance.judges_create(judge_request=request, _request_timeout=_request_timeout),

@@ -1,15 +1,7 @@
 import { Command } from "commander";
 import ora from "ora";
-import chalk from "chalk";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import {
-  printSuccess,
-  printError,
-  printWarning,
-  printInfo,
-  printJson,
-  handleSdkError,
-} from "../../output.js";
+import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import { CliError } from "../../types.js";
 
 export function registerGenerateCommand(judge: Command): void {
@@ -63,8 +55,6 @@ offer to connect the guest with a human agent when uncertain."`,
           throw new CliError(1, "invalid_visibility");
         }
 
-        const apiVisibility = visibility === "private" ? "unlisted" : "public";
-
         const apiKey = await requireApiKey();
 
         let extra_contexts: Record<string, string> | undefined;
@@ -82,7 +72,7 @@ offer to connect the guest with a human agent when uncertain."`,
           const client = getSdkClient(apiKey);
           const result = await client.judges.generate({
             intent: opts.intent,
-            visibility: apiVisibility,
+            visibility: visibility as "private" | "public",
             overwrite: opts.overwrite,
             name: opts.name,
             stage: opts.stage,
@@ -97,37 +87,12 @@ offer to connect the guest with a human agent when uncertain."`,
           });
           spinner.stop();
 
-          if (result.error_code === "multiple_stages") {
-            printWarning("Multiple evaluation stages detected. Each judge covers one stage.");
-            printInfo("Detected stages:");
-            for (const s of result.stages ?? []) {
-              console.log(`    ${chalk.cyan("·")} ${s}`);
-            }
-            printInfo('Re-run with --stage "<stage name>" to target a specific stage.');
-            throw new CliError(1, "multiple_stages");
-          }
-
           if (result.error_code) {
             printError(`Generation failed with error code: ${result.error_code}`);
             throw new CliError(1, result.error_code ?? "generation_failed");
           }
 
-          const missingContext = result.missing_context_from_system_goal;
-
-          if (missingContext?.length) {
-            printSuccess("Judge created — but additional context would improve it:");
-            console.log();
-            for (const field of missingContext) {
-              console.log(`    ${chalk.bold(field.form_field_name)}`);
-              console.log(`    ${chalk.dim(field.form_field_description)}`);
-              console.log();
-            }
-            printInfo(
-              `Re-run with --judge-id "${result.judge_id}" and --extra-contexts to refine.`,
-            );
-          } else {
-            printSuccess("Judge generated successfully!");
-          }
+          printSuccess("Judge generated successfully!");
 
           printJson(result);
         } catch (e) {

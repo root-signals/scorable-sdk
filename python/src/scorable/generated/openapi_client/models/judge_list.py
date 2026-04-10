@@ -24,7 +24,7 @@ from typing_extensions import Self
 
 from scorable.generated.openapi_client.models.evaluator_inputs_value import EvaluatorInputsValue
 from scorable.generated.openapi_client.models.nested_evaluator import NestedEvaluator
-from scorable.generated.openapi_client.models.status_enum import StatusEnum
+from scorable.generated.openapi_client.models.visibility_ef8_enum import VisibilityEf8Enum
 
 
 class JudgeList(BaseModel):
@@ -36,7 +36,7 @@ class JudgeList(BaseModel):
     name: StrictStr
     intent: StrictStr
     created_at: datetime
-    status: StatusEnum
+    visibility: VisibilityEf8Enum
     inputs: Dict[str, EvaluatorInputsValue] = Field(
         description="Schema defining the input parameters required for execution. The schema consists of variables defined in the prompt template (predicate) and special variables like contexts and expected output."
     )
@@ -47,7 +47,7 @@ class JudgeList(BaseModel):
         "name",
         "intent",
         "created_at",
-        "status",
+        "visibility",
         "inputs",
         "evaluators",
         "_meta",
@@ -95,7 +95,7 @@ class JudgeList(BaseModel):
                 "id",
                 "intent",
                 "created_at",
-                "status",
+                "visibility",
                 "inputs",
                 "evaluators",
                 "meta",
@@ -138,7 +138,7 @@ class JudgeList(BaseModel):
                 "name": obj.get("name"),
                 "intent": obj.get("intent"),
                 "created_at": obj.get("created_at"),
-                "status": obj.get("status"),
+                "visibility": obj.get("visibility"),
                 "inputs": dict((_k, EvaluatorInputsValue.from_dict(_v)) for _k, _v in obj["inputs"].items())
                 if obj.get("inputs") is not None
                 else None,
