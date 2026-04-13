@@ -10,6 +10,7 @@ export function registerUpdateCommand(evaluator: Command): void {
     .description("Update an existing evaluator (PATCH)")
     .option("--name <name>", "The new name for the evaluator")
     .option("--scoring-criteria <text>", "The new scoring criteria (prompt text)")
+    .option("--system-message <text>", "The new system message")
     .option("--models <json>", "JSON array of model names. E.g., '[\"gpt-4\"]'")
     .option("--objective-id <id>", "The new objective ID")
     .option("--objective-version-id <id>", "The new objective version ID")
@@ -19,6 +20,7 @@ export function registerUpdateCommand(evaluator: Command): void {
         opts: {
           name?: string;
           scoringCriteria?: string;
+          systemMessage?: string;
           models?: string;
           objectiveId?: string;
           objectiveVersionId?: string;
@@ -29,6 +31,7 @@ export function registerUpdateCommand(evaluator: Command): void {
         const payload: EvaluatorUpdateParams = {};
         if (opts.name !== undefined) payload.name = opts.name;
         if (opts.scoringCriteria !== undefined) payload.prompt = opts.scoringCriteria;
+        if (opts.systemMessage !== undefined) payload.system_message = opts.systemMessage;
         if (opts.objectiveId !== undefined) payload.objective_id = opts.objectiveId;
         if (opts.objectiveVersionId !== undefined)
           payload.objective_version_id = opts.objectiveVersionId;

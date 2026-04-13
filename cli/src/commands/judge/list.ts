@@ -23,7 +23,7 @@ export function registerListCommand(judge: Command): void {
       }) => {
         const apiKey = await requireApiKey();
 
-        const params: JudgeListParams & { name?: string } = {};
+        const params: JudgeListParams & { name?: string } = { is_public: false };
         if (opts.pageSize !== undefined) params.page_size = opts.pageSize;
         if (opts.cursor !== undefined) params.cursor = opts.cursor;
         if (opts.search !== undefined) params.search = opts.search;

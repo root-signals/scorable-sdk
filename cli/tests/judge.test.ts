@@ -100,6 +100,7 @@ describe("TestJudgeList", () => {
         page_size: 10,
         search: "test",
         name: "Test Judge",
+        is_public: false,
       }),
     );
   });
@@ -518,11 +519,11 @@ describe("TestJudgeGenerate", () => {
     expect(result.exitCode).not.toBe(0);
   });
 
-  it("test_generate_judge_error_code", async () => {
+  it("test_generate_judge_multiple_stages", async () => {
     mockGenerate.mockResolvedValue({
       judge_id: null,
-      judge_version_id: null,
       error_code: "multiple_stages",
+      stages: ["intent capture", "response generation"],
     });
     const result = await runCli([
       "judge",
@@ -531,19 +532,26 @@ describe("TestJudgeGenerate", () => {
       "Evaluate a customer support pipeline",
     ]);
     expect(result.exitCode).not.toBe(0);
-    expect(result.stderr).toContain("multiple_stages");
+    expect(result.stdout).toContain("Multiple evaluation stages detected");
+    expect(result.stdout).toContain("intent capture");
+    expect(result.stdout).toContain("response generation");
+    expect(result.stdout).toContain("--stage");
   });
 
-  it("test_generate_judge_success_prints_result", async () => {
+  it("test_generate_judge_missing_context", async () => {
     mockGenerate.mockResolvedValue({
       judge_id: "judge-abc",
-      judge_version_id: "v1",
       error_code: null,
+      missing_context_from_system_goal: [
+        { form_field_name: "Tone Of Voice", form_field_description: "Describe the brand tone" },
+        { form_field_name: "Domain", form_field_description: "Describe the application domain" },
+      ],
     });
     const result = await runCli(["judge", "generate", "--intent", "Evaluate chatbot responses"]);
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toContain("Judge generated successfully");
-    expect(result.stdout).toContain("judge-abc");
+    expect(result.stdout).toContain("additional context would improve it");
+    expect(result.stdout).toContain("Tone Of Voice");
+    expect(result.stdout).toContain("Re-run with --judge-id");
   });
 
   it("test_generate_judge_invalid_extra_contexts_json", async () => {
