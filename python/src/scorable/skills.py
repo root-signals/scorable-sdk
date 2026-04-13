@@ -1642,9 +1642,6 @@ class Evaluators:
         "Harmlessness",
         "Confidentiality",
         "Persuasiveness",
-        "Context_Recall",
-        "Answer_Correctness",
-        "Answer_Semantic_Similarity",
         "Sentiment_recognition",
         "Safety_for_Children",
         "Precision",
@@ -1655,8 +1652,6 @@ class Evaluators:
         "Quality_of_Writing_Professional",
         "Quality_of_Writing_Creative",
         "Truthfulness",
-        "Context_Precision",
-        "Answer_Relevance",
         "Compliance_Preview",
         "Faithfulness_Swift",
         "Truthfulness_Swift",
@@ -1683,9 +1678,6 @@ class Evaluators:
         Harmlessness = "379fee0a-4fd1-4942-833b-7d78d78b334d"
         Confidentiality = "2eaa0a02-47a9-48f7-9b47-66ad257f93eb"
         Persuasiveness = "85bb6a74-f5dd-4130-8dcc-cffdf72327cc"
-        Context_Recall = "8bb60975-5062-4367-9fc6-a920044cba56"
-        Answer_Correctness = "d4487568-4243-4da8-9c76-adbaf762dbe0"
-        Answer_Semantic_Similarity = "ff350bce-4b07-4af7-9640-803c9d3c2ff9"
         Sentiment_recognition = "e3782c1e-eaf4-4b2d-8d26-53db2160f1fd"
         Safety_for_Children = "39a8b5ba-de77-4726-a6b0-621d40b3cdf5"
         Precision = "767bdd49-5f8c-48ca-8324-dfd6be7f8a79"
@@ -1696,8 +1688,6 @@ class Evaluators:
         Quality_of_Writing_Professional = "059affa9-2d1c-48de-8e97-f81dd3fc3cbe"
         Quality_of_Writing_Creative = "060abfb6-57c9-43b5-9a6d-8a1a9bb853b8"
         Truthfulness = "053df10f-b0c7-400b-892e-46ce3aa1e430"
-        Context_Precision = "9d1e9a25-7e76-4771-b1e3-40825d7918c5"
-        Answer_Relevance = "0907d422-e94f-4c9c-a63d-ec0eefd8a903"
         Compliance_Preview = "4613f248-b60e-403a-bcdc-157d1c44194a"
         Faithfulness_Swift = "a3a5e97b-7fcb-441e-92f2-6e59aa473b89"
         Truthfulness_Swift = "c8c65e61-2dc8-4f29-865a-a5e59127d208"
