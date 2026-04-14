@@ -1,3 +1,12 @@
+## 0.5.0
+
+- Simplify visibility model: replace multi-value `status` field with `private`/`public` visibility
+- Remove `status` from `EvaluatorCreateParams`, `EvaluatorUpdateParams`, and `CreateJudgeData`
+- Remove `updateStatus()` from `DatasetsResource`
+- Update `judges.generate()` default visibility to `"private"`; accept `"private"`, `"public"`, `"global"`
+- Replace `is_public` list filter with `include_public` for evaluators and judges
+- Add required `variables` default (`{}`) to evaluator execute calls
+
 ## 0.4.0
 
 - Add `evaluators.exportYaml(id)` method to export an evaluator as a portable YAML string
