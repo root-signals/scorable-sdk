@@ -1,3 +1,11 @@
+## 1.8.0
+
+- Simplify visibility model: replace multi-value `status` field with `private`/`public` visibility
+- Remove `status` parameter from judge and evaluator creation
+- Update `generate()`/`agenerate()` visibility to accept `"private"`, `"public"`, `"global"` (default: `"private"`)
+- Remove deprecated RAGAS preset evaluators: `Answer_Relevance`, `Answer_Semantic_Similarity`, `Context_Precision`, `Context_Recall`, `Answer_Correctness`
+- Remove `pii_filter`, `reference_variables`, `model_params`, `system_message` from skills API
+
 ## 1.7.2
 
 - Patch high-severity dependency vulnerabilities (cryptography 46.0.5, urllib3 2.6.3)
