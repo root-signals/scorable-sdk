@@ -93,7 +93,7 @@ Module Contents
       accessing an attribute of a :class:`scorable.client.Scorable` instance.
 
 
-   .. py:method:: acreate(*, name: str, intent: str, evaluator_references: Optional[List[scorable.generated.openapi_aclient.models.evaluator_reference_request.EvaluatorReferenceRequest]] = None, stage: Optional[str] = None, status: Literal['unlisted', 'listed', 'public', 'public_unlisted'] = 'unlisted', _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AJudge
+   .. py:method:: acreate(*, name: str, intent: str, evaluator_references: Optional[List[scorable.generated.openapi_aclient.models.evaluator_reference_request.EvaluatorReferenceRequest]] = None, stage: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AJudge
       :async:
 
 
@@ -103,7 +103,6 @@ Module Contents
       :param intent: Intent for the judge
       :param evaluator_references: List of evaluator references to include in the judge
       :param stage: Stage for the judge
-      :param status: Status of the judge
       :param _request_timeout: Optional timeout for the request
 
 
@@ -118,7 +117,7 @@ Module Contents
 
 
 
-   .. py:method:: agenerate(*, intent: str, visibility: Literal['public', 'unlisted'] = 'unlisted', judge_id: Optional[str] = None, file_id: Optional[str] = None, stage: Optional[str] = None, extra_contexts: Optional[Dict[str, str | None]] = None, strict: bool = False, name: Optional[str] = None, overwrite: bool = False, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_generator_response.JudgeGeneratorResponse
+   .. py:method:: agenerate(*, intent: str, visibility: Literal['private', 'public', 'global'] = 'private', judge_id: Optional[str] = None, file_id: Optional[str] = None, stage: Optional[str] = None, extra_contexts: Optional[Dict[str, str | None]] = None, strict: bool = False, name: Optional[str] = None, overwrite: bool = False, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_generator_response.JudgeGeneratorResponse
       :async:
 
 
@@ -126,7 +125,9 @@ Module Contents
 
       :param intent: Describe what you want the judge to build for.
                      Example: I am building a chatbot for ecommerce and I would like to measure the quality of the responses.
-      :param visibility: Whether the judge should be visible to everyone or only to your organization.
+      :param visibility: Visibility of the generated judge. "private" (default) means only your
+                         organization can see it, "public" means everyone can see it, "global" makes it a
+                         globally available preset.
       :param judge_id: ID of an existing judge. If provided, the existing judge will be edited instead
                        of generating a new one.
       :param file_id: ID of the file to use as context for the judge.
@@ -215,7 +216,7 @@ Module Contents
 
 
 
-   .. py:method:: create(*, name: str, intent: str, evaluator_references: Optional[List[scorable.generated.openapi_client.models.evaluator_reference_request.EvaluatorReferenceRequest]] = None, stage: Optional[str] = None, status: Literal['unlisted', 'listed', 'public', 'public_unlisted'] = 'unlisted', _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Judge
+   .. py:method:: create(*, name: str, intent: str, evaluator_references: Optional[List[scorable.generated.openapi_client.models.evaluator_reference_request.EvaluatorReferenceRequest]] = None, stage: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Judge
 
       Create a new judge with a name, intent, and list of evaluators.
 
@@ -223,7 +224,6 @@ Module Contents
       :param intent: Intent for the judge
       :param evaluator_references: List of evaluator references to include in the judge
       :param stage: Stage for the judge
-      :param status: Status of the judge
       :param _request_timeout: Optional timeout for the request
 
 
@@ -236,13 +236,15 @@ Module Contents
 
 
 
-   .. py:method:: generate(*, intent: str, visibility: Literal['public', 'unlisted'] = 'unlisted', judge_id: Optional[str] = None, file_id: Optional[str] = None, stage: Optional[str] = None, extra_contexts: Optional[Dict[str, str | None]] = None, strict: bool = False, name: Optional[str] = None, overwrite: bool = False, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_generator_response.JudgeGeneratorResponse
+   .. py:method:: generate(*, intent: str, visibility: Literal['private', 'public', 'global'] = 'private', judge_id: Optional[str] = None, file_id: Optional[str] = None, stage: Optional[str] = None, extra_contexts: Optional[Dict[str, str | None]] = None, strict: bool = False, name: Optional[str] = None, overwrite: bool = False, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_generator_response.JudgeGeneratorResponse
 
       Generate a judge.
 
       :param intent: Describe what you want the judge to build for.
                      Example: I am building a chatbot for ecommerce and I would like to measure the quality of the responses.
-      :param visibility: Whether the judge should be visible to everyone or only to your organization.
+      :param visibility: Visibility of the generated judge. "private" (default) means only your
+                         organization can see it, "public" means everyone can see it, "global" makes it a
+                         globally available preset.
       :param judge_id: ID of an existing judge. If provided, the existing judge will be edited instead
                        of generating a new one.
       :param file_id: ID of the file to use as context for the judge.

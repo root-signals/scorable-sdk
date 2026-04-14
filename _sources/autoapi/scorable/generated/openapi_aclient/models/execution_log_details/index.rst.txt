@@ -39,6 +39,10 @@ Module Contents
       :type:  Optional[pydantic.StrictStr]
 
 
+   .. py:attribute:: classification
+      :type:  Optional[Any]
+
+
    .. py:attribute:: cost
       :type:  Optional[Union[pydantic.StrictFloat, pydantic.StrictInt]]
 
@@ -96,12 +100,6 @@ Module Contents
 
 
    .. py:attribute:: model_config
-
-
-   .. py:attribute:: model_params
-      :type:  Optional[scorable.generated.openapi_aclient.models.model_params.ModelParams]
-      :value: None
-
 
 
    .. py:attribute:: owner

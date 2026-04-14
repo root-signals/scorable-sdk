@@ -55,6 +55,10 @@ Module Contents
       :type:  Dict[str, scorable.generated.openapi_aclient.models.evaluator_inputs_value.EvaluatorInputsValue]
 
 
+   .. py:attribute:: intent
+      :type:  pydantic.StrictStr
+
+
    .. py:attribute:: meta
       :type:  Dict[str, Any]
 
@@ -66,21 +70,17 @@ Module Contents
       :type:  Annotated[str, Field(min_length=3, strict=True, max_length=512)]
 
 
-   .. py:attribute:: objective
-      :type:  scorable.generated.openapi_aclient.models.nested_vector_objective.NestedVectorObjective
-
-
    .. py:attribute:: stage
       :type:  Optional[Annotated[str, Field(strict=True, max_length=255)]]
       :value: None
 
 
 
-   .. py:attribute:: status
-      :type:  scorable.generated.openapi_aclient.models.status_enum.StatusEnum
-
-
    .. py:attribute:: version_id
       :type:  pydantic.StrictStr
+
+
+   .. py:attribute:: visibility
+      :type:  scorable.generated.openapi_aclient.models.visibility_ef8_enum.VisibilityEf8Enum
 
 

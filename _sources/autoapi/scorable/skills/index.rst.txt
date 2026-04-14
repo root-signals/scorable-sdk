@@ -27,7 +27,6 @@ Classes
    scorable.skills.EvaluatorDemonstration
    scorable.skills.Evaluators
    scorable.skills.InputVariable
-   scorable.skills.ModelParams
    scorable.skills.PresetEvaluatorRunner
    scorable.skills.ReferenceVariable
    scorable.skills.Versions
@@ -36,7 +35,7 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: ACalibrateBatchParameters(name: str, prompt: str, model: ModelName, pii_filter: bool = False, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_aclient.models.reference_variable_request.ReferenceVariableRequest]]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None)
+.. py:class:: ACalibrateBatchParameters(name: str, prompt: str, model: ModelName, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_aclient.models.reference_variable_request.ReferenceVariableRequest]]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None)
 
    .. py:attribute:: input_variables
       :value: None
@@ -47,11 +46,6 @@ Module Contents
 
 
    .. py:attribute:: name
-
-
-   .. py:attribute:: pii_filter
-      :value: False
-
 
 
    .. py:attribute:: prompt
@@ -136,7 +130,7 @@ Module Contents
 
 
 
-.. py:class:: CalibrateBatchParameters(name: str, prompt: str, model: ModelName, pii_filter: bool = False, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_client.models.reference_variable_request.ReferenceVariableRequest]]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None)
+.. py:class:: CalibrateBatchParameters(name: str, prompt: str, model: ModelName, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_client.models.reference_variable_request.ReferenceVariableRequest]]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None)
 
    .. py:attribute:: input_variables
       :value: None
@@ -147,11 +141,6 @@ Module Contents
 
 
    .. py:attribute:: name
-
-
-   .. py:attribute:: pii_filter
-      :value: False
-
 
 
    .. py:attribute:: prompt
@@ -303,21 +292,6 @@ Module Contents
       attributes -- see the documentation for details.
 
 
-      .. py:attribute:: Answer_Correctness
-         :value: 'd4487568-4243-4da8-9c76-adbaf762dbe0'
-
-
-
-      .. py:attribute:: Answer_Relevance
-         :value: '0907d422-e94f-4c9c-a63d-ec0eefd8a903'
-
-
-
-      .. py:attribute:: Answer_Semantic_Similarity
-         :value: 'ff350bce-4b07-4af7-9640-803c9d3c2ff9'
-
-
-
       .. py:attribute:: Answer_Willingness
          :value: 'c81034ae-9439-4c93-bab3-d159eaf072bf'
 
@@ -355,16 +329,6 @@ Module Contents
 
       .. py:attribute:: Context_Completeness
          :value: '7c8f9e3a-1b2d-4c5e-9f8a-6d7c4b3e2a1f'
-
-
-
-      .. py:attribute:: Context_Precision
-         :value: '9d1e9a25-7e76-4771-b1e3-40825d7918c5'
-
-
-
-      .. py:attribute:: Context_Recall
-         :value: '8bb60975-5062-4367-9fc6-a920044cba56'
 
 
 
@@ -489,7 +453,7 @@ Module Contents
 
 
 
-   .. py:method:: acalibrate(*, name: str, test_dataset_id: Optional[str] = None, test_data: Optional[List[List[str]]] = None, prompt: str, model: ModelName, pii_filter: bool = False, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_aclient.models.reference_variable_request.ReferenceVariableRequest]]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> List[scorable.generated.openapi_aclient.models.evaluator_calibration_output.EvaluatorCalibrationOutput]
+   .. py:method:: acalibrate(*, name: str, test_dataset_id: Optional[str] = None, test_data: Optional[List[List[str]]] = None, prompt: str, model: ModelName, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_aclient.models.reference_variable_request.ReferenceVariableRequest]]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> List[scorable.generated.openapi_aclient.models.evaluator_calibration_output.EvaluatorCalibrationOutput]
       :async:
 
 
@@ -521,7 +485,7 @@ Module Contents
 
 
 
-   .. py:method:: acreate(predicate: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_aclient.models.reference_variable_request.ReferenceVariableRequest]]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, model_params: Optional[Union[ModelParams, scorable.generated.openapi_aclient.models.ModelParamsRequest]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> AEvaluator
+   .. py:method:: acreate(predicate: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> AEvaluator
       :async:
 
 
@@ -535,11 +499,8 @@ Module Contents
       :param model: The model to use (defaults to 'root', which means
                     Scorable default at the time of evaluator creation)
       :param fallback_models: The fallback models to use in case the primary model fails.
-      :param reference_variables: An optional list of reference variables for
-                                  the evaluator.
       :param input_variables: An optional list of input variables for
                               the evaluator.
-      :param model_params: An optional set of additional parameters to the model (e.g., temperature).
       :param evaluator_demonstrations: An optional list of evaluator demonstrations to guide
                                        the evaluator's behavior.
       :param overwrite: Whether to overwrite an evaluator with the same name if it exists.
@@ -632,7 +593,7 @@ Module Contents
 
 
 
-   .. py:method:: aupdate(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, predicate: Optional[str] = None, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_aclient.models.reference_variable_request.ReferenceVariableRequest]]] = None, model_params: Optional[Union[ModelParams, scorable.generated.openapi_aclient.models.ModelParamsRequest]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AEvaluator
+   .. py:method:: aupdate(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, predicate: Optional[str] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AEvaluator
       :async:
 
 
@@ -642,7 +603,7 @@ Module Contents
 
 
 
-   .. py:method:: calibrate(*, name: str, test_dataset_id: Optional[str] = None, test_data: Optional[List[List[str]]] = None, prompt: str, model: ModelName, pii_filter: bool = False, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_client.models.reference_variable_request.ReferenceVariableRequest]]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> List[scorable.generated.openapi_client.models.evaluator_calibration_output.EvaluatorCalibrationOutput]
+   .. py:method:: calibrate(*, name: str, test_dataset_id: Optional[str] = None, test_data: Optional[List[List[str]]] = None, prompt: str, model: ModelName, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_client.models.reference_variable_request.ReferenceVariableRequest]]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> List[scorable.generated.openapi_client.models.evaluator_calibration_output.EvaluatorCalibrationOutput]
 
       Run calibration set for an evaluator definition.
       See the create evaluator method for more details on the parameters.
@@ -668,7 +629,7 @@ Module Contents
 
 
 
-   .. py:method:: create(predicate: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_client.models.reference_variable_request.ReferenceVariableRequest]]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, model_params: Optional[Union[ModelParams, scorable.generated.openapi_client.models.model_params_request.ModelParamsRequest]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> Evaluator
+   .. py:method:: create(predicate: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> Evaluator
 
       Create a new evaluator and return the result
 
@@ -680,11 +641,8 @@ Module Contents
       :param model: The model to use (defaults to 'root', which means
                     Scorable default at the time of evaluator creation)
       :param fallback_models: The fallback models to use in case the primary model fails.
-      :param reference_variables: An optional list of reference variables for
-                                  the evaluator.
       :param input_variables: An optional list of input variables for
                               the evaluator.
-      :param model_params: An optional set of additional parameters to the model (e.g., temperature).
       :param evaluator_demonstrations: An optional list of evaluator demonstrations to guide
                                        the evaluator's behavior.
       :param overwrite: Whether to overwrite an evaluator with the same name if it exists.
@@ -765,7 +723,7 @@ Module Contents
 
 
 
-   .. py:method:: update(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, predicate: Optional[str] = None, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_client.models.reference_variable_request.ReferenceVariableRequest]]] = None, model_params: Optional[Union[ModelParams, scorable.generated.openapi_client.models.model_params_request.ModelParamsRequest]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Evaluator
+   .. py:method:: update(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, predicate: Optional[str] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Evaluator
 
       Update an evaluator and return the result
 
@@ -794,22 +752,6 @@ Module Contents
 
    .. py:attribute:: name
       :type:  str
-
-
-.. py:class:: ModelParams
-
-   Bases: :py:obj:`pydantic.BaseModel`
-
-
-   Additional model parameters.
-
-   All fields are made optional in practice.
-
-
-   .. py:attribute:: temperature
-      :type:  Optional[float]
-      :value: None
-
 
 
 .. py:class:: PresetEvaluatorRunner(client_context: scorable.utils.ClientContextCallable, evaluator_id: str, eval_name: str, evaluator_version_id: Optional[str] = None)

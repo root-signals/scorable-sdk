@@ -35,6 +35,12 @@ Module Contents
    JudgeGeneratorResponse
 
 
+   .. py:attribute:: claim_token
+      :type:  Optional[pydantic.StrictStr]
+      :value: None
+
+
+
    .. py:attribute:: error_code
       :type:  Optional[pydantic.StrictStr]
       :value: None

@@ -74,10 +74,6 @@ Module Contents
       :type:  pydantic.StrictStr
 
 
-   .. py:attribute:: status
-      :type:  scorable.generated.openapi_aclient.models.status_enum.StatusEnum
-
-
    .. py:attribute:: updated_at
       :type:  Optional[datetime.datetime]
 
@@ -88,5 +84,9 @@ Module Contents
 
    .. py:attribute:: version_id
       :type:  pydantic.StrictStr
+
+
+   .. py:attribute:: visibility
+      :type:  scorable.generated.openapi_aclient.models.visibility_ef8_enum.VisibilityEf8Enum
 
 

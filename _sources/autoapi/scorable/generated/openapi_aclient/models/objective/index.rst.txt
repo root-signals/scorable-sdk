@@ -76,12 +76,6 @@ Module Contents
       :type:  Optional[List[List[pydantic.StrictStr]]]
 
 
-   .. py:attribute:: validators
-      :type:  Optional[List[scorable.generated.openapi_aclient.models.objective_validator.ObjectiveValidator]]
-      :value: None
-
-
-
    .. py:attribute:: version_id
       :type:  pydantic.StrictStr
 

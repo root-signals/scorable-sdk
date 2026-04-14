@@ -66,7 +66,3 @@ Module Contents
 
 
 
-   .. py:attribute:: validators
-      :type:  List[scorable.generated.openapi_aclient.models.objective_validator.ObjectiveValidator]
-
-

@@ -32,11 +32,16 @@ Module Contents
    Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
 
-   * `unlisted` - unlisted * `listed` - listed * `public` - public * `public_unlisted` - public_unlisted
+   * `unlisted` - unlisted * `listed` - listed * `public` - public * `public_unlisted` - public_unlisted * `private` - private
 
 
    .. py:attribute:: LISTED
       :value: 'listed'
+
+
+
+   .. py:attribute:: PRIVATE
+      :value: 'private'
 
 
 

@@ -72,12 +72,6 @@ Module Contents
    .. py:attribute:: model_config
 
 
-   .. py:attribute:: model_params
-      :type:  Optional[scorable.generated.openapi_client.models.model_params.ModelParams]
-      :value: None
-
-
-
    .. py:attribute:: models
       :type:  Optional[List[pydantic.StrictStr]]
 
@@ -98,28 +92,6 @@ Module Contents
       :type:  Annotated[str, Field(strict=True, max_length=500000)]
 
 
-   .. py:attribute:: reference_variables
-      :type:  Optional[List[scorable.generated.openapi_client.models.reference_variable.ReferenceVariable]]
-      :value: None
-
-
-
-   .. py:attribute:: skill_type
-      :type:  scorable.generated.openapi_client.models.skill_type_enum.SkillTypeEnum
-
-
-   .. py:attribute:: status
-      :type:  Optional[scorable.generated.openapi_client.models.status_enum.StatusEnum]
-      :value: None
-
-
-
-   .. py:attribute:: system_message
-      :type:  Optional[pydantic.StrictStr]
-      :value: None
-
-
-
    .. py:attribute:: updated_at
       :type:  Optional[datetime.datetime]
 
@@ -130,5 +102,9 @@ Module Contents
 
    .. py:attribute:: version_id
       :type:  pydantic.StrictStr
+
+
+   .. py:attribute:: visibility
+      :type:  scorable.generated.openapi_client.models.visibility_ef8_enum.VisibilityEf8Enum
 
 

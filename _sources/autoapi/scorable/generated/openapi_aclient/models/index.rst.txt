@@ -26,12 +26,6 @@ Submodules
    /autoapi/scorable/generated/openapi_aclient/models/data_set_create/index
    /autoapi/scorable/generated/openapi_aclient/models/data_set_list/index
    /autoapi/scorable/generated/openapi_aclient/models/data_set_type/index
-   /autoapi/scorable/generated/openapi_aclient/models/evaluation_agent/index
-   /autoapi/scorable/generated/openapi_aclient/models/evaluation_agent_evaluation_approach_enum/index
-   /autoapi/scorable/generated/openapi_aclient/models/evaluation_agent_execute_response/index
-   /autoapi/scorable/generated/openapi_aclient/models/evaluation_agent_generate_request_evaluation_approach_enum/index
-   /autoapi/scorable/generated/openapi_aclient/models/evaluation_batch_job_serializer/index
-   /autoapi/scorable/generated/openapi_aclient/models/evaluation_job_response/index
    /autoapi/scorable/generated/openapi_aclient/models/evaluator/index
    /autoapi/scorable/generated/openapi_aclient/models/evaluator_calibration_output/index
    /autoapi/scorable/generated/openapi_aclient/models/evaluator_calibration_result/index
@@ -49,7 +43,6 @@ Submodules
    /autoapi/scorable/generated/openapi_aclient/models/execution_log_list_evaluation_context/index
    /autoapi/scorable/generated/openapi_aclient/models/id/index
    /autoapi/scorable/generated/openapi_aclient/models/input_variable/index
-   /autoapi/scorable/generated/openapi_aclient/models/job_status/index
    /autoapi/scorable/generated/openapi_aclient/models/judge/index
    /autoapi/scorable/generated/openapi_aclient/models/judge_batch_execution_detail/index
    /autoapi/scorable/generated/openapi_aclient/models/judge_batch_execution_item/index
@@ -63,29 +56,21 @@ Submodules
    /autoapi/scorable/generated/openapi_aclient/models/judge_generator_visibility_enum/index
    /autoapi/scorable/generated/openapi_aclient/models/judge_list/index
    /autoapi/scorable/generated/openapi_aclient/models/judge_rectifier_response/index
-   /autoapi/scorable/generated/openapi_aclient/models/kind_enum/index
+   /autoapi/scorable/generated/openapi_aclient/models/judges_synthetic_data_retrieve200_response/index
+   /autoapi/scorable/generated/openapi_aclient/models/judges_synthetic_data_retrieve200_response_samples_inner/index
    /autoapi/scorable/generated/openapi_aclient/models/message_log_turn/index
    /autoapi/scorable/generated/openapi_aclient/models/model/index
-   /autoapi/scorable/generated/openapi_aclient/models/model_enum/index
    /autoapi/scorable/generated/openapi_aclient/models/model_list/index
    /autoapi/scorable/generated/openapi_aclient/models/model_list_visibility_enum/index
-   /autoapi/scorable/generated/openapi_aclient/models/model_params/index
    /autoapi/scorable/generated/openapi_aclient/models/model_test_response/index
    /autoapi/scorable/generated/openapi_aclient/models/nested_evaluator/index
    /autoapi/scorable/generated/openapi_aclient/models/nested_evaluator_objective/index
    /autoapi/scorable/generated/openapi_aclient/models/nested_judge/index
-   /autoapi/scorable/generated/openapi_aclient/models/nested_objective/index
-   /autoapi/scorable/generated/openapi_aclient/models/nested_objective_evaluator/index
    /autoapi/scorable/generated/openapi_aclient/models/nested_objective_list/index
    /autoapi/scorable/generated/openapi_aclient/models/nested_user_details/index
-   /autoapi/scorable/generated/openapi_aclient/models/nested_vector_objective/index
-   /autoapi/scorable/generated/openapi_aclient/models/null_enum/index
    /autoapi/scorable/generated/openapi_aclient/models/objective/index
    /autoapi/scorable/generated/openapi_aclient/models/objective_list/index
-   /autoapi/scorable/generated/openapi_aclient/models/objective_validator/index
    /autoapi/scorable/generated/openapi_aclient/models/paginated_data_set_list_list/index
-   /autoapi/scorable/generated/openapi_aclient/models/paginated_evaluation_agent_list/index
-   /autoapi/scorable/generated/openapi_aclient/models/paginated_evaluation_batch_job_serializer_list/index
    /autoapi/scorable/generated/openapi_aclient/models/paginated_evaluator_list/index
    /autoapi/scorable/generated/openapi_aclient/models/paginated_evaluator_list_output_list/index
    /autoapi/scorable/generated/openapi_aclient/models/paginated_execution_log_list_list/index
@@ -96,16 +81,12 @@ Submodules
    /autoapi/scorable/generated/openapi_aclient/models/paginated_objective_list_list/index
    /autoapi/scorable/generated/openapi_aclient/models/provider/index
    /autoapi/scorable/generated/openapi_aclient/models/reasoning_effort_enum/index
-   /autoapi/scorable/generated/openapi_aclient/models/reference_variable/index
-   /autoapi/scorable/generated/openapi_aclient/models/result_preference_signifier_evaluation_approach_enum/index
    /autoapi/scorable/generated/openapi_aclient/models/role_enum/index
    /autoapi/scorable/generated/openapi_aclient/models/skill_execution_validator_result/index
    /autoapi/scorable/generated/openapi_aclient/models/skill_test_data_request_dataset_range/index
-   /autoapi/scorable/generated/openapi_aclient/models/skill_type_enum/index
-   /autoapi/scorable/generated/openapi_aclient/models/status_change/index
-   /autoapi/scorable/generated/openapi_aclient/models/status_change_status_enum/index
    /autoapi/scorable/generated/openapi_aclient/models/status_enum/index
    /autoapi/scorable/generated/openapi_aclient/models/target_enum/index
    /autoapi/scorable/generated/openapi_aclient/models/validation_result_status/index
+   /autoapi/scorable/generated/openapi_aclient/models/visibility_ef8_enum/index
 
 

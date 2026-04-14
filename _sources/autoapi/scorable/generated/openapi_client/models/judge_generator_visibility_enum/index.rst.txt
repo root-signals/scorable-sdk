@@ -32,7 +32,7 @@ Module Contents
    Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
 
-   * `global` - global * `public` - public * `listed` - listed * `unlisted` - unlisted
+   * `global` - global * `public` - public * `private` - private
 
 
    .. py:attribute:: GLOBAL
@@ -40,18 +40,13 @@ Module Contents
 
 
 
-   .. py:attribute:: LISTED
-      :value: 'listed'
+   .. py:attribute:: PRIVATE
+      :value: 'private'
 
 
 
    .. py:attribute:: PUBLIC
       :value: 'public'
-
-
-
-   .. py:attribute:: UNLISTED
-      :value: 'unlisted'
 
 
 
