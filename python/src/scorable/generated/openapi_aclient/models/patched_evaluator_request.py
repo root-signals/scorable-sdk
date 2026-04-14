@@ -23,9 +23,6 @@ from typing_extensions import Annotated, Self
 
 from scorable.generated.openapi_aclient.models.evaluator_demonstrations_request import EvaluatorDemonstrationsRequest
 from scorable.generated.openapi_aclient.models.input_variable_request import InputVariableRequest
-from scorable.generated.openapi_aclient.models.model_params_request import ModelParamsRequest
-from scorable.generated.openapi_aclient.models.reference_variable_request import ReferenceVariableRequest
-from scorable.generated.openapi_aclient.models.status_enum import StatusEnum
 
 
 class PatchedEvaluatorRequest(BaseModel):
@@ -36,7 +33,6 @@ class PatchedEvaluatorRequest(BaseModel):
     change_note: Optional[StrictStr] = None
     evaluator_demonstrations: Optional[List[EvaluatorDemonstrationsRequest]] = None
     input_variables: Optional[List[InputVariableRequest]] = None
-    model_params: Optional[ModelParamsRequest] = None
     models: Optional[List[Annotated[str, Field(min_length=1, strict=True)]]] = Field(
         default=None,
         description="Primary model (index 0) and an optional list of fallback models to use if the primary model is not available. If not provided, a default model will be used.",
@@ -51,23 +47,16 @@ class PatchedEvaluatorRequest(BaseModel):
         default=False, description="Overwrite existing skill with the same name. Only for POST requests."
     )
     prompt: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=500000)]] = None
-    reference_variables: Optional[List[ReferenceVariableRequest]] = None
-    status: Optional[StatusEnum] = None
-    system_message: Optional[StrictStr] = None
     __properties: ClassVar[List[str]] = [
         "change_note",
         "evaluator_demonstrations",
         "input_variables",
-        "model_params",
         "models",
         "name",
         "objective_id",
         "objective_version_id",
         "overwrite",
         "prompt",
-        "reference_variables",
-        "status",
-        "system_message",
     ]
 
     model_config = ConfigDict(
@@ -121,16 +110,6 @@ class PatchedEvaluatorRequest(BaseModel):
                 if _item:
                     _items.append(_item.to_dict())
             _dict["input_variables"] = _items
-        # override the default output from pydantic by calling `to_dict()` of model_params
-        if self.model_params:
-            _dict["model_params"] = self.model_params.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of each item in reference_variables (list)
-        _items = []
-        if self.reference_variables:
-            for _item in self.reference_variables:
-                if _item:
-                    _items.append(_item.to_dict())
-            _dict["reference_variables"] = _items
         # set to None if change_note (nullable) is None
         # and model_fields_set contains the field
         if self.change_note is None and "change_note" in self.model_fields_set:
@@ -140,11 +119,6 @@ class PatchedEvaluatorRequest(BaseModel):
         # and model_fields_set contains the field
         if self.evaluator_demonstrations is None and "evaluator_demonstrations" in self.model_fields_set:
             _dict["evaluator_demonstrations"] = None
-
-        # set to None if model_params (nullable) is None
-        # and model_fields_set contains the field
-        if self.model_params is None and "model_params" in self.model_fields_set:
-            _dict["model_params"] = None
 
         # set to None if objective_version_id (nullable) is None
         # and model_fields_set contains the field
@@ -173,22 +147,12 @@ class PatchedEvaluatorRequest(BaseModel):
                 "input_variables": [InputVariableRequest.from_dict(_item) for _item in obj["input_variables"]]
                 if obj.get("input_variables") is not None
                 else None,
-                "model_params": ModelParamsRequest.from_dict(obj["model_params"])
-                if obj.get("model_params") is not None
-                else None,
                 "models": obj.get("models"),
                 "name": obj.get("name"),
                 "objective_id": obj.get("objective_id"),
                 "objective_version_id": obj.get("objective_version_id"),
                 "overwrite": obj.get("overwrite") if obj.get("overwrite") is not None else False,
                 "prompt": obj.get("prompt"),
-                "reference_variables": [
-                    ReferenceVariableRequest.from_dict(_item) for _item in obj["reference_variables"]
-                ]
-                if obj.get("reference_variables") is not None
-                else None,
-                "status": obj.get("status"),
-                "system_message": obj.get("system_message"),
             }
         )
         return _obj

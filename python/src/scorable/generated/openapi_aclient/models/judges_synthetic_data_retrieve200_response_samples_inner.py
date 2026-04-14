@@ -18,19 +18,29 @@ import pprint
 import re  # noqa: F401
 from typing import Any, ClassVar, Dict, List, Optional, Set
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool
-from typing_extensions import Annotated, Self
+from pydantic import BaseModel, ConfigDict, StrictStr, field_validator
+from typing_extensions import Self
 
 
-class NestedObjectiveEvaluatorRequest(BaseModel):
+class JudgesSyntheticDataRetrieve200ResponseSamplesInner(BaseModel):
     """
-    NestedObjectiveEvaluatorRequest
+    JudgesSyntheticDataRetrieve200ResponseSamplesInner
     """  # noqa: E501
 
-    name: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=1000)]] = None
-    requires_expected_output: Optional[StrictBool] = None
-    requires_contexts: Optional[StrictBool] = None
-    __properties: ClassVar[List[str]] = ["name", "requires_expected_output", "requires_contexts"]
+    quality: Optional[StrictStr] = None
+    request: Optional[StrictStr] = None
+    response: Optional[StrictStr] = None
+    __properties: ClassVar[List[str]] = ["quality", "request", "response"]
+
+    @field_validator("quality")
+    def quality_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(["high", "low"]):
+            raise ValueError("must be one of enum values ('high', 'low')")
+        return value
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -49,7 +59,7 @@ class NestedObjectiveEvaluatorRequest(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of NestedObjectiveEvaluatorRequest from a JSON string"""
+        """Create an instance of JudgesSyntheticDataRetrieve200ResponseSamplesInner from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -73,7 +83,7 @@ class NestedObjectiveEvaluatorRequest(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of NestedObjectiveEvaluatorRequest from a dict"""
+        """Create an instance of JudgesSyntheticDataRetrieve200ResponseSamplesInner from a dict"""
         if obj is None:
             return None
 
@@ -81,10 +91,6 @@ class NestedObjectiveEvaluatorRequest(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate(
-            {
-                "name": obj.get("name"),
-                "requires_expected_output": obj.get("requires_expected_output"),
-                "requires_contexts": obj.get("requires_contexts"),
-            }
+            {"quality": obj.get("quality"), "request": obj.get("request"), "response": obj.get("response")}
         )
         return _obj

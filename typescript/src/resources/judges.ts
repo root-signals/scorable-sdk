@@ -12,7 +12,6 @@ export interface CreateJudgeData {
   intent: string;
   evaluator_references?: Array<{ id: string; version_id?: string }>;
   stage?: string;
-  status?: components['schemas']['StatusEnum'];
 }
 
 export interface UpdateJudgeData {
@@ -43,7 +42,7 @@ export interface JudgeGenerateParams {
 
 export interface JudgeListParams extends ListParams {
   is_preset?: boolean;
-  is_public?: boolean;
+  include_public?: boolean;
 }
 
 export class JudgesResource {
@@ -78,10 +77,7 @@ export class JudgesResource {
    */
   async create(data: CreateJudgeData): Promise<JudgeDetail> {
     const { data: responseData, error } = await this._client.POST('/v1/judges/', {
-      body: {
-        ...data,
-        status: data.status ?? 'unlisted',
-      },
+      body: data,
     });
 
     if (error) {
@@ -202,7 +198,7 @@ export class JudgesResource {
    */
   async generate({
     intent,
-    visibility = 'unlisted',
+    visibility = 'private',
     stage,
     overwrite,
     extra_contexts,

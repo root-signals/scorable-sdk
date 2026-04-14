@@ -23,12 +23,3 @@ faithfulness_result = client.evaluators.Faithfulness(
 
 print(faithfulness_result.score)  # 0.0 as the response does not match the retrieved documents
 print(faithfulness_result.justification)
-
-# Measures whether the retrieved context provides
-# sufficient information to produce the ground truth response
-context_recall_result = client.evaluators.Context_Recall(
-    request="Was the number of pensioners who are working above 100k in 2023?",
-    contexts=[retreived_document_1, retreived_document_2],
-    expected_output="In 2023, 150k pensioners were still working.",  # Ground truth
-)
-print(context_recall_result.score)  # We expect a high score

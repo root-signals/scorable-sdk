@@ -18,11 +18,10 @@ import pprint
 import re  # noqa: F401
 from typing import Any, ClassVar, Dict, List, Optional, Set
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Annotated, Self
 
 from scorable.generated.openapi_client.models.evaluator_reference_request import EvaluatorReferenceRequest
-from scorable.generated.openapi_client.models.status_enum import StatusEnum
 
 
 class PatchedJudgeRequest(BaseModel):
@@ -31,13 +30,16 @@ class PatchedJudgeRequest(BaseModel):
     """  # noqa: E501
 
     evaluator_references: Optional[List[EvaluatorReferenceRequest]] = None
+    file_id: Optional[StrictStr] = Field(
+        default=None,
+        description="ID of the JudgeFile to attach to this judge. Only one file per judge is supported. Set to null to remove the file.",
+    )
     intent: Optional[Annotated[str, Field(min_length=1, strict=True)]] = Field(
         default=None, description="Intent for the judge"
     )
     name: Optional[Annotated[str, Field(min_length=3, strict=True, max_length=512)]] = None
     stage: Optional[Annotated[str, Field(strict=True, max_length=255)]] = None
-    status: Optional[StatusEnum] = None
-    __properties: ClassVar[List[str]] = ["evaluator_references", "intent", "name", "stage", "status"]
+    __properties: ClassVar[List[str]] = ["evaluator_references", "file_id", "intent", "name", "stage"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -83,6 +85,11 @@ class PatchedJudgeRequest(BaseModel):
                 if _item:
                     _items.append(_item.to_dict())
             _dict["evaluator_references"] = _items
+        # set to None if file_id (nullable) is None
+        # and model_fields_set contains the field
+        if self.file_id is None and "file_id" in self.model_fields_set:
+            _dict["file_id"] = None
+
         return _dict
 
     @classmethod
@@ -101,10 +108,10 @@ class PatchedJudgeRequest(BaseModel):
                 ]
                 if obj.get("evaluator_references") is not None
                 else None,
+                "file_id": obj.get("file_id"),
                 "intent": obj.get("intent"),
                 "name": obj.get("name"),
                 "stage": obj.get("stage"),
-                "status": obj.get("status"),
             }
         )
         return _obj

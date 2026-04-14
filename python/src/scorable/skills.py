@@ -33,9 +33,6 @@ from .generated.openapi_aclient.models import (
 from .generated.openapi_aclient.models import (
     EvaluatorExecutionResult as AEvaluatorExecutionResult,
 )
-from .generated.openapi_aclient.models import (
-    ModelParamsRequest as AModelParamsRequest,
-)
 from .generated.openapi_aclient.models.evaluator import Evaluator as AOpenAPIEvaluator
 from .generated.openapi_aclient.models.evaluator import Evaluator as GeneratedEvaluator
 from .generated.openapi_aclient.models.evaluator_calibration_output import (
@@ -70,7 +67,6 @@ from .generated.openapi_client.models.evaluator_execution_result import Evaluato
 from .generated.openapi_client.models.evaluator_list_output import EvaluatorListOutput
 from .generated.openapi_client.models.input_variable_request import InputVariableRequest
 from .generated.openapi_client.models.message_turn_request import MessageTurnRequest
-from .generated.openapi_client.models.model_params_request import ModelParamsRequest
 from .generated.openapi_client.models.objective_request import ObjectiveRequest
 from .generated.openapi_client.models.patched_evaluator_request import PatchedEvaluatorRequest
 from .generated.openapi_client.models.reference_variable_request import ReferenceVariableRequest
@@ -84,16 +80,6 @@ ModelName = Union[
         "root",  # RS-chosen model
     ],
 ]
-
-
-class ModelParams(BaseModel):
-    """
-    Additional model parameters.
-
-    All fields are made optional in practice.
-    """
-
-    temperature: Optional[float] = None
 
 
 class ReferenceVariable(BaseModel):
@@ -136,14 +122,12 @@ class ACalibrateBatchParameters:
         name: str,
         prompt: str,
         model: "ModelName",
-        pii_filter: bool = False,
         reference_variables: Optional[Union[List["ReferenceVariable"], List["AReferenceVariableRequest"]]] = None,
         input_variables: Optional[Union[List["InputVariable"], List["AInputVariableRequest"]]] = None,
     ):
         self.name = name
         self.prompt = prompt
         self.model = model
-        self.pii_filter = pii_filter
         self.reference_variables = reference_variables
         self.input_variables = input_variables
 
@@ -162,14 +146,12 @@ class CalibrateBatchParameters:
         name: str,
         prompt: str,
         model: "ModelName",
-        pii_filter: bool = False,
         reference_variables: Optional[Union[List["ReferenceVariable"], List["ReferenceVariableRequest"]]] = None,
         input_variables: Optional[Union[List["InputVariable"], List["InputVariableRequest"]]] = None,
     ):
         self.name = name
         self.prompt = prompt
         self.model = model
-        self.pii_filter = pii_filter
         self.reference_variables = reference_variables
         self.input_variables = input_variables
 
@@ -380,12 +362,6 @@ def _to_input_variables(
     return [_convert_to_generated_model(entry) for entry in input_variables or {}]
 
 
-def _to_model_params(model_params: Optional[Union[ModelParams, ModelParamsRequest]]) -> Optional[ModelParamsRequest]:
-    if isinstance(model_params, ModelParams):
-        return ModelParamsRequest(**model_params.model_dump())
-    return model_params
-
-
 def _to_reference_variables(
     reference_variables: Optional[Union[List[ReferenceVariable], List[ReferenceVariableRequest]]],
 ) -> List[ReferenceVariableRequest]:
@@ -426,12 +402,6 @@ def _ato_input_variables(
         return entry
 
     return [_convert_to_generated_model(entry) for entry in input_variables or {}]
-
-
-def _ato_model_params(model_params: Optional[Union[ModelParams, AModelParamsRequest]]) -> Optional[AModelParamsRequest]:
-    if isinstance(model_params, ModelParams):
-        return AModelParamsRequest(**model_params.model_dump())
-    return model_params
 
 
 def _ato_reference_variables(
@@ -834,7 +804,6 @@ class Evaluators:
         test_data: Optional[List[List[str]]] = None,
         prompt: str,
         model: ModelName,
-        pii_filter: bool = False,
         reference_variables: Optional[Union[List[ReferenceVariable], List[ReferenceVariableRequest]]] = None,
         input_variables: Optional[Union[List[InputVariable], List[InputVariableRequest]]] = None,
         _request_timeout: Optional[int] = None,
@@ -857,7 +826,6 @@ class Evaluators:
             prompt=prompt,
             models=[model],
             is_evaluator=True,
-            pii_filter=pii_filter,
             objective=ObjectiveRequest(intent="Calibration"),
             reference_variables=_to_reference_variables(reference_variables),
             input_variables=_to_input_variables(input_variables),
@@ -873,7 +841,6 @@ class Evaluators:
         test_data: Optional[List[List[str]]] = None,
         prompt: str,
         model: ModelName,
-        pii_filter: bool = False,
         reference_variables: Optional[Union[List[ReferenceVariable], List[AReferenceVariableRequest]]] = None,
         input_variables: Optional[Union[List[InputVariable], List[AInputVariableRequest]]] = None,
         _request_timeout: Optional[int] = None,
@@ -896,7 +863,6 @@ class Evaluators:
             prompt=prompt,
             models=[model],
             is_evaluator=True,
-            pii_filter=pii_filter,
             objective=AObjectiveRequest(intent="Calibration"),
             reference_variables=_ato_reference_variables(reference_variables),
             input_variables=_ato_input_variables(input_variables),
@@ -966,7 +932,6 @@ class Evaluators:
                         test_data=test_data,
                         prompt=param.prompt,
                         model=param.model,
-                        pii_filter=param.pii_filter,
                         reference_variables=param.reference_variables,
                         input_variables=param.input_variables,
                         _request_timeout=_request_timeout,
@@ -990,7 +955,6 @@ class Evaluators:
                         test_data=test_data,
                         prompt=param.prompt,
                         model=param.model,
-                        pii_filter=param.pii_filter,
                         reference_variables=param.reference_variables,
                         input_variables=param.input_variables,
                         _request_timeout=_request_timeout,
@@ -1088,7 +1052,6 @@ class Evaluators:
                         test_data=test_data,
                         prompt=param.prompt,
                         model=param.model,
-                        pii_filter=param.pii_filter,
                         reference_variables=param.reference_variables,
                         input_variables=param.input_variables,
                         _request_timeout=_request_timeout,
@@ -1201,9 +1164,7 @@ class Evaluators:
         intent: Optional[str] = None,
         model: Optional[ModelName] = None,
         fallback_models: Optional[List[ModelName]] = None,
-        reference_variables: Optional[Union[List[ReferenceVariable], List[ReferenceVariableRequest]]] = None,
         input_variables: Optional[Union[List[InputVariable], List[InputVariableRequest]]] = None,
-        model_params: Optional[Union[ModelParams, ModelParamsRequest]] = None,
         evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None,
         objective_id: Optional[str] = None,
         overwrite: bool = False,
@@ -1227,13 +1188,8 @@ class Evaluators:
 
           fallback_models: The fallback models to use in case the primary model fails.
 
-          reference_variables: An optional list of reference variables for
-            the evaluator.
-
           input_variables: An optional list of input variables for
             the evaluator.
-
-          model_params: An optional set of additional parameters to the model (e.g., temperature).
 
           evaluator_demonstrations: An optional list of evaluator demonstrations to guide
             the evaluator's behavior.
@@ -1258,9 +1214,7 @@ class Evaluators:
             objective_id=objective_id,
             prompt=predicate,
             models=[model for model in [model] + (fallback_models or []) if model is not None],
-            reference_variables=_to_reference_variables(reference_variables),
             input_variables=_to_input_variables(input_variables),
-            model_params=_to_model_params(model_params),
             evaluator_demonstrations=_to_evaluator_demonstrations(evaluator_demonstrations),
             overwrite=overwrite,
         )
@@ -1280,9 +1234,7 @@ class Evaluators:
         intent: Optional[str] = None,
         model: Optional[ModelName] = None,
         fallback_models: Optional[List[ModelName]] = None,
-        reference_variables: Optional[Union[List[ReferenceVariable], List[AReferenceVariableRequest]]] = None,
         input_variables: Optional[Union[List[InputVariable], List[AInputVariableRequest]]] = None,
-        model_params: Optional[Union[ModelParams, AModelParamsRequest]] = None,
         evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None,
         objective_id: Optional[str] = None,
         overwrite: bool = False,
@@ -1307,13 +1259,8 @@ class Evaluators:
 
           fallback_models: The fallback models to use in case the primary model fails.
 
-          reference_variables: An optional list of reference variables for
-            the evaluator.
-
           input_variables: An optional list of input variables for
             the evaluator.
-
-          model_params: An optional set of additional parameters to the model (e.g., temperature).
 
           evaluator_demonstrations: An optional list of evaluator demonstrations to guide
             the evaluator's behavior.
@@ -1337,9 +1284,7 @@ class Evaluators:
             objective_id=objective_id,
             prompt=predicate,
             models=[model for model in [model] + (fallback_models or []) if model is not None],
-            reference_variables=_ato_reference_variables(reference_variables),
             input_variables=_ato_input_variables(input_variables),
-            model_params=_ato_model_params(model_params),
             evaluator_demonstrations=_ato_evaluator_demonstrations(evaluator_demonstrations),
             overwrite=overwrite,
         )
@@ -1361,8 +1306,6 @@ class Evaluators:
         model: Optional[ModelName] = None,
         name: Optional[str] = None,
         predicate: Optional[str] = None,
-        reference_variables: Optional[Union[List[ReferenceVariable], List[ReferenceVariableRequest]]] = None,
-        model_params: Optional[Union[ModelParams, ModelParamsRequest]] = None,
         evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None,
         objective_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
@@ -1383,8 +1326,6 @@ class Evaluators:
             else None,
             name=name,
             prompt=predicate,
-            reference_variables=_to_reference_variables(reference_variables) if reference_variables else None,
-            model_params=_to_model_params(model_params) if model_params else None,
             objective_id=objective_id,
             evaluator_demonstrations=_to_evaluator_demonstrations(evaluator_demonstrations)
             if evaluator_demonstrations
@@ -1409,8 +1350,6 @@ class Evaluators:
         model: Optional[ModelName] = None,
         name: Optional[str] = None,
         predicate: Optional[str] = None,
-        reference_variables: Optional[Union[List[ReferenceVariable], List[AReferenceVariableRequest]]] = None,
-        model_params: Optional[Union[ModelParams, AModelParamsRequest]] = None,
         evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None,
         objective_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
@@ -1430,8 +1369,6 @@ class Evaluators:
             if model or fallback_models
             else None,
             name=name,
-            reference_variables=_ato_reference_variables(reference_variables) if reference_variables else None,
-            model_params=_ato_model_params(model_params) if model_params else None,
             objective_id=objective_id,
             prompt=predicate,
             evaluator_demonstrations=_ato_evaluator_demonstrations(evaluator_demonstrations)
@@ -1705,9 +1642,6 @@ class Evaluators:
         "Harmlessness",
         "Confidentiality",
         "Persuasiveness",
-        "Context_Recall",
-        "Answer_Correctness",
-        "Answer_Semantic_Similarity",
         "Sentiment_recognition",
         "Safety_for_Children",
         "Precision",
@@ -1718,8 +1652,6 @@ class Evaluators:
         "Quality_of_Writing_Professional",
         "Quality_of_Writing_Creative",
         "Truthfulness",
-        "Context_Precision",
-        "Answer_Relevance",
         "Compliance_Preview",
         "Faithfulness_Swift",
         "Truthfulness_Swift",
@@ -1746,9 +1678,6 @@ class Evaluators:
         Harmlessness = "379fee0a-4fd1-4942-833b-7d78d78b334d"
         Confidentiality = "2eaa0a02-47a9-48f7-9b47-66ad257f93eb"
         Persuasiveness = "85bb6a74-f5dd-4130-8dcc-cffdf72327cc"
-        Context_Recall = "8bb60975-5062-4367-9fc6-a920044cba56"
-        Answer_Correctness = "d4487568-4243-4da8-9c76-adbaf762dbe0"
-        Answer_Semantic_Similarity = "ff350bce-4b07-4af7-9640-803c9d3c2ff9"
         Sentiment_recognition = "e3782c1e-eaf4-4b2d-8d26-53db2160f1fd"
         Safety_for_Children = "39a8b5ba-de77-4726-a6b0-621d40b3cdf5"
         Precision = "767bdd49-5f8c-48ca-8324-dfd6be7f8a79"
@@ -1759,8 +1688,6 @@ class Evaluators:
         Quality_of_Writing_Professional = "059affa9-2d1c-48de-8e97-f81dd3fc3cbe"
         Quality_of_Writing_Creative = "060abfb6-57c9-43b5-9a6d-8a1a9bb853b8"
         Truthfulness = "053df10f-b0c7-400b-892e-46ce3aa1e430"
-        Context_Precision = "9d1e9a25-7e76-4771-b1e3-40825d7918c5"
-        Answer_Relevance = "0907d422-e94f-4c9c-a63d-ec0eefd8a903"
         Compliance_Preview = "4613f248-b60e-403a-bcdc-157d1c44194a"
         Faithfulness_Swift = "a3a5e97b-7fcb-441e-92f2-6e59aa473b89"
         Truthfulness_Swift = "c8c65e61-2dc8-4f29-865a-a5e59127d208"

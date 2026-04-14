@@ -21,7 +21,6 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictStr
 from typing_extensions import Annotated, Self
 
-from scorable.generated.openapi_aclient.models.objective_validator_request import ObjectiveValidatorRequest
 from scorable.generated.openapi_aclient.models.status_enum import StatusEnum
 
 
@@ -32,12 +31,11 @@ class ObjectiveRequest(BaseModel):
 
     intent: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=100000)]] = None
     status: Optional[StatusEnum] = None
-    validators: Optional[List[ObjectiveValidatorRequest]] = None
     force_create: Optional[StrictBool] = Field(
         default=None, description="Force creation of a new objective. Applies only to PUT requests."
     )
     test_dataset_id: Optional[StrictStr] = None
-    __properties: ClassVar[List[str]] = ["intent", "status", "validators", "force_create", "test_dataset_id"]
+    __properties: ClassVar[List[str]] = ["intent", "status", "force_create", "test_dataset_id"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -76,13 +74,6 @@ class ObjectiveRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each item in validators (list)
-        _items = []
-        if self.validators:
-            for _item in self.validators:
-                if _item:
-                    _items.append(_item.to_dict())
-            _dict["validators"] = _items
         # set to None if test_dataset_id (nullable) is None
         # and model_fields_set contains the field
         if self.test_dataset_id is None and "test_dataset_id" in self.model_fields_set:
@@ -103,9 +94,6 @@ class ObjectiveRequest(BaseModel):
             {
                 "intent": obj.get("intent"),
                 "status": obj.get("status"),
-                "validators": [ObjectiveValidatorRequest.from_dict(_item) for _item in obj["validators"]]
-                if obj.get("validators") is not None
-                else None,
                 "force_create": obj.get("force_create"),
                 "test_dataset_id": obj.get("test_dataset_id"),
             }

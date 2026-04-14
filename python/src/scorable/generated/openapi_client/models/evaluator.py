@@ -25,12 +25,9 @@ from typing_extensions import Annotated, Self
 from scorable.generated.openapi_client.models.evaluator_demonstrations import EvaluatorDemonstrations
 from scorable.generated.openapi_client.models.evaluator_inputs_value import EvaluatorInputsValue
 from scorable.generated.openapi_client.models.input_variable import InputVariable
-from scorable.generated.openapi_client.models.model_params import ModelParams
 from scorable.generated.openapi_client.models.nested_user_details import NestedUserDetails
 from scorable.generated.openapi_client.models.objective import Objective
-from scorable.generated.openapi_client.models.reference_variable import ReferenceVariable
-from scorable.generated.openapi_client.models.skill_type_enum import SkillTypeEnum
-from scorable.generated.openapi_client.models.status_enum import StatusEnum
+from scorable.generated.openapi_client.models.visibility_ef8_enum import VisibilityEf8Enum
 
 
 class Evaluator(BaseModel):
@@ -43,7 +40,6 @@ class Evaluator(BaseModel):
     evaluator_demonstrations: Optional[List[EvaluatorDemonstrations]] = None
     id: StrictStr
     input_variables: Optional[List[InputVariable]] = None
-    model_params: Optional[ModelParams] = None
     models: Optional[List[StrictStr]] = Field(
         default=None,
         description="Primary model (index 0) and an optional list of fallback models to use if the primary model is not available. If not provided, a default model will be used.",
@@ -52,10 +48,7 @@ class Evaluator(BaseModel):
     objective: Optional[Objective]
     owner: NestedUserDetails
     prompt: Annotated[str, Field(strict=True, max_length=500000)]
-    reference_variables: Optional[List[ReferenceVariable]] = None
-    skill_type: SkillTypeEnum
-    status: Optional[StatusEnum] = None
-    system_message: Optional[StrictStr] = None
+    visibility: VisibilityEf8Enum
     updated_at: Optional[datetime]
     updated_by: Optional[NestedUserDetails]
     version_id: StrictStr
@@ -69,16 +62,12 @@ class Evaluator(BaseModel):
         "evaluator_demonstrations",
         "id",
         "input_variables",
-        "model_params",
         "models",
         "name",
         "objective",
         "owner",
         "prompt",
-        "reference_variables",
-        "skill_type",
-        "status",
-        "system_message",
+        "visibility",
         "updated_at",
         "updated_by",
         "version_id",
@@ -132,7 +121,7 @@ class Evaluator(BaseModel):
                 "id",
                 "objective",
                 "owner",
-                "skill_type",
+                "visibility",
                 "updated_at",
                 "updated_by",
                 "version_id",
@@ -160,22 +149,12 @@ class Evaluator(BaseModel):
                 if _item:
                     _items.append(_item.to_dict())
             _dict["input_variables"] = _items
-        # override the default output from pydantic by calling `to_dict()` of model_params
-        if self.model_params:
-            _dict["model_params"] = self.model_params.to_dict()
         # override the default output from pydantic by calling `to_dict()` of objective
         if self.objective:
             _dict["objective"] = self.objective.to_dict()
         # override the default output from pydantic by calling `to_dict()` of owner
         if self.owner:
             _dict["owner"] = self.owner.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of each item in reference_variables (list)
-        _items = []
-        if self.reference_variables:
-            for _item in self.reference_variables:
-                if _item:
-                    _items.append(_item.to_dict())
-            _dict["reference_variables"] = _items
         # override the default output from pydantic by calling `to_dict()` of updated_by
         if self.updated_by:
             _dict["updated_by"] = self.updated_by.to_dict()
@@ -195,11 +174,6 @@ class Evaluator(BaseModel):
         # and model_fields_set contains the field
         if self.evaluator_demonstrations is None and "evaluator_demonstrations" in self.model_fields_set:
             _dict["evaluator_demonstrations"] = None
-
-        # set to None if model_params (nullable) is None
-        # and model_fields_set contains the field
-        if self.model_params is None and "model_params" in self.model_fields_set:
-            _dict["model_params"] = None
 
         # set to None if objective (nullable) is None
         # and model_fields_set contains the field
@@ -245,20 +219,12 @@ class Evaluator(BaseModel):
                 "input_variables": [InputVariable.from_dict(_item) for _item in obj["input_variables"]]
                 if obj.get("input_variables") is not None
                 else None,
-                "model_params": ModelParams.from_dict(obj["model_params"])
-                if obj.get("model_params") is not None
-                else None,
                 "models": obj.get("models"),
                 "name": obj.get("name"),
                 "objective": Objective.from_dict(obj["objective"]) if obj.get("objective") is not None else None,
                 "owner": NestedUserDetails.from_dict(obj["owner"]) if obj.get("owner") is not None else None,
                 "prompt": obj.get("prompt"),
-                "reference_variables": [ReferenceVariable.from_dict(_item) for _item in obj["reference_variables"]]
-                if obj.get("reference_variables") is not None
-                else None,
-                "skill_type": obj.get("skill_type"),
-                "status": obj.get("status"),
-                "system_message": obj.get("system_message"),
+                "visibility": obj.get("visibility"),
                 "updated_at": obj.get("updated_at"),
                 "updated_by": NestedUserDetails.from_dict(obj["updated_by"])
                 if obj.get("updated_by") is not None

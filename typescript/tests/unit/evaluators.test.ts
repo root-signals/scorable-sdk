@@ -93,7 +93,7 @@ describe('EvaluatorsResource', () => {
       expect(result.justification).toBeDefined();
       expect(mockClient.POST).toHaveBeenCalledWith('/v1/evaluators/execute/{id}/', {
         params: { path: { id: evaluatorId } },
-        body: executionData,
+        body: { variables: {}, ...executionData },
       });
     });
 
@@ -228,7 +228,7 @@ describe('EvaluatorsResource', () => {
       expect(result.justification).toBeDefined();
       expect(mockClient.POST).toHaveBeenCalledWith('/v1/evaluators/execute/{id}/', {
         params: { path: { id: evaluatorId } },
-        body: multiTurnData,
+        body: { variables: {}, ...multiTurnData },
       });
     });
 
@@ -247,7 +247,7 @@ describe('EvaluatorsResource', () => {
       expect(result.justification).toBeDefined();
       expect(mockClient.POST).toHaveBeenCalledWith('/v1/evaluators/execute/by-name/', {
         params: { query: { name: evaluatorName } },
-        body: multiTurnData,
+        body: { variables: {}, ...multiTurnData },
       });
     });
 
@@ -271,7 +271,7 @@ describe('EvaluatorsResource', () => {
       expect(result.score).toBeDefined();
       expect(mockClient.POST).toHaveBeenCalledWith('/v1/evaluators/execute/{id}/', {
         params: { path: { id: evaluatorId } },
-        body: executionData,
+        body: { variables: {}, ...executionData },
       });
     });
   });

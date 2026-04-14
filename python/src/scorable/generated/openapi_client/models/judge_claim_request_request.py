@@ -18,17 +18,17 @@ import pprint
 import re  # noqa: F401
 from typing import Any, ClassVar, Dict, List, Optional, Set
 
-from pydantic import BaseModel, ConfigDict, Field
-from typing_extensions import Annotated, Self
+from pydantic import BaseModel, ConfigDict, StrictStr
+from typing_extensions import Self
 
 
-class NestedVectorObjectiveRequest(BaseModel):
+class JudgeClaimRequestRequest(BaseModel):
     """
-    NestedVectorObjectiveRequest
+    JudgeClaimRequestRequest
     """  # noqa: E501
 
-    intent: Annotated[str, Field(min_length=1, strict=True)]
-    __properties: ClassVar[List[str]] = ["intent"]
+    claim_token: StrictStr
+    __properties: ClassVar[List[str]] = ["claim_token"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -47,7 +47,7 @@ class NestedVectorObjectiveRequest(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of NestedVectorObjectiveRequest from a JSON string"""
+        """Create an instance of JudgeClaimRequestRequest from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -71,12 +71,12 @@ class NestedVectorObjectiveRequest(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of NestedVectorObjectiveRequest from a dict"""
+        """Create an instance of JudgeClaimRequestRequest from a dict"""
         if obj is None:
             return None
 
         if not isinstance(obj, dict):
             return cls.model_validate(obj)
 
-        _obj = cls.model_validate({"intent": obj.get("intent")})
+        _obj = cls.model_validate({"claim_token": obj.get("claim_token")})
         return _obj

@@ -18,35 +18,18 @@ import pprint
 import re  # noqa: F401
 from typing import Any, ClassVar, Dict, List, Optional, Set
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictBool
 from typing_extensions import Annotated, Self
 
-from scorable.generated.openapi_client.models.evaluation_agent_evaluation_approach_enum import (
-    EvaluationAgentEvaluationApproachEnum,
-)
-from scorable.generated.openapi_client.models.model_enum import ModelEnum
-from scorable.generated.openapi_client.models.status_enum import StatusEnum
 
-
-class EvaluationAgentRequest(BaseModel):
+class EvaluatorImportYamlRequestRequest(BaseModel):
     """
-    EvaluationAgentRequest
+    EvaluatorImportYamlRequestRequest
     """  # noqa: E501
 
-    evaluation_approach: Optional[EvaluationAgentEvaluationApproachEnum] = None
-    model: Optional[ModelEnum] = None
-    name: Annotated[str, Field(min_length=1, strict=True, max_length=1000)]
-    objective_id: StrictStr
-    scoring_criteria: Annotated[str, Field(min_length=1, strict=True)]
-    status: Optional[StatusEnum] = None
-    __properties: ClassVar[List[str]] = [
-        "evaluation_approach",
-        "model",
-        "name",
-        "objective_id",
-        "scoring_criteria",
-        "status",
-    ]
+    yaml: Annotated[str, Field(min_length=1, strict=True)]
+    overwrite: Optional[StrictBool] = False
+    __properties: ClassVar[List[str]] = ["yaml", "overwrite"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -65,7 +48,7 @@ class EvaluationAgentRequest(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of EvaluationAgentRequest from a JSON string"""
+        """Create an instance of EvaluatorImportYamlRequestRequest from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -85,16 +68,11 @@ class EvaluationAgentRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # set to None if status (nullable) is None
-        # and model_fields_set contains the field
-        if self.status is None and "status" in self.model_fields_set:
-            _dict["status"] = None
-
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of EvaluationAgentRequest from a dict"""
+        """Create an instance of EvaluatorImportYamlRequestRequest from a dict"""
         if obj is None:
             return None
 
@@ -102,13 +80,6 @@ class EvaluationAgentRequest(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate(
-            {
-                "evaluation_approach": obj.get("evaluation_approach"),
-                "model": obj.get("model"),
-                "name": obj.get("name"),
-                "objective_id": obj.get("objective_id"),
-                "scoring_criteria": obj.get("scoring_criteria"),
-                "status": obj.get("status"),
-            }
+            {"yaml": obj.get("yaml"), "overwrite": obj.get("overwrite") if obj.get("overwrite") is not None else False}
         )
         return _obj

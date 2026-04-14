@@ -30,7 +30,8 @@ class JudgeGeneratorResponse(BaseModel):
     judge_id: StrictStr
     judge_version_id: StrictStr
     error_code: Optional[StrictStr] = None
-    __properties: ClassVar[List[str]] = ["judge_id", "judge_version_id", "error_code"]
+    claim_token: Optional[StrictStr] = None
+    __properties: ClassVar[List[str]] = ["judge_id", "judge_version_id", "error_code", "claim_token"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -74,6 +75,11 @@ class JudgeGeneratorResponse(BaseModel):
         if self.error_code is None and "error_code" in self.model_fields_set:
             _dict["error_code"] = None
 
+        # set to None if claim_token (nullable) is None
+        # and model_fields_set contains the field
+        if self.claim_token is None and "claim_token" in self.model_fields_set:
+            _dict["claim_token"] = None
+
         return _dict
 
     @classmethod
@@ -90,6 +96,7 @@ class JudgeGeneratorResponse(BaseModel):
                 "judge_id": obj.get("judge_id"),
                 "judge_version_id": obj.get("judge_version_id"),
                 "error_code": obj.get("error_code"),
+                "claim_token": obj.get("claim_token"),
             }
         )
         return _obj

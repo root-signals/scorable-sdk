@@ -18,19 +18,32 @@ import pprint
 import re  # noqa: F401
 from typing import Any, ClassVar, Dict, List, Optional, Set
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool
-from typing_extensions import Annotated, Self
+from pydantic import BaseModel, ConfigDict, StrictStr, field_validator
+from typing_extensions import Self
+
+from scorable.generated.openapi_client.models.judges_synthetic_data_retrieve200_response_samples_inner import (
+    JudgesSyntheticDataRetrieve200ResponseSamplesInner,
+)
 
 
-class NestedObjectiveEvaluatorRequest(BaseModel):
+class JudgesSyntheticDataRetrieve200Response(BaseModel):
     """
-    NestedObjectiveEvaluatorRequest
+    JudgesSyntheticDataRetrieve200Response
     """  # noqa: E501
 
-    name: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=1000)]] = None
-    requires_expected_output: Optional[StrictBool] = None
-    requires_contexts: Optional[StrictBool] = None
-    __properties: ClassVar[List[str]] = ["name", "requires_expected_output", "requires_contexts"]
+    status: Optional[StrictStr] = None
+    samples: Optional[List[JudgesSyntheticDataRetrieve200ResponseSamplesInner]] = None
+    __properties: ClassVar[List[str]] = ["status", "samples"]
+
+    @field_validator("status")
+    def status_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(["pending", "ready", "not_generated"]):
+            raise ValueError("must be one of enum values ('pending', 'ready', 'not_generated')")
+        return value
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -49,7 +62,7 @@ class NestedObjectiveEvaluatorRequest(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of NestedObjectiveEvaluatorRequest from a JSON string"""
+        """Create an instance of JudgesSyntheticDataRetrieve200Response from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -69,11 +82,18 @@ class NestedObjectiveEvaluatorRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each item in samples (list)
+        _items = []
+        if self.samples:
+            for _item in self.samples:
+                if _item:
+                    _items.append(_item.to_dict())
+            _dict["samples"] = _items
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of NestedObjectiveEvaluatorRequest from a dict"""
+        """Create an instance of JudgesSyntheticDataRetrieve200Response from a dict"""
         if obj is None:
             return None
 
@@ -82,9 +102,12 @@ class NestedObjectiveEvaluatorRequest(BaseModel):
 
         _obj = cls.model_validate(
             {
-                "name": obj.get("name"),
-                "requires_expected_output": obj.get("requires_expected_output"),
-                "requires_contexts": obj.get("requires_contexts"),
+                "status": obj.get("status"),
+                "samples": [
+                    JudgesSyntheticDataRetrieve200ResponseSamplesInner.from_dict(_item) for _item in obj["samples"]
+                ]
+                if obj.get("samples") is not None
+                else None,
             }
         )
         return _obj

@@ -487,8 +487,8 @@ class ObjectivesApi:
     def objectives_list(
         self,
         cursor: Annotated[Optional[StrictStr], Field(description="The pagination cursor value.")] = None,
-        has_validators: Annotated[
-            Optional[StrictBool], Field(description="Filter objectives by whether they have validators.")
+        include_public: Annotated[
+            Optional[StrictBool], Field(description="Include public resources from other organizations.")
         ] = None,
         intent: Annotated[
             Optional[StrictStr], Field(description="Search for objectives by intent (exact match).")
@@ -514,8 +514,8 @@ class ObjectivesApi:
 
         :param cursor: The pagination cursor value.
         :type cursor: str
-        :param has_validators: Filter objectives by whether they have validators.
-        :type has_validators: bool
+        :param include_public: Include public resources from other organizations.
+        :type include_public: bool
         :param intent: Search for objectives by intent (exact match).
         :type intent: str
         :param ordering: Which field to use when ordering the results.
@@ -548,7 +548,7 @@ class ObjectivesApi:
 
         _param = self._objectives_list_serialize(
             cursor=cursor,
-            has_validators=has_validators,
+            include_public=include_public,
             intent=intent,
             ordering=ordering,
             page_size=page_size,
@@ -573,8 +573,8 @@ class ObjectivesApi:
     def objectives_list_with_http_info(
         self,
         cursor: Annotated[Optional[StrictStr], Field(description="The pagination cursor value.")] = None,
-        has_validators: Annotated[
-            Optional[StrictBool], Field(description="Filter objectives by whether they have validators.")
+        include_public: Annotated[
+            Optional[StrictBool], Field(description="Include public resources from other organizations.")
         ] = None,
         intent: Annotated[
             Optional[StrictStr], Field(description="Search for objectives by intent (exact match).")
@@ -600,8 +600,8 @@ class ObjectivesApi:
 
         :param cursor: The pagination cursor value.
         :type cursor: str
-        :param has_validators: Filter objectives by whether they have validators.
-        :type has_validators: bool
+        :param include_public: Include public resources from other organizations.
+        :type include_public: bool
         :param intent: Search for objectives by intent (exact match).
         :type intent: str
         :param ordering: Which field to use when ordering the results.
@@ -634,7 +634,7 @@ class ObjectivesApi:
 
         _param = self._objectives_list_serialize(
             cursor=cursor,
-            has_validators=has_validators,
+            include_public=include_public,
             intent=intent,
             ordering=ordering,
             page_size=page_size,
@@ -659,8 +659,8 @@ class ObjectivesApi:
     def objectives_list_without_preload_content(
         self,
         cursor: Annotated[Optional[StrictStr], Field(description="The pagination cursor value.")] = None,
-        has_validators: Annotated[
-            Optional[StrictBool], Field(description="Filter objectives by whether they have validators.")
+        include_public: Annotated[
+            Optional[StrictBool], Field(description="Include public resources from other organizations.")
         ] = None,
         intent: Annotated[
             Optional[StrictStr], Field(description="Search for objectives by intent (exact match).")
@@ -686,8 +686,8 @@ class ObjectivesApi:
 
         :param cursor: The pagination cursor value.
         :type cursor: str
-        :param has_validators: Filter objectives by whether they have validators.
-        :type has_validators: bool
+        :param include_public: Include public resources from other organizations.
+        :type include_public: bool
         :param intent: Search for objectives by intent (exact match).
         :type intent: str
         :param ordering: Which field to use when ordering the results.
@@ -720,7 +720,7 @@ class ObjectivesApi:
 
         _param = self._objectives_list_serialize(
             cursor=cursor,
-            has_validators=has_validators,
+            include_public=include_public,
             intent=intent,
             ordering=ordering,
             page_size=page_size,
@@ -740,7 +740,7 @@ class ObjectivesApi:
     def _objectives_list_serialize(
         self,
         cursor,
-        has_validators,
+        include_public,
         intent,
         ordering,
         page_size,
@@ -766,8 +766,8 @@ class ObjectivesApi:
         if cursor is not None:
             _query_params.append(("cursor", cursor))
 
-        if has_validators is not None:
-            _query_params.append(("has_validators", has_validators))
+        if include_public is not None:
+            _query_params.append(("include_public", include_public))
 
         if intent is not None:
             _query_params.append(("intent", intent))

@@ -55,15 +55,15 @@ configuration.api_key['publicApiKey'] = os.environ["API_KEY"]
 # Enter a context with an instance of the API client
 async with scorable.generated.openapi_aclient.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = scorable.generated.openapi_aclient.BetaApi(api_client)
-    evaluation_agent_request = scorable.generated.openapi_aclient.EvaluationAgentRequest() # EvaluationAgentRequest | 
+    api_instance = scorable.generated.openapi_aclient.DatasetsApi(api_client)
+    data_set_create_request = {"name":"My data set","url":"https://example.com"} # DataSetCreateRequest |  (optional)
 
     try:
-        api_response = await api_instance.beta_evaluation_agents_create(evaluation_agent_request)
-        print("The response of BetaApi->beta_evaluation_agents_create:\n")
+        api_response = await api_instance.datasets_create(data_set_create_request=data_set_create_request)
+        print("The response of DatasetsApi->datasets_create:\n")
         pprint(api_response)
     except ApiException as e:
-        print("Exception when calling BetaApi->beta_evaluation_agents_create: %s\n" % e)
+        print("Exception when calling DatasetsApi->datasets_create: %s\n" % e)
 
 ```
 
@@ -73,23 +73,10 @@ All URIs are relative to *https://api.localhost:8000*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*BetaApi* | [**beta_evaluation_agents_create**](scorable/generated/openapi_aclient/docs/BetaApi.md#beta_evaluation_agents_create) | **POST** /v1/beta/evaluation-agents/ | 
-*BetaApi* | [**beta_evaluation_agents_destroy**](scorable/generated/openapi_aclient/docs/BetaApi.md#beta_evaluation_agents_destroy) | **DELETE** /v1/beta/evaluation-agents/{id}/ | 
-*BetaApi* | [**beta_evaluation_agents_execute_create**](scorable/generated/openapi_aclient/docs/BetaApi.md#beta_evaluation_agents_execute_create) | **POST** /v1/beta/evaluation-agents/{id}/execute/ | 
-*BetaApi* | [**beta_evaluation_agents_generate_create**](scorable/generated/openapi_aclient/docs/BetaApi.md#beta_evaluation_agents_generate_create) | **POST** /v1/beta/evaluation-agents/generate/ | 
-*BetaApi* | [**beta_evaluation_agents_list**](scorable/generated/openapi_aclient/docs/BetaApi.md#beta_evaluation_agents_list) | **GET** /v1/beta/evaluation-agents/ | 
-*BetaApi* | [**beta_evaluation_agents_partial_update**](scorable/generated/openapi_aclient/docs/BetaApi.md#beta_evaluation_agents_partial_update) | **PATCH** /v1/beta/evaluation-agents/{id}/ | 
-*BetaApi* | [**beta_evaluation_agents_retrieve**](scorable/generated/openapi_aclient/docs/BetaApi.md#beta_evaluation_agents_retrieve) | **GET** /v1/beta/evaluation-agents/{id}/ | 
-*BetaApi* | [**beta_evaluation_agents_update**](scorable/generated/openapi_aclient/docs/BetaApi.md#beta_evaluation_agents_update) | **PUT** /v1/beta/evaluation-agents/{id}/ | 
-*BetaApi* | [**beta_evaluation_agents_versions_list**](scorable/generated/openapi_aclient/docs/BetaApi.md#beta_evaluation_agents_versions_list) | **GET** /v1/beta/evaluation-agents/{id}/versions/ | 
-*BetaApi* | [**create_batch_evaluation_job**](scorable/generated/openapi_aclient/docs/BetaApi.md#create_batch_evaluation_job) | **POST** /v1/beta/evaluation-jobs/ | 
-*BetaApi* | [**get_evaluation_batch_job_results**](scorable/generated/openapi_aclient/docs/BetaApi.md#get_evaluation_batch_job_results) | **GET** /v1/beta/evaluation-jobs/{job_id}/results/ | 
-*BetaApi* | [**list_batch_evaluation_jobs**](scorable/generated/openapi_aclient/docs/BetaApi.md#list_batch_evaluation_jobs) | **GET** /v1/beta/evaluation-jobs/ | 
 *DatasetsApi* | [**datasets_create**](scorable/generated/openapi_aclient/docs/DatasetsApi.md#datasets_create) | **POST** /v1/datasets/ | 
 *DatasetsApi* | [**datasets_destroy**](scorable/generated/openapi_aclient/docs/DatasetsApi.md#datasets_destroy) | **DELETE** /v1/datasets/{id}/ | 
 *DatasetsApi* | [**datasets_list**](scorable/generated/openapi_aclient/docs/DatasetsApi.md#datasets_list) | **GET** /v1/datasets/ | 
 *DatasetsApi* | [**datasets_retrieve**](scorable/generated/openapi_aclient/docs/DatasetsApi.md#datasets_retrieve) | **GET** /v1/datasets/{id}/ | 
-*DatasetsApi* | [**datasets_status_update**](scorable/generated/openapi_aclient/docs/DatasetsApi.md#datasets_status_update) | **PUT** /v1/datasets/status/{id}/ | 
 *EvaluatorsApi* | [**evaluators_calibrate_create**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_calibrate_create) | **POST** /v1/evaluators/calibrate/ | 
 *EvaluatorsApi* | [**evaluators_calibrate_create2**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_calibrate_create2) | **POST** /v1/evaluators/calibrate/{id} | 
 *EvaluatorsApi* | [**evaluators_create**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_create) | **POST** /v1/evaluators/ | 
@@ -97,11 +84,11 @@ Class | Method | HTTP request | Description
 *EvaluatorsApi* | [**evaluators_duplicate_create**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_duplicate_create) | **POST** /v1/evaluators/duplicate/{id}/ | 
 *EvaluatorsApi* | [**evaluators_execute_by_name_create**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_execute_by_name_create) | **POST** /v1/evaluators/execute/by-name/ | 
 *EvaluatorsApi* | [**evaluators_execute_create**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_execute_create) | **POST** /v1/evaluators/execute/{id}/ | 
+*EvaluatorsApi* | [**evaluators_export_retrieve**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_export_retrieve) | **GET** /v1/evaluators/export/{id}/ | 
+*EvaluatorsApi* | [**evaluators_import_yaml_create**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_import_yaml_create) | **POST** /v1/evaluators/import-yaml/ | 
 *EvaluatorsApi* | [**evaluators_list**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_list) | **GET** /v1/evaluators/ | 
 *EvaluatorsApi* | [**evaluators_partial_update**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_partial_update) | **PATCH** /v1/evaluators/{id}/ | 
 *EvaluatorsApi* | [**evaluators_retrieve**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_retrieve) | **GET** /v1/evaluators/{id}/ | 
-*EvaluatorsApi* | [**evaluators_status_create**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_status_create) | **POST** /v1/evaluators/status/{id}/ | 
-*EvaluatorsApi* | [**evaluators_status_update**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_status_update) | **PUT** /v1/evaluators/status/{id}/ | 
 *EvaluatorsApi* | [**evaluators_update**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_update) | **PUT** /v1/evaluators/{id}/ | 
 *EvaluatorsApi* | [**evaluators_versions_list**](scorable/generated/openapi_aclient/docs/EvaluatorsApi.md#evaluators_versions_list) | **GET** /v1/evaluators/versions/{id}/ | 
 *ExecutionLogsApi* | [**execution_logs_list**](scorable/generated/openapi_aclient/docs/ExecutionLogsApi.md#execution_logs_list) | **GET** /v1/execution-logs/ | 
@@ -111,6 +98,7 @@ Class | Method | HTTP request | Description
 *JudgesApi* | [**judges_batch_execute_create**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_batch_execute_create) | **POST** /v1/judges/{judge_id}/batch-execute/ | 
 *JudgesApi* | [**judges_batch_executions_list**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_batch_executions_list) | **GET** /v1/judges/batch-executions/ | 
 *JudgesApi* | [**judges_batch_executions_retrieve**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_batch_executions_retrieve) | **GET** /v1/judges/batch-executions/{id}/ | 
+*JudgesApi* | [**judges_claim_create**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_claim_create) | **POST** /v1/judges/claim/ | 
 *JudgesApi* | [**judges_create**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_create) | **POST** /v1/judges/ | 
 *JudgesApi* | [**judges_destroy**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_destroy) | **DELETE** /v1/judges/{id}/ | 
 *JudgesApi* | [**judges_duplicate_create**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_duplicate_create) | **POST** /v1/judges/{id}/duplicate/ | 
@@ -128,6 +116,7 @@ Class | Method | HTTP request | Description
 *JudgesApi* | [**judges_refine_openai_chat_completions_create**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_refine_openai_chat_completions_create) | **POST** /v1/judges/{judge_id}/refine/openai/chat/completions | 
 *JudgesApi* | [**judges_refine_openai_responses_create**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_refine_openai_responses_create) | **POST** /v1/judges/{judge_id}/refine/openai/responses | 
 *JudgesApi* | [**judges_retrieve**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_retrieve) | **GET** /v1/judges/{id}/ | 
+*JudgesApi* | [**judges_synthetic_data_retrieve**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_synthetic_data_retrieve) | **GET** /v1/judges/{judge_id}/synthetic-data/ | 
 *JudgesApi* | [**judges_update**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_update) | **PUT** /v1/judges/{id}/ | 
 *ModelsApi* | [**models_create**](scorable/generated/openapi_aclient/docs/ModelsApi.md#models_create) | **POST** /v1/models/ | 
 *ModelsApi* | [**models_destroy**](scorable/generated/openapi_aclient/docs/ModelsApi.md#models_destroy) | **DELETE** /v1/models/{id}/ | 
@@ -153,17 +142,6 @@ Class | Method | HTTP request | Description
  - [DataSetList](scorable/generated/openapi_aclient/docs/DataSetList.md)
  - [DataSetType](scorable/generated/openapi_aclient/docs/DataSetType.md)
  - [DatasetRangeRequest](scorable/generated/openapi_aclient/docs/DatasetRangeRequest.md)
- - [EvaluationAgent](scorable/generated/openapi_aclient/docs/EvaluationAgent.md)
- - [EvaluationAgentEvaluationApproachEnum](scorable/generated/openapi_aclient/docs/EvaluationAgentEvaluationApproachEnum.md)
- - [EvaluationAgentExecuteRequestRequest](scorable/generated/openapi_aclient/docs/EvaluationAgentExecuteRequestRequest.md)
- - [EvaluationAgentExecuteResponse](scorable/generated/openapi_aclient/docs/EvaluationAgentExecuteResponse.md)
- - [EvaluationAgentGenerateExampleRequest](scorable/generated/openapi_aclient/docs/EvaluationAgentGenerateExampleRequest.md)
- - [EvaluationAgentGenerateRequestEvaluationApproachEnum](scorable/generated/openapi_aclient/docs/EvaluationAgentGenerateRequestEvaluationApproachEnum.md)
- - [EvaluationAgentGenerateRequestRequest](scorable/generated/openapi_aclient/docs/EvaluationAgentGenerateRequestRequest.md)
- - [EvaluationAgentRequest](scorable/generated/openapi_aclient/docs/EvaluationAgentRequest.md)
- - [EvaluationBatchJobSerializer](scorable/generated/openapi_aclient/docs/EvaluationBatchJobSerializer.md)
- - [EvaluationJobRequestRequest](scorable/generated/openapi_aclient/docs/EvaluationJobRequestRequest.md)
- - [EvaluationJobResponse](scorable/generated/openapi_aclient/docs/EvaluationJobResponse.md)
  - [Evaluator](scorable/generated/openapi_aclient/docs/Evaluator.md)
  - [EvaluatorCalibrationOutput](scorable/generated/openapi_aclient/docs/EvaluatorCalibrationOutput.md)
  - [EvaluatorCalibrationResult](scorable/generated/openapi_aclient/docs/EvaluatorCalibrationResult.md)
@@ -171,6 +149,7 @@ Class | Method | HTTP request | Description
  - [EvaluatorDemonstrationsRequest](scorable/generated/openapi_aclient/docs/EvaluatorDemonstrationsRequest.md)
  - [EvaluatorExecutionRequest](scorable/generated/openapi_aclient/docs/EvaluatorExecutionRequest.md)
  - [EvaluatorExecutionResult](scorable/generated/openapi_aclient/docs/EvaluatorExecutionResult.md)
+ - [EvaluatorImportYamlRequestRequest](scorable/generated/openapi_aclient/docs/EvaluatorImportYamlRequestRequest.md)
  - [EvaluatorInputsValue](scorable/generated/openapi_aclient/docs/EvaluatorInputsValue.md)
  - [EvaluatorInputsValueItems](scorable/generated/openapi_aclient/docs/EvaluatorInputsValueItems.md)
  - [EvaluatorListOutput](scorable/generated/openapi_aclient/docs/EvaluatorListOutput.md)
@@ -185,10 +164,8 @@ Class | Method | HTTP request | Description
  - [ExecutionLogListEvaluationContext](scorable/generated/openapi_aclient/docs/ExecutionLogListEvaluationContext.md)
  - [GenerationModelParamsRequest](scorable/generated/openapi_aclient/docs/GenerationModelParamsRequest.md)
  - [ID](scorable/generated/openapi_aclient/docs/ID.md)
- - [InputOutputPairInputRequest](scorable/generated/openapi_aclient/docs/InputOutputPairInputRequest.md)
  - [InputVariable](scorable/generated/openapi_aclient/docs/InputVariable.md)
  - [InputVariableRequest](scorable/generated/openapi_aclient/docs/InputVariableRequest.md)
- - [JobStatus](scorable/generated/openapi_aclient/docs/JobStatus.md)
  - [Judge](scorable/generated/openapi_aclient/docs/Judge.md)
  - [JudgeBatchExecutionDetail](scorable/generated/openapi_aclient/docs/JudgeBatchExecutionDetail.md)
  - [JudgeBatchExecutionInputRequest](scorable/generated/openapi_aclient/docs/JudgeBatchExecutionInputRequest.md)
@@ -198,6 +175,7 @@ Class | Method | HTTP request | Description
  - [JudgeBatchExecutionListItem](scorable/generated/openapi_aclient/docs/JudgeBatchExecutionListItem.md)
  - [JudgeBatchExecutionRequest](scorable/generated/openapi_aclient/docs/JudgeBatchExecutionRequest.md)
  - [JudgeBatchExecutionResponse](scorable/generated/openapi_aclient/docs/JudgeBatchExecutionResponse.md)
+ - [JudgeClaimRequestRequest](scorable/generated/openapi_aclient/docs/JudgeClaimRequestRequest.md)
  - [JudgeExecutionRequest](scorable/generated/openapi_aclient/docs/JudgeExecutionRequest.md)
  - [JudgeExecutionResponse](scorable/generated/openapi_aclient/docs/JudgeExecutionResponse.md)
  - [JudgeFilesInner](scorable/generated/openapi_aclient/docs/JudgeFilesInner.md)
@@ -209,16 +187,14 @@ Class | Method | HTTP request | Description
  - [JudgeRectifierRequestRequest](scorable/generated/openapi_aclient/docs/JudgeRectifierRequestRequest.md)
  - [JudgeRectifierResponse](scorable/generated/openapi_aclient/docs/JudgeRectifierResponse.md)
  - [JudgeRequest](scorable/generated/openapi_aclient/docs/JudgeRequest.md)
- - [KindEnum](scorable/generated/openapi_aclient/docs/KindEnum.md)
+ - [JudgesSyntheticDataRetrieve200Response](scorable/generated/openapi_aclient/docs/JudgesSyntheticDataRetrieve200Response.md)
+ - [JudgesSyntheticDataRetrieve200ResponseSamplesInner](scorable/generated/openapi_aclient/docs/JudgesSyntheticDataRetrieve200ResponseSamplesInner.md)
  - [MessageLogTurn](scorable/generated/openapi_aclient/docs/MessageLogTurn.md)
  - [MessageTurnRequest](scorable/generated/openapi_aclient/docs/MessageTurnRequest.md)
  - [MessagesRequest](scorable/generated/openapi_aclient/docs/MessagesRequest.md)
  - [Model](scorable/generated/openapi_aclient/docs/Model.md)
- - [ModelEnum](scorable/generated/openapi_aclient/docs/ModelEnum.md)
  - [ModelList](scorable/generated/openapi_aclient/docs/ModelList.md)
  - [ModelListVisibilityEnum](scorable/generated/openapi_aclient/docs/ModelListVisibilityEnum.md)
- - [ModelParams](scorable/generated/openapi_aclient/docs/ModelParams.md)
- - [ModelParamsRequest](scorable/generated/openapi_aclient/docs/ModelParamsRequest.md)
  - [ModelRequest](scorable/generated/openapi_aclient/docs/ModelRequest.md)
  - [ModelTestRequestRequest](scorable/generated/openapi_aclient/docs/ModelTestRequestRequest.md)
  - [ModelTestResponse](scorable/generated/openapi_aclient/docs/ModelTestResponse.md)
@@ -226,23 +202,13 @@ Class | Method | HTTP request | Description
  - [NestedEvaluatorObjective](scorable/generated/openapi_aclient/docs/NestedEvaluatorObjective.md)
  - [NestedEvaluatorRequest](scorable/generated/openapi_aclient/docs/NestedEvaluatorRequest.md)
  - [NestedJudge](scorable/generated/openapi_aclient/docs/NestedJudge.md)
- - [NestedObjective](scorable/generated/openapi_aclient/docs/NestedObjective.md)
- - [NestedObjectiveEvaluator](scorable/generated/openapi_aclient/docs/NestedObjectiveEvaluator.md)
- - [NestedObjectiveEvaluatorRequest](scorable/generated/openapi_aclient/docs/NestedObjectiveEvaluatorRequest.md)
  - [NestedObjectiveList](scorable/generated/openapi_aclient/docs/NestedObjectiveList.md)
  - [NestedUserDetails](scorable/generated/openapi_aclient/docs/NestedUserDetails.md)
  - [NestedUserDetailsRequest](scorable/generated/openapi_aclient/docs/NestedUserDetailsRequest.md)
- - [NestedVectorObjective](scorable/generated/openapi_aclient/docs/NestedVectorObjective.md)
- - [NestedVectorObjectiveRequest](scorable/generated/openapi_aclient/docs/NestedVectorObjectiveRequest.md)
- - [NullEnum](scorable/generated/openapi_aclient/docs/NullEnum.md)
  - [Objective](scorable/generated/openapi_aclient/docs/Objective.md)
  - [ObjectiveList](scorable/generated/openapi_aclient/docs/ObjectiveList.md)
  - [ObjectiveRequest](scorable/generated/openapi_aclient/docs/ObjectiveRequest.md)
- - [ObjectiveValidator](scorable/generated/openapi_aclient/docs/ObjectiveValidator.md)
- - [ObjectiveValidatorRequest](scorable/generated/openapi_aclient/docs/ObjectiveValidatorRequest.md)
  - [PaginatedDataSetListList](scorable/generated/openapi_aclient/docs/PaginatedDataSetListList.md)
- - [PaginatedEvaluationAgentList](scorable/generated/openapi_aclient/docs/PaginatedEvaluationAgentList.md)
- - [PaginatedEvaluationBatchJobSerializerList](scorable/generated/openapi_aclient/docs/PaginatedEvaluationBatchJobSerializerList.md)
  - [PaginatedEvaluatorList](scorable/generated/openapi_aclient/docs/PaginatedEvaluatorList.md)
  - [PaginatedEvaluatorListOutputList](scorable/generated/openapi_aclient/docs/PaginatedEvaluatorListOutputList.md)
  - [PaginatedExecutionLogListList](scorable/generated/openapi_aclient/docs/PaginatedExecutionLogListList.md)
@@ -251,30 +217,22 @@ Class | Method | HTTP request | Description
  - [PaginatedModelListList](scorable/generated/openapi_aclient/docs/PaginatedModelListList.md)
  - [PaginatedObjectiveList](scorable/generated/openapi_aclient/docs/PaginatedObjectiveList.md)
  - [PaginatedObjectiveListList](scorable/generated/openapi_aclient/docs/PaginatedObjectiveListList.md)
- - [PatchedEvaluationAgentRequest](scorable/generated/openapi_aclient/docs/PatchedEvaluationAgentRequest.md)
  - [PatchedEvaluatorRequest](scorable/generated/openapi_aclient/docs/PatchedEvaluatorRequest.md)
  - [PatchedJudgeRequest](scorable/generated/openapi_aclient/docs/PatchedJudgeRequest.md)
  - [PatchedModelRequest](scorable/generated/openapi_aclient/docs/PatchedModelRequest.md)
  - [PatchedObjectiveRequest](scorable/generated/openapi_aclient/docs/PatchedObjectiveRequest.md)
  - [Provider](scorable/generated/openapi_aclient/docs/Provider.md)
  - [ReasoningEffortEnum](scorable/generated/openapi_aclient/docs/ReasoningEffortEnum.md)
- - [ReferenceVariable](scorable/generated/openapi_aclient/docs/ReferenceVariable.md)
  - [ReferenceVariableRequest](scorable/generated/openapi_aclient/docs/ReferenceVariableRequest.md)
- - [ResultPreferenceSignifierEvaluationApproachEnum](scorable/generated/openapi_aclient/docs/ResultPreferenceSignifierEvaluationApproachEnum.md)
- - [ResultPreferenceSignifierRequest](scorable/generated/openapi_aclient/docs/ResultPreferenceSignifierRequest.md)
  - [RoleEnum](scorable/generated/openapi_aclient/docs/RoleEnum.md)
  - [SkillExecutionValidatorResult](scorable/generated/openapi_aclient/docs/SkillExecutionValidatorResult.md)
  - [SkillTestDataRequest](scorable/generated/openapi_aclient/docs/SkillTestDataRequest.md)
  - [SkillTestDataRequestDatasetRange](scorable/generated/openapi_aclient/docs/SkillTestDataRequestDatasetRange.md)
  - [SkillTestInputRequest](scorable/generated/openapi_aclient/docs/SkillTestInputRequest.md)
- - [SkillTypeEnum](scorable/generated/openapi_aclient/docs/SkillTypeEnum.md)
- - [StatusChange](scorable/generated/openapi_aclient/docs/StatusChange.md)
- - [StatusChangeRequest](scorable/generated/openapi_aclient/docs/StatusChangeRequest.md)
- - [StatusChangeStatusEnum](scorable/generated/openapi_aclient/docs/StatusChangeStatusEnum.md)
  - [StatusEnum](scorable/generated/openapi_aclient/docs/StatusEnum.md)
  - [TargetEnum](scorable/generated/openapi_aclient/docs/TargetEnum.md)
- - [TurnInputRequest](scorable/generated/openapi_aclient/docs/TurnInputRequest.md)
  - [ValidationResultStatus](scorable/generated/openapi_aclient/docs/ValidationResultStatus.md)
+ - [VisibilityEf8Enum](scorable/generated/openapi_aclient/docs/VisibilityEf8Enum.md)
 
 
 <a id="documentation-for-authorization"></a>

@@ -16,21 +16,31 @@ from __future__ import annotations
 import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set, Union
+from typing import Any, ClassVar, Dict, List, Optional, Set
 
-from pydantic import BaseModel, ConfigDict, StrictFloat, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict, StrictStr, field_validator
 from typing_extensions import Self
 
 
-class EvaluationAgentExecuteResponse(BaseModel):
+class JudgesSyntheticDataRetrieve200ResponseSamplesInner(BaseModel):
     """
-    EvaluationAgentExecuteResponse
+    JudgesSyntheticDataRetrieve200ResponseSamplesInner
     """  # noqa: E501
 
-    score: Optional[Union[StrictFloat, StrictInt]]
-    justification: Optional[StrictStr]
-    result_text: Optional[StrictStr]
-    __properties: ClassVar[List[str]] = ["score", "justification", "result_text"]
+    quality: Optional[StrictStr] = None
+    request: Optional[StrictStr] = None
+    response: Optional[StrictStr] = None
+    __properties: ClassVar[List[str]] = ["quality", "request", "response"]
+
+    @field_validator("quality")
+    def quality_validate_enum(cls, value):
+        """Validates the enum"""
+        if value is None:
+            return value
+
+        if value not in set(["high", "low"]):
+            raise ValueError("must be one of enum values ('high', 'low')")
+        return value
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -49,7 +59,7 @@ class EvaluationAgentExecuteResponse(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of EvaluationAgentExecuteResponse from a JSON string"""
+        """Create an instance of JudgesSyntheticDataRetrieve200ResponseSamplesInner from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -69,26 +79,11 @@ class EvaluationAgentExecuteResponse(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # set to None if score (nullable) is None
-        # and model_fields_set contains the field
-        if self.score is None and "score" in self.model_fields_set:
-            _dict["score"] = None
-
-        # set to None if justification (nullable) is None
-        # and model_fields_set contains the field
-        if self.justification is None and "justification" in self.model_fields_set:
-            _dict["justification"] = None
-
-        # set to None if result_text (nullable) is None
-        # and model_fields_set contains the field
-        if self.result_text is None and "result_text" in self.model_fields_set:
-            _dict["result_text"] = None
-
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of EvaluationAgentExecuteResponse from a dict"""
+        """Create an instance of JudgesSyntheticDataRetrieve200ResponseSamplesInner from a dict"""
         if obj is None:
             return None
 
@@ -96,10 +91,6 @@ class EvaluationAgentExecuteResponse(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate(
-            {
-                "score": obj.get("score"),
-                "justification": obj.get("justification"),
-                "result_text": obj.get("result_text"),
-            }
+            {"quality": obj.get("quality"), "request": obj.get("request"), "response": obj.get("response")}
         )
         return _obj

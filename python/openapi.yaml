@@ -5,397 +5,6 @@ info:
   description: Scorable JSON API provides a way to access Scorable using provisioned
     API token
 paths:
-  /v1/beta/evaluation-agents/:
-    get:
-      operationId: beta_evaluation_agents_list
-      description: List EvaluationAgent definitions.
-      parameters:
-      - name: cursor
-        required: false
-        in: query
-        description: The pagination cursor value.
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      tags:
-      - beta
-      security:
-      - publicApiKey: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedEvaluationAgentList'
-          description: ''
-    post:
-      operationId: beta_evaluation_agents_create
-      description: Create an EvaluationAgent definition.
-      tags:
-      - beta
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EvaluationAgentRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EvaluationAgentRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/EvaluationAgentRequest'
-        required: true
-      security:
-      - publicApiKey: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ID'
-          description: ''
-  /v1/beta/evaluation-agents/{id}/:
-    get:
-      operationId: beta_evaluation_agents_retrieve
-      description: Get an EvaluationAgent definition details.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - beta
-      security:
-      - publicApiKey: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EvaluationAgent'
-          description: ''
-    put:
-      operationId: beta_evaluation_agents_update
-      description: Update an EvaluationAgent definition.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - beta
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EvaluationAgentRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EvaluationAgentRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/EvaluationAgentRequest'
-        required: true
-      security:
-      - publicApiKey: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EvaluationAgent'
-          description: ''
-    patch:
-      operationId: beta_evaluation_agents_partial_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - beta
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedEvaluationAgentRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedEvaluationAgentRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedEvaluationAgentRequest'
-      security:
-      - publicApiKey: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EvaluationAgent'
-          description: ''
-    delete:
-      operationId: beta_evaluation_agents_destroy
-      description: Delete an EvaluationAgent definition.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - beta
-      security:
-      - publicApiKey: []
-      responses:
-        '204':
-          description: No response body
-  /v1/beta/evaluation-agents/{id}/execute/:
-    post:
-      operationId: beta_evaluation_agents_execute_create
-      description: Execute an evaluation agent
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - beta
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EvaluationAgentExecuteRequestRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EvaluationAgentExecuteRequestRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/EvaluationAgentExecuteRequestRequest'
-        required: true
-      security:
-      - publicApiKey: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EvaluationAgentExecuteResponse'
-          description: ''
-  /v1/beta/evaluation-agents/{id}/versions/:
-    get:
-      operationId: beta_evaluation_agents_versions_list
-      parameters:
-      - name: cursor
-        required: false
-        in: query
-        description: The pagination cursor value.
-        schema:
-          type: string
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      tags:
-      - beta
-      security:
-      - publicApiKey: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedEvaluationAgentList'
-          description: ''
-  /v1/beta/evaluation-agents/generate/:
-    post:
-      operationId: beta_evaluation_agents_generate_create
-      description: Generate an evaluation agent
-      tags:
-      - beta
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EvaluationAgentGenerateRequestRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EvaluationAgentGenerateRequestRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/EvaluationAgentGenerateRequestRequest'
-        required: true
-      security:
-      - publicApiKey: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ID'
-          description: ''
-  /v1/beta/evaluation-jobs/:
-    get:
-      operationId: list_batch_evaluation_jobs
-      description: List all batch evaluation jobs for your organization. Returns job
-        IDs and creation timestamps that can be used to retrieve evaluation results.
-      parameters:
-      - name: cursor
-        required: false
-        in: query
-        description: The pagination cursor value.
-        schema:
-          type: string
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      tags:
-      - beta
-      security:
-      - publicApiKey: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedEvaluationBatchJobSerializerList'
-              examples:
-                SuccessResponse:
-                  value:
-                    next: http://api.example.org/accounts/?cursor=cD00ODY%3D"
-                    previous: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
-                    results:
-                    - - job_id: 550e8400-e29b-41d4-a716-446655440000
-                        created_at: '2025-10-01T10:30:00Z'
-                      - job_id: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
-                        created_at: '2025-10-01T09:15:00Z'
-                  summary: Success Response
-          description: ''
-    post:
-      operationId: create_batch_evaluation_job
-      description: Submit a batch evaluation job for asynchronous processing. Use
-        this endpoint for large-scale evaluations that require processing many samples.
-        The job will be queued and processed asynchronously. Use the returned job_id
-        to retrieve results via the batch job results endpoint.
-      tags:
-      - beta
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EvaluationJobRequestRequest'
-            examples:
-              BatchJobRequest:
-                value:
-                  samples:
-                  - kind: input_output_pair
-                    original_input: Why is my training code not using gpu?
-                    original_response: Because you forgot to use device='cuda'
-                    original_preference:
-                      evaluation_approach: pointwise_score
-                      expectation: '0.8'
-                  - kind: input_output_pair
-                    original_input: How to prevent gradient spikes?
-                    original_response: Set gradient clipping to 1.0
-                    original_preference:
-                      evaluation_approach: pointwise_score
-                      expectation: '0.7'
-                  drop_hints: false
-                summary: Batch Job Request
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/EvaluationJobRequestRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/EvaluationJobRequestRequest'
-        required: true
-      security:
-      - publicApiKey: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EvaluationJobResponse'
-              examples:
-                SuccessResponse:
-                  value:
-                    job_id: 550e8400-e29b-41d4-a716-446655440000
-                    status: queued
-                    created_at: '2025-10-01T10:30:00Z'
-                  summary: Success Response
-          description: ''
-  /v1/beta/evaluation-jobs/{job_id}/results/:
-    get:
-      operationId: get_evaluation_batch_job_results
-      description: Retrieve evaluation results for a completed batch job. Returns
-        a Parquet file containing all evaluation results or failure information. Use
-        the job_id from the batch job creation response to download results. The file_type
-        parameter controls whether to retrieve successful evaluations or failures.
-      parameters:
-      - in: query
-        name: file_type
-        schema:
-          type: string
-          enum:
-          - failures
-          - results
-          default: results
-        description: 'Type of file to retrieve: ''results'' for successful evaluations,
-          ''failures'' for failed ones'
-      - in: path
-        name: job_id
-        schema:
-          type: string
-        description: The batch job ID returned from the batch job creation endpoint
-        required: true
-      tags:
-      - beta
-      security:
-      - publicApiKey: []
-      responses:
-        '200':
-          content:
-            application/parquet:
-              schema:
-                type: string
-                format: binary
-          description: Batch job results file in Parquet format
-        '404':
-          description: Batch job not found or results not available
-        '403':
-          description: Access denied to batch job results
   /v1/datasets/:
     get:
       operationId: datasets_list
@@ -528,49 +137,6 @@ paths:
       responses:
         '204':
           description: No response body
-  /v1/datasets/status/{id}/:
-    put:
-      operationId: datasets_status_update
-      description: Change the status of a dataset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
-      tags:
-      - datasets
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StatusChangeRequest'
-            examples:
-              ChangeDatasetStatus:
-                value:
-                  status: unlisted | listed
-                summary: Change dataset status
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/StatusChangeRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/StatusChangeRequest'
-        required: true
-      security:
-      - publicApiKey: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StatusChange'
-              examples:
-                ChangeDatasetStatus:
-                  value:
-                    status: unlisted | listed
-                  summary: Change dataset status
-          description: ''
   /v1/evaluators/:
     get:
       operationId: evaluators_list
@@ -585,6 +151,12 @@ paths:
         description: The pagination cursor value.
         schema:
           type: string
+      - in: query
+        name: include_public
+        schema:
+          type: boolean
+          default: false
+        description: Include public evaluators from other organizations.
       - in: query
         name: is_root_evaluator
         schema:
@@ -641,20 +213,6 @@ paths:
         description: |-
           * `managed` - managed
           * `native` - native
-      - in: query
-        name: status
-        schema:
-          type: string
-          enum:
-          - listed
-          - public
-          - public_unlisted
-          - unlisted
-        description: |-
-          * `unlisted` - unlisted
-          * `listed` - listed
-          * `public` - public
-          * `public_unlisted` - public_unlisted
       tags:
       - evaluators
       security:
@@ -1092,80 +650,50 @@ paths:
               schema:
                 $ref: '#/components/schemas/EvaluatorExecutionResult'
           description: ''
-  /v1/evaluators/status/{id}/:
+  /v1/evaluators/export/{id}/:
+    get:
+      operationId: evaluators_export_retrieve
+      description: Export an evaluator as a YAML file
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - evaluators
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          description: No response body
+  /v1/evaluators/import-yaml/:
     post:
-      operationId: evaluators_status_create
-      description: Change the status of an evaluator
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
+      operationId: evaluators_import_yaml_create
+      description: Import an evaluator from a YAML string. Creates the evaluator,
+        demonstrations, and calibration dataset in one call.
       tags:
       - evaluators
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StatusChangeRequest'
+              $ref: '#/components/schemas/EvaluatorImportYamlRequestRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/StatusChangeRequest'
+              $ref: '#/components/schemas/EvaluatorImportYamlRequestRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/StatusChangeRequest'
+              $ref: '#/components/schemas/EvaluatorImportYamlRequestRequest'
         required: true
       security:
       - publicApiKey: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StatusChange'
-          description: ''
-    put:
-      operationId: evaluators_status_update
-      description: Change the status of an evaluator
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
-      tags:
-      - evaluators
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StatusChangeRequest'
-            examples:
-              ChangeStatus:
-                value:
-                  status: unlisted | listed
-                summary: Change status
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/StatusChangeRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/StatusChangeRequest'
-        required: true
-      security:
-      - publicApiKey: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StatusChange'
-              examples:
-                ChangeStatus:
-                  value:
-                    status: unlisted | listed
-                  summary: Change status
+                $ref: '#/components/schemas/Evaluator'
           description: ''
   /v1/evaluators/versions/{id}/:
     get:
@@ -1414,6 +942,12 @@ paths:
           type: boolean
         description: Filter by is the judge featured or not
       - in: query
+        name: include_public
+        schema:
+          type: boolean
+          default: false
+        description: Include public judges from other organizations.
+      - in: query
         name: intent_evaluability_score_gte
         schema:
           type: number
@@ -1424,11 +958,6 @@ paths:
         schema:
           type: boolean
         description: Filter by is the judge preset or not
-      - in: query
-        name: is_public
-        schema:
-          type: boolean
-        description: Filter by is the judge public or not
       - in: query
         name: name
         schema:
@@ -1868,6 +1397,48 @@ paths:
       responses:
         '200':
           description: No response body
+  /v1/judges/{judge_id}/synthetic-data/:
+    get:
+      operationId: judges_synthetic_data_retrieve
+      description: Get synthetic data samples for a judge.
+      parameters:
+      - in: path
+        name: judge_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - judges
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - pending
+                    - ready
+                    - not_generated
+                  samples:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        quality:
+                          type: string
+                          enum:
+                          - high
+                          - low
+                        request:
+                          type: string
+                        response:
+                          type: string
+          description: ''
   /v1/judges/{id}/:
     get:
       operationId: judges_retrieve
@@ -2107,6 +1678,34 @@ paths:
               schema:
                 $ref: '#/components/schemas/JudgeBatchExecutionDetail'
           description: ''
+  /v1/judges/claim/:
+    post:
+      operationId: judges_claim_create
+      description: Claim a judge generated as a temporary user, transferring ownership
+        to the authenticated user.
+      tags:
+      - judges
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JudgeClaimRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/JudgeClaimRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/JudgeClaimRequestRequest'
+        required: true
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Judge'
+          description: ''
   /v1/judges/execute/by-name/:
     post:
       operationId: judges_execute_by_name_create
@@ -2178,7 +1777,7 @@ paths:
                     to make sure the chatbot is able to answer questions about the
                     hotel and its policies.
                   stage: reservation
-                  visibility: unlisted
+                  visibility: private
                   extra_contexts:
                     hotel_name: The Grand Hotel
                     hotel_policies: The hotel has a strict policy on late check-out.
@@ -2207,7 +1806,7 @@ paths:
                       want to make sure the chatbot is able to answer questions about
                       the hotel and its policies.
                     stage: reservation
-                    visibility: unlisted
+                    visibility: private
                     extra_contexts:
                       hotel_name: The Grand Hotel
                       hotel_policies: The hotel has a strict policy on late check-out.
@@ -2496,10 +2095,11 @@ paths:
         schema:
           type: string
       - in: query
-        name: has_validators
+        name: include_public
         schema:
           type: boolean
-        description: Filter objectives by whether they have validators.
+          default: false
+        description: Include public resources from other organizations.
       - in: query
         name: intent
         schema:
@@ -2549,10 +2149,6 @@ paths:
               CreateAnObjectiveDefinition:
                 value:
                   intent: Answer a question based on job title
-                  validators:
-                  - threshold: '0.9'
-                    evaluator_name: Clarity
-                  - evaluator_name: Precision
                 summary: Create an Objective definition
                 description: Create an Objective, which defines the intent of the
                   skills which match it, as well as the requirement that the answers
@@ -2842,262 +2438,6 @@ components:
       required:
       - end
       - start
-    EvaluationAgent:
-      type: object
-      properties:
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        evaluation_approach:
-          $ref: '#/components/schemas/EvaluationAgentEvaluationApproachEnum'
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        model:
-          allOf:
-          - $ref: '#/components/schemas/ModelEnum'
-          default: rs-fast
-        name:
-          type: string
-          maxLength: 1000
-        objective_id:
-          type: string
-          format: uuid
-        objective:
-          allOf:
-          - $ref: '#/components/schemas/NestedObjective'
-          readOnly: true
-        scoring_criteria:
-          type: string
-        status:
-          nullable: true
-          default: unlisted
-          description: |-
-            Status of the evaluation agent. If not provided, it will be set to unlisted so it is visible only to the owner. Listed statuses are visible to the whole organization.
-
-            * `unlisted` - unlisted
-            * `listed` - listed
-            * `public` - public
-            * `public_unlisted` - public_unlisted
-          oneOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        version_id:
-          type: string
-          format: uuid
-          readOnly: true
-      required:
-      - created_at
-      - id
-      - name
-      - objective
-      - objective_id
-      - scoring_criteria
-      - version_id
-    EvaluationAgentEvaluationApproachEnum:
-      enum:
-      - pointwise_score
-      - pairwise_preference
-      - meets_all_specified_policy_criteria
-      - classification
-      type: string
-      description: |-
-        * `pointwise_score` - Pointwise Score
-        * `pairwise_preference` - Pairwise Preference
-        * `meets_all_specified_policy_criteria` - Meets All Specified Policy Criteria
-        * `classification` - Classification
-    EvaluationAgentExecuteRequestRequest:
-      type: object
-      properties:
-        request:
-          type: string
-          nullable: true
-          minLength: 1
-        response:
-          type: string
-          minLength: 1
-        version_id:
-          type: string
-          nullable: true
-          minLength: 1
-        tags:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          nullable: true
-      required:
-      - response
-    EvaluationAgentExecuteResponse:
-      type: object
-      properties:
-        score:
-          type: number
-          format: double
-          nullable: true
-        justification:
-          type: string
-          nullable: true
-        result_text:
-          type: string
-          nullable: true
-      required:
-      - justification
-      - result_text
-      - score
-    EvaluationAgentGenerateExampleRequest:
-      type: object
-      properties:
-        request:
-          type: string
-          nullable: true
-          minLength: 1
-        response:
-          type: string
-          minLength: 1
-        score:
-          type: number
-          format: double
-          nullable: true
-        expectation:
-          type: string
-          nullable: true
-          minLength: 1
-      required:
-      - response
-    EvaluationAgentGenerateRequestEvaluationApproachEnum:
-      enum:
-      - pointwise_score
-      type: string
-      description: '* `pointwise_score` - pointwise_score'
-    EvaluationAgentGenerateRequestRequest:
-      type: object
-      properties:
-        examples:
-          type: array
-          items:
-            $ref: '#/components/schemas/EvaluationAgentGenerateExampleRequest'
-        evaluation_approach:
-          $ref: '#/components/schemas/EvaluationAgentGenerateRequestEvaluationApproachEnum'
-      required:
-      - evaluation_approach
-      - examples
-    EvaluationAgentRequest:
-      type: object
-      properties:
-        evaluation_approach:
-          $ref: '#/components/schemas/EvaluationAgentEvaluationApproachEnum'
-        model:
-          allOf:
-          - $ref: '#/components/schemas/ModelEnum'
-          default: rs-fast
-        name:
-          type: string
-          minLength: 1
-          maxLength: 1000
-        objective_id:
-          type: string
-          format: uuid
-        scoring_criteria:
-          type: string
-          minLength: 1
-        status:
-          nullable: true
-          default: unlisted
-          description: |-
-            Status of the evaluation agent. If not provided, it will be set to unlisted so it is visible only to the owner. Listed statuses are visible to the whole organization.
-
-            * `unlisted` - unlisted
-            * `listed` - listed
-            * `public` - public
-            * `public_unlisted` - public_unlisted
-          oneOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          - $ref: '#/components/schemas/NullEnum'
-      required:
-      - name
-      - objective_id
-      - scoring_criteria
-    EvaluationBatchJobSerializer:
-      type: object
-      properties:
-        job_id:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - job_id
-    EvaluationJobRequestRequest:
-      type: object
-      properties:
-        id:
-          type: string
-          nullable: true
-          minLength: 1
-          description: Will be set automatically
-        created_at:
-          type: string
-          nullable: true
-          minLength: 1
-          description: Will be set automatically
-        updated_at:
-          type: string
-          nullable: true
-          minLength: 1
-          description: Will be set automatically
-        samples:
-          type: array
-          items:
-            $ref: '#/components/schemas/InputOutputPairInputRequest'
-          description: List of content to evaluate in batch
-        job_name:
-          type: string
-          nullable: true
-          minLength: 1
-          description: Optional name for this batch job
-        drop_hints:
-          type: boolean
-          nullable: true
-          default: false
-          description: Whether to drop existing preference hints during evaluation
-        dataset_name:
-          type: string
-          nullable: true
-          minLength: 1
-          description: Optional dataset name to set for the samples. Should be unique
-        fast_mode:
-          type: boolean
-          nullable: true
-          default: false
-          description: Use fast agents for evaluation
-      required:
-      - samples
-    EvaluationJobResponse:
-      type: object
-      properties:
-        job_id:
-          type: string
-        status:
-          $ref: '#/components/schemas/JobStatus'
-        total_examples:
-          type: integer
-        results_path:
-          type: string
-          nullable: true
-        failures_path:
-          type: string
-          nullable: true
-        message:
-          type: string
-          nullable: true
-      required:
-      - job_id
-      - status
-      - total_examples
     Evaluator:
       type: object
       properties:
@@ -3121,10 +2461,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InputVariable'
-        model_params:
-          allOf:
-          - $ref: '#/components/schemas/ModelParams'
-          nullable: true
         models:
           type: array
           items:
@@ -3148,18 +2484,10 @@ components:
         prompt:
           type: string
           maxLength: 500000
-        reference_variables:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReferenceVariable'
-        skill_type:
+        visibility:
           allOf:
-          - $ref: '#/components/schemas/SkillTypeEnum'
+          - $ref: '#/components/schemas/VisibilityEf8Enum'
           readOnly: true
-        status:
-          $ref: '#/components/schemas/StatusEnum'
-        system_message:
-          type: string
         updated_at:
           type: string
           format: date-time
@@ -3221,10 +2549,10 @@ components:
       - objective
       - owner
       - prompt
-      - skill_type
       - updated_at
       - updated_by
       - version_id
+      - visibility
     EvaluatorCalibrationOutput:
       type: object
       properties:
@@ -3396,6 +2724,17 @@ components:
       - execution_log_id
       - justification
       - score
+    EvaluatorImportYamlRequestRequest:
+      type: object
+      properties:
+        yaml:
+          type: string
+          minLength: 1
+        overwrite:
+          type: boolean
+          default: false
+      required:
+      - yaml
     EvaluatorListOutput:
       type: object
       properties:
@@ -3429,9 +2768,9 @@ components:
         prompt:
           type: string
           readOnly: true
-        status:
+        visibility:
           allOf:
-          - $ref: '#/components/schemas/StatusEnum'
+          - $ref: '#/components/schemas/VisibilityEf8Enum'
           readOnly: true
         updated_at:
           type: string
@@ -3491,10 +2830,10 @@ components:
       - objective
       - owner
       - prompt
-      - status
       - updated_at
       - updated_by
       - version_id
+      - visibility
     EvaluatorReference:
       type: object
       properties:
@@ -3538,10 +2877,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InputVariableRequest'
-        model_params:
-          allOf:
-          - $ref: '#/components/schemas/ModelParamsRequest'
-          nullable: true
         models:
           type: array
           items:
@@ -3576,14 +2911,6 @@ components:
           type: string
           minLength: 1
           maxLength: 500000
-        reference_variables:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReferenceVariableRequest'
-        status:
-          $ref: '#/components/schemas/StatusEnum'
-        system_message:
-          type: string
       required:
       - name
       - objective_id
@@ -3685,10 +3012,6 @@ components:
         model_call_duration:
           type: number
           format: double
-        model_params:
-          allOf:
-          - $ref: '#/components/schemas/ModelParams'
-          nullable: true
         model:
           type: string
           readOnly: true
@@ -3736,8 +3059,12 @@ components:
             type: string
           readOnly: true
           nullable: true
+        classification:
+          readOnly: true
+          nullable: true
       required:
       - chat_id
+      - classification
       - cost
       - created_at
       - evaluation_context
@@ -3897,39 +3224,6 @@ components:
           readOnly: true
       required:
       - id
-    InputOutputPairInputRequest:
-      type: object
-      properties:
-        kind:
-          $ref: '#/components/schemas/KindEnum'
-        original_input:
-          type: string
-          nullable: true
-          minLength: 1
-        original_response:
-          type: string
-          nullable: true
-          minLength: 1
-        original_content:
-          type: string
-          nullable: true
-          minLength: 1
-        original_preference:
-          allOf:
-          - $ref: '#/components/schemas/ResultPreferenceSignifierRequest'
-          nullable: true
-        target:
-          nullable: true
-          oneOf:
-          - $ref: '#/components/schemas/TargetEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        original_turns:
-          type: array
-          items:
-            $ref: '#/components/schemas/TurnInputRequest'
-          nullable: true
-      required:
-      - kind
     InputVariable:
       type: object
       properties:
@@ -3970,20 +3264,6 @@ components:
           maxLength: 1000
       required:
       - name
-    JobStatus:
-      enum:
-      - pending
-      - running
-      - completed
-      - failed
-      - cancelled
-      type: string
-      description: |-
-        * `pending` - pending
-        * `running` - running
-        * `completed` - completed
-        * `failed` - failed
-        * `cancelled` - cancelled
     Judge:
       type: object
       properties:
@@ -4053,19 +3333,20 @@ components:
             my_custom_variable:
               type: string
           readOnly: true
+        intent:
+          type: string
+          description: Intent for the judge
         name:
           type: string
           maxLength: 512
           minLength: 3
-        objective:
-          allOf:
-          - $ref: '#/components/schemas/NestedVectorObjective'
-          readOnly: true
         stage:
           type: string
           maxLength: 255
-        status:
-          $ref: '#/components/schemas/StatusEnum'
+        visibility:
+          allOf:
+          - $ref: '#/components/schemas/VisibilityEf8Enum'
+          readOnly: true
         version_id:
           type: string
           format: uuid
@@ -4077,10 +3358,10 @@ components:
       - files
       - id
       - inputs
+      - intent
       - name
-      - objective
-      - status
       - version_id
+      - visibility
     JudgeBatchExecutionDetail:
       type: object
       properties:
@@ -4334,6 +3615,14 @@ components:
       required:
       - batch_execution_id
       - status_url
+    JudgeClaimRequestRequest:
+      type: object
+      properties:
+        claim_token:
+          type: string
+          format: uuid
+      required:
+      - claim_token
     JudgeExecutionRequest:
       type: object
       properties:
@@ -4406,7 +3695,6 @@ components:
         stage:
           type: string
           nullable: true
-          minLength: 1
         visibility:
           $ref: '#/components/schemas/JudgeGeneratorVisibilityEnum'
         file_id:
@@ -4433,10 +3721,15 @@ components:
         name:
           type: string
           nullable: true
-          minLength: 1
           description: The name of the judge to generate. If not provided, a name
             will be generated for you.
           maxLength: 512
+        enable_context_aware_evaluators:
+          type: boolean
+          nullable: true
+          default: false
+          description: When true, enables context-aware RAG evaluators (requires_contexts=True)
+            even without file upload
       required:
       - intent
       - visibility
@@ -4452,6 +3745,9 @@ components:
         error_code:
           type: string
           nullable: true
+        claim_token:
+          type: string
+          nullable: true
       required:
       - judge_id
       - judge_version_id
@@ -4459,14 +3755,12 @@ components:
       enum:
       - global
       - public
-      - listed
-      - unlisted
+      - private
       type: string
       description: |-
         * `global` - global
         * `public` - public
-        * `listed` - listed
-        * `unlisted` - unlisted
+        * `private` - private
     JudgeInviteRequest:
       type: object
       properties:
@@ -4503,9 +3797,9 @@ components:
           type: string
           format: date-time
           readOnly: true
-        status:
+        visibility:
           allOf:
-          - $ref: '#/components/schemas/StatusEnum'
+          - $ref: '#/components/schemas/VisibilityEf8Enum'
           readOnly: true
         inputs:
           type: object
@@ -4560,7 +3854,7 @@ components:
       - inputs
       - intent
       - name
-      - status
+      - visibility
     JudgeRectifierRequestRequest:
       type: object
       properties:
@@ -4660,9 +3954,15 @@ components:
           items:
             $ref: '#/components/schemas/EvaluatorReferenceRequest'
           writeOnly: true
+        file_id:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+          description: ID of the JudgeFile to attach to this judge. Only one file
+            per judge is supported. Set to null to remove the file.
         intent:
           type: string
-          writeOnly: true
           minLength: 1
           description: Intent for the judge
         name:
@@ -4672,22 +3972,9 @@ components:
         stage:
           type: string
           maxLength: 255
-        status:
-          $ref: '#/components/schemas/StatusEnum'
       required:
       - intent
       - name
-      - status
-    KindEnum:
-      enum:
-      - input_output_pair
-      - single_content
-      - multi_turn_content
-      type: string
-      description: |-
-        * `input_output_pair` - input_output_pair
-        * `single_content` - single_content
-        * `multi_turn_content` - multi_turn_content
     MessageLogTurn:
       type: object
       properties:
@@ -4774,14 +4061,6 @@ components:
       required:
       - id
       - name
-    ModelEnum:
-      enum:
-      - rs-fast
-      - rs-thorough
-      type: string
-      description: |-
-        * `rs-fast` - Fast
-        * `rs-thorough` - Thorough
     ModelList:
       type: object
       properties:
@@ -4818,24 +4097,6 @@ components:
         * `PUBLIC` - Accessible and exposed to everyone
         * `PUBLIC_UNLISTED` - Not exposed but accessible with direct model name
         * `PRIVATE` - Accessible only within the organization
-    ModelParams:
-      type: object
-      properties:
-        temperature:
-          type: number
-          format: double
-          maximum: 1
-          minimum: 0
-          nullable: true
-    ModelParamsRequest:
-      type: object
-      properties:
-        temperature:
-          type: number
-          format: double
-          maximum: 1
-          minimum: 0
-          nullable: true
     ModelRequest:
       type: object
       properties:
@@ -4978,46 +4239,6 @@ components:
       - id
       - name
       - version_id
-    NestedObjective:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        intent:
-          type: string
-          readOnly: true
-      required:
-      - id
-      - intent
-    NestedObjectiveEvaluator:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-          maxLength: 1000
-        requires_expected_output:
-          type: boolean
-        requires_contexts:
-          type: boolean
-      required:
-      - id
-    NestedObjectiveEvaluatorRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 1000
-        requires_expected_output:
-          type: boolean
-        requires_contexts:
-          type: boolean
     NestedObjectiveList:
       type: object
       properties:
@@ -5030,14 +4251,8 @@ components:
           maxLength: 100000
         status:
           $ref: '#/components/schemas/StatusEnum'
-        validators:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObjectiveValidator'
-          readOnly: true
       required:
       - id
-      - validators
     NestedUserDetails:
       type: object
       properties:
@@ -5059,29 +4274,6 @@ components:
           minLength: 1
       required:
       - full_name
-    NestedVectorObjective:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        intent:
-          type: string
-      required:
-      - id
-      - intent
-    NestedVectorObjectiveRequest:
-      type: object
-      properties:
-        intent:
-          type: string
-          minLength: 1
-      required:
-      - intent
-    NullEnum:
-      enum:
-      - null
     Objective:
       type: object
       properties:
@@ -5103,10 +4295,6 @@ components:
           readOnly: true
           nullable: true
           description: 'Deprecated: Use test_dataset_id instead.'
-        validators:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObjectiveValidator'
         created_at:
           type: string
           format: date-time
@@ -5155,11 +4343,6 @@ components:
           type: string
           format: date-time
           readOnly: true
-        validators:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObjectiveValidator'
-          readOnly: true
         _meta:
           type: object
           additionalProperties: {}
@@ -5170,7 +4353,6 @@ components:
       - created_at
       - id
       - owner
-      - validators
     ObjectiveRequest:
       type: object
       properties:
@@ -5180,10 +4362,6 @@ components:
           maxLength: 100000
         status:
           $ref: '#/components/schemas/StatusEnum'
-        validators:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObjectiveValidatorRequest'
         force_create:
           type: boolean
           writeOnly: true
@@ -5192,32 +4370,6 @@ components:
           type: string
           format: uuid
           nullable: true
-    ObjectiveValidator:
-      type: object
-      properties:
-        evaluator:
-          allOf:
-          - $ref: '#/components/schemas/NestedObjectiveEvaluator'
-          readOnly: true
-        threshold:
-          type: number
-          format: double
-      required:
-      - evaluator
-    ObjectiveValidatorRequest:
-      type: object
-      properties:
-        evaluator_id:
-          type: string
-          format: uuid
-          writeOnly: true
-        evaluator_name:
-          type: string
-          writeOnly: true
-          minLength: 1
-        threshold:
-          type: number
-          format: double
     PaginatedDataSetListList:
       type: object
       required:
@@ -5237,44 +4389,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DataSetList'
-    PaginatedEvaluationAgentList:
-      type: object
-      required:
-      - results
-      properties:
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EvaluationAgent'
-    PaginatedEvaluationBatchJobSerializerList:
-      type: object
-      required:
-      - results
-      properties:
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EvaluationBatchJobSerializer'
     PaginatedEvaluatorList:
       type: object
       required:
@@ -5427,38 +4541,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ObjectiveList'
-    PatchedEvaluationAgentRequest:
-      type: object
-      properties:
-        evaluation_approach:
-          $ref: '#/components/schemas/EvaluationAgentEvaluationApproachEnum'
-        model:
-          allOf:
-          - $ref: '#/components/schemas/ModelEnum'
-          default: rs-fast
-        name:
-          type: string
-          minLength: 1
-          maxLength: 1000
-        objective_id:
-          type: string
-          format: uuid
-        scoring_criteria:
-          type: string
-          minLength: 1
-        status:
-          nullable: true
-          default: unlisted
-          description: |-
-            Status of the evaluation agent. If not provided, it will be set to unlisted so it is visible only to the owner. Listed statuses are visible to the whole organization.
-
-            * `unlisted` - unlisted
-            * `listed` - listed
-            * `public` - public
-            * `public_unlisted` - public_unlisted
-          oneOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          - $ref: '#/components/schemas/NullEnum'
     PatchedEvaluatorRequest:
       type: object
       properties:
@@ -5474,10 +4556,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InputVariableRequest'
-        model_params:
-          allOf:
-          - $ref: '#/components/schemas/ModelParamsRequest'
-          nullable: true
         models:
           type: array
           items:
@@ -5512,14 +4590,6 @@ components:
           type: string
           minLength: 1
           maxLength: 500000
-        reference_variables:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReferenceVariableRequest'
-        status:
-          $ref: '#/components/schemas/StatusEnum'
-        system_message:
-          type: string
     PatchedJudgeRequest:
       type: object
       properties:
@@ -5528,9 +4598,15 @@ components:
           items:
             $ref: '#/components/schemas/EvaluatorReferenceRequest'
           writeOnly: true
+        file_id:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+          description: ID of the JudgeFile to attach to this judge. Only one file
+            per judge is supported. Set to null to remove the file.
         intent:
           type: string
-          writeOnly: true
           minLength: 1
           description: Intent for the judge
         name:
@@ -5540,8 +4616,6 @@ components:
         stage:
           type: string
           maxLength: 255
-        status:
-          $ref: '#/components/schemas/StatusEnum'
     PatchedModelRequest:
       type: object
       properties:
@@ -5578,10 +4652,6 @@ components:
           maxLength: 100000
         status:
           $ref: '#/components/schemas/StatusEnum'
-        validators:
-          type: array
-          items:
-            $ref: '#/components/schemas/ObjectiveValidatorRequest'
         force_create:
           type: boolean
           writeOnly: true
@@ -5621,41 +4691,6 @@ components:
         * `low` - low
         * `medium` - medium
         * `high` - high
-    ReferenceVariable:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        dataset:
-          type: string
-          format: uuid
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        name:
-          type: string
-          maxLength: 1000
-        skill:
-          type: string
-          format: uuid
-          readOnly: true
-          nullable: true
-      required:
-      - created_at
-      - dataset
-      - id
-      - name
-      - skill
-      - updated_at
     ReferenceVariableRequest:
       type: object
       properties:
@@ -5669,32 +4704,6 @@ components:
       required:
       - dataset
       - name
-    ResultPreferenceSignifierEvaluationApproachEnum:
-      enum:
-      - pointwise_score
-      - pairwise_preference
-      - meets_all_specified_policy_criteria
-      - classification
-      type: string
-      description: |-
-        * `pointwise_score` - pointwise_score
-        * `pairwise_preference` - pairwise_preference
-        * `meets_all_specified_policy_criteria` - meets_all_specified_policy_criteria
-        * `classification` - classification
-    ResultPreferenceSignifierRequest:
-      type: object
-      properties:
-        evaluation_approach:
-          nullable: true
-          oneOf:
-          - $ref: '#/components/schemas/ResultPreferenceSignifierEvaluationApproachEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        expectation:
-          type: string
-          minLength: 1
-          description: Approach-specific guidance or rubric content
-      required:
-      - expectation
     RoleEnum:
       enum:
       - user
@@ -5801,9 +4810,6 @@ components:
           type: string
           nullable: true
           minLength: 1
-        pii_filter:
-          type: boolean
-          default: false
         objective:
           allOf:
           - $ref: '#/components/schemas/ObjectiveRequest'
@@ -5813,48 +4819,20 @@ components:
           default: false
       required:
       - prompt
-    SkillTypeEnum:
-      enum:
-      - managed
-      - native
-      type: string
-      description: |-
-        * `managed` - managed
-        * `native` - native
-    StatusChange:
-      type: object
-      properties:
-        status:
-          $ref: '#/components/schemas/StatusChangeStatusEnum'
-      required:
-      - status
-    StatusChangeRequest:
-      type: object
-      properties:
-        status:
-          $ref: '#/components/schemas/StatusChangeStatusEnum'
-      required:
-      - status
-    StatusChangeStatusEnum:
-      enum:
-      - unlisted
-      - listed
-      type: string
-      description: |-
-        * `unlisted` - unlisted
-        * `listed` - listed
     StatusEnum:
       enum:
       - unlisted
       - listed
       - public
       - public_unlisted
+      - private
       type: string
       description: |-
         * `unlisted` - unlisted
         * `listed` - listed
         * `public` - public
         * `public_unlisted` - public_unlisted
+        * `private` - private
     TargetEnum:
       enum:
       - agent_behavior
@@ -5863,30 +4841,6 @@ components:
       description: |-
         * `agent_behavior` - agent_behavior
         * `user_behavior` - user_behavior
-    TurnInputRequest:
-      type: object
-      properties:
-        index:
-          type: integer
-        role:
-          $ref: '#/components/schemas/RoleEnum'
-        content:
-          type: string
-          minLength: 1
-        contexts:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          nullable: true
-        tool_name:
-          type: string
-          nullable: true
-          minLength: 1
-      required:
-      - content
-      - index
-      - role
     ValidationResultStatus:
       enum:
       - pending
@@ -5895,6 +4849,11 @@ components:
       description: |-
         * `pending` - Pending
         * `finished` - Finished
+    VisibilityEf8Enum:
+      type: string
+      enum:
+      - private
+      - public
   securitySchemes:
     publicApiKey:
       type: apiKey

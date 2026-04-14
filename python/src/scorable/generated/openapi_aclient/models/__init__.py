@@ -19,27 +19,6 @@ from scorable.generated.openapi_aclient.models.data_set_create_request import Da
 from scorable.generated.openapi_aclient.models.data_set_list import DataSetList
 from scorable.generated.openapi_aclient.models.data_set_type import DataSetType
 from scorable.generated.openapi_aclient.models.dataset_range_request import DatasetRangeRequest
-from scorable.generated.openapi_aclient.models.evaluation_agent import EvaluationAgent
-from scorable.generated.openapi_aclient.models.evaluation_agent_evaluation_approach_enum import (
-    EvaluationAgentEvaluationApproachEnum,
-)
-from scorable.generated.openapi_aclient.models.evaluation_agent_execute_request_request import (
-    EvaluationAgentExecuteRequestRequest,
-)
-from scorable.generated.openapi_aclient.models.evaluation_agent_execute_response import EvaluationAgentExecuteResponse
-from scorable.generated.openapi_aclient.models.evaluation_agent_generate_example_request import (
-    EvaluationAgentGenerateExampleRequest,
-)
-from scorable.generated.openapi_aclient.models.evaluation_agent_generate_request_evaluation_approach_enum import (
-    EvaluationAgentGenerateRequestEvaluationApproachEnum,
-)
-from scorable.generated.openapi_aclient.models.evaluation_agent_generate_request_request import (
-    EvaluationAgentGenerateRequestRequest,
-)
-from scorable.generated.openapi_aclient.models.evaluation_agent_request import EvaluationAgentRequest
-from scorable.generated.openapi_aclient.models.evaluation_batch_job_serializer import EvaluationBatchJobSerializer
-from scorable.generated.openapi_aclient.models.evaluation_job_request_request import EvaluationJobRequestRequest
-from scorable.generated.openapi_aclient.models.evaluation_job_response import EvaluationJobResponse
 from scorable.generated.openapi_aclient.models.evaluator import Evaluator
 from scorable.generated.openapi_aclient.models.evaluator_calibration_output import EvaluatorCalibrationOutput
 from scorable.generated.openapi_aclient.models.evaluator_calibration_result import EvaluatorCalibrationResult
@@ -47,6 +26,9 @@ from scorable.generated.openapi_aclient.models.evaluator_demonstrations import E
 from scorable.generated.openapi_aclient.models.evaluator_demonstrations_request import EvaluatorDemonstrationsRequest
 from scorable.generated.openapi_aclient.models.evaluator_execution_request import EvaluatorExecutionRequest
 from scorable.generated.openapi_aclient.models.evaluator_execution_result import EvaluatorExecutionResult
+from scorable.generated.openapi_aclient.models.evaluator_import_yaml_request_request import (
+    EvaluatorImportYamlRequestRequest,
+)
 from scorable.generated.openapi_aclient.models.evaluator_inputs_value import EvaluatorInputsValue
 from scorable.generated.openapi_aclient.models.evaluator_inputs_value_items import EvaluatorInputsValueItems
 from scorable.generated.openapi_aclient.models.evaluator_list_output import EvaluatorListOutput
@@ -67,10 +49,8 @@ from scorable.generated.openapi_aclient.models.execution_log_list_evaluation_con
 )
 from scorable.generated.openapi_aclient.models.generation_model_params_request import GenerationModelParamsRequest
 from scorable.generated.openapi_aclient.models.id import ID
-from scorable.generated.openapi_aclient.models.input_output_pair_input_request import InputOutputPairInputRequest
 from scorable.generated.openapi_aclient.models.input_variable import InputVariable
 from scorable.generated.openapi_aclient.models.input_variable_request import InputVariableRequest
-from scorable.generated.openapi_aclient.models.job_status import JobStatus
 from scorable.generated.openapi_aclient.models.judge import Judge
 from scorable.generated.openapi_aclient.models.judge_batch_execution_detail import JudgeBatchExecutionDetail
 from scorable.generated.openapi_aclient.models.judge_batch_execution_input_request import (
@@ -84,6 +64,7 @@ from scorable.generated.openapi_aclient.models.judge_batch_execution_item_status
 from scorable.generated.openapi_aclient.models.judge_batch_execution_list_item import JudgeBatchExecutionListItem
 from scorable.generated.openapi_aclient.models.judge_batch_execution_request import JudgeBatchExecutionRequest
 from scorable.generated.openapi_aclient.models.judge_batch_execution_response import JudgeBatchExecutionResponse
+from scorable.generated.openapi_aclient.models.judge_claim_request_request import JudgeClaimRequestRequest
 from scorable.generated.openapi_aclient.models.judge_execution_request import JudgeExecutionRequest
 from scorable.generated.openapi_aclient.models.judge_execution_response import JudgeExecutionResponse
 from scorable.generated.openapi_aclient.models.judge_files_inner import JudgeFilesInner
@@ -95,16 +76,18 @@ from scorable.generated.openapi_aclient.models.judge_list import JudgeList
 from scorable.generated.openapi_aclient.models.judge_rectifier_request_request import JudgeRectifierRequestRequest
 from scorable.generated.openapi_aclient.models.judge_rectifier_response import JudgeRectifierResponse
 from scorable.generated.openapi_aclient.models.judge_request import JudgeRequest
-from scorable.generated.openapi_aclient.models.kind_enum import KindEnum
+from scorable.generated.openapi_aclient.models.judges_synthetic_data_retrieve200_response import (
+    JudgesSyntheticDataRetrieve200Response,
+)
+from scorable.generated.openapi_aclient.models.judges_synthetic_data_retrieve200_response_samples_inner import (
+    JudgesSyntheticDataRetrieve200ResponseSamplesInner,
+)
 from scorable.generated.openapi_aclient.models.message_log_turn import MessageLogTurn
 from scorable.generated.openapi_aclient.models.message_turn_request import MessageTurnRequest
 from scorable.generated.openapi_aclient.models.messages_request import MessagesRequest
 from scorable.generated.openapi_aclient.models.model import Model
-from scorable.generated.openapi_aclient.models.model_enum import ModelEnum
 from scorable.generated.openapi_aclient.models.model_list import ModelList
 from scorable.generated.openapi_aclient.models.model_list_visibility_enum import ModelListVisibilityEnum
-from scorable.generated.openapi_aclient.models.model_params import ModelParams
-from scorable.generated.openapi_aclient.models.model_params_request import ModelParamsRequest
 from scorable.generated.openapi_aclient.models.model_request import ModelRequest
 from scorable.generated.openapi_aclient.models.model_test_request_request import ModelTestRequestRequest
 from scorable.generated.openapi_aclient.models.model_test_response import ModelTestResponse
@@ -112,25 +95,13 @@ from scorable.generated.openapi_aclient.models.nested_evaluator import NestedEva
 from scorable.generated.openapi_aclient.models.nested_evaluator_objective import NestedEvaluatorObjective
 from scorable.generated.openapi_aclient.models.nested_evaluator_request import NestedEvaluatorRequest
 from scorable.generated.openapi_aclient.models.nested_judge import NestedJudge
-from scorable.generated.openapi_aclient.models.nested_objective import NestedObjective
-from scorable.generated.openapi_aclient.models.nested_objective_evaluator import NestedObjectiveEvaluator
-from scorable.generated.openapi_aclient.models.nested_objective_evaluator_request import NestedObjectiveEvaluatorRequest
 from scorable.generated.openapi_aclient.models.nested_objective_list import NestedObjectiveList
 from scorable.generated.openapi_aclient.models.nested_user_details import NestedUserDetails
 from scorable.generated.openapi_aclient.models.nested_user_details_request import NestedUserDetailsRequest
-from scorable.generated.openapi_aclient.models.nested_vector_objective import NestedVectorObjective
-from scorable.generated.openapi_aclient.models.nested_vector_objective_request import NestedVectorObjectiveRequest
-from scorable.generated.openapi_aclient.models.null_enum import NullEnum
 from scorable.generated.openapi_aclient.models.objective import Objective
 from scorable.generated.openapi_aclient.models.objective_list import ObjectiveList
 from scorable.generated.openapi_aclient.models.objective_request import ObjectiveRequest
-from scorable.generated.openapi_aclient.models.objective_validator import ObjectiveValidator
-from scorable.generated.openapi_aclient.models.objective_validator_request import ObjectiveValidatorRequest
 from scorable.generated.openapi_aclient.models.paginated_data_set_list_list import PaginatedDataSetListList
-from scorable.generated.openapi_aclient.models.paginated_evaluation_agent_list import PaginatedEvaluationAgentList
-from scorable.generated.openapi_aclient.models.paginated_evaluation_batch_job_serializer_list import (
-    PaginatedEvaluationBatchJobSerializerList,
-)
 from scorable.generated.openapi_aclient.models.paginated_evaluator_list import PaginatedEvaluatorList
 from scorable.generated.openapi_aclient.models.paginated_evaluator_list_output_list import (
     PaginatedEvaluatorListOutputList,
@@ -143,21 +114,13 @@ from scorable.generated.openapi_aclient.models.paginated_judge_list_list import 
 from scorable.generated.openapi_aclient.models.paginated_model_list_list import PaginatedModelListList
 from scorable.generated.openapi_aclient.models.paginated_objective_list import PaginatedObjectiveList
 from scorable.generated.openapi_aclient.models.paginated_objective_list_list import PaginatedObjectiveListList
-from scorable.generated.openapi_aclient.models.patched_evaluation_agent_request import PatchedEvaluationAgentRequest
 from scorable.generated.openapi_aclient.models.patched_evaluator_request import PatchedEvaluatorRequest
 from scorable.generated.openapi_aclient.models.patched_judge_request import PatchedJudgeRequest
 from scorable.generated.openapi_aclient.models.patched_model_request import PatchedModelRequest
 from scorable.generated.openapi_aclient.models.patched_objective_request import PatchedObjectiveRequest
 from scorable.generated.openapi_aclient.models.provider import Provider
 from scorable.generated.openapi_aclient.models.reasoning_effort_enum import ReasoningEffortEnum
-from scorable.generated.openapi_aclient.models.reference_variable import ReferenceVariable
 from scorable.generated.openapi_aclient.models.reference_variable_request import ReferenceVariableRequest
-from scorable.generated.openapi_aclient.models.result_preference_signifier_evaluation_approach_enum import (
-    ResultPreferenceSignifierEvaluationApproachEnum,
-)
-from scorable.generated.openapi_aclient.models.result_preference_signifier_request import (
-    ResultPreferenceSignifierRequest,
-)
 from scorable.generated.openapi_aclient.models.role_enum import RoleEnum
 from scorable.generated.openapi_aclient.models.skill_execution_validator_result import SkillExecutionValidatorResult
 from scorable.generated.openapi_aclient.models.skill_test_data_request import SkillTestDataRequest
@@ -165,11 +128,7 @@ from scorable.generated.openapi_aclient.models.skill_test_data_request_dataset_r
     SkillTestDataRequestDatasetRange,
 )
 from scorable.generated.openapi_aclient.models.skill_test_input_request import SkillTestInputRequest
-from scorable.generated.openapi_aclient.models.skill_type_enum import SkillTypeEnum
-from scorable.generated.openapi_aclient.models.status_change import StatusChange
-from scorable.generated.openapi_aclient.models.status_change_request import StatusChangeRequest
-from scorable.generated.openapi_aclient.models.status_change_status_enum import StatusChangeStatusEnum
 from scorable.generated.openapi_aclient.models.status_enum import StatusEnum
 from scorable.generated.openapi_aclient.models.target_enum import TargetEnum
-from scorable.generated.openapi_aclient.models.turn_input_request import TurnInputRequest
 from scorable.generated.openapi_aclient.models.validation_result_status import ValidationResultStatus
+from scorable.generated.openapi_aclient.models.visibility_ef8_enum import VisibilityEf8Enum
