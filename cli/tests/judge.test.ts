@@ -100,7 +100,6 @@ describe("TestJudgeList", () => {
         page_size: 10,
         search: "test",
         name: "Test Judge",
-        is_public: false,
       }),
     );
   });

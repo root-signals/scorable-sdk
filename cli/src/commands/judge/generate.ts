@@ -63,8 +63,6 @@ offer to connect the guest with a human agent when uncertain."`,
           throw new CliError(1, "invalid_visibility");
         }
 
-        const apiVisibility = visibility === "private" ? "unlisted" : "public";
-
         const apiKey = await requireApiKey();
 
         let extra_contexts: Record<string, string> | undefined;
@@ -80,9 +78,10 @@ offer to connect the guest with a human agent when uncertain."`,
         const spinner = ora("Generating judge (this may take a moment)...").start();
         try {
           const client = getSdkClient(apiKey);
-          const result = await client.judges.generate({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const result = (await client.judges.generate({
             intent: opts.intent,
-            visibility: apiVisibility,
+            visibility: visibility as "private" | "public",
             overwrite: opts.overwrite,
             name: opts.name,
             stage: opts.stage,
@@ -94,7 +93,7 @@ offer to connect the guest with a human agent when uncertain."`,
                 reasoning_effort: opts.reasoningEffort as "off" | "low" | "medium" | "high",
               },
             }),
-          });
+          })) as any;
           spinner.stop();
 
           if (result.error_code === "multiple_stages") {

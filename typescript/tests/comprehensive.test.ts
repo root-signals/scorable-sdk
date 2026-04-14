@@ -308,7 +308,7 @@ describe.skipIf(!runComprehensiveTests)('Scorable SDK Comprehensive Tests', () =
             status: 'listed',
           });
           expect(patched.id).toBe(createdObjectiveId);
-          expect(patched.status).toBe('listed');
+          expect((patched as any).status).toBe('listed');
         } catch (error) {
           expect(error).toBeInstanceOf(Error);
         }
