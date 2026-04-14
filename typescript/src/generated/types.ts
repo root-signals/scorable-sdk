@@ -1089,8 +1089,6 @@ export interface components {
     };
     GenerationModelParamsRequest: {
       seed?: number | null;
-      /** Format: double */
-      temperature?: number | null;
       /** @default off */
       reasoning_effort: components['schemas']['ReasoningEffortEnum'];
     };
@@ -1278,7 +1276,7 @@ export interface components {
       } | null;
       intent: string;
       stage?: string | null;
-      visibility: components['schemas']['JudgeGeneratorVisibilityEnum'];
+      visibility: components['schemas']['VisibilityEf8Enum'];
       /** Format: uuid */
       file_id?: string | null;
       /** @default true */
@@ -1306,14 +1304,13 @@ export interface components {
       judge_version_id: string;
       error_code?: string | null;
       claim_token?: string | null;
+      missing_context_from_system_goal?:
+        | {
+            [key: string]: string;
+          }[]
+        | null;
+      stages?: string[] | null;
     };
-    /**
-     * @description * `global` - global
-     *     * `public` - public
-     *     * `private` - private
-     * @enum {string}
-     */
-    JudgeGeneratorVisibilityEnum: 'global' | 'public' | 'private';
     JudgeInviteRequest: {
       /** @description List of email addresses to send the invite to (maximum 10) */
       emails: string[];
@@ -1533,7 +1530,6 @@ export interface components {
       /** Format: uuid */
       readonly id: string;
       intent?: string;
-      status?: components['schemas']['StatusEnum'];
     };
     NestedUserDetails: {
       /**
@@ -1550,7 +1546,6 @@ export interface components {
       /** Format: uuid */
       readonly id: string;
       intent?: string;
-      status?: components['schemas']['StatusEnum'];
       /** @description Deprecated: Use test_dataset_id instead. */
       readonly test_set: string[][] | null;
       /** Format: date-time */
@@ -1569,7 +1564,6 @@ export interface components {
       /** Format: uuid */
       readonly id: string;
       intent?: string;
-      status?: components['schemas']['StatusEnum'];
       readonly owner: components['schemas']['NestedUserDetails'];
       /** Format: date-time */
       readonly created_at: string;
@@ -1580,7 +1574,6 @@ export interface components {
     };
     ObjectiveRequest: {
       intent?: string;
-      status?: components['schemas']['StatusEnum'];
       /** @description Force creation of a new objective. Applies only to PUT requests. */
       force_create?: boolean;
       /** Format: uuid */
@@ -1746,7 +1739,6 @@ export interface components {
     };
     PatchedObjectiveRequest: {
       intent?: string;
-      status?: components['schemas']['StatusEnum'];
       /** @description Force creation of a new objective. Applies only to PUT requests. */
       force_create?: boolean;
       /** Format: uuid */

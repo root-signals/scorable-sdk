@@ -18,7 +18,6 @@ export function registerCreateCommand(evaluator: Command): void {
       "The intent for the evaluator (mutually exclusive with --objective-id)",
     )
     .option("--objective-id <id>", "Objective ID (mutually exclusive with --intent)")
-    .option("--system-message <text>", "System message for the evaluator")
     .option(
       "--models <json>",
       "JSON array of model names, in priority order. E.g., '[\"gpt-5-mini\"]'",
@@ -31,7 +30,6 @@ export function registerCreateCommand(evaluator: Command): void {
         scoringCriteria: string;
         intent?: string;
         objectiveId?: string;
-        systemMessage?: string;
         models?: string;
         overwrite?: boolean;
         objectiveVersionId?: string;
@@ -59,7 +57,6 @@ export function registerCreateCommand(evaluator: Command): void {
 
         if (opts.intent) payload.intent = opts.intent;
         if (opts.objectiveId) payload.objective_id = opts.objectiveId;
-        if (opts.systemMessage) payload.system_message = opts.systemMessage;
         if (opts.overwrite !== undefined) payload.overwrite = opts.overwrite;
         if (opts.objectiveVersionId) payload.objective_version_id = opts.objectiveVersionId;
 

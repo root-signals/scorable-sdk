@@ -1,3 +1,10 @@
+## 0.6.0
+
+- Simplify visibility model: `--visibility` now accepts `private` or `public` (default: `private`)
+- Remove `--system-message` option from `evaluator create` and `evaluator update`
+- Judge `generate`: remove stages and missing-context output; error codes are surfaced directly
+- Judge `list`: remove stale `is_public` default filter
+
 ## 0.5.0
 
 - Add `scorable evaluator export-yaml <id>` command to export an evaluator as a YAML file (prints to stdout or `--output <file>`)
