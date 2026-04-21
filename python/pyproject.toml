@@ -15,11 +15,11 @@ dynamic = ["version"]
 dependencies = [
   "aioitertools",
   "asgiref",
-  "aiohttp",
+  "aiohttp>=3.13.4",
   "aiohttp_retry",
   "pydantic>=2.6.2, <3",
   "python-dateutil",
-  "requests",
+  "requests>=2.33.0",
   "typing-extensions",
   "validators",
 ]
@@ -51,7 +51,7 @@ dev = [
   "myst_parser",
   "pre-commit",
   "pytest-asyncio",
-  "pytest",
+  "pytest>=9.0.3",
   "ruff",
   "sphinx-autoapi",
   "sphinx-markdown-builder",
