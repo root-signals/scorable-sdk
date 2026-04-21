@@ -61,6 +61,9 @@
     "flatted": ">=3.4.2",
     "rollup": ">=4.60.0",
     "minimatch": ">=9.0.9",
+    "vite": ">=7.3.2",
+    "picomatch@^2": ">=2.3.2",
+    "picomatch@^4": ">=4.0.4",
     "@eslint/config-array": {
       "minimatch": ">=3.1.4"
     },
