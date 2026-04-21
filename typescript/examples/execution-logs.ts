@@ -7,7 +7,7 @@ const evaluator = await client.evaluators.create({
   name: 'My evaluator',
   intent: 'Asses the response',
   predicate: 'Is this a integer in the range 0-100: {{request}}',
-  model: 'gemini-2.0-flash',
+  model: 'gemini-3-flash',
 });
 
 // Execute the evaluator

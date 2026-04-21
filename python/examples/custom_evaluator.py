@@ -14,7 +14,7 @@ network_troubleshooting_evaluator = client.evaluators.create(
             Chatbot response: {{response}}
             """,
     intent="To measure the technical accuracy and appropriateness of network troubleshooting responses",
-    model="gemini-2.0-flash",  # Check client.models.list() for all available models. You can also add your own model.
+    model="gemini-3-flash",  # Check client.models.list() for all available models. You can also add your own model.
 )
 
 response = network_troubleshooting_evaluator.run(

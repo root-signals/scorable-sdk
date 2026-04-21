@@ -289,8 +289,8 @@ inputs:
 # dataset_id: "<uuid>"
 
 models:
-  - gpt-4o-mini
-  - gemini-2.5-flash-lite
+  - gpt-5.4
+  - gemini-3-flash
 
 evaluators:
   - name: Precision

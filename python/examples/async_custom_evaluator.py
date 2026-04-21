@@ -8,7 +8,7 @@ async def main():
         name="Direct language",
         predicate="Is the following text clear and has no weasel words: {{response}}",
         intent="Is the language direct and unambiguous",
-        model="gpt-4o",
+        model="gpt-5.4",
     )
 
     response = await custom_evaluator.arun(response="It will probably rain tomorrow.")

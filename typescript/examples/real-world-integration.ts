@@ -336,7 +336,7 @@ async function main() {
         response:
           'You can cancel your subscription anytime from your account settings under the billing section.',
         timestamp: new Date(),
-        model: 'gpt-4',
+        model: 'gpt-5.4',
         responseTime: 1200,
       },
       {
