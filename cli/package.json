@@ -46,6 +46,10 @@
     "typescript": "^5.9.3",
     "vitest": "^4.1.0"
   },
+  "overrides": {
+    "picomatch@^4": ">=4.0.4",
+    "vite": ">=8.0.5"
+  },
   "engines": {
     "node": ">=20"
   }
