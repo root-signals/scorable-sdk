@@ -94,4 +94,6 @@ export interface ExecutionPayload {
   user_id?: string;
   session_id?: string;
   system_prompt?: string;
+  /** File IDs from client.files.upload(). PDFs are extracted to text context; images are passed directly to the model. */
+  file_ids?: string[];
 }

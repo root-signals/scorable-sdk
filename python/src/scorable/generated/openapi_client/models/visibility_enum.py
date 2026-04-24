@@ -19,19 +19,18 @@ from enum import Enum
 from typing_extensions import Self
 
 
-class JudgeGeneratorVisibilityEnum(str, Enum):
+class VisibilityEnum(str, Enum):
     """
-    * `global` - global * `public` - public * `private` - private
+    VisibilityEnum
     """
 
     """
     allowed enum values
     """
-    GLOBAL = "global"
-    PUBLIC = "public"
     PRIVATE = "private"
+    PUBLIC = "public"
 
     @classmethod
     def from_json(cls, json_str: str) -> Self:
-        """Create an instance of JudgeGeneratorVisibilityEnum from a JSON string"""
+        """Create an instance of VisibilityEnum from a JSON string"""
         return cls(json.loads(json_str))

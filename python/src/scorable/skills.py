@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import math
+import uuid
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import AbstractAsyncContextManager, AbstractContextManager
@@ -227,6 +228,7 @@ class Evaluator(AOpenAPIEvaluator):
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        file_ids: Optional[List[uuid.UUID]] = None,
         *,
         _client: ApiClient,
         _request_timeout: Optional[int] = None,
@@ -246,6 +248,8 @@ class Evaluator(AOpenAPIEvaluator):
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
+          file_ids: Optional list of file UUIDs (from Files.upload). PDFs are extracted to text
+            context; images are passed directly to the model.
         """
 
         if not response and not request and not turns:
@@ -265,6 +269,7 @@ class Evaluator(AOpenAPIEvaluator):
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            file_ids=[str(f) for f in file_ids] if file_ids else None,
         )
         return api_instance.evaluators_execute_create(
             id=self.id,
@@ -305,6 +310,7 @@ class AEvaluator(AOpenAPIEvaluator):
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        file_ids: Optional[List[uuid.UUID]] = None,
         *,
         _client: AApiClient,
         _request_timeout: Optional[int] = None,
@@ -324,6 +330,8 @@ class AEvaluator(AOpenAPIEvaluator):
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
+          file_ids: Optional list of file UUIDs (from Files.upload). PDFs are extracted to text
+            context; images are passed directly to the model.
         """
 
         if not response and not request and not turns:
@@ -343,6 +351,7 @@ class AEvaluator(AOpenAPIEvaluator):
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            file_ids=[str(f) for f in file_ids] if file_ids else None,
         )
         return await api_instance.evaluators_execute_create(
             id=self.id,

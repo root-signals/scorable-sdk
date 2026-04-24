@@ -21,8 +21,6 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictStr
 from typing_extensions import Annotated, Self
 
-from scorable.generated.openapi_client.models.status_enum import StatusEnum
-
 
 class ObjectiveRequest(BaseModel):
     """
@@ -30,12 +28,11 @@ class ObjectiveRequest(BaseModel):
     """  # noqa: E501
 
     intent: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=100000)]] = None
-    status: Optional[StatusEnum] = None
     force_create: Optional[StrictBool] = Field(
         default=None, description="Force creation of a new objective. Applies only to PUT requests."
     )
     test_dataset_id: Optional[StrictStr] = None
-    __properties: ClassVar[List[str]] = ["intent", "status", "force_create", "test_dataset_id"]
+    __properties: ClassVar[List[str]] = ["intent", "force_create", "test_dataset_id"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -93,7 +90,6 @@ class ObjectiveRequest(BaseModel):
         _obj = cls.model_validate(
             {
                 "intent": obj.get("intent"),
-                "status": obj.get("status"),
                 "force_create": obj.get("force_create"),
                 "test_dataset_id": obj.get("test_dataset_id"),
             }

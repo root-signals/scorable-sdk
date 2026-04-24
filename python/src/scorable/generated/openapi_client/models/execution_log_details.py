@@ -65,6 +65,7 @@ class ExecutionLogDetails(BaseModel):
     evaluator_results: List[SkillExecutionValidatorResult]
     variables: Optional[Dict[str, StrictStr]]
     classification: Optional[Any]
+    confidence: Optional[Union[StrictFloat, StrictInt]]
     __properties: ClassVar[List[str]] = [
         "chat_id",
         "cost",
@@ -93,6 +94,7 @@ class ExecutionLogDetails(BaseModel):
         "evaluator_results",
         "variables",
         "classification",
+        "confidence",
     ]
 
     model_config = ConfigDict(
@@ -148,6 +150,7 @@ class ExecutionLogDetails(BaseModel):
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
+        * OpenAPI `readOnly` fields are excluded.
         """
         excluded_fields: Set[str] = set(
             [
@@ -175,6 +178,7 @@ class ExecutionLogDetails(BaseModel):
                 "evaluator_results",
                 "variables",
                 "classification",
+                "confidence",
             ]
         )
 
@@ -265,6 +269,11 @@ class ExecutionLogDetails(BaseModel):
         if self.classification is None and "classification" in self.model_fields_set:
             _dict["classification"] = None
 
+        # set to None if confidence (nullable) is None
+        # and model_fields_set contains the field
+        if self.confidence is None and "confidence" in self.model_fields_set:
+            _dict["confidence"] = None
+
         return _dict
 
     @classmethod
@@ -317,6 +326,7 @@ class ExecutionLogDetails(BaseModel):
                 else None,
                 "variables": obj.get("variables"),
                 "classification": obj.get("classification"),
+                "confidence": obj.get("confidence"),
             }
         )
         return _obj

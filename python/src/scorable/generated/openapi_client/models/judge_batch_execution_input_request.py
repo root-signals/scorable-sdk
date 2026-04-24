@@ -40,6 +40,10 @@ class JudgeBatchExecutionInputRequest(BaseModel):
     user_id: Optional[Annotated[str, Field(strict=True, max_length=255)]] = None
     session_id: Optional[Annotated[str, Field(strict=True, max_length=255)]] = None
     system_prompt: Optional[Annotated[str, Field(strict=True, max_length=3500000)]] = None
+    file_ids: Optional[List[StrictStr]] = Field(
+        default=None,
+        description="File IDs (from POST /v1/files/). Note, not all models support uploaded files as context.",
+    )
     __properties: ClassVar[List[str]] = [
         "messages",
         "turns",
@@ -51,6 +55,7 @@ class JudgeBatchExecutionInputRequest(BaseModel):
         "user_id",
         "session_id",
         "system_prompt",
+        "file_ids",
     ]
 
     model_config = ConfigDict(
@@ -170,6 +175,7 @@ class JudgeBatchExecutionInputRequest(BaseModel):
                 "user_id": obj.get("user_id"),
                 "session_id": obj.get("session_id"),
                 "system_prompt": obj.get("system_prompt"),
+                "file_ids": obj.get("file_ids"),
             }
         )
         return _obj

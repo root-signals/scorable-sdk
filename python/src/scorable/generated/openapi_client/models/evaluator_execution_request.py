@@ -39,6 +39,10 @@ class EvaluatorExecutionRequest(BaseModel):
     user_id: Optional[Annotated[str, Field(strict=True, max_length=255)]] = None
     session_id: Optional[Annotated[str, Field(strict=True, max_length=255)]] = None
     system_prompt: Optional[Annotated[str, Field(strict=True, max_length=3500000)]] = None
+    file_ids: Optional[List[StrictStr]] = Field(
+        default=None,
+        description="File IDs (from POST /v1/files/). Note, not all models support uploaded files as context.",
+    )
     variables: Optional[Dict[str, Annotated[str, Field(min_length=1, strict=True)]]] = Field(
         default=None, description="Extra variables to be used in the execution of the evaluator. Optional."
     )
@@ -53,6 +57,7 @@ class EvaluatorExecutionRequest(BaseModel):
         "user_id",
         "session_id",
         "system_prompt",
+        "file_ids",
         "variables",
     ]
 
@@ -165,6 +170,7 @@ class EvaluatorExecutionRequest(BaseModel):
                 "user_id": obj.get("user_id"),
                 "session_id": obj.get("session_id"),
                 "system_prompt": obj.get("system_prompt"),
+                "file_ids": obj.get("file_ids"),
                 "variables": obj.get("variables"),
             }
         )

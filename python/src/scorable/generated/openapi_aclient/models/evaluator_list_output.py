@@ -25,7 +25,7 @@ from typing_extensions import Self
 from scorable.generated.openapi_aclient.models.evaluator_inputs_value import EvaluatorInputsValue
 from scorable.generated.openapi_aclient.models.nested_objective_list import NestedObjectiveList
 from scorable.generated.openapi_aclient.models.nested_user_details import NestedUserDetails
-from scorable.generated.openapi_aclient.models.visibility_ef8_enum import VisibilityEf8Enum
+from scorable.generated.openapi_aclient.models.visibility_enum import VisibilityEnum
 
 
 class EvaluatorListOutput(BaseModel):
@@ -41,7 +41,7 @@ class EvaluatorListOutput(BaseModel):
     objective: NestedObjectiveList
     owner: NestedUserDetails
     prompt: StrictStr
-    visibility: VisibilityEf8Enum
+    visibility: VisibilityEnum
     updated_at: Optional[datetime]
     updated_by: Optional[NestedUserDetails]
     version_id: StrictStr

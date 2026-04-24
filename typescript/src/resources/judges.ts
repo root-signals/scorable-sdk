@@ -27,7 +27,7 @@ export type JudgeGeneratorResponse = components['schemas']['JudgeGeneratorRespon
 
 export interface JudgeGenerateParams {
   intent: string;
-  visibility?: components['schemas']['VisibilityEf8Enum'];
+  visibility?: components['schemas']['VisibilityEnum'];
   stage?: string;
   overwrite?: boolean;
   name?: string;

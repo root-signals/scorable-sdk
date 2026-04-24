@@ -18,21 +18,18 @@ import pprint
 import re  # noqa: F401
 from typing import Any, ClassVar, Dict, List, Optional, Set
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Annotated, Self
 
 
-class PatchedObjectiveRequest(BaseModel):
+class BatchSetTagsModelRequest(BaseModel):
     """
-    PatchedObjectiveRequest
+    BatchSetTagsModelRequest
     """  # noqa: E501
 
-    intent: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=100000)]] = None
-    force_create: Optional[StrictBool] = Field(
-        default=None, description="Force creation of a new objective. Applies only to PUT requests."
-    )
-    test_dataset_id: Optional[StrictStr] = None
-    __properties: ClassVar[List[str]] = ["intent", "force_create", "test_dataset_id"]
+    log_ids: Annotated[List[StrictStr], Field(min_length=1, max_length=500)]
+    tags: Optional[Annotated[List[StrictStr], Field(max_length=15)]] = None
+    __properties: ClassVar[List[str]] = ["log_ids", "tags"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -51,7 +48,7 @@ class PatchedObjectiveRequest(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of PatchedObjectiveRequest from a JSON string"""
+        """Create an instance of BatchSetTagsModelRequest from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -71,27 +68,16 @@ class PatchedObjectiveRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # set to None if test_dataset_id (nullable) is None
-        # and model_fields_set contains the field
-        if self.test_dataset_id is None and "test_dataset_id" in self.model_fields_set:
-            _dict["test_dataset_id"] = None
-
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of PatchedObjectiveRequest from a dict"""
+        """Create an instance of BatchSetTagsModelRequest from a dict"""
         if obj is None:
             return None
 
         if not isinstance(obj, dict):
             return cls.model_validate(obj)
 
-        _obj = cls.model_validate(
-            {
-                "intent": obj.get("intent"),
-                "force_create": obj.get("force_create"),
-                "test_dataset_id": obj.get("test_dataset_id"),
-            }
-        )
+        _obj = cls.model_validate({"log_ids": obj.get("log_ids"), "tags": obj.get("tags")})
         return _obj

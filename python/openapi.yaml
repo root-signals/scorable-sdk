@@ -568,6 +568,18 @@ paths:
                     contexts:
                     - 'Order #12345: Status=shipped, ETA=Jan 20'
                 summary: Execute a multi-turn evaluator
+              ExecuteAnEvaluatorWithUploadedFiles:
+                value:
+                  request: Does the chart support the claim made in the report?
+                  response: Yes, the Q1 revenue chart confirms the 20% growth mentioned
+                    in the executive summary.
+                  file_ids:
+                  - 550e8400-e29b-41d4-a716-446655440000
+                  - 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+                summary: Execute an evaluator with uploaded files
+                description: Upload files via POST /v1/files/ first, then pass the
+                  returned IDs here. PDFs are extracted to text context; images are
+                  passed directly to the model.
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/EvaluatorExecutionRequest'
@@ -893,6 +905,29 @@ paths:
                 items:
                   type: string
           description: ''
+  /v1/execution-logs/set-tags/:
+    post:
+      operationId: execution_logs_set_tags_create
+      description: Set tags on multiple execution logs, replacing any existing tags.
+      tags:
+      - execution-logs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchSetTagsModelRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchSetTagsModelRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchSetTagsModelRequest'
+        required: true
+      security:
+      - publicApiKey: []
+      responses:
+        '204':
+          description: No response body
   /v1/execution-logs/user-ids/:
     get:
       operationId: execution_logs_user_ids_retrieve
@@ -917,6 +952,16 @@ paths:
                 items:
                   type: string
           description: ''
+  /v1/files/:
+    post:
+      operationId: files_create
+      tags:
+      - files
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          description: No response body
   /v1/judges/:
     get:
       operationId: judges_list
@@ -1175,6 +1220,18 @@ paths:
                     contexts:
                     - 'Order #12345: Status=shipped, ETA=Jan 20'
                 summary: Example with multi-turn content
+              ExampleWithUploadedFiles:
+                value:
+                  request: Does the chart match the data in the report?
+                  response: The chart accurately reflects the numbers from the Q1
+                    report.
+                  file_ids:
+                  - 550e8400-e29b-41d4-a716-446655440000
+                  - 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+                summary: Example with uploaded files
+                description: Upload files via POST /v1/files/ first, then pass the
+                  returned IDs here. PDFs are extracted to text context; images are
+                  passed directly to the model.
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/JudgeExecutionRequest'
@@ -1424,6 +1481,12 @@ paths:
                     - pending
                     - ready
                     - not_generated
+                  name:
+                    type: string
+                    nullable: true
+                  description:
+                    type: string
+                    nullable: true
                   samples:
                     type: array
                     items:
@@ -1744,6 +1807,17 @@ paths:
                 summary: Execute a judge by name with context
                 description: The context is a list of strings that will be used to
                   help the LLM answer the question.
+              ExecuteAJudgeByNameWithUploadedFiles:
+                value:
+                  request: Does the chart match the data in the report?
+                  response: The chart accurately reflects the numbers from the Q1
+                    report.
+                  file_ids:
+                  - 42
+                  - 43
+                summary: Execute a judge by name with uploaded files
+                description: Upload files via POST /v1/files/ first, then pass the
+                  returned IDs here.
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/JudgeExecutionRequest'
@@ -2320,6 +2394,24 @@ components:
         * `completed` - completed
         * `failed` - failed
         * `partial` - partial
+    BatchSetTagsModelRequest:
+      type: object
+      properties:
+        log_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 500
+          minItems: 1
+        tags:
+          type: array
+          items:
+            type: string
+          default: []
+          maxItems: 15
+      required:
+      - log_ids
     DataSetCreate:
       type: object
       properties:
@@ -2486,7 +2578,7 @@ components:
           maxLength: 500000
         visibility:
           allOf:
-          - $ref: '#/components/schemas/VisibilityEf8Enum'
+          - $ref: '#/components/schemas/VisibilityEnum'
           readOnly: true
         updated_at:
           type: string
@@ -2691,6 +2783,13 @@ components:
           type: string
           nullable: true
           maxLength: 3500000
+        file_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: File IDs (from POST /v1/files/). Note, not all models support
+            uploaded files as context.
         variables:
           type: object
           additionalProperties:
@@ -2718,7 +2817,12 @@ components:
         justification:
           type: string
           nullable: true
+        confidence:
+          type: number
+          format: double
+          nullable: true
       required:
+      - confidence
       - cost
       - evaluator_name
       - execution_log_id
@@ -2770,7 +2874,7 @@ components:
           readOnly: true
         visibility:
           allOf:
-          - $ref: '#/components/schemas/VisibilityEf8Enum'
+          - $ref: '#/components/schemas/VisibilityEnum'
           readOnly: true
         updated_at:
           type: string
@@ -2933,7 +3037,12 @@ components:
         evaluator_version_id:
           type: string
           format: uuid
+        confidence:
+          type: number
+          format: double
+          nullable: true
       required:
+      - confidence
       - evaluator_id
       - evaluator_name
       - evaluator_version_id
@@ -3062,9 +3171,15 @@ components:
         classification:
           readOnly: true
           nullable: true
+        confidence:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
       required:
       - chat_id
       - classification
+      - confidence
       - cost
       - created_at
       - evaluation_context
@@ -3207,10 +3322,6 @@ components:
         seed:
           type: integer
           nullable: true
-        temperature:
-          type: number
-          format: double
-          nullable: true
         reasoning_effort:
           allOf:
           - $ref: '#/components/schemas/ReasoningEffortEnum'
@@ -3345,7 +3456,7 @@ components:
           maxLength: 255
         visibility:
           allOf:
-          - $ref: '#/components/schemas/VisibilityEf8Enum'
+          - $ref: '#/components/schemas/VisibilityEnum'
           readOnly: true
         version_id:
           type: string
@@ -3462,6 +3573,13 @@ components:
           type: string
           nullable: true
           maxLength: 3500000
+        file_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: File IDs (from POST /v1/files/). Note, not all models support
+            uploaded files as context.
     JudgeBatchExecutionItem:
       type: object
       properties:
@@ -3664,6 +3782,13 @@ components:
           type: string
           nullable: true
           maxLength: 3500000
+        file_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: File IDs (from POST /v1/files/). Note, not all models support
+            uploaded files as context.
         judge_version_id:
           type: string
           format: uuid
@@ -3696,7 +3821,7 @@ components:
           type: string
           nullable: true
         visibility:
-          $ref: '#/components/schemas/JudgeGeneratorVisibilityEnum'
+          $ref: '#/components/schemas/VisibilityEnum'
         file_id:
           type: string
           format: uuid
@@ -3748,19 +3873,21 @@ components:
         claim_token:
           type: string
           nullable: true
+        missing_context_from_system_goal:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+          nullable: true
+        stages:
+          type: array
+          items:
+            type: string
+          nullable: true
       required:
       - judge_id
       - judge_version_id
-    JudgeGeneratorVisibilityEnum:
-      enum:
-      - global
-      - public
-      - private
-      type: string
-      description: |-
-        * `global` - global
-        * `public` - public
-        * `private` - private
     JudgeInviteRequest:
       type: object
       properties:
@@ -3799,7 +3926,7 @@ components:
           readOnly: true
         visibility:
           allOf:
-          - $ref: '#/components/schemas/VisibilityEf8Enum'
+          - $ref: '#/components/schemas/VisibilityEnum'
           readOnly: true
         inputs:
           type: object
@@ -3896,6 +4023,13 @@ components:
           type: string
           nullable: true
           maxLength: 3500000
+        file_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: File IDs (from POST /v1/files/). Note, not all models support
+            uploaded files as context.
         judge_version_id:
           type: string
           format: uuid
@@ -4249,8 +4383,6 @@ components:
         intent:
           type: string
           maxLength: 100000
-        status:
-          $ref: '#/components/schemas/StatusEnum'
       required:
       - id
     NestedUserDetails:
@@ -4284,8 +4416,6 @@ components:
         intent:
           type: string
           maxLength: 100000
-        status:
-          $ref: '#/components/schemas/StatusEnum'
         test_set:
           type: array
           items:
@@ -4333,8 +4463,6 @@ components:
         intent:
           type: string
           maxLength: 100000
-        status:
-          $ref: '#/components/schemas/StatusEnum'
         owner:
           allOf:
           - $ref: '#/components/schemas/NestedUserDetails'
@@ -4360,8 +4488,6 @@ components:
           type: string
           minLength: 1
           maxLength: 100000
-        status:
-          $ref: '#/components/schemas/StatusEnum'
         force_create:
           type: boolean
           writeOnly: true
@@ -4650,8 +4776,6 @@ components:
           type: string
           minLength: 1
           maxLength: 100000
-        status:
-          $ref: '#/components/schemas/StatusEnum'
         force_create:
           type: boolean
           writeOnly: true
@@ -4849,7 +4973,7 @@ components:
       description: |-
         * `pending` - Pending
         * `finished` - Finished
-    VisibilityEf8Enum:
+    VisibilityEnum:
       type: string
       enum:
       - private

@@ -22,7 +22,7 @@ from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictStr
 from typing_extensions import Annotated, Self
 
 from scorable.generated.openapi_client.models.generation_model_params_request import GenerationModelParamsRequest
-from scorable.generated.openapi_client.models.judge_generator_visibility_enum import JudgeGeneratorVisibilityEnum
+from scorable.generated.openapi_client.models.visibility_enum import VisibilityEnum
 
 
 class JudgeGeneratorRequest(BaseModel):
@@ -33,7 +33,7 @@ class JudgeGeneratorRequest(BaseModel):
     extra_contexts: Optional[Dict[str, Optional[StrictStr]]] = None
     intent: Annotated[str, Field(min_length=10, strict=True, max_length=20000)]
     stage: Optional[StrictStr] = None
-    visibility: JudgeGeneratorVisibilityEnum
+    visibility: VisibilityEnum
     file_id: Optional[StrictStr] = None
     strict: Optional[StrictBool] = True
     generating_model_params: Optional[GenerationModelParamsRequest] = None

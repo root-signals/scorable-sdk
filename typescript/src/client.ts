@@ -10,6 +10,7 @@ import { ObjectivesResource } from './resources/objectives.js';
 import { ModelsResource } from './resources/models.js';
 import { ExecutionLogsResource } from './resources/execution-logs.js';
 import { DatasetsResource } from './resources/datasets.js';
+import { FilesResource } from './resources/files.js';
 
 export class Scorable {
   private client: ReturnType<typeof createClient<paths>>;
@@ -23,6 +24,7 @@ export class Scorable {
   public readonly models: ModelsResource;
   public readonly executionLogs: ExecutionLogsResource;
   public readonly datasets: DatasetsResource;
+  public readonly files: FilesResource;
 
   constructor(config: ClientConfig) {
     this.config = {
@@ -47,6 +49,7 @@ export class Scorable {
     this.models = new ModelsResource(this.client);
     this.executionLogs = new ExecutionLogsResource(this.client);
     this.datasets = new DatasetsResource(this.client);
+    this.files = new FilesResource(this.config);
   }
 
   /**

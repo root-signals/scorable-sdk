@@ -12,16 +12,16 @@ from scorable.generated.openapi_aclient.models.judge_generator_request import (
 from scorable.generated.openapi_aclient.models.judge_generator_response import (
     JudgeGeneratorResponse as AJudgeGeneratorResponse,
 )
-from scorable.generated.openapi_aclient.models.judge_generator_visibility_enum import (
-    JudgeGeneratorVisibilityEnum as AJudgeGeneratorVisibilityEnum,
-)
 from scorable.generated.openapi_aclient.models.judge_request import (
     JudgeRequest as AJudgeRequest,
 )
+from scorable.generated.openapi_aclient.models.visibility_enum import (
+    VisibilityEnum as AJudgeGeneratorVisibilityEnum,
+)
 from scorable.generated.openapi_client.models.judge_generator_request import JudgeGeneratorRequest
 from scorable.generated.openapi_client.models.judge_generator_response import JudgeGeneratorResponse
-from scorable.generated.openapi_client.models.judge_generator_visibility_enum import JudgeGeneratorVisibilityEnum
 from scorable.generated.openapi_client.models.judge_request import JudgeRequest
+from scorable.generated.openapi_client.models.visibility_enum import VisibilityEnum as JudgeGeneratorVisibilityEnum
 
 from .generated.openapi_aclient import ApiClient as AApiClient
 from .generated.openapi_aclient.api.judges_api import JudgesApi as AJudgesApi
@@ -213,7 +213,7 @@ class Judges:
         self,
         *,
         intent: str,
-        visibility: Literal["private", "public", "global"] = "private",
+        visibility: Literal["private", "public"] = "private",
         judge_id: Optional[str] = None,
         file_id: Optional[str] = None,
         stage: Optional[str] = None,
@@ -249,7 +249,6 @@ class Judges:
           Wrapper for the judge id and optionally an error code if the generation failed.
         """
         _visibility_map = {
-            "global": JudgeGeneratorVisibilityEnum.GLOBAL,
             "public": JudgeGeneratorVisibilityEnum.PUBLIC,
             "private": JudgeGeneratorVisibilityEnum.PRIVATE,
         }
@@ -274,7 +273,7 @@ class Judges:
         self,
         *,
         intent: str,
-        visibility: Literal["private", "public", "global"] = "private",
+        visibility: Literal["private", "public"] = "private",
         judge_id: Optional[str] = None,
         file_id: Optional[str] = None,
         stage: Optional[str] = None,
@@ -310,7 +309,6 @@ class Judges:
           Wrapper for the judge id and optionally an error code if the generation failed.
         """
         _visibility_map = {
-            "global": AJudgeGeneratorVisibilityEnum.GLOBAL,
             "public": AJudgeGeneratorVisibilityEnum.PUBLIC,
             "private": AJudgeGeneratorVisibilityEnum.PRIVATE,
         }

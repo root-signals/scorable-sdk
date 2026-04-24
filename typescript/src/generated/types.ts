@@ -265,6 +265,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/execution-logs/set-tags/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Set tags on multiple execution logs, replacing any existing tags. */
+    post: operations['execution_logs_set_tags_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/execution-logs/user-ids/': {
     parameters: {
       query?: never;
@@ -276,6 +293,22 @@ export interface paths {
     get: operations['execution_logs_user_ids_retrieve'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/files/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['files_create'];
     delete?: never;
     options?: never;
     head?: never;
@@ -735,6 +768,11 @@ export interface components {
      * @enum {string}
      */
     BatchExecutionStatus: 'pending' | 'processing' | 'completed' | 'failed' | 'partial';
+    BatchSetTagsModelRequest: {
+      log_ids: string[];
+      /** @default [] */
+      tags: string[];
+    };
     DataSetCreate: {
       /** Format: uuid */
       readonly id: string;
@@ -799,7 +837,7 @@ export interface components {
       readonly objective: components['schemas']['Objective'] | null;
       readonly owner: components['schemas']['NestedUserDetails'];
       prompt: string;
-      readonly visibility: components['schemas']['VisibilityEf8Enum'];
+      readonly visibility: components['schemas']['VisibilityEnum'];
       /** Format: date-time */
       readonly updated_at: string | null;
       readonly updated_by: components['schemas']['NestedUserDetails'] | null;
@@ -887,6 +925,8 @@ export interface components {
       user_id?: string | null;
       session_id?: string | null;
       system_prompt?: string | null;
+      /** @description File IDs (from POST /v1/files/). Note, not all models support uploaded files as context. */
+      file_ids?: string[];
       /**
        * @description Extra variables to be used in the execution of the evaluator. Optional.
        * @default {}
@@ -903,6 +943,8 @@ export interface components {
       cost: number | null;
       execution_log_id: string;
       justification: string | null;
+      /** Format: double */
+      confidence: number | null;
     };
     EvaluatorImportYamlRequestRequest: {
       yaml: string;
@@ -921,7 +963,7 @@ export interface components {
       readonly objective: components['schemas']['NestedObjectiveList'];
       readonly owner: components['schemas']['NestedUserDetails'];
       readonly prompt: string;
-      readonly visibility: components['schemas']['VisibilityEf8Enum'];
+      readonly visibility: components['schemas']['VisibilityEnum'];
       /** Format: date-time */
       readonly updated_at: string | null;
       readonly updated_by: components['schemas']['NestedUserDetails'] | null;
@@ -1002,6 +1044,8 @@ export interface components {
       evaluator_id: string;
       /** Format: uuid */
       evaluator_version_id: string;
+      /** Format: double */
+      confidence: number | null;
     };
     ExecutionLogDetails: {
       readonly chat_id: string | null;
@@ -1049,6 +1093,8 @@ export interface components {
         [key: string]: string;
       } | null;
       readonly classification: unknown;
+      /** Format: double */
+      readonly confidence: number | null;
     };
     ExecutionLogList: {
       /** Format: double */
@@ -1157,7 +1203,7 @@ export interface components {
       intent: string;
       name: string;
       stage?: string;
-      readonly visibility: components['schemas']['VisibilityEf8Enum'];
+      readonly visibility: components['schemas']['VisibilityEnum'];
       /** Format: uuid */
       readonly version_id: string;
     };
@@ -1191,6 +1237,8 @@ export interface components {
       user_id?: string | null;
       session_id?: string | null;
       system_prompt?: string | null;
+      /** @description File IDs (from POST /v1/files/). Note, not all models support uploaded files as context. */
+      file_ids?: string[];
     };
     JudgeBatchExecutionItem: {
       /** @description Position in the batch (0-indexed) */
@@ -1263,6 +1311,8 @@ export interface components {
       user_id?: string | null;
       session_id?: string | null;
       system_prompt?: string | null;
+      /** @description File IDs (from POST /v1/files/). Note, not all models support uploaded files as context. */
+      file_ids?: string[];
       /** Format: uuid */
       judge_version_id?: string | null;
     };
@@ -1276,7 +1326,7 @@ export interface components {
       } | null;
       intent: string;
       stage?: string | null;
-      visibility: components['schemas']['VisibilityEf8Enum'];
+      visibility: components['schemas']['VisibilityEnum'];
       /** Format: uuid */
       file_id?: string | null;
       /** @default true */
@@ -1327,7 +1377,7 @@ export interface components {
       readonly intent: string;
       /** Format: date-time */
       readonly created_at: string;
-      readonly visibility: components['schemas']['VisibilityEf8Enum'];
+      readonly visibility: components['schemas']['VisibilityEnum'];
       /**
        * @description Schema defining the input parameters required for execution. The schema consists of variables defined in the prompt template (predicate) and special variables like contexts and expected output.
        * @example {
@@ -1371,6 +1421,8 @@ export interface components {
       user_id?: string | null;
       session_id?: string | null;
       system_prompt?: string | null;
+      /** @description File IDs (from POST /v1/files/). Note, not all models support uploaded files as context. */
+      file_ids?: string[];
       /** Format: uuid */
       judge_version_id?: string | null;
       /**
@@ -1827,7 +1879,7 @@ export interface components {
      */
     ValidationResultStatus: 'pending' | 'finished';
     /** @enum {string} */
-    VisibilityEf8Enum: 'private' | 'public';
+    VisibilityEnum: 'private' | 'public';
   };
   responses: never;
   parameters: never;
@@ -2404,6 +2456,30 @@ export interface operations {
       };
     };
   };
+  execution_logs_set_tags_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BatchSetTagsModelRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['BatchSetTagsModelRequest'];
+        'multipart/form-data': components['schemas']['BatchSetTagsModelRequest'];
+      };
+    };
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   execution_logs_user_ids_retrieve: {
     parameters: {
       query?: {
@@ -2423,6 +2499,24 @@ export interface operations {
         content: {
           'application/json': string[];
         };
+      };
+    };
+  };
+  files_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -2718,6 +2812,8 @@ export interface operations {
           'application/json': {
             /** @enum {string} */
             status?: 'pending' | 'ready' | 'not_generated';
+            name?: string | null;
+            description?: string | null;
             samples?: {
               /** @enum {string} */
               quality?: 'high' | 'low';

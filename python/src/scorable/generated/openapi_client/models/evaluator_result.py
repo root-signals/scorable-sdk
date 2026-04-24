@@ -32,12 +32,14 @@ class EvaluatorResult(BaseModel):
     justification: Optional[StrictStr]
     evaluator_id: StrictStr
     evaluator_version_id: StrictStr
+    confidence: Optional[Union[StrictFloat, StrictInt]]
     __properties: ClassVar[List[str]] = [
         "evaluator_name",
         "score",
         "justification",
         "evaluator_id",
         "evaluator_version_id",
+        "confidence",
     ]
 
     model_config = ConfigDict(
@@ -87,6 +89,11 @@ class EvaluatorResult(BaseModel):
         if self.justification is None and "justification" in self.model_fields_set:
             _dict["justification"] = None
 
+        # set to None if confidence (nullable) is None
+        # and model_fields_set contains the field
+        if self.confidence is None and "confidence" in self.model_fields_set:
+            _dict["confidence"] = None
+
         return _dict
 
     @classmethod
@@ -105,6 +112,7 @@ class EvaluatorResult(BaseModel):
                 "justification": obj.get("justification"),
                 "evaluator_id": obj.get("evaluator_id"),
                 "evaluator_version_id": obj.get("evaluator_version_id"),
+                "confidence": obj.get("confidence"),
             }
         )
         return _obj
