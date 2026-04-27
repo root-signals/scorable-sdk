@@ -60,12 +60,6 @@ Module Contents
       :type:  scorable.generated.openapi_client.models.nested_user_details.NestedUserDetails
 
 
-   .. py:attribute:: status
-      :type:  Optional[scorable.generated.openapi_client.models.status_enum.StatusEnum]
-      :value: None
-
-
-
    .. py:attribute:: test_dataset_id
       :type:  Optional[pydantic.StrictStr]
       :value: None

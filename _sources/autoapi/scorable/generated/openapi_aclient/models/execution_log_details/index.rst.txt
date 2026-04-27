@@ -43,6 +43,10 @@ Module Contents
       :type:  Optional[Any]
 
 
+   .. py:attribute:: confidence
+      :type:  Optional[Union[pydantic.StrictFloat, pydantic.StrictInt]]
+
+
    .. py:attribute:: cost
       :type:  Optional[Union[pydantic.StrictFloat, pydantic.StrictInt]]
 

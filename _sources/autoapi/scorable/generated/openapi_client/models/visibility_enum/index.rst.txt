@@ -1,7 +1,7 @@
-scorable.generated.openapi_aclient.models.judge_generator_visibility_enum
-=========================================================================
+scorable.generated.openapi_client.models.visibility_enum
+========================================================
 
-.. py:module:: scorable.generated.openapi_aclient.models.judge_generator_visibility_enum
+.. py:module:: scorable.generated.openapi_client.models.visibility_enum
 
 .. autoapi-nested-parse::
 
@@ -21,23 +21,18 @@ Classes
 
 .. autoapisummary::
 
-   scorable.generated.openapi_aclient.models.judge_generator_visibility_enum.JudgeGeneratorVisibilityEnum
+   scorable.generated.openapi_client.models.visibility_enum.VisibilityEnum
 
 
 Module Contents
 ---------------
 
-.. py:class:: JudgeGeneratorVisibilityEnum
+.. py:class:: VisibilityEnum
 
    Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
 
-   * `global` - global * `public` - public * `private` - private
-
-
-   .. py:attribute:: GLOBAL
-      :value: 'global'
-
+   VisibilityEnum
 
 
    .. py:attribute:: PRIVATE

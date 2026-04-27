@@ -92,7 +92,7 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: arun(response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, *, _client: scorable.generated.openapi_aclient.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
+   .. py:method:: arun(response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, file_ids: Optional[List[uuid.UUID]] = None, *, _client: scorable.generated.openapi_aclient.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
       :async:
 
 
@@ -109,6 +109,8 @@ Module Contents
       :param user_id: Optional user identifier for tracking purposes.
       :param session_id: Optional session identifier for tracking purposes.
       :param system_prompt: Optional system prompt that was used for the LLM call.
+      :param file_ids: Optional list of file UUIDs (from Files.upload). PDFs are extracted to text
+                       context; images are passed directly to the model.
 
 
 
@@ -187,7 +189,7 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: run(response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, *, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
+   .. py:method:: run(response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, file_ids: Optional[List[uuid.UUID]] = None, *, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
 
       Run the evaluator.
 
@@ -202,6 +204,8 @@ Module Contents
       :param user_id: Optional user identifier for tracking purposes.
       :param session_id: Optional session identifier for tracking purposes.
       :param system_prompt: Optional system prompt that was used for the LLM call.
+      :param file_ids: Optional list of file UUIDs (from Files.upload). PDFs are extracted to text
+                       context; images are passed directly to the model.
 
 
 

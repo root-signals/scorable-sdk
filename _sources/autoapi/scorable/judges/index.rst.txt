@@ -117,7 +117,7 @@ Module Contents
 
 
 
-   .. py:method:: agenerate(*, intent: str, visibility: Literal['private', 'public', 'global'] = 'private', judge_id: Optional[str] = None, file_id: Optional[str] = None, stage: Optional[str] = None, extra_contexts: Optional[Dict[str, str | None]] = None, strict: bool = False, name: Optional[str] = None, overwrite: bool = False, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_generator_response.JudgeGeneratorResponse
+   .. py:method:: agenerate(*, intent: str, visibility: Literal['private', 'public'] = 'private', judge_id: Optional[str] = None, file_id: Optional[str] = None, stage: Optional[str] = None, extra_contexts: Optional[Dict[str, str | None]] = None, strict: bool = False, name: Optional[str] = None, overwrite: bool = False, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.judge_generator_response.JudgeGeneratorResponse
       :async:
 
 
@@ -236,7 +236,7 @@ Module Contents
 
 
 
-   .. py:method:: generate(*, intent: str, visibility: Literal['private', 'public', 'global'] = 'private', judge_id: Optional[str] = None, file_id: Optional[str] = None, stage: Optional[str] = None, extra_contexts: Optional[Dict[str, str | None]] = None, strict: bool = False, name: Optional[str] = None, overwrite: bool = False, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_generator_response.JudgeGeneratorResponse
+   .. py:method:: generate(*, intent: str, visibility: Literal['private', 'public'] = 'private', judge_id: Optional[str] = None, file_id: Optional[str] = None, stage: Optional[str] = None, extra_contexts: Optional[Dict[str, str | None]] = None, strict: bool = False, name: Optional[str] = None, overwrite: bool = False, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.judge_generator_response.JudgeGeneratorResponse
 
       Generate a judge.
 

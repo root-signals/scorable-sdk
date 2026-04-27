@@ -1,7 +1,7 @@
-scorable.generated.openapi_aclient.models.visibility_ef8_enum
-=============================================================
+scorable.generated.openapi_aclient.models.visibility_enum
+=========================================================
 
-.. py:module:: scorable.generated.openapi_aclient.models.visibility_ef8_enum
+.. py:module:: scorable.generated.openapi_aclient.models.visibility_enum
 
 .. autoapi-nested-parse::
 
@@ -21,18 +21,18 @@ Classes
 
 .. autoapisummary::
 
-   scorable.generated.openapi_aclient.models.visibility_ef8_enum.VisibilityEf8Enum
+   scorable.generated.openapi_aclient.models.visibility_enum.VisibilityEnum
 
 
 Module Contents
 ---------------
 
-.. py:class:: VisibilityEf8Enum
+.. py:class:: VisibilityEnum
 
    Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
 
-   VisibilityEf8Enum
+   VisibilityEnum
 
 
    .. py:attribute:: PRIVATE

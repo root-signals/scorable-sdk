@@ -80,6 +80,13 @@ Module Contents
       Get Execution Logs API
 
 
+   .. py:property:: files
+      :type: scorable.files.Files
+
+
+      Get Files API
+
+
    .. py:property:: get_client_context
       :type: Union[Callable[[], AsyncContextManager[scorable.generated.openapi_aclient.ApiClient]], Callable[[], ContextManager[scorable.generated.openapi_client.ApiClient]]]
 

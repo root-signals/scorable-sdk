@@ -25,6 +25,7 @@ Submodules
    /autoapi/scorable/client/index
    /autoapi/scorable/datasets/index
    /autoapi/scorable/execution_logs/index
+   /autoapi/scorable/files/index
    /autoapi/scorable/generated/index
    /autoapi/scorable/judges/index
    /autoapi/scorable/models/index

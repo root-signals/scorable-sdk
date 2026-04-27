@@ -35,7 +35,19 @@ Module Contents
    JudgesSyntheticDataRetrieve200Response
 
 
+   .. py:attribute:: description
+      :type:  Optional[pydantic.StrictStr]
+      :value: None
+
+
+
    .. py:attribute:: model_config
+
+
+   .. py:attribute:: name
+      :type:  Optional[pydantic.StrictStr]
+      :value: None
+
 
 
    .. py:attribute:: samples

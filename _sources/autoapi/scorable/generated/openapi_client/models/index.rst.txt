@@ -53,7 +53,6 @@ Submodules
    /autoapi/scorable/generated/openapi_client/models/judge_execution_response/index
    /autoapi/scorable/generated/openapi_client/models/judge_files_inner/index
    /autoapi/scorable/generated/openapi_client/models/judge_generator_response/index
-   /autoapi/scorable/generated/openapi_client/models/judge_generator_visibility_enum/index
    /autoapi/scorable/generated/openapi_client/models/judge_list/index
    /autoapi/scorable/generated/openapi_client/models/judge_rectifier_response/index
    /autoapi/scorable/generated/openapi_client/models/judges_synthetic_data_retrieve200_response/index
@@ -87,6 +86,6 @@ Submodules
    /autoapi/scorable/generated/openapi_client/models/status_enum/index
    /autoapi/scorable/generated/openapi_client/models/target_enum/index
    /autoapi/scorable/generated/openapi_client/models/validation_result_status/index
-   /autoapi/scorable/generated/openapi_client/models/visibility_ef8_enum/index
+   /autoapi/scorable/generated/openapi_client/models/visibility_enum/index
 
 

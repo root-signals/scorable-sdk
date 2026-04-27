@@ -48,9 +48,3 @@ Module Contents
    .. py:attribute:: model_config
 
 
-   .. py:attribute:: status
-      :type:  Optional[scorable.generated.openapi_client.models.status_enum.StatusEnum]
-      :value: None
-
-
-

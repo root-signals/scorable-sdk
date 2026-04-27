@@ -81,6 +81,6 @@ Module Contents
 
 
    .. py:attribute:: visibility
-      :type:  scorable.generated.openapi_client.models.visibility_ef8_enum.VisibilityEf8Enum
+      :type:  scorable.generated.openapi_client.models.visibility_enum.VisibilityEnum
 
 

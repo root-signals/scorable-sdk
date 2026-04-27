@@ -55,6 +55,18 @@ Module Contents
       :type:  pydantic.StrictStr
 
 
+   .. py:attribute:: missing_context_from_system_goal
+      :type:  Optional[List[Dict[str, pydantic.StrictStr]]]
+      :value: None
+
+
+
    .. py:attribute:: model_config
+
+
+   .. py:attribute:: stages
+      :type:  Optional[List[pydantic.StrictStr]]
+      :value: None
+
 
 

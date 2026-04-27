@@ -1,0 +1,54 @@
+scorable.files
+==============
+
+.. py:module:: scorable.files
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   scorable.files.Files
+
+
+Module Contents
+---------------
+
+.. py:class:: Files(client_context: scorable.utils.ClientContextCallable, base_url: str, api_key: str)
+
+   Files API — upload documents and images for use in evaluator execution.
+
+   Access via ``client.files``.
+
+
+   .. py:method:: aupload(file: Union[str, IO[bytes]], filename: Optional[str] = None, *, _request_timeout: Optional[int] = None) -> uuid.UUID
+      :async:
+
+
+      Asynchronously upload a file and return its ID.
+
+
+
+   .. py:method:: upload(file: Union[str, IO[bytes]], filename: Optional[str] = None, *, _request_timeout: Optional[int] = None) -> uuid.UUID
+
+      Upload a file and return its ID for use in evaluator execution.
+
+      :param file: Path to the file or a file-like object opened in binary mode.
+      :param filename: Override the file name sent to the server (required when
+                       passing a file-like object without a ``name`` attribute).
+
+      :returns: UUID of the uploaded file. Pass this to the ``file_ids`` parameter
+                of :meth:`Evaluator.run`.
+
+
+
+   .. py:attribute:: api_key
+
+
+   .. py:attribute:: base_url
+
+
+   .. py:attribute:: client_context
+
+
