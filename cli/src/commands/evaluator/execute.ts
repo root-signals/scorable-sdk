@@ -24,6 +24,7 @@ export async function executeEvaluator(
     sessionId?: string;
     systemPrompt?: string;
     variables?: string;
+    fileIds?: string;
   },
   readStdin = readStdinDefault,
 ): Promise<void> {
@@ -90,6 +91,19 @@ export async function executeEvaluator(
     }
   }
 
+  if (opts.fileIds) {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(opts.fileIds);
+    } catch {
+      throw new Error("Invalid JSON for --file-ids.");
+    }
+    if (!isStringArray(parsed)) {
+      throw new Error("Invalid JSON for --file-ids. Expected array of UUID strings.");
+    }
+    payload.file_ids = parsed;
+  }
+
   const spinner = ora("Running evaluator...").start();
   try {
     const client = getSdkClient(apiKey);
@@ -128,6 +142,10 @@ export function registerExecuteCommand(evaluator: Command): void {
       "--variables <json>",
       'JSON object of extra template variables. E.g., \'{"lang":"EN"}\'',
     )
+    .option(
+      "--file-ids <json>",
+      "JSON array of file UUIDs from 'scorable file upload'. E.g., '[\"uuid1\"]'",
+    )
     .addHelpText(
       "after",
       `
@@ -158,7 +176,13 @@ Examples:
       --request "How do I cancel my subscription?" \\
       --response "You can cancel anytime from account settings under billing." \\
       --variables '{"topic":"subscription"}' \\
-      --user-id user_123 --session-id session_abc --tag production`,
+      --user-id user_123 --session-id session_abc --tag production
+
+  # Evaluate a response with an uploaded image
+  $ scorable evaluator execute <evaluatorId> \\
+      --request "Does the chart match the data?" \\
+      --response "Yes, the Q1 figures align." \\
+      --file-ids '["550e8400-e29b-41d4-a716-446655440000"]'`,
     )
     .action(
       async (
@@ -174,6 +198,7 @@ Examples:
           sessionId?: string;
           systemPrompt?: string;
           variables?: string;
+          fileIds?: string;
         },
       ) => {
         try {
