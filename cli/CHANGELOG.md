@@ -1,3 +1,8 @@
+## 0.7.0
+
+- Add `scorable file upload <path>` command to upload files (PDF, PNG, JPG, JPEG, WEBP, SVG)
+- Add `--file-ids <json>` option to `evaluator execute` for attaching uploaded files to evaluations
+
 ## 0.6.0
 
 - Simplify visibility model: `--visibility` now accepts `private` or `public` (default: `private`)

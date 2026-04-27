@@ -10,6 +10,7 @@ import { registerEvaluatorCommands } from "./commands/evaluator/index.js";
 import { registerExecutionLogCommands } from "./commands/execution-log/index.js";
 import { registerAuthCommands } from "./commands/auth/index.js";
 import { registerSkillsAddCommand } from "./commands/skills-add.js";
+import { registerFileCommands } from "./commands/file/index.js";
 
 const { version } = createRequire(import.meta.url)("../package.json") as {
   version: string;
@@ -68,6 +69,7 @@ export function createCli(): Command {
   registerExecutionLogCommands(program);
   registerAuthCommands(program);
   registerSkillsAddCommand(program);
+  registerFileCommands(program);
 
   return program;
 }
