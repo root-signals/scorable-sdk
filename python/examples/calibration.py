@@ -17,6 +17,7 @@ network_troubleshooting_evaluator = client.evaluators.create(
                 """,
     intent="To measure the technical accuracy and appropriateness of network troubleshooting responses",
     model="gemini-3-flash",
+    overwrite=True,
 )
 
 
