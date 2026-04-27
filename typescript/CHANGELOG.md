@@ -1,3 +1,7 @@
+## 0.6.0
+
+- Add file upload support
+
 ## 0.5.0
 
 - Simplify visibility model: replace multi-value `status` field with `private`/`public` visibility
