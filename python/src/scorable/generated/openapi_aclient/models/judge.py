@@ -25,7 +25,7 @@ from typing_extensions import Annotated, Self
 from scorable.generated.openapi_aclient.models.evaluator_inputs_value import EvaluatorInputsValue
 from scorable.generated.openapi_aclient.models.judge_files_inner import JudgeFilesInner
 from scorable.generated.openapi_aclient.models.nested_evaluator import NestedEvaluator
-from scorable.generated.openapi_aclient.models.visibility_ef8_enum import VisibilityEf8Enum
+from scorable.generated.openapi_aclient.models.visibility_enum import VisibilityEnum
 
 
 class Judge(BaseModel):
@@ -44,7 +44,7 @@ class Judge(BaseModel):
     intent: StrictStr = Field(description="Intent for the judge")
     name: Annotated[str, Field(min_length=3, strict=True, max_length=512)]
     stage: Optional[Annotated[str, Field(strict=True, max_length=255)]] = None
-    visibility: VisibilityEf8Enum
+    visibility: VisibilityEnum
     version_id: StrictStr
     __properties: ClassVar[List[str]] = [
         "_meta",

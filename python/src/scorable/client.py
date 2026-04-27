@@ -25,6 +25,7 @@ from .generated.openapi_client.configuration import Configuration as _Configurat
 if TYPE_CHECKING:
     from .datasets import DataSets
     from .execution_logs import ExecutionLogs
+    from .files import Files
     from .judges import Judges
     from .models import Models
     from .objectives import Objectives
@@ -165,6 +166,13 @@ class Scorable:
         from .datasets import DataSets
 
         return DataSets(self.get_client_context, self.base_url, self.api_key)
+
+    @cached_property
+    def files(self) -> Files:
+        """Get Files API"""
+        from .files import Files
+
+        return Files(self.get_client_context, self.base_url, self.api_key)
 
     @cached_property
     def evaluators(self) -> Evaluators:

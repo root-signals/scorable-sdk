@@ -27,7 +27,7 @@ from scorable.generated.openapi_aclient.models.evaluator_inputs_value import Eva
 from scorable.generated.openapi_aclient.models.input_variable import InputVariable
 from scorable.generated.openapi_aclient.models.nested_user_details import NestedUserDetails
 from scorable.generated.openapi_aclient.models.objective import Objective
-from scorable.generated.openapi_aclient.models.visibility_ef8_enum import VisibilityEf8Enum
+from scorable.generated.openapi_aclient.models.visibility_enum import VisibilityEnum
 
 
 class Evaluator(BaseModel):
@@ -48,7 +48,7 @@ class Evaluator(BaseModel):
     objective: Optional[Objective]
     owner: NestedUserDetails
     prompt: Annotated[str, Field(strict=True, max_length=500000)]
-    visibility: VisibilityEf8Enum
+    visibility: VisibilityEnum
     updated_at: Optional[datetime]
     updated_by: Optional[NestedUserDetails]
     version_id: StrictStr

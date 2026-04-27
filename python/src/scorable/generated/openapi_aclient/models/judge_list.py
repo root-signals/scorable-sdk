@@ -24,7 +24,7 @@ from typing_extensions import Self
 
 from scorable.generated.openapi_aclient.models.evaluator_inputs_value import EvaluatorInputsValue
 from scorable.generated.openapi_aclient.models.nested_evaluator import NestedEvaluator
-from scorable.generated.openapi_aclient.models.visibility_ef8_enum import VisibilityEf8Enum
+from scorable.generated.openapi_aclient.models.visibility_enum import VisibilityEnum
 
 
 class JudgeList(BaseModel):
@@ -36,7 +36,7 @@ class JudgeList(BaseModel):
     name: StrictStr
     intent: StrictStr
     created_at: datetime
-    visibility: VisibilityEf8Enum
+    visibility: VisibilityEnum
     inputs: Dict[str, EvaluatorInputsValue] = Field(
         description="Schema defining the input parameters required for execution. The schema consists of variables defined in the prompt template (predicate) and special variables like contexts and expected output."
     )

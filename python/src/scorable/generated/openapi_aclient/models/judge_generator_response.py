@@ -31,7 +31,16 @@ class JudgeGeneratorResponse(BaseModel):
     judge_version_id: StrictStr
     error_code: Optional[StrictStr] = None
     claim_token: Optional[StrictStr] = None
-    __properties: ClassVar[List[str]] = ["judge_id", "judge_version_id", "error_code", "claim_token"]
+    missing_context_from_system_goal: Optional[List[Dict[str, StrictStr]]] = None
+    stages: Optional[List[StrictStr]] = None
+    __properties: ClassVar[List[str]] = [
+        "judge_id",
+        "judge_version_id",
+        "error_code",
+        "claim_token",
+        "missing_context_from_system_goal",
+        "stages",
+    ]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -80,6 +89,19 @@ class JudgeGeneratorResponse(BaseModel):
         if self.claim_token is None and "claim_token" in self.model_fields_set:
             _dict["claim_token"] = None
 
+        # set to None if missing_context_from_system_goal (nullable) is None
+        # and model_fields_set contains the field
+        if (
+            self.missing_context_from_system_goal is None
+            and "missing_context_from_system_goal" in self.model_fields_set
+        ):
+            _dict["missing_context_from_system_goal"] = None
+
+        # set to None if stages (nullable) is None
+        # and model_fields_set contains the field
+        if self.stages is None and "stages" in self.model_fields_set:
+            _dict["stages"] = None
+
         return _dict
 
     @classmethod
@@ -97,6 +119,8 @@ class JudgeGeneratorResponse(BaseModel):
                 "judge_version_id": obj.get("judge_version_id"),
                 "error_code": obj.get("error_code"),
                 "claim_token": obj.get("claim_token"),
+                "missing_context_from_system_goal": obj.get("missing_context_from_system_goal"),
+                "stages": obj.get("stages"),
             }
         )
         return _obj

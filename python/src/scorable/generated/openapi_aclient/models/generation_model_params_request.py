@@ -16,9 +16,9 @@ from __future__ import annotations
 import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set, Union
+from typing import Any, ClassVar, Dict, List, Optional, Set
 
-from pydantic import BaseModel, ConfigDict, StrictFloat, StrictInt
+from pydantic import BaseModel, ConfigDict, StrictInt
 from typing_extensions import Self
 
 from scorable.generated.openapi_aclient.models.reasoning_effort_enum import ReasoningEffortEnum
@@ -30,9 +30,8 @@ class GenerationModelParamsRequest(BaseModel):
     """  # noqa: E501
 
     seed: Optional[StrictInt] = None
-    temperature: Optional[Union[StrictFloat, StrictInt]] = None
     reasoning_effort: Optional[ReasoningEffortEnum] = None
-    __properties: ClassVar[List[str]] = ["seed", "temperature", "reasoning_effort"]
+    __properties: ClassVar[List[str]] = ["seed", "reasoning_effort"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -76,11 +75,6 @@ class GenerationModelParamsRequest(BaseModel):
         if self.seed is None and "seed" in self.model_fields_set:
             _dict["seed"] = None
 
-        # set to None if temperature (nullable) is None
-        # and model_fields_set contains the field
-        if self.temperature is None and "temperature" in self.model_fields_set:
-            _dict["temperature"] = None
-
         return _dict
 
     @classmethod
@@ -92,11 +86,5 @@ class GenerationModelParamsRequest(BaseModel):
         if not isinstance(obj, dict):
             return cls.model_validate(obj)
 
-        _obj = cls.model_validate(
-            {
-                "seed": obj.get("seed"),
-                "temperature": obj.get("temperature"),
-                "reasoning_effort": obj.get("reasoning_effort"),
-            }
-        )
+        _obj = cls.model_validate({"seed": obj.get("seed"), "reasoning_effort": obj.get("reasoning_effort")})
         return _obj

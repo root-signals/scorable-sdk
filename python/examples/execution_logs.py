@@ -8,6 +8,7 @@ evaluator = client.evaluators.create(
     intent="Asses the response",
     predicate="Is this a integer in the range 0-100: {{response}}",
     model="gemini-3-flash",
+    overwrite=True,
 )
 
 # Execute the evaluator

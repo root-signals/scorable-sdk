@@ -14,6 +14,7 @@ Do not edit the class manually.
 
 # import models into model package
 from scorable.generated.openapi_aclient.models.batch_execution_status import BatchExecutionStatus
+from scorable.generated.openapi_aclient.models.batch_set_tags_model_request import BatchSetTagsModelRequest
 from scorable.generated.openapi_aclient.models.data_set_create import DataSetCreate
 from scorable.generated.openapi_aclient.models.data_set_create_request import DataSetCreateRequest
 from scorable.generated.openapi_aclient.models.data_set_list import DataSetList
@@ -70,7 +71,6 @@ from scorable.generated.openapi_aclient.models.judge_execution_response import J
 from scorable.generated.openapi_aclient.models.judge_files_inner import JudgeFilesInner
 from scorable.generated.openapi_aclient.models.judge_generator_request import JudgeGeneratorRequest
 from scorable.generated.openapi_aclient.models.judge_generator_response import JudgeGeneratorResponse
-from scorable.generated.openapi_aclient.models.judge_generator_visibility_enum import JudgeGeneratorVisibilityEnum
 from scorable.generated.openapi_aclient.models.judge_invite_request import JudgeInviteRequest
 from scorable.generated.openapi_aclient.models.judge_list import JudgeList
 from scorable.generated.openapi_aclient.models.judge_rectifier_request_request import JudgeRectifierRequestRequest
@@ -131,4 +131,4 @@ from scorable.generated.openapi_aclient.models.skill_test_input_request import S
 from scorable.generated.openapi_aclient.models.status_enum import StatusEnum
 from scorable.generated.openapi_aclient.models.target_enum import TargetEnum
 from scorable.generated.openapi_aclient.models.validation_result_status import ValidationResultStatus
-from scorable.generated.openapi_aclient.models.visibility_ef8_enum import VisibilityEf8Enum
+from scorable.generated.openapi_aclient.models.visibility_enum import VisibilityEnum

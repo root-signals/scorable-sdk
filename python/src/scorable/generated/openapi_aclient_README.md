@@ -94,7 +94,9 @@ Class | Method | HTTP request | Description
 *ExecutionLogsApi* | [**execution_logs_list**](scorable/generated/openapi_aclient/docs/ExecutionLogsApi.md#execution_logs_list) | **GET** /v1/execution-logs/ | 
 *ExecutionLogsApi* | [**execution_logs_retrieve**](scorable/generated/openapi_aclient/docs/ExecutionLogsApi.md#execution_logs_retrieve) | **GET** /v1/execution-logs/{log_id}/ | 
 *ExecutionLogsApi* | [**execution_logs_session_ids_retrieve**](scorable/generated/openapi_aclient/docs/ExecutionLogsApi.md#execution_logs_session_ids_retrieve) | **GET** /v1/execution-logs/session-ids/ | 
+*ExecutionLogsApi* | [**execution_logs_set_tags_create**](scorable/generated/openapi_aclient/docs/ExecutionLogsApi.md#execution_logs_set_tags_create) | **POST** /v1/execution-logs/set-tags/ | 
 *ExecutionLogsApi* | [**execution_logs_user_ids_retrieve**](scorable/generated/openapi_aclient/docs/ExecutionLogsApi.md#execution_logs_user_ids_retrieve) | **GET** /v1/execution-logs/user-ids/ | 
+*FilesApi* | [**files_create**](scorable/generated/openapi_aclient/docs/FilesApi.md#files_create) | **POST** /v1/files/ | 
 *JudgesApi* | [**judges_batch_execute_create**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_batch_execute_create) | **POST** /v1/judges/{judge_id}/batch-execute/ | 
 *JudgesApi* | [**judges_batch_executions_list**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_batch_executions_list) | **GET** /v1/judges/batch-executions/ | 
 *JudgesApi* | [**judges_batch_executions_retrieve**](scorable/generated/openapi_aclient/docs/JudgesApi.md#judges_batch_executions_retrieve) | **GET** /v1/judges/batch-executions/{id}/ | 
@@ -137,6 +139,7 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [BatchExecutionStatus](scorable/generated/openapi_aclient/docs/BatchExecutionStatus.md)
+ - [BatchSetTagsModelRequest](scorable/generated/openapi_aclient/docs/BatchSetTagsModelRequest.md)
  - [DataSetCreate](scorable/generated/openapi_aclient/docs/DataSetCreate.md)
  - [DataSetCreateRequest](scorable/generated/openapi_aclient/docs/DataSetCreateRequest.md)
  - [DataSetList](scorable/generated/openapi_aclient/docs/DataSetList.md)
@@ -181,7 +184,6 @@ Class | Method | HTTP request | Description
  - [JudgeFilesInner](scorable/generated/openapi_aclient/docs/JudgeFilesInner.md)
  - [JudgeGeneratorRequest](scorable/generated/openapi_aclient/docs/JudgeGeneratorRequest.md)
  - [JudgeGeneratorResponse](scorable/generated/openapi_aclient/docs/JudgeGeneratorResponse.md)
- - [JudgeGeneratorVisibilityEnum](scorable/generated/openapi_aclient/docs/JudgeGeneratorVisibilityEnum.md)
  - [JudgeInviteRequest](scorable/generated/openapi_aclient/docs/JudgeInviteRequest.md)
  - [JudgeList](scorable/generated/openapi_aclient/docs/JudgeList.md)
  - [JudgeRectifierRequestRequest](scorable/generated/openapi_aclient/docs/JudgeRectifierRequestRequest.md)
@@ -232,7 +234,7 @@ Class | Method | HTTP request | Description
  - [StatusEnum](scorable/generated/openapi_aclient/docs/StatusEnum.md)
  - [TargetEnum](scorable/generated/openapi_aclient/docs/TargetEnum.md)
  - [ValidationResultStatus](scorable/generated/openapi_aclient/docs/ValidationResultStatus.md)
- - [VisibilityEf8Enum](scorable/generated/openapi_aclient/docs/VisibilityEf8Enum.md)
+ - [VisibilityEnum](scorable/generated/openapi_aclient/docs/VisibilityEnum.md)
 
 
 <a id="documentation-for-authorization"></a>

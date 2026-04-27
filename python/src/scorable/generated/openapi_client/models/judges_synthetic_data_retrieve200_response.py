@@ -32,8 +32,10 @@ class JudgesSyntheticDataRetrieve200Response(BaseModel):
     """  # noqa: E501
 
     status: Optional[StrictStr] = None
+    name: Optional[StrictStr] = None
+    description: Optional[StrictStr] = None
     samples: Optional[List[JudgesSyntheticDataRetrieve200ResponseSamplesInner]] = None
-    __properties: ClassVar[List[str]] = ["status", "samples"]
+    __properties: ClassVar[List[str]] = ["status", "name", "description", "samples"]
 
     @field_validator("status")
     def status_validate_enum(cls, value):
@@ -89,6 +91,16 @@ class JudgesSyntheticDataRetrieve200Response(BaseModel):
                 if _item:
                     _items.append(_item.to_dict())
             _dict["samples"] = _items
+        # set to None if name (nullable) is None
+        # and model_fields_set contains the field
+        if self.name is None and "name" in self.model_fields_set:
+            _dict["name"] = None
+
+        # set to None if description (nullable) is None
+        # and model_fields_set contains the field
+        if self.description is None and "description" in self.model_fields_set:
+            _dict["description"] = None
+
         return _dict
 
     @classmethod
@@ -103,6 +115,8 @@ class JudgesSyntheticDataRetrieve200Response(BaseModel):
         _obj = cls.model_validate(
             {
                 "status": obj.get("status"),
+                "name": obj.get("name"),
+                "description": obj.get("description"),
                 "samples": [
                     JudgesSyntheticDataRetrieve200ResponseSamplesInner.from_dict(_item) for _item in obj["samples"]
                 ]

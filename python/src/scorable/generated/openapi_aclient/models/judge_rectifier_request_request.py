@@ -38,6 +38,10 @@ class JudgeRectifierRequestRequest(BaseModel):
     user_id: Optional[Annotated[str, Field(strict=True, max_length=255)]] = None
     session_id: Optional[Annotated[str, Field(strict=True, max_length=255)]] = None
     system_prompt: Optional[Annotated[str, Field(strict=True, max_length=3500000)]] = None
+    file_ids: Optional[List[StrictStr]] = Field(
+        default=None,
+        description="File IDs (from POST /v1/files/). Note, not all models support uploaded files as context.",
+    )
     judge_version_id: Optional[StrictStr] = None
     max_iterations: Optional[StrictInt] = Field(default=3, description="Maximum number of improvement attempts")
     patience: Optional[StrictInt] = Field(
@@ -60,6 +64,7 @@ class JudgeRectifierRequestRequest(BaseModel):
         "user_id",
         "session_id",
         "system_prompt",
+        "file_ids",
         "judge_version_id",
         "max_iterations",
         "patience",
@@ -176,6 +181,7 @@ class JudgeRectifierRequestRequest(BaseModel):
                 "user_id": obj.get("user_id"),
                 "session_id": obj.get("session_id"),
                 "system_prompt": obj.get("system_prompt"),
+                "file_ids": obj.get("file_ids"),
                 "judge_version_id": obj.get("judge_version_id"),
                 "max_iterations": obj.get("max_iterations") if obj.get("max_iterations") is not None else 3,
                 "patience": obj.get("patience") if obj.get("patience") is not None else 1,

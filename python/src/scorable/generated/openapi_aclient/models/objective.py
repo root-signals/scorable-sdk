@@ -23,7 +23,6 @@ from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Annotated, Self
 
 from scorable.generated.openapi_aclient.models.nested_user_details import NestedUserDetails
-from scorable.generated.openapi_aclient.models.status_enum import StatusEnum
 
 
 class Objective(BaseModel):
@@ -33,7 +32,6 @@ class Objective(BaseModel):
 
     id: StrictStr
     intent: Optional[Annotated[str, Field(strict=True, max_length=100000)]] = None
-    status: Optional[StatusEnum] = None
     test_set: Optional[List[List[StrictStr]]] = Field(description="Deprecated: Use test_dataset_id instead.")
     created_at: datetime
     owner: NestedUserDetails
@@ -43,7 +41,6 @@ class Objective(BaseModel):
     __properties: ClassVar[List[str]] = [
         "id",
         "intent",
-        "status",
         "test_set",
         "created_at",
         "owner",
@@ -132,7 +129,6 @@ class Objective(BaseModel):
             {
                 "id": obj.get("id"),
                 "intent": obj.get("intent"),
-                "status": obj.get("status"),
                 "test_set": obj.get("test_set"),
                 "created_at": obj.get("created_at"),
                 "owner": NestedUserDetails.from_dict(obj["owner"]) if obj.get("owner") is not None else None,

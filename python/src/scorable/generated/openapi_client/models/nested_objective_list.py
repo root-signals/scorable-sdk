@@ -21,8 +21,6 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Annotated, Self
 
-from scorable.generated.openapi_client.models.status_enum import StatusEnum
-
 
 class NestedObjectiveList(BaseModel):
     """
@@ -31,8 +29,7 @@ class NestedObjectiveList(BaseModel):
 
     id: StrictStr
     intent: Optional[Annotated[str, Field(strict=True, max_length=100000)]] = None
-    status: Optional[StatusEnum] = None
-    __properties: ClassVar[List[str]] = ["id", "intent", "status"]
+    __properties: ClassVar[List[str]] = ["id", "intent"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -87,5 +84,5 @@ class NestedObjectiveList(BaseModel):
         if not isinstance(obj, dict):
             return cls.model_validate(obj)
 
-        _obj = cls.model_validate({"id": obj.get("id"), "intent": obj.get("intent"), "status": obj.get("status")})
+        _obj = cls.model_validate({"id": obj.get("id"), "intent": obj.get("intent")})
         return _obj
