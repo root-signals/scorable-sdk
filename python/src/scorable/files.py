@@ -1,4 +1,5 @@
 import uuid
+from pathlib import Path
 from typing import IO, Optional, Union
 
 import aiohttp
@@ -43,17 +44,18 @@ class Files:
             _filename: str
             if isinstance(file, str):
                 _file = open(file, "rb")
-                _filename = filename or file.split("/")[-1]
+                _filename = filename or Path(file).name
                 files = {"file": (_filename, _file)}
             else:
-                _filename = filename or str(getattr(file, "name", None) or "upload")
+                raw_name = getattr(file, "name", None)
+                _filename = filename or Path(str(raw_name or "upload")).name
                 files = {"file": (_filename, file)}  # type: ignore[dict-item]
 
             response = requests.post(
                 f"{self.base_url}/v1/files/",
                 headers={"Authorization": f"Api-Key {self.api_key}"},
                 files=files,
-                timeout=_request_timeout or 120,
+                timeout=120 if _request_timeout is None else _request_timeout,
             )
             if not response.ok:
                 raise Exception(f"File upload failed with status {response.status_code}: {response.text}")
@@ -76,13 +78,14 @@ class Files:
             _filename: str
             if isinstance(file, str):
                 _file = open(file, "rb")
-                _filename = filename or file.split("/")[-1]
+                _filename = filename or Path(file).name
                 form.add_field("file", _file, filename=_filename)
             else:
-                _filename = filename or str(getattr(file, "name", None) or "upload")
+                raw_name = getattr(file, "name", None)
+                _filename = filename or Path(str(raw_name or "upload")).name
                 form.add_field("file", file, filename=_filename)
 
-            timeout = aiohttp.ClientTimeout(total=_request_timeout or 120)
+            timeout = aiohttp.ClientTimeout(total=120 if _request_timeout is None else _request_timeout)
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.post(
                     f"{self.base_url}/v1/files/",
