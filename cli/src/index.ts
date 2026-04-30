@@ -11,6 +11,8 @@ import { registerExecutionLogCommands } from "./commands/execution-log/index.js"
 import { registerAuthCommands } from "./commands/auth/index.js";
 import { registerSkillsAddCommand } from "./commands/skills-add.js";
 import { registerFileCommands } from "./commands/file/index.js";
+import { registerOtelFilterCommands } from "./commands/otel-filter/index.js";
+import { registerOtelTraceCommands } from "./commands/otel-trace/index.js";
 
 const { version } = createRequire(import.meta.url)("../package.json") as {
   version: string;
@@ -70,6 +72,8 @@ export function createCli(): Command {
   registerAuthCommands(program);
   registerSkillsAddCommand(program);
   registerFileCommands(program);
+  registerOtelFilterCommands(program);
+  registerOtelTraceCommands(program);
 
   return program;
 }
