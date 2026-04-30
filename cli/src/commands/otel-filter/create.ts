@@ -17,10 +17,18 @@ interface CreateOptions {
 export function registerCreateCommand(otelFilter: Command): void {
   otelFilter
     .command("create")
-    .description("Create a new OTEL trace evaluation filter")
+    .description(
+      "Create a new OTEL trace evaluation filter. Wires either an evaluator OR a judge to incoming traces.",
+    )
     .requiredOption("--name <name>", "Filter name")
-    .option("--evaluator-id <id>", "Evaluator UUID (mutually exclusive with --judge-id)")
-    .option("--judge-id <id>", "Judge UUID (mutually exclusive with --evaluator-id)")
+    .option(
+      "--evaluator-id <id>",
+      "Evaluator UUID to run on matching traces (mutually exclusive with --judge-id)",
+    )
+    .option(
+      "--judge-id <id>",
+      "Judge UUID to run on matching traces (mutually exclusive with --evaluator-id)",
+    )
     .option(
       "--filter-criteria <json>",
       'Filter conditions as JSON, e.g. \'{"conditions":[{"column":"name","type":"string","key":"name","operator":"contains","value":"agent"}]}\'',
@@ -31,23 +39,37 @@ export function registerCreateCommand(otelFilter: Command): void {
     .addHelpText(
       "after",
       `
+Target — exactly one of --evaluator-id or --judge-id is required.
+  --evaluator-id  Runs a single evaluator (one score, one justification).
+  --judge-id      Runs a judge — a bundle of evaluators that produces an
+                  aggregate verdict plus per-evaluator scores. Use this
+                  when you've already authored a judge for the agent
+                  you're tracing.
+
 Examples:
-  # Match every span and run an evaluator
+  # Match every span and run a single evaluator
   $ scorable otel-filter create \\
       --name "default-truthfulness" \\
-      --evaluator-id <uuid>
+      --evaluator-id <evaluator-uuid>
 
-  # Match only traces from a specific service (resource attribute)
+  # Run a judge (multi-evaluator) on every trace from a service
+  $ scorable otel-filter create \\
+      --name "construction-quality-judge" \\
+      --judge-id <judge-uuid> \\
+      --filter-criteria '{"conditions":[{"column":"resource","type":"string","key":"service.name","operator":"=","value":"construction_assistant_agent"}]}' \\
+      --delay-seconds 5
+
+  # Match only traces from a specific service (resource attribute), evaluator target
   $ scorable otel-filter create \\
       --name "construction-truthfulness" \\
-      --evaluator-id <uuid> \\
+      --evaluator-id <evaluator-uuid> \\
       --filter-criteria '{"conditions":[{"column":"resource","type":"string","key":"service.name","operator":"=","value":"construction_assistant_agent"}]}' \\
       --delay-seconds 5
 
   # Match by span attribute (gen_ai semantic conventions)
   $ scorable otel-filter create \\
       --name "agent-truthfulness" \\
-      --evaluator-id <uuid> \\
+      --evaluator-id <evaluator-uuid> \\
       --filter-criteria '{"conditions":[{"column":"gen_ai.agent.name","type":"string","key":"gen_ai.agent.name","operator":"=","value":"my_agent"}]}'`,
     )
     .action(async (opts: CreateOptions) => {

@@ -66,6 +66,33 @@ describe("TestOtelFilterCreate", () => {
     expect(result.stdout).toContain(FILTER_ID);
   });
 
+  it("test_create__sends_correct_payload_with_judge_id", async () => {
+    const JUDGE_ID = "11111111-1111-1111-1111-111111111111";
+    const judgeFilter = { ...sampleFilter, evaluator_id: null, judge_id: JUDGE_ID };
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: () => Promise.resolve(judgeFilter),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await runCli([
+      "otel-filter",
+      "create",
+      "--name",
+      "construction-judge",
+      "--judge-id",
+      JUDGE_ID,
+    ]);
+
+    expect(result.exitCode).toBe(0);
+    const [, init] = fetchMock.mock.calls[0];
+    const body = JSON.parse(init.body);
+    expect(body.judge_id).toBe(JUDGE_ID);
+    expect(body.evaluator_id).toBeUndefined();
+    expect(result.stdout).toContain(JUDGE_ID);
+  });
+
   it("test_create__rejects_when_neither_evaluator_nor_judge", async () => {
     const result = await runCli(["otel-filter", "create", "--name", "x"]);
     expect(result.exitCode).toBe(1);
