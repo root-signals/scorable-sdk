@@ -258,6 +258,124 @@ Options: `--page-size`, `--cursor`, `--search`, `--evaluator-id`, `--judge-id`, 
 scorable execution-log get <log_id>
 ```
 
+## OTEL Trace Evaluation Filters
+
+When traces arrive at Scorable's OTLP endpoint, evaluation filters automatically run an evaluator or judge against each matching trace. Results land back on the same trace as a child span carrying the OpenTelemetry GenAI evaluation attributes (`gen_ai.evaluation.name`, `gen_ai.evaluation.score.value`, `gen_ai.evaluation.explanation`).
+
+### Create a filter
+
+```bash
+scorable otel-filter create \
+  --name "default-truthfulness" \
+  --evaluator-id <evaluator-uuid>
+```
+
+Required: `--name` and exactly one of `--evaluator-id` or `--judge-id`. A judge target emits one eval span per inner evaluator.
+
+Options: `--filter-criteria` (JSON of conditions), `--sampling-rate` (0.0–1.0, default 1.0), `--delay-seconds` (default 10, allows late spans to land before evaluation), `--inactive`
+
+Match traces from a specific service, run a 5-second-delayed evaluation:
+
+```bash
+scorable otel-filter create \
+  --name "agent-truthfulness" \
+  --evaluator-id <evaluator-uuid> \
+  --filter-criteria '{"conditions":[{"column":"resource","type":"string","key":"service.name","operator":"=","value":"my_agent"}]}' \
+  --delay-seconds 5
+```
+
+Multi-evaluator judge target:
+
+```bash
+scorable otel-filter create --name "quality-judge" --judge-id <judge-uuid>
+```
+
+### List filters
+
+```bash
+scorable otel-filter list
+```
+
+### Delete a filter
+
+```bash
+scorable otel-filter delete <filter_id>
+```
+
+## OTEL Trace Querying
+
+### List traces
+
+```bash
+scorable otel-trace list
+```
+
+Options: `--since` / `--start-time` / `--end-time` (time window), `--page-size`, `--cursor`, `--output table|json|csv` (default `table`), `--filter` (repeatable raw expression), plus convenience shortcuts below.
+
+Convenience flags — cover the common case, AND-combined with each other and with `--filter`:
+
+| Flag                    | Effect                                 |
+| ----------------------- | -------------------------------------- |
+| `--service-name <name>` | match `resource.service.name = <name>` |
+| `--has-error`           | only traces where some span errored    |
+| `--root-name <substr>`  | substring match on the root span name  |
+| `--span-name <substr>`  | substring match on any span's name     |
+| `--agent-name <name>`   | match `gen_ai.agent.name`              |
+| `--model <name>`        | match `gen_ai.request.model`           |
+| `--tool <name>`         | match `gen_ai.tool.name`               |
+
+Time-window flags (mutually exclusive group):
+
+```bash
+scorable otel-trace list --since 1h          # last hour
+scorable otel-trace list --since 7d
+scorable otel-trace list --start-time 2026-04-30T00:00:00Z --end-time 2026-05-01T00:00:00Z
+```
+
+Common one-liners:
+
+```bash
+# All traces from a specific agent in the last 24h, exported as CSV
+scorable otel-trace list --since 24h --service-name my_agent --output csv > traces.csv
+
+# Errored traces this week
+scorable otel-trace list --since 7d --has-error
+
+# Drill into traces that hit a specific tool
+scorable otel-trace list --tool fetch_customer_data
+```
+
+For anything the shortcuts don't cover, use `--filter` directly. Format: `column;type;key;operator;value`, repeatable, AND-combined. If your instrumentation follows the OpenTelemetry [GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/) — pydantic-ai, OpenLLMetry, Logfire, OpenAI/Anthropic SDKs with otel all do — every documented attribute is filterable without extra setup.
+
+```bash
+# Expensive runs — over 5k input tokens
+scorable otel-trace list --since 24h \
+  --filter 'gen_ai.usage.input_tokens;number;gen_ai.usage.input_tokens;>;5000'
+
+# Multi-turn conversation drill-down
+scorable otel-trace list \
+  --filter 'gen_ai.conversation.id;string;gen_ai.conversation.id;=;conv_5j66'
+
+# Filter on Scorable's own evaluation result spans
+scorable otel-trace list \
+  --filter 'gen_ai.evaluation.name;string;gen_ai.evaluation.name;=;Truthfulness'
+```
+
+See `scorable otel-trace list --help` for the full column / operator / type reference.
+
+### Inspect spans for a trace
+
+```bash
+scorable otel-trace spans <trace_id>
+```
+
+Options: `--output table|json|csv`. The JSON form returns the full span payload — attributes, events, status, kind, `resource_attributes` — which is what you typically want for debugging or piping to `jq`.
+
+```bash
+scorable otel-trace spans <trace_id> --output json | jq '.[0].span.attributes'
+scorable otel-trace spans <trace_id> --output csv > spans.csv
+```
+
 ## Prompt Testing
 
 Initialize a config file and run experiments:

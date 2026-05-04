@@ -6,16 +6,30 @@ const { version } = createRequire(import.meta.url)("../package.json") as {
   version: string;
 };
 
-export async function apiRequest(
+interface RequestOptions {
+  payload?: Record<string, unknown>;
+  params?: Record<string, unknown>;
+  apiKey?: string;
+  baseUrl?: string;
+}
+
+export interface ApiRequestResult {
+  ok: boolean;
+  status: number;
+  data: unknown;
+}
+
+// Returns the full HTTP outcome — `ok` is `false` on network/HTTP/decode errors
+// (in which case the helper has already printed an error to stderr) and `true`
+// on 2xx responses including 204 No Content (where `data` is `null`). Use this
+// when the caller needs to distinguish success-with-no-body from a failure
+// (e.g. DELETE handlers, where both currently surface as `null` from
+// `apiRequest`).
+export async function apiRequestStatus(
   method: string,
   endpoint: string,
-  options?: {
-    payload?: Record<string, unknown>;
-    params?: Record<string, unknown>;
-    apiKey?: string;
-    baseUrl?: string;
-  },
-): Promise<unknown> {
+  options?: RequestOptions,
+): Promise<ApiRequestResult> {
   const apiKey = options?.apiKey ?? getApiKey();
   const baseUrl = options?.baseUrl ?? getBaseUrl();
 
@@ -46,10 +60,10 @@ export async function apiRequest(
     });
   } catch (e) {
     printError(`Request failed: ${e instanceof Error ? e.message : String(e)}`);
-    return null;
+    return { ok: false, status: 0, data: null };
   }
 
-  if (response.status === 204) return null;
+  if (response.status === 204) return { ok: true, status: 204, data: null };
 
   if (!response.ok) {
     printError(`API Error: ${response.status} for ${method} ${url}`);
@@ -58,13 +72,25 @@ export async function apiRequest(
     } catch {
       printError(`Response content: ${await response.text().catch(() => "")}`);
     }
-    return null;
+    return { ok: false, status: response.status, data: null };
   }
 
   try {
-    return await response.json();
+    return { ok: true, status: response.status, data: await response.json() };
   } catch {
     printError(`Failed to decode JSON response from API for ${url}.`);
-    return null;
+    return { ok: false, status: response.status, data: null };
   }
+}
+
+// Convenience wrapper preserving the original `data | null` contract: returns
+// `null` on both 204 and any failure. Prefer `apiRequestStatus` when the
+// caller needs to tell those apart.
+export async function apiRequest(
+  method: string,
+  endpoint: string,
+  options?: RequestOptions,
+): Promise<unknown> {
+  const result = await apiRequestStatus(method, endpoint, options);
+  return result.ok ? result.data : null;
 }
