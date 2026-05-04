@@ -1,3 +1,11 @@
+## 0.8.0
+
+- Add `scorable otel-filter` command group for managing OTEL trace evaluation filters (`create`, `list`, `delete`). Wires an evaluator (`--evaluator-id`) or judge (`--judge-id`) to incoming traces; filters auto-run against matching traces and the result lands back on the trace as a child span carrying the OpenTelemetry GenAI evaluation attributes.
+- Add `scorable otel-trace` command group for querying ingested traces: `list` (with time-window, convenience flags, and raw filter expressions) and `spans <trace_id>` for drilling into one trace.
+- `otel-trace list` convenience flags: `--service-name`, `--has-error`, `--root-name`, `--span-name`, `--agent-name`, `--model`, `--tool`. Each compiles to a wire-format filter and AND-combines with the others and with `--filter`.
+- Time-window flags: `--since 30s|5m|2h|7d`, or `--start-time` and `--end-time` (ISO 8601, mutually exclusive with `--since`).
+- Output formats for `otel-trace list` and `otel-trace spans`: `--output table | json | csv`. CSV uses RFC 4180 quoting so embedded commas, quotes, and newlines round-trip safely.
+
 ## 0.7.0
 
 - Add `scorable file upload <path>` command to upload files (PDF, PNG, JPG, JPEG, WEBP, SVG)
