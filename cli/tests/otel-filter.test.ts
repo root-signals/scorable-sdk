@@ -1,4 +1,7 @@
 import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
+import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
 import { runCli } from "./helpers/run-cli.js";
 
 const EVALUATOR_ID = "053df10f-b0c7-400b-892e-46ce3aa1e430";
@@ -157,6 +160,66 @@ describe("TestOtelFilterCreate", () => {
     ]);
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain("non-negative");
+  });
+
+  it("test_create__reads_yaml_from_file_and_posts_it_as_json", async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "scorable-"));
+    const file = path.join(tmp, "f.yaml");
+    fs.writeFileSync(
+      file,
+      `
+name: from-file
+judge_id: 0193b6a0-e75d-7a47-9c6f-2f3e3b8f7c91
+filter_criteria: {}
+extractor_rules:
+  - emit: request_response
+    input_locator: { kind: span_attr, key: i }
+    output_locator: { kind: span_attr, key: o }
+`,
+    );
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: () => Promise.resolve({ ...sampleFilter, name: "from-file" }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await runCli(["otel-filter", "create", "-f", file]);
+
+    expect(result.exitCode).toBe(0);
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const [, init] = fetchMock.mock.calls[0];
+    const body = JSON.parse(init.body);
+    expect(body.name).toBe("from-file");
+    expect(body.judge_id).toBe("0193b6a0-e75d-7a47-9c6f-2f3e3b8f7c91");
+    expect(body.extractor_rules[0].emit).toBe("request_response");
+  });
+
+  it("test_create__cli_flags_override_file_values", async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "scorable-"));
+    const file = path.join(tmp, "f.yaml");
+    fs.writeFileSync(
+      file,
+      `
+name: from-file
+judge_id: 0193b6a0-e75d-7a47-9c6f-2f3e3b8f7c91
+filter_criteria: {}
+`,
+    );
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: () => Promise.resolve(sampleFilter),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await runCli(["otel-filter", "create", "-f", file, "--name", "overridden"]);
+
+    expect(result.exitCode).toBe(0);
+    const [, init] = fetchMock.mock.calls[0];
+    const body = JSON.parse(init.body);
+    expect(body.name).toBe("overridden");
+    expect(body.judge_id).toBe("0193b6a0-e75d-7a47-9c6f-2f3e3b8f7c91");
   });
 });
 
