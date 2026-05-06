@@ -19,6 +19,13 @@ export function registerValidateCommand(otelFilter: Command): void {
     .addHelpText(
       "after",
       `
+Useful in CI to fail builds on a bad manifest before applying.
+
+Exit codes:
+  0   schema valid; no warnings
+  0   schema valid; warnings written to stderr (e.g. rules don't match any recent span)
+  2   schema invalid (local Zod failure or server 400)
+
 Example:
   $ scorable otel-filter validate -f ./filter.yaml`,
     )

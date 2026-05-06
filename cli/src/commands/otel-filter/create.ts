@@ -41,12 +41,12 @@ export function registerCreateCommand(otelFilter: Command): void {
     .option("--inactive", "Create the filter as inactive")
     .option(
       "-f, --from-file <path>",
-      "Load filter spec from a YAML or JSON file. CLI flags override file values.",
+      "Load filter spec from a YAML/JSON file. Required only when the filter needs extractor_rules (custom input/output extraction).",
     )
     .addHelpText(
       "after",
       `
-Target — exactly one of --evaluator-id or --judge-id is required (either via flags or --from-file).
+Target — exactly one of --evaluator-id or --judge-id is required.
   --evaluator-id  Runs a single evaluator (one score, one justification).
   --judge-id      Runs a judge — a bundle of evaluators that produces an
                   aggregate verdict plus per-evaluator scores. Use this
@@ -66,8 +66,17 @@ Examples:
       --filter-criteria '{"conditions":[{"column":"resource","type":"string","key":"service.name","operator":"=","value":"construction_assistant_agent"}]}' \\
       --delay-seconds 5
 
-  # Load the full filter spec (including extractor_rules) from a YAML file
-  $ scorable otel-filter create -f ./filter.yaml`,
+YAML manifest (only needed for custom extractor_rules):
+  When your traces don't follow the OTel GenAI shape (Claude Code, OpenInference,
+  custom instrumentations) the eval needs to be told where input/output lives.
+  Carry that mapping as extractor_rules inside a YAML file. The flag-based
+  invocation above stays unchanged for everything else.
+
+  $ scorable otel-filter create -f ./filter.yaml
+  $ scorable otel-filter create -f ./filter.yaml --inactive    # override one field
+
+  See examples/otel-filters/ for reference manifests and the README's
+  "OTEL Trace Evaluation Filters" section for the extractor_rules schema.`,
     )
     .action(async (opts: CreateOptions) => {
       let filePayload: Record<string, unknown> = {};

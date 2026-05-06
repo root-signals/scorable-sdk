@@ -13,11 +13,14 @@ interface UpdateOptions {
 export function registerUpdateCommand(otelFilter: Command): void {
   otelFilter
     .command("update <id>")
-    .description("Update an OTEL trace evaluation filter from a YAML or JSON file")
+    .description("Update an OTEL trace evaluation filter from a YAML/JSON manifest")
     .requiredOption("-f, --from-file <path>", "Filter spec path (YAML or JSON)")
     .addHelpText(
       "after",
       `
+Pairs with the YAML-manifest workflow used by \`create -f\`. Edit the file,
+re-apply with this command.
+
 Example:
   $ scorable otel-filter update <filter-id> -f ./filter.yaml`,
     )
