@@ -270,6 +270,42 @@ describe("TestOtelFilterList", () => {
   });
 });
 
+describe("TestOtelFilterUpdate", () => {
+  it("test_update__sends_PATCH_with_merged_file_body", async () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "scorable-"));
+    const file = path.join(tmp, "u.yaml");
+    fs.writeFileSync(
+      file,
+      `
+name: updated
+judge_id: 0193b6a0-e75d-7a47-9c6f-2f3e3b8f7c91
+filter_criteria: {}
+extractor_rules:
+  - emit: request_response
+    input_locator: { kind: span_attr, key: i }
+    output_locator: { kind: span_attr, key: o }
+`,
+    );
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve({ ...sampleFilter, name: "updated" }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await runCli(["otel-filter", "update", FILTER_ID, "-f", file]);
+
+    expect(result.exitCode).toBe(0);
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(String(url)).toContain(`/v1/otel/evaluation-filters/${FILTER_ID}`);
+    expect(init.method).toBe("PATCH");
+    const body = JSON.parse(init.body);
+    expect(body.name).toBe("updated");
+    expect(body.extractor_rules[0].emit).toBe("request_response");
+  });
+});
+
 describe("TestOtelFilterDelete", () => {
   it("test_delete__exits_nonzero_on_failure_and_does_not_print_success", async () => {
     // Regression: previously printed "Filter X deleted." even when the request

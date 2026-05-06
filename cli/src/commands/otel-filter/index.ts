@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { registerCreateCommand } from "./create.js";
 import { registerListCommand } from "./list.js";
 import { registerDeleteCommand } from "./delete.js";
+import { registerUpdateCommand } from "./update.js";
 
 export function registerOtelFilterCommands(program: Command): void {
   const otelFilter = program
@@ -10,5 +11,6 @@ export function registerOtelFilterCommands(program: Command): void {
 
   registerCreateCommand(otelFilter);
   registerListCommand(otelFilter);
+  registerUpdateCommand(otelFilter);
   registerDeleteCommand(otelFilter);
 }
