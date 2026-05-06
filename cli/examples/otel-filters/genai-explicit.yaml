@@ -1,0 +1,16 @@
+name: custom-genai-keys-eval
+judge_id: 0193b6a0-e75d-7a47-9c6f-2f3e3b8f7c91
+sampling_rate: 1.0
+delay_seconds: 60
+is_active: true
+
+filter_criteria:
+  conditions:
+    - column: span_name
+      operator: starts_with
+      value: my_framework.
+
+extractor_rules:
+  - emit: genai_messages
+    input_locator: { kind: span_attr, key: my_framework.input.json }
+    output_locator: { kind: span_attr, key: my_framework.output.json }

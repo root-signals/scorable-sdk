@@ -423,6 +423,24 @@ evaluators:
 
 Results are displayed in a table and a browser link is printed for the full comparison view.
 
+### OTEL evaluation filters
+
+Filters describe which OTEL traces to evaluate and where the input/output content lives in their spans. Persist them as YAML files and apply with the CLI:
+
+```bash
+scorable otel-filter create -f filter.yaml
+scorable otel-filter update <id> -f filter.yaml
+scorable otel-filter validate -f filter.yaml
+```
+
+Three reference manifests in `examples/otel-filters/`:
+
+- `openinference-agent.yaml` — single-span agent emitting OpenInference `input.value` / `output.value` attributes.
+- `claude-code.yaml` — Claude Code's interaction span (user prompt) plus tool spans (input/output events).
+- `genai-explicit.yaml` — gen_ai messages with custom attribute keys.
+
+Filters with no `extractor_rules` fall back to the built-in `gen_ai.input.messages` / `gen_ai.output.messages` extractor.
+
 ## Development
 
 ```bash

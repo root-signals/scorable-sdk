@@ -1,0 +1,17 @@
+name: openinference-agent-eval
+judge_id: 0193b6a0-e75d-7a47-9c6f-2f3e3b8f7c91
+sampling_rate: 1.0
+delay_seconds: 60
+is_active: true
+
+filter_criteria:
+  conditions:
+    - column: attribute
+      key: openinference.span.kind
+      operator: eq
+      value: AGENT
+
+extractor_rules:
+  - emit: request_response
+    input_locator: { kind: span_attr, key: input.value }
+    output_locator: { kind: span_attr, key: output.value }

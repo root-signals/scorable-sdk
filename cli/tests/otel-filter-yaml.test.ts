@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import * as path from "node:path";
+import * as fsCb from "node:fs";
 import { loadFilterYaml, FilterYamlSchema } from "../src/lib/filter-yaml.js";
 
 const validYaml = `
@@ -64,6 +66,18 @@ extractor_rules:
 `;
     expect(() => loadFilterYaml(badRule)).toThrow();
   });
+});
+
+describe("example filter manifests", () => {
+  const dir = path.resolve(__dirname, "../examples/otel-filters");
+  const files = fsCb.readdirSync(dir).filter((f) => f.endsWith(".yaml"));
+
+  for (const file of files) {
+    it(`${file} parses through loadFilterYaml`, () => {
+      const source = fsCb.readFileSync(path.join(dir, file), "utf8");
+      expect(() => loadFilterYaml(source)).not.toThrow();
+    });
+  }
 });
 
 // Reference the export so type-check covers it.
