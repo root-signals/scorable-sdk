@@ -1,3 +1,9 @@
+## 0.9.0
+
+- Add `scorable otel-filter update <id>` and `scorable otel-filter validate` commands.
+- Add `-f, --from-file` to `scorable otel-filter create` for YAML/JSON filter manifests with custom `extractor_rules`.
+- Add reference manifests under `examples/otel-filters/` (Claude Code, OpenInference, GenAI).
+
 ## 0.8.0
 
 - Add `scorable otel-filter` command group for managing OTEL trace evaluation filters (`create`, `list`, `delete`). Wires an evaluator (`--evaluator-id`) or judge (`--judge-id`) to incoming traces; filters auto-run against matching traces and the result lands back on the trace as a child span carrying the OpenTelemetry GenAI evaluation attributes.
