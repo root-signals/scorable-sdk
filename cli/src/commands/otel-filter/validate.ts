@@ -36,7 +36,7 @@ Example:
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
         printError(`Failed to read --from-file: ${msg}`);
-        throw new CliError(2, msg);
+        throw new CliError(1, msg);
       }
 
       let payload: Record<string, unknown>;

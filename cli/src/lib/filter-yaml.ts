@@ -16,14 +16,30 @@ const Match = z
   })
   .strict();
 
-const Locator = z
-  .object({
-    kind: z.enum(["span_attr", "event_attr", "resource_attr"]),
-    key: z.string(),
-    event_name: z.string().optional(),
-    value_path: z.string().optional(),
-  })
-  .strict();
+const Locator = z.discriminatedUnion("kind", [
+  z
+    .object({
+      kind: z.literal("span_attr"),
+      key: z.string(),
+      value_path: z.string().optional(),
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal("resource_attr"),
+      key: z.string(),
+      value_path: z.string().optional(),
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal("event_attr"),
+      key: z.string(),
+      event_name: z.string(),
+      value_path: z.string().optional(),
+    })
+    .strict(),
+]);
 
 const TextRule = z
   .object({
@@ -76,7 +92,7 @@ export const FilterYamlSchema = z
     name: z.string(),
     evaluator_id: z.string().optional(),
     judge_id: z.string().optional(),
-    filter_criteria: z.record(z.string(), z.unknown()).default({}),
+    filter_criteria: Match.default({ conditions: [] }),
     sampling_rate: z.number().min(0).max(1).optional(),
     delay_seconds: z.number().int().min(0).optional(),
     is_active: z.boolean().optional(),

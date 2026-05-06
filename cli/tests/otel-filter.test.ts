@@ -147,6 +147,36 @@ describe("TestOtelFilterCreate", () => {
     expect(result.stderr).toContain("between 0.0 and 1.0");
   });
 
+  it("test_create__rejects_sampling_rate_with_trailing_garbage", async () => {
+    const result = await runCli([
+      "otel-filter",
+      "create",
+      "--name",
+      "x",
+      "--evaluator-id",
+      EVALUATOR_ID,
+      "--sampling-rate",
+      "0.5foo",
+    ]);
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("between 0.0 and 1.0");
+  });
+
+  it("test_create__rejects_non_integer_delay_seconds", async () => {
+    const result = await runCli([
+      "otel-filter",
+      "create",
+      "--name",
+      "x",
+      "--evaluator-id",
+      EVALUATOR_ID,
+      "--delay-seconds",
+      "1.5",
+    ]);
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("non-negative integer");
+  });
+
   it("test_create__rejects_negative_delay_seconds", async () => {
     const result = await runCli([
       "otel-filter",

@@ -110,8 +110,9 @@ YAML manifest (only needed for custom extractor_rules):
 
       let samplingRate: number | undefined;
       if (opts.samplingRate !== undefined) {
-        samplingRate = parseFloat(opts.samplingRate);
-        if (Number.isNaN(samplingRate) || samplingRate < 0 || samplingRate > 1) {
+        const raw = opts.samplingRate.trim();
+        samplingRate = Number(raw);
+        if (raw === "" || !Number.isFinite(samplingRate) || samplingRate < 0 || samplingRate > 1) {
           printError("--sampling-rate must be a number between 0.0 and 1.0.");
           process.exit(1);
         }
@@ -119,8 +120,9 @@ YAML manifest (only needed for custom extractor_rules):
 
       let delaySeconds: number | undefined;
       if (opts.delaySeconds !== undefined) {
-        delaySeconds = parseInt(opts.delaySeconds, 10);
-        if (Number.isNaN(delaySeconds) || delaySeconds < 0) {
+        const raw = opts.delaySeconds.trim();
+        delaySeconds = Number(raw);
+        if (raw === "" || !Number.isInteger(delaySeconds) || delaySeconds < 0) {
           printError("--delay-seconds must be a non-negative integer.");
           process.exit(1);
         }

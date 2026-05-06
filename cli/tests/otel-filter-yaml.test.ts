@@ -66,6 +66,45 @@ extractor_rules:
 `;
     expect(() => loadFilterYaml(badRule)).toThrow();
   });
+
+  it("rejects event_attr locator without event_name", () => {
+    const bad = `
+name: x
+judge_id: j1
+filter_criteria: {}
+extractor_rules:
+  - emit: text
+    role: user
+    locator: { kind: event_attr, key: bash_command }
+`;
+    expect(() => loadFilterYaml(bad)).toThrow(/event_name/);
+  });
+
+  it("rejects span_attr locator with event_name", () => {
+    const bad = `
+name: x
+judge_id: j1
+filter_criteria: {}
+extractor_rules:
+  - emit: text
+    role: user
+    locator: { kind: span_attr, key: x, event_name: foo }
+`;
+    expect(() => loadFilterYaml(bad)).toThrow(/event_name/);
+  });
+
+  it("rejects filter_criteria that is not a Match shape", () => {
+    const bad = `
+name: x
+judge_id: j1
+filter_criteria: { foo: 1 }
+extractor_rules:
+  - emit: request_response
+    input_locator: { kind: span_attr, key: i }
+    output_locator: { kind: span_attr, key: o }
+`;
+    expect(() => loadFilterYaml(bad)).toThrow(/filter_criteria|foo/);
+  });
 });
 
 describe("example filter manifests", () => {
