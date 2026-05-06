@@ -1,16 +1,18 @@
 import { z } from "zod";
 import yaml from "js-yaml";
 
+const MatchCondition = z
+  .object({
+    column: z.string(),
+    operator: z.string(),
+    value: z.union([z.string(), z.number(), z.boolean()]).optional(),
+    key: z.string().optional(),
+  })
+  .strict();
+
 const Match = z
   .object({
-    span_name: z
-      .object({
-        eq: z.string().optional(),
-        contains: z.string().optional(),
-        starts_with: z.string().optional(),
-      })
-      .strict()
-      .optional(),
+    conditions: z.array(MatchCondition).default([]),
   })
   .strict();
 

@@ -12,12 +12,20 @@ filter_criteria:
 
 extractor_rules:
   - emit: text
-    match: { span_name: { eq: claude_code.interaction } }
+    match:
+      conditions:
+        - column: span_name
+          operator: "="
+          value: claude_code.interaction
     role: user
     locator: { kind: span_attr, key: user_prompt }
 
   - emit: tool_pair
-    match: { span_name: { eq: claude_code.tool } }
+    match:
+      conditions:
+        - column: span_name
+          operator: "="
+          value: claude_code.tool
     tool_name: Bash
     input_locator: { kind: event_attr, event_name: tool.output, key: bash_command }
     output_locator: { kind: event_attr, event_name: tool.output, key: output }
