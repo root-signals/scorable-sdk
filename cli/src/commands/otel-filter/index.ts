@@ -3,6 +3,7 @@ import { registerCreateCommand } from "./create.js";
 import { registerListCommand } from "./list.js";
 import { registerDeleteCommand } from "./delete.js";
 import { registerUpdateCommand } from "./update.js";
+import { registerValidateCommand } from "./validate.js";
 
 export function registerOtelFilterCommands(program: Command): void {
   const otelFilter = program
@@ -13,4 +14,5 @@ export function registerOtelFilterCommands(program: Command): void {
   registerListCommand(otelFilter);
   registerUpdateCommand(otelFilter);
   registerDeleteCommand(otelFilter);
+  registerValidateCommand(otelFilter);
 }
