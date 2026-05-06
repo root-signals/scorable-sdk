@@ -302,6 +302,110 @@ scorable otel-filter list
 scorable otel-filter delete <filter_id>
 ```
 
+### Custom extractor rules (when input/output isn't in `gen_ai.*`)
+
+For the common case the flags above are everything you need: matching traces are evaluated and their `gen_ai.input.messages` / `gen_ai.output.messages` are fed to the evaluator. If your traces don't follow that shape — Claude Code, OpenInference, custom instrumentations — you tell the evaluator where input/output live by attaching **`extractor_rules`** to the filter. Filters without `extractor_rules` keep the default behavior.
+
+Rules are carried in a YAML manifest and applied with `-f`:
+
+```bash
+scorable otel-filter create -f filter.yaml
+scorable otel-filter update <id> -f filter.yaml
+scorable otel-filter validate -f filter.yaml   # dry-run; exit 2 on schema error
+```
+
+CLI flags override values from the file when both are provided.
+
+#### Manifest shape
+
+```yaml
+name: <string>
+evaluator_id: <uuid> # exactly one of evaluator_id / judge_id
+judge_id: <uuid>
+sampling_rate: <0.0-1.0> # optional, default 1.0
+delay_seconds: <int> # optional, default 10
+is_active: <bool> # optional, default true
+filter_criteria: # which traces to evaluate (same shape as --filter-criteria)
+  conditions:
+    - column: <string> # span_name, has_error, kind, status, attribute, resource, …
+      operator: <string> # =, !=, contains, starts with, any of, none of, …
+      value: <string|number|bool>
+      key: <string> # required for "attribute" / "resource" sentinel columns
+extractor_rules: # optional; how to extract input/output from matching spans
+  - emit: <text|request_response|tool_pair|genai_messages>
+    match: # optional; same shape as filter_criteria — empty matches every span
+      conditions: [...]
+    # … emit-specific fields, see below …
+```
+
+#### `extractor_rules` reference
+
+Each rule has an `emit` kind, an optional `match` filter (same shape as `filter_criteria.conditions`), and emit-specific fields. Spans are walked in timestamp order; per span, the **first** rule whose `match` passes wins.
+
+A rule set must be able to produce both user-side and agent-side content (a `request_response` or `genai_messages` rule alone qualifies; a single `text` `role: user` rule does not). Validation rejects sets that can't.
+
+**`text`** — emit one `MessageTurn` per matching span.
+
+```yaml
+- emit: text
+  match: # optional
+    conditions:
+      - { column: span_name, operator: "=", value: claude_code.interaction }
+  role: user # user | assistant
+  locator: # where the value lives
+    kind: span_attr # span_attr | event_attr | resource_attr
+    key: user_prompt # attribute name
+    event_name: <string> # required when kind: event_attr
+    value_path: $.foo # optional JSONPath into the located value
+  tool_name: <string> # only valid when role: assistant
+```
+
+**`request_response`** — emit a user turn + an assistant turn from one span. Common when an agent stores prompt and response as flat attributes (OpenInference's `input.value` / `output.value`).
+
+```yaml
+- emit: request_response
+  match: { ... } # optional
+  input_locator: { kind: span_attr, key: input.value } # → user turn
+  output_locator: { kind: span_attr, key: output.value } # → assistant turn
+```
+
+**`tool_pair`** — emit one assistant turn per matching span carrying a tool call (input + output combined into the turn content). Built for tool-execution spans like Claude Code's `claude_code.tool` event.
+
+```yaml
+- emit: tool_pair
+  match: { ... } # optional
+  input_locator: { kind: event_attr, event_name: tool.output, key: bash_command }
+  output_locator: { kind: event_attr, event_name: tool.output, key: output }
+  tool_name: Bash # static; OR
+  tool_name_locator: { kind: span_attr, key: tool_name } # dynamic
+```
+
+**`genai_messages`** — same parsing as the default extractor, but on attribute keys you choose. Use this if your service emits the standard `gen_ai` JSON-array shape under non-default attribute names.
+
+```yaml
+- emit: genai_messages
+  match: { ... } # optional
+  input_locator: { kind: span_attr, key: my_framework.input.json }
+  output_locator: { kind: span_attr, key: my_framework.output.json }
+```
+
+#### Locator details
+
+| Field        | Meaning                                                                                           |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| `kind`       | `span_attr` (top-level), `event_attr` (inside a named event), or `resource_attr` (resource-level) |
+| `key`        | Attribute name to read                                                                            |
+| `event_name` | Only for `event_attr` — the OTel event whose attributes to read (e.g. `tool.output`)              |
+| `value_path` | Optional JSONPath into the located value; used when the attribute is itself JSON                  |
+
+#### Reference manifests
+
+`examples/otel-filters/`:
+
+- `openinference-agent.yaml` — single-span agent with `input.value` / `output.value` (`request_response`).
+- `claude-code.yaml` — Claude Code's interaction span + tool spans (`text` + `tool_pair`).
+- `genai-explicit.yaml` — gen_ai messages under custom attribute keys.
+
 ## OTEL Trace Querying
 
 ### List traces
