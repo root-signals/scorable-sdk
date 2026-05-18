@@ -136,6 +136,40 @@ Prompts for confirmation. Use `--yes` to skip.
 scorable judge duplicate <judge_id>
 ```
 
+### Generate a judge
+
+AI-powered judge generation from a plain-language description of what you want to evaluate.
+
+```bash
+scorable judge generate --intent "I am building a customer support chatbot. Evaluate that responses are helpful and follow our refund policy."
+```
+
+Attach a policy document so the generated evaluators can check compliance against it:
+
+```bash
+# Upload and generate in one step
+scorable judge generate --intent "Evaluate responses against the attached policy." --file ./policy.pdf
+
+# Or reuse an already-uploaded file
+scorable judge generate --intent "Evaluate responses against the attached policy." --file-id <file_uuid>
+```
+
+Options: `--intent` (required), `--file` (path to PDF/PNG/JPG — uploads and attaches), `--file-id` (UUID of an already-uploaded file), `--visibility` (`private`/`public`, default `private`), `--name`, `--stage`, `--extra-contexts` (JSON object, e.g. `'{"Domain":"hotel","Tone":"formal"}'`), `--reasoning-effort` (`off`/`low`/`medium`/`high`), `--judge-id` (regenerate an existing judge), `--overwrite`, `--context-aware`
+
+## File Management
+
+### Upload a file
+
+Upload a PDF or image for use as context in judge generation or evaluator execution.
+
+```bash
+scorable file upload ./policy.pdf
+```
+
+Returns a file UUID that can be passed to `judge generate --file-id` or `evaluator execute --file-ids`.
+
+Supported formats: PDF, PNG, JPG, JPEG, WEBP, SVG.
+
 ## Judge Execution
 
 ### Execute by ID
