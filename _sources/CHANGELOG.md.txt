@@ -1,3 +1,7 @@
+## 1.9.1
+
+- Patch high-severity dependency vulnerability (urllib3 2.7.0 — CVE-2026-44431: sensitive headers forwarded in proxied redirects, decompression-bomb bypass)
+
 ## 1.9.0
 
 - Add file upload support
