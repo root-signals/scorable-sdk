@@ -1,0 +1,43 @@
+import { Command } from "commander";
+import ora from "ora";
+import { requireApiKey, getSdkClient } from "../../auth.js";
+import { printSuccess, handleSdkError } from "../../output.js";
+import { CliError } from "../../types.js";
+
+export function registerDeleteCommand(model: Command): void {
+  model
+    .command("delete <modelId>")
+    .description("Delete a custom model by its ID")
+    .option("--yes", "Skip confirmation prompt")
+    .action(async (modelId: string, opts: { yes?: boolean }) => {
+      const apiKey = await requireApiKey();
+
+      if (!opts.yes) {
+        if (!process.stdin.isTTY && !process.stdout.isTTY) {
+          throw new CliError(
+            1,
+            "Refusing to prompt for confirmation in a non-interactive environment. Pass --yes to skip the prompt.",
+          );
+        }
+        const { confirm } = await import("@inquirer/prompts");
+        const ok = await confirm({
+          message: "Are you sure you want to delete this model?",
+          default: false,
+        });
+        if (!ok) {
+          throw new CliError(1, "Aborted");
+        }
+      }
+
+      const spinner = ora("Deleting...").start();
+      try {
+        const client = getSdkClient(apiKey);
+        await client.models.delete(modelId);
+        spinner.stop();
+        printSuccess(`Model ${modelId} deleted successfully.`);
+      } catch (e) {
+        spinner.stop();
+        handleSdkError(e);
+      }
+    });
+}

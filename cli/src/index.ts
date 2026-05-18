@@ -13,6 +13,7 @@ import { registerSkillsAddCommand } from "./commands/skills-add.js";
 import { registerFileCommands } from "./commands/file/index.js";
 import { registerOtelFilterCommands } from "./commands/otel-filter/index.js";
 import { registerOtelTraceCommands } from "./commands/otel-trace/index.js";
+import { registerModelCommands } from "./commands/model/index.js";
 
 const { version } = createRequire(import.meta.url)("../package.json") as {
   version: string;
@@ -74,6 +75,7 @@ export function createCli(): Command {
   registerFileCommands(program);
   registerOtelFilterCommands(program);
   registerOtelTraceCommands(program);
+  registerModelCommands(program);
 
   return program;
 }
