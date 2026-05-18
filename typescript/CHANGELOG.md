@@ -1,3 +1,9 @@
+## 0.7.0
+
+- Add `models.verify(...)` to test an unsaved LLM model configuration via `POST /v1/models/verify/`. Exposes `VerifyModelData` and `VerifyModelResponse` types.
+- Add `file_id` to `JudgeGenerateParams` so callers can attach an uploaded document to judge generation. Optional, defaults to `null`.
+- Remove `ModelListParams` (type-only breaking change). `models.list(...)` now accepts the shared `ListParams` — the previous `name`/`vendor` fields were not supported by the API.
+
 ## 0.6.1
 
 - Patch high-severity dependency vulnerabilities (fast-uri 3.1.2 — host confusion via percent-encoded authority delimiters, path traversal via percent-encoded dot segments)
