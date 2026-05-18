@@ -13,7 +13,7 @@ export function registerDeleteCommand(judge: Command): void {
       const apiKey = await requireApiKey();
 
       if (!opts.yes) {
-        if (!process.stdin.isTTY && !process.stdout.isTTY) {
+        if (!process.stdin.isTTY || !process.stdout.isTTY) {
           throw new CliError(
             1,
             "Refusing to prompt for confirmation in a non-interactive environment. Pass --yes to skip the prompt.",
