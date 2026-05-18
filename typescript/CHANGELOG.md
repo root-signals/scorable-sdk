@@ -1,3 +1,7 @@
+## 0.6.1
+
+- Patch high-severity dependency vulnerabilities (fast-uri 3.1.2 — host confusion via percent-encoded authority delimiters, path traversal via percent-encoded dot segments)
+
 ## 0.6.0
 
 - Add file upload support
