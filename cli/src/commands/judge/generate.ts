@@ -88,14 +88,14 @@ offer to connect the guest with a human agent when uncertain."`,
           }
         }
 
-        let fileId = opts.fileId;
-        if (opts.file) {
-          const uploaded = await uploadFile(opts.file, { silent: true });
-          fileId = uploaded.id;
-        }
-
         const spinner = ora("Generating judge (this may take a moment)...").start();
         try {
+          let fileId = opts.fileId;
+          if (opts.file) {
+            const uploaded = await uploadFile(opts.file, { silent: true });
+            fileId = uploaded.id;
+          }
+
           const client = getSdkClient(apiKey);
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const result = (await client.judges.generate({
