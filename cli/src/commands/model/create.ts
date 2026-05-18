@@ -15,7 +15,7 @@ export function registerCreateCommand(model: Command): void {
     .command("create")
     .description("Create a new custom model")
     .requiredOption("--name <name>", "Model name (unique within your organization)")
-    .option("--model <model>", "Underlying model identifier (e.g. 'gpt-4-turbo')")
+    .option("--model <model>", "Underlying model identifier (e.g. 'gpt-5.5')")
     .option("--url <url>", "API base URL (for self-hosted or non-SaaS endpoints)")
     .option(
       "--key <value>",

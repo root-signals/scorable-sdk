@@ -276,6 +276,59 @@ scorable evaluator execute-by-name "My Evaluator" --request "What is 2+2?" --res
 
 Accepts the same options as `execute`, including `--variables`.
 
+## Custom Model Management
+
+Bring your own LLM (BYO-LLM) — register a custom or self-hosted model, then reference it from evaluators and judges.
+
+### List models
+
+```bash
+scorable model list
+```
+
+Shows ID, name, provider, and visibility. Options: `--page-size`, `--cursor`, `--ordering`.
+
+### Get a model
+
+```bash
+scorable model get <model_id>
+```
+
+### Create a model
+
+```bash
+# SaaS provider (key inline)
+scorable model create --name my-gpt --model gpt-5.5 --key sk-...
+
+# Self-hosted / custom endpoint
+scorable model create \
+  --name azure/gpt-5.5 \
+  --model azure/gpt-5.5 \
+  --url https://my-azure-openai.openai.azure.com \
+  --key sk-...
+
+# Read the key from stdin (keeps it out of shell history)
+echo "$MY_PROVIDER_KEY" | scorable model create --name my-gpt --model gpt-5.5 --key -
+```
+
+Options: `--name` (required), `--model`, `--url` (for self-hosted endpoints), `--key` (provider API key; `-` reads from stdin), `--max-token-count`, `--max-output-token-count`.
+
+### Update a model
+
+```bash
+scorable model update <model_id> --max-output-token-count 4096
+```
+
+`update` is a PATCH — only fields you pass are sent. All `create` flags are accepted as optional updates, including `--key -` for stdin.
+
+### Delete a model
+
+```bash
+scorable model delete <model_id>
+```
+
+Prompts for confirmation. Use `--yes` to skip.
+
 ## Execution Logs
 
 ### List execution logs

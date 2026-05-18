@@ -16,7 +16,7 @@ const mockVerify = vi.fn();
 const sampleModel = {
   id: "model-123",
   name: "my-custom-gpt",
-  model: "gpt-4-turbo",
+  model: "gpt-5.5",
   max_token_count: 8000,
   max_output_token_count: 4000,
 };
@@ -145,7 +145,7 @@ describe("TestModelCreate", () => {
       "--name",
       "my-custom-gpt",
       "--model",
-      "gpt-4-turbo",
+      "gpt-5.5",
       "--url",
       "https://example.com",
       "--key",
@@ -158,7 +158,7 @@ describe("TestModelCreate", () => {
     expect(result.exitCode).toBe(0);
     expect(mockCreate).toHaveBeenCalledWith({
       name: "my-custom-gpt",
-      model: "gpt-4-turbo",
+      model: "gpt-5.5",
       url: "https://example.com",
       default_key: "sk-test",
       max_token_count: 8000,
@@ -167,7 +167,7 @@ describe("TestModelCreate", () => {
   });
 
   it("test_create_model_missing_name", async () => {
-    const result = await runCli(["model", "create", "--model", "gpt-4-turbo"]);
+    const result = await runCli(["model", "create", "--model", "gpt-5.5"]);
     expect(result.exitCode).not.toBe(0);
   });
 
