@@ -32,6 +32,7 @@ export interface JudgeGenerateParams {
   overwrite?: boolean;
   name?: string;
   judge_id?: string;
+  file_id?: string;
   extra_contexts?: { [key: string]: string | null } | null;
   generating_model_params?: {
     reasoning_effort: components['schemas']['ReasoningEffortEnum'];
@@ -204,6 +205,7 @@ export class JudgesResource {
     extra_contexts,
     name,
     judge_id,
+    file_id,
     generating_model_params,
     enable_context_aware_evaluators,
   }: JudgeGenerateParams): Promise<JudgeGeneratorResponse> {
@@ -217,6 +219,7 @@ export class JudgesResource {
         extra_contexts: extra_contexts ?? null,
         name: name ?? null,
         judge_id: judge_id ?? null,
+        file_id: file_id ?? null,
         generating_model_params: generating_model_params ?? null,
         enable_context_aware_evaluators: enable_context_aware_evaluators ?? null,
       },
