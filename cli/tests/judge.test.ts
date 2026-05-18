@@ -1,4 +1,7 @@
 import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
 import { Scorable } from "@root-signals/scorable";
 import { runCli } from "./helpers/run-cli.js";
 import { executeJudge } from "../src/commands/judge/execute.js";
@@ -16,6 +19,7 @@ const mockExecute = vi.fn();
 const mockExecuteByName = vi.fn();
 const mockDuplicate = vi.fn();
 const mockGenerate = vi.fn();
+const mockUpload = vi.fn();
 
 const sampleJudge = {
   id: "judge-123",
@@ -40,6 +44,9 @@ beforeEach(() => {
         executeByName: mockExecuteByName,
         duplicate: mockDuplicate,
         generate: mockGenerate,
+      },
+      files: {
+        upload: mockUpload,
       },
     } as unknown as Scorable;
   });
@@ -614,5 +621,60 @@ describe("TestJudgeGenerate", () => {
     const result = await runCli(["judge", "generate", "--intent", "Evaluate responses"]);
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toContain("invalid_intent");
+  });
+
+  it("test_generate_judge_with_file_id__passes_file_id_to_generate", async () => {
+    mockGenerate.mockResolvedValue({ judge_id: "judge-abc", error_code: null });
+    const result = await runCli([
+      "judge",
+      "generate",
+      "--intent",
+      "Evaluate responses",
+      "--file-id",
+      "file-uuid-123",
+    ]);
+    expect(result.exitCode).toBe(0);
+    expect(mockGenerate).toHaveBeenCalledWith(
+      expect.objectContaining({ file_id: "file-uuid-123" }),
+    );
+  });
+
+  it("test_generate_judge_with_file__uploads_then_passes_file_id", async () => {
+    const tmpFile = path.join(os.tmpdir(), `judge-test-${Math.random()}.pdf`);
+    fs.writeFileSync(tmpFile, Buffer.from("pdf-bytes"));
+    mockUpload.mockResolvedValue({ id: "uploaded-file-uuid" });
+    mockGenerate.mockResolvedValue({ judge_id: "judge-abc", error_code: null });
+    try {
+      const result = await runCli([
+        "judge",
+        "generate",
+        "--intent",
+        "Evaluate responses",
+        "--file",
+        tmpFile,
+      ]);
+      expect(result.exitCode).toBe(0);
+      expect(mockUpload).toHaveBeenCalledOnce();
+      expect(mockGenerate).toHaveBeenCalledWith(
+        expect.objectContaining({ file_id: "uploaded-file-uuid" }),
+      );
+    } finally {
+      fs.unlinkSync(tmpFile);
+    }
+  });
+
+  it("test_generate_judge_with_file_and_file_id__fails_with_conflict_error", async () => {
+    const result = await runCli([
+      "judge",
+      "generate",
+      "--intent",
+      "Evaluate responses",
+      "--file",
+      "/path/to/doc.pdf",
+      "--file-id",
+      "file-uuid-123",
+    ]);
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain("Cannot use both --file and --file-id");
   });
 });
