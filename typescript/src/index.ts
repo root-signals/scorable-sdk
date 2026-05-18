@@ -47,7 +47,8 @@ export type {
   ModelDetail,
   CreateModelData,
   UpdateModelData,
-  ModelListParams,
+  VerifyModelData,
+  VerifyModelResponse,
 } from './resources/models.js';
 
 export type {

@@ -5,6 +5,7 @@ type Client = ReturnType<typeof import('openapi-fetch').default<paths>>;
 
 export type ModelList = components['schemas']['ModelList'];
 export type ModelDetail = components['schemas']['Model'];
+export type VerifyModelResponse = components['schemas']['ModelTestResponse'];
 
 export interface CreateModelData {
   name: string;
@@ -24,9 +25,11 @@ export interface UpdateModelData {
   max_output_token_count?: number;
 }
 
-export interface ModelListParams extends ListParams {
-  name?: string;
-  vendor?: string;
+export interface VerifyModelData {
+  model: string;
+  api_key?: string;
+  url?: string;
+  max_output_token_count?: number;
 }
 
 export class ModelsResource {
@@ -35,7 +38,7 @@ export class ModelsResource {
   /**
    * List all available models
    */
-  async list(params: ModelListParams = {}): Promise<PaginatedResponse<ModelList>> {
+  async list(params: ListParams = {}): Promise<PaginatedResponse<ModelList>> {
     const { data, error } = await this._client.GET('/v1/models/', {
       params: { query: params },
     });
@@ -150,6 +153,27 @@ export class ModelsResource {
         'PATCH_MODEL_FAILED',
         error,
         `Failed to patch model ${id}`,
+      );
+    }
+
+    return responseData;
+  }
+
+  /**
+   * Verify an unsaved LLM model configuration by sending a test prompt.
+   * Useful for validating model parameters before creating the model.
+   */
+  async verify(data: VerifyModelData): Promise<VerifyModelResponse> {
+    const { data: responseData, error } = await this._client.POST('/v1/models/verify/', {
+      body: data,
+    });
+
+    if (error) {
+      throw new ScorableError(
+        (error as ApiError)?.status ?? 500,
+        'VERIFY_MODEL_FAILED',
+        error,
+        'Failed to verify model',
       );
     }
 
