@@ -11,6 +11,7 @@ import {
   handleSdkError,
 } from "../../output.js";
 import { CliError } from "../../types.js";
+import { uploadFile } from "../file/upload.js";
 
 export function registerGenerateCommand(judge: Command): void {
   judge
@@ -42,6 +43,11 @@ offer to connect the guest with a human agent when uncertain."`,
       "Enable context-aware evaluators for RAG applications (hallucination detection, context drift, etc.)",
       false,
     )
+    .option(
+      "--file <path>",
+      "Path to a file (PDF, PNG, JPG) to upload and attach as context for the judge",
+    )
+    .option("--file-id <id>", "ID of an already-uploaded file to use as context for the judge")
     .action(
       async (opts: {
         intent: string;
@@ -53,6 +59,8 @@ offer to connect the guest with a human agent when uncertain."`,
         overwrite: boolean;
         extraContexts?: string;
         contextAware: boolean;
+        file?: string;
+        fileId?: string;
       }) => {
         const acceptedVisibilities = ["private", "public"] as const;
         const visibility = opts.visibility;
@@ -61,6 +69,11 @@ offer to connect the guest with a human agent when uncertain."`,
             `Invalid --visibility value: "${visibility}". Accepted values: private, public.`,
           );
           throw new CliError(1, "invalid_visibility");
+        }
+
+        if (opts.file && opts.fileId) {
+          printError("Cannot use both --file and --file-id. Provide one or the other.");
+          throw new CliError(1, "conflicting_file_options");
         }
 
         const apiKey = await requireApiKey();
@@ -77,6 +90,12 @@ offer to connect the guest with a human agent when uncertain."`,
 
         const spinner = ora("Generating judge (this may take a moment)...").start();
         try {
+          let fileId = opts.fileId;
+          if (opts.file) {
+            const uploaded = await uploadFile(opts.file, { silent: true });
+            fileId = uploaded.id;
+          }
+
           const client = getSdkClient(apiKey);
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const result = (await client.judges.generate({
@@ -86,6 +105,7 @@ offer to connect the guest with a human agent when uncertain."`,
             name: opts.name,
             stage: opts.stage,
             judge_id: opts.judgeId,
+            file_id: fileId,
             extra_contexts: extra_contexts ?? null,
             enable_context_aware_evaluators: opts.contextAware || undefined,
             ...(opts.reasoningEffort && {

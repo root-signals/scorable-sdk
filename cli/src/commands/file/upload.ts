@@ -5,13 +5,21 @@ import * as path from "path";
 import { requireApiKey } from "../../auth.js";
 import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import { getSdkClient } from "../../auth.js";
+import { CliError } from "../../types.js";
 
-export async function uploadFile(filePath: string): Promise<void> {
+export interface UploadedFile {
+  id: string;
+}
+
+export async function uploadFile(
+  filePath: string,
+  { silent = false }: { silent?: boolean } = {},
+): Promise<UploadedFile> {
   const apiKey = await requireApiKey();
 
   if (!fs.existsSync(filePath)) {
     printError(`File not found: ${filePath}`);
-    process.exit(1);
+    throw new CliError(1, "file_not_found");
   }
 
   const client = getSdkClient(apiKey);
@@ -23,8 +31,11 @@ export async function uploadFile(filePath: string): Promise<void> {
   try {
     const result = await client.files.upload(blob, fileName);
     spinner.stop();
-    printSuccess("File uploaded successfully!");
-    printJson(result);
+    if (!silent) {
+      printSuccess("File uploaded successfully!");
+      printJson(result);
+    }
+    return result as UploadedFile;
   } catch (e) {
     spinner.stop();
     throw e;

@@ -4,12 +4,12 @@ import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printSuccess, handleSdkError } from "../../output.js";
 import { CliError } from "../../types.js";
 
-export function registerDeleteCommand(judge: Command): void {
-  judge
-    .command("delete <judgeId>")
-    .description("Delete a judge by its ID")
+export function registerDeleteCommand(model: Command): void {
+  model
+    .command("delete <modelId>")
+    .description("Delete a custom model by its ID")
     .option("--yes", "Skip confirmation prompt")
-    .action(async (judgeId: string, opts: { yes?: boolean }) => {
+    .action(async (modelId: string, opts: { yes?: boolean }) => {
       const apiKey = await requireApiKey();
 
       if (!opts.yes) {
@@ -21,7 +21,7 @@ export function registerDeleteCommand(judge: Command): void {
         }
         const { confirm } = await import("@inquirer/prompts");
         const ok = await confirm({
-          message: "Are you sure you want to delete this judge?",
+          message: "Are you sure you want to delete this model?",
           default: false,
         });
         if (!ok) {
@@ -32,9 +32,9 @@ export function registerDeleteCommand(judge: Command): void {
       const spinner = ora("Deleting...").start();
       try {
         const client = getSdkClient(apiKey);
-        await client.judges.delete(judgeId);
+        await client.models.delete(modelId);
         spinner.stop();
-        printSuccess(`Judge ${judgeId} deleted successfully.`);
+        printSuccess(`Model ${modelId} deleted successfully.`);
       } catch (e) {
         spinner.stop();
         handleSdkError(e);

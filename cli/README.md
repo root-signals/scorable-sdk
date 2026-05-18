@@ -136,6 +136,40 @@ Prompts for confirmation. Use `--yes` to skip.
 scorable judge duplicate <judge_id>
 ```
 
+### Generate a judge
+
+AI-powered judge generation from a plain-language description of what you want to evaluate.
+
+```bash
+scorable judge generate --intent "I am building a customer support chatbot. Evaluate that responses are helpful and follow our refund policy."
+```
+
+Attach a policy document so the generated evaluators can check compliance against it:
+
+```bash
+# Upload and generate in one step
+scorable judge generate --intent "Evaluate responses against the attached policy." --file ./policy.pdf
+
+# Or reuse an already-uploaded file
+scorable judge generate --intent "Evaluate responses against the attached policy." --file-id <file_uuid>
+```
+
+Options: `--intent` (required), `--file` (path to PDF/PNG/JPG — uploads and attaches), `--file-id` (UUID of an already-uploaded file), `--visibility` (`private`/`public`, default `private`), `--name`, `--stage`, `--extra-contexts` (JSON object, e.g. `'{"Domain":"hotel","Tone":"formal"}'`), `--reasoning-effort` (`off`/`low`/`medium`/`high`), `--judge-id` (regenerate an existing judge), `--overwrite`, `--context-aware`
+
+## File Management
+
+### Upload a file
+
+Upload a PDF or image for use as context in judge generation or evaluator execution.
+
+```bash
+scorable file upload ./policy.pdf
+```
+
+Returns a file UUID that can be passed to `judge generate --file-id` or `evaluator execute --file-ids`.
+
+Supported formats: PDF, PNG, JPG, JPEG, WEBP, SVG.
+
 ## Judge Execution
 
 ### Execute by ID
@@ -241,6 +275,59 @@ scorable evaluator execute-by-name "My Evaluator" --request "What is 2+2?" --res
 ```
 
 Accepts the same options as `execute`, including `--variables`.
+
+## Custom Model Management
+
+Bring your own LLM (BYO-LLM) — register a custom or self-hosted model, then reference it from evaluators and judges.
+
+### List models
+
+```bash
+scorable model list
+```
+
+Shows ID, name, provider, and visibility. Options: `--page-size`, `--cursor`, `--ordering`.
+
+### Get a model
+
+```bash
+scorable model get <model_id>
+```
+
+### Create a model
+
+```bash
+# SaaS provider (key inline)
+scorable model create --name my-gpt --model gpt-5.5 --key sk-...
+
+# Self-hosted / custom endpoint
+scorable model create \
+  --name azure/gpt-5.5 \
+  --model azure/gpt-5.5 \
+  --url https://my-azure-openai.openai.azure.com \
+  --key sk-...
+
+# Read the key from stdin (keeps it out of shell history)
+echo "$MY_PROVIDER_KEY" | scorable model create --name my-gpt --model gpt-5.5 --key -
+```
+
+Options: `--name` (required), `--model`, `--url` (for self-hosted endpoints), `--key` (provider API key; `-` reads from stdin), `--max-token-count`, `--max-output-token-count`.
+
+### Update a model
+
+```bash
+scorable model update <model_id> --max-output-token-count 4096
+```
+
+`update` is a PATCH — only fields you pass are sent. All `create` flags are accepted as optional updates, including `--key -` for stdin.
+
+### Delete a model
+
+```bash
+scorable model delete <model_id>
+```
+
+Prompts for confirmation. Use `--yes` to skip.
 
 ## Execution Logs
 

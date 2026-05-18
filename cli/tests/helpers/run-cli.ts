@@ -20,9 +20,11 @@ export async function runCli(args: string[]): Promise<CliResult> {
     stderr += a.join(" ") + "\n";
   });
 
-  // Prevent commands from reading stdin (avoid hangs in test environment)
-  const origIsTTY = process.stdin.isTTY;
+  // Simulate an interactive terminal (avoid stdin reads and non-TTY guards in test env)
+  const origStdinIsTTY = process.stdin.isTTY;
+  const origStdoutIsTTY = process.stdout.isTTY;
   (process.stdin as NodeJS.ReadStream & { isTTY: boolean }).isTTY = true;
+  (process.stdout as NodeJS.WriteStream & { isTTY: boolean }).isTTY = true;
 
   try {
     const cli = createCli();
@@ -45,7 +47,8 @@ export async function runCli(args: string[]): Promise<CliResult> {
       }
     }
   } finally {
-    (process.stdin as NodeJS.ReadStream & { isTTY: boolean }).isTTY = origIsTTY;
+    (process.stdin as NodeJS.ReadStream & { isTTY: boolean }).isTTY = origStdinIsTTY;
+    (process.stdout as NodeJS.WriteStream & { isTTY: boolean }).isTTY = origStdoutIsTTY;
     logSpy.mockRestore();
     errSpy.mockRestore();
   }

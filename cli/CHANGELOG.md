@@ -1,3 +1,12 @@
+## 0.10.0
+
+- Add `scorable model` command group for managing custom LLM models: `list`, `get`, `create`, `update` (PATCH), `delete`.
+- `model create` / `model update` accept `--key -` to read the provider API key from stdin, avoiding shell-history leak.
+- `model list` prints a table (ID / Name / Provider / Visibility) with `--page-size`, `--cursor`, `--ordering`.
+- Add `--file <path>` and `--file-id <id>` to `scorable judge generate`. `--file` uploads then generates in one step; `--file-id` reuses an already-uploaded file. The two options are mutually exclusive.
+- `scorable file upload` now prints the uploaded file object (was silent).
+- Bump `@root-signals/scorable` to `^0.7.0` (adds `models.verify()` and `file_id` on judge generate).
+
 ## 0.9.1
 
 - Update `@root-signals/scorable` to 0.6.1 to patch fast-uri high-severity vulnerabilities (host confusion, path traversal via percent-encoded segments)

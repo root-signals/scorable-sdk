@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import Table from "cli-table3";
 import { CliError } from "./types.js";
-import type { Judge, EvaluatorListItem, ExecutionLogList } from "@root-signals/scorable";
+import type { Judge, EvaluatorListItem, ExecutionLogList, ModelList } from "@root-signals/scorable";
 
 const UNICODE_CHARS = {
   top: "─",
@@ -88,6 +88,27 @@ export function printEvaluatorTable(evaluators: EvaluatorListItem[], nextCursor?
   for (const e of evaluators) {
     const date = (e.created_at ?? "").slice(0, 10);
     table.push([e.id, e.name, date]);
+  }
+
+  console.log(table.toString());
+
+  if (nextCursor) {
+    const cursor = nextCursor.split("cursor=")[1] ?? nextCursor;
+    printInfo(`Next page available. Use --cursor "${cursor}"`);
+  }
+}
+
+export function printModelTable(models: ModelList[], nextCursor?: string): void {
+  const table = new Table({
+    head: ["ID", "Name", "Provider", "Visibility"].map((h) => chalk.bold.cyan(h)),
+    chars: UNICODE_CHARS,
+    colWidths: [38, 32, 22, 18],
+    wordWrap: true,
+  });
+
+  for (const m of models) {
+    const provider = m.provider?.name ?? "";
+    table.push([m.id, m.name, provider, m.visibility ?? ""]);
   }
 
   console.log(table.toString());

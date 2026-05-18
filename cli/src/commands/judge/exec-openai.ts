@@ -14,7 +14,7 @@ export function registerExecOpenaiCommand(judge: Command): void {
   judge
     .command("exec-openai <judgeIdInPath>")
     .description("Execute a specific judge via the OpenAI compatible API")
-    .requiredOption("--model <model>", "LLM model for judge execution (e.g., gpt-4o)")
+    .requiredOption("--model <model>", "LLM model for judge execution (e.g., gpt-5.5)")
     .requiredOption("--messages <json>", "JSON string of the messages payload")
     .option("--extra-body <json>", "Optional JSON string for extra_body parameters")
     .action(

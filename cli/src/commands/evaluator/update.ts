@@ -10,7 +10,7 @@ export function registerUpdateCommand(evaluator: Command): void {
     .description("Update an existing evaluator (PATCH)")
     .option("--name <name>", "The new name for the evaluator")
     .option("--scoring-criteria <text>", "The new scoring criteria (prompt text)")
-    .option("--models <json>", "JSON array of model names. E.g., '[\"gpt-4\"]'")
+    .option("--models <json>", "JSON array of model names. E.g., '[\"gpt-5.5\"]'")
     .option("--objective-id <id>", "The new objective ID")
     .option("--objective-version-id <id>", "The new objective version ID")
     .action(
