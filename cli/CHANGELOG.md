@@ -1,3 +1,7 @@
+## 0.9.1
+
+- Update `@root-signals/scorable` to 0.6.1 to patch fast-uri high-severity vulnerabilities (host confusion, path traversal via percent-encoded segments)
+
 ## 0.9.0
 
 - Add `scorable otel-filter update <id>` and `scorable otel-filter validate` commands.
