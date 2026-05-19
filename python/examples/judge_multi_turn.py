@@ -12,13 +12,38 @@ turns = [
     Turn(role="user", content="It's ORDER-12345"),
     Turn(
         role="assistant",
-        content="{'order_number': 'ORDER-12345', 'status': 'shipped', 'eta': 'Jan 20'}",
-        tool_name="order_lookup",
+        content=None,
+        tool_calls=[
+            {
+                "id": "call_1",
+                "type": "function",
+                "function": {"name": "order_lookup", "arguments": '{"order_id": "ORDER-12345"}'},
+            }
+        ],
+    ),
+    Turn(
+        role="tool",
+        tool_call_id="call_1",
+        content='{"order_number": "ORDER-12345", "status": "shipped", "eta": "Jan 20"}',
     ),
     Turn(
         role="assistant",
         content="I found your order. It's currently in transit.",
     ),
+]
+
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "order_lookup",
+            "description": "Look up an order by ID",
+            "parameters": {
+                "type": "object",
+                "properties": {"order_id": {"type": "string"}},
+            },
+        },
+    }
 ]
 
 evaluator_references = [
@@ -33,7 +58,7 @@ judge = client.judges.create(
 )
 
 # Run the judge on the multi-turn conversation
-result = judge.run(turns=turns)
+result = judge.run(turns=turns, tools=tools)
 
 print(f"Evaluation results for {judge.name}:")
 for evaluator_result in result.evaluator_results:

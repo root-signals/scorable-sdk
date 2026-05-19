@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Scorable API
-  version: 1.0.0 (latest)
+  version: 1.0.0
   description: Scorable JSON API provides a way to access Scorable using provisioned
     API token
 paths:
@@ -552,6 +552,16 @@ paths:
                 summary: Execute a RAG evaluator (for example, Answer Correctness)
               ExecuteAMulti-turnEvaluator:
                 value:
+                  tools:
+                  - type: function
+                    function:
+                      name: order_lookup
+                      description: Look up an order by ID
+                      parameters:
+                        type: object
+                        properties:
+                          order_id:
+                            type: string
                   turns:
                   - role: user
                     content: Hello, I need help with my order
@@ -560,9 +570,17 @@ paths:
                   - role: user
                     content: It's ORDER-12345
                   - role: assistant
-                    content: '{''order_number'': ''ORDER-12345'', ''status'': ''shipped'',
-                      ''eta'': ''Jan 20''}'
-                    tool_name: order_lookup
+                    content: null
+                    tool_calls:
+                    - id: call_1
+                      type: function
+                      function:
+                        name: order_lookup
+                        arguments: '{"order_id": "ORDER-12345"}'
+                  - role: tool
+                    tool_call_id: call_1
+                    content: '{"order_number": "ORDER-12345", "status": "shipped",
+                      "eta": "Jan 20"}'
                   - role: assistant
                     content: I found your order. It's currently in transit.
                     contexts:
@@ -597,6 +615,16 @@ paths:
               examples:
                 ExecuteAMulti-turnEvaluator:
                   value:
+                    tools:
+                    - type: function
+                      function:
+                        name: order_lookup
+                        description: Look up an order by ID
+                        parameters:
+                          type: object
+                          properties:
+                            order_id:
+                              type: string
                     turns:
                     - role: user
                       content: Hello, I need help with my order
@@ -605,9 +633,17 @@ paths:
                     - role: user
                       content: It's ORDER-12345
                     - role: assistant
-                      content: '{''order_number'': ''ORDER-12345'', ''status'': ''shipped'',
-                        ''eta'': ''Jan 20''}'
-                      tool_name: order_lookup
+                      content: null
+                      tool_calls:
+                      - id: call_1
+                        type: function
+                        function:
+                          name: order_lookup
+                          arguments: '{"order_id": "ORDER-12345"}'
+                    - role: tool
+                      tool_call_id: call_1
+                      content: '{"order_number": "ORDER-12345", "status": "shipped",
+                        "eta": "Jan 20"}'
                     - role: assistant
                       content: I found your order. It's currently in transit.
                       contexts:
@@ -955,13 +991,34 @@ paths:
   /v1/files/:
     post:
       operationId: files_create
+      description: 'Upload a PDF or image file (max 20 MB). Allowed types: pdf, png,
+        jpg, jpeg, webp, svg. Returns the file ID to use in `file_ids` when executing
+        evaluators or judges. If an identical file was already uploaded by this user,
+        returns the existing file''s ID with HTTP 200.'
+      summary: Upload a file
       tags:
       - files
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/_FileUploadRequestRequest'
+        required: true
       security:
       - publicApiKey: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_FileUploadResponse'
+          description: ''
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_FileUploadResponse'
+          description: ''
   /v1/judges/:
     get:
       operationId: judges_list
@@ -1204,6 +1261,16 @@ paths:
                   help the LLM answer the question.
               ExampleWithMulti-turnContent:
                 value:
+                  tools:
+                  - type: function
+                    function:
+                      name: order_lookup
+                      description: Look up an order by ID
+                      parameters:
+                        type: object
+                        properties:
+                          order_id:
+                            type: string
                   turns:
                   - role: user
                     content: Hello, I need help with my order
@@ -1212,9 +1279,17 @@ paths:
                   - role: user
                     content: It's ORDER-12345
                   - role: assistant
-                    content: '{''order_number'': ''ORDER-12345'', ''status'': ''shipped'',
-                      ''eta'': ''Jan 20''}'
-                    tool_name: order_lookup
+                    content: null
+                    tool_calls:
+                    - id: call_1
+                      type: function
+                      function:
+                        name: order_lookup
+                        arguments: '{"order_id": "ORDER-12345"}'
+                  - role: tool
+                    tool_call_id: call_1
+                    content: '{"order_number": "ORDER-12345", "status": "shipped",
+                      "eta": "Jan 20"}'
                   - role: assistant
                     content: I found your order. It's currently in transit.
                     contexts:
@@ -1249,6 +1324,16 @@ paths:
               examples:
                 ExampleWithMulti-turnContent:
                   value:
+                    tools:
+                    - type: function
+                      function:
+                        name: order_lookup
+                        description: Look up an order by ID
+                        parameters:
+                          type: object
+                          properties:
+                            order_id:
+                              type: string
                     turns:
                     - role: user
                       content: Hello, I need help with my order
@@ -1257,9 +1342,17 @@ paths:
                     - role: user
                       content: It's ORDER-12345
                     - role: assistant
-                      content: '{''order_number'': ''ORDER-12345'', ''status'': ''shipped'',
-                        ''eta'': ''Jan 20''}'
-                      tool_name: order_lookup
+                      content: null
+                      tool_calls:
+                      - id: call_1
+                        type: function
+                        function:
+                          name: order_lookup
+                          arguments: '{"order_id": "ORDER-12345"}'
+                    - role: tool
+                      tool_call_id: call_1
+                      content: '{"order_number": "ORDER-12345", "status": "shipped",
+                        "eta": "Jan 20"}'
                     - role: assistant
                       content: I found your order. It's currently in transit.
                       contexts:
@@ -2378,6 +2471,202 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedObjectiveList'
           description: ''
+  /v1/otel/evaluation-filters/:
+    get:
+      operationId: otel_evaluation_filters_list
+      description: CRUD API for OTEL trace evaluation filters.
+      tags:
+      - otel
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OtelTraceEvaluationFilterOutput'
+          description: ''
+    post:
+      operationId: otel_evaluation_filters_create
+      description: CRUD API for OTEL trace evaluation filters.
+      tags:
+      - otel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtelTraceEvaluationFilterInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OtelTraceEvaluationFilterInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OtelTraceEvaluationFilterInputRequest'
+        required: true
+      security:
+      - publicApiKey: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtelTraceEvaluationFilterOutput'
+          description: ''
+  /v1/otel/evaluation-filters/{id}/:
+    get:
+      operationId: otel_evaluation_filters_retrieve
+      description: CRUD API for OTEL trace evaluation filters.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - otel
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtelTraceEvaluationFilterOutput'
+          description: ''
+    put:
+      operationId: otel_evaluation_filters_update
+      description: CRUD API for OTEL trace evaluation filters.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - otel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtelTraceEvaluationFilterInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OtelTraceEvaluationFilterInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OtelTraceEvaluationFilterInputRequest'
+        required: true
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtelTraceEvaluationFilterOutput'
+          description: ''
+    delete:
+      operationId: otel_evaluation_filters_destroy
+      description: CRUD API for OTEL trace evaluation filters.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - otel
+      security:
+      - publicApiKey: []
+      responses:
+        '204':
+          description: No response body
+  /v1/otel/evaluation-filters/validate/:
+    post:
+      operationId: otel_evaluation_filters_validate_create
+      description: CRUD API for OTEL trace evaluation filters.
+      tags:
+      - otel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtelTraceEvaluationFilterInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OtelTraceEvaluationFilterInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OtelTraceEvaluationFilterInputRequest'
+        required: true
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /v1/otel/traces/:
+    get:
+      operationId: otel_traces_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - in: query
+        name: filters
+        schema:
+          type: string
+        description: Comma-separated filter groups. Each group is `column;type;key;operator;value`
+          (URL-encoded). Operators include `=`, `!=`, `contains`, `starts with`, `any
+          of`, `none of`, and numeric comparisons (`>`, `>=`, `<`, `<=`).
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - otel
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOtelTraceRecordList'
+          description: ''
+  /v1/otel/traces/{trace_id}/spans/:
+    get:
+      operationId: otel_traces_spans_list
+      parameters:
+      - in: path
+        name: trace_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - otel
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OtelTrace'
+          description: ''
 components:
   schemas:
     BatchExecutionStatus:
@@ -2747,6 +3036,14 @@ components:
           items:
             $ref: '#/components/schemas/MessageTurnRequest'
           nullable: true
+        tools:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+          description: OpenAI-style tool catalog available to the agent during the
+            conversation.
         request:
           type: string
           nullable: true
@@ -3135,9 +3432,6 @@ components:
         prompt_template:
           type: string
           readOnly: true
-        rendered_prompt:
-          type: string
-          readOnly: true
         score:
           type: number
           format: double
@@ -3196,7 +3490,6 @@ components:
       - model_call_duration
       - owner
       - prompt_template
-      - rendered_prompt
       - score
       - session_id
       - system_prompt
@@ -3534,15 +3827,19 @@ components:
     JudgeBatchExecutionInputRequest:
       type: object
       properties:
-        messages:
-          allOf:
-          - $ref: '#/components/schemas/MessagesRequest'
-          nullable: true
         turns:
           type: array
           items:
             $ref: '#/components/schemas/MessageTurnRequest'
           nullable: true
+        tools:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+          description: OpenAI-style tool catalog available to the agent during the
+            conversation.
         request:
           type: string
           nullable: true
@@ -3749,6 +4046,14 @@ components:
           items:
             $ref: '#/components/schemas/MessageTurnRequest'
           nullable: true
+        tools:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+          description: OpenAI-style tool catalog available to the agent during the
+            conversation.
         request:
           type: string
           nullable: true
@@ -3801,6 +4106,10 @@ components:
           items:
             $ref: '#/components/schemas/EvaluatorResult'
           description: List of results from each evaluator
+        execution_log_id:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - evaluator_results
     JudgeGeneratorRequest:
@@ -3990,6 +4299,14 @@ components:
           items:
             $ref: '#/components/schemas/MessageTurnRequest'
           nullable: true
+        tools:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+          description: OpenAI-style tool catalog available to the agent during the
+            conversation.
         request:
           type: string
           nullable: true
@@ -4064,6 +4381,10 @@ components:
           items:
             $ref: '#/components/schemas/EvaluatorResult'
           description: List of results from each evaluator
+        execution_log_id:
+          type: string
+          format: uuid
+          nullable: true
         improved_response:
           type: string
           description: Improved response from rectifier
@@ -4121,8 +4442,9 @@ components:
           items:
             type: string
           description: RAG contexts (only for assistant turns)
-        tool_name:
+        tool_call_id:
           type: string
+        tool_calls:
           nullable: true
         evaluation_justification:
           type: string
@@ -4137,38 +4459,24 @@ components:
           $ref: '#/components/schemas/RoleEnum'
         content:
           type: string
-          minLength: 1
+          nullable: true
         contexts:
           type: array
           items:
             type: string
             minLength: 1
           nullable: true
-        tool_name:
+        tool_calls:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          nullable: true
+        tool_call_id:
           type: string
           nullable: true
       required:
-      - content
       - role
-    MessagesRequest:
-      type: object
-      description: |-
-        Serializer for multi-turn messages.
-
-        DEPRECATED: This serializer is deprecated and will be removed in Fall 2026.
-        Use the `turns` field directly on EvaluatorExecutionSerializerBase instead.
-        Both formats are currently supported for backwards compatibility.
-      properties:
-        turns:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageTurnRequest'
-        target:
-          allOf:
-          - $ref: '#/components/schemas/TargetEnum'
-          default: agent_behavior
-      required:
-      - turns
     Model:
       type: object
       properties:
@@ -4496,6 +4804,146 @@ components:
           type: string
           format: uuid
           nullable: true
+    OtelTrace:
+      type: object
+      properties:
+        trace_id:
+          type: string
+          maxLength: 32
+        span_id:
+          type: string
+          maxLength: 16
+        parent_span_id:
+          type: string
+          maxLength: 16
+        timestamp:
+          type: string
+          format: date-time
+        span: {}
+      required:
+      - span
+      - span_id
+      - timestamp
+      - trace_id
+    OtelTraceEvaluationFilterInputRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        evaluator_id:
+          type: string
+          nullable: true
+        judge_id:
+          type: string
+          nullable: true
+        filter_criteria:
+          type: object
+          additionalProperties: {}
+          default: {}
+        sampling_rate:
+          type: number
+          format: double
+          maximum: 1
+          minimum: 0
+          default: 1.0
+        delay_seconds:
+          type: integer
+          minimum: 0
+          default: 10
+        applies_to_new_only:
+          type: boolean
+          default: true
+        is_active:
+          type: boolean
+          default: true
+        extractor_rules:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          default: []
+      required:
+      - name
+    OtelTraceEvaluationFilterOutput:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        evaluator_id:
+          type: string
+          nullable: true
+        judge_id:
+          type: string
+          nullable: true
+        filter_criteria:
+          type: object
+          additionalProperties: {}
+        sampling_rate:
+          type: number
+          format: double
+        delay_seconds:
+          type: integer
+        applies_to_new_only:
+          type: boolean
+        is_active:
+          type: boolean
+        extractor_rules:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      required:
+      - applies_to_new_only
+      - created_at
+      - delay_seconds
+      - evaluator_id
+      - extractor_rules
+      - filter_criteria
+      - id
+      - is_active
+      - judge_id
+      - name
+      - sampling_rate
+      - updated_at
+    OtelTraceRecord:
+      type: object
+      properties:
+        trace_id:
+          type: string
+          description: OTEL trace ID
+          maxLength: 32
+        root_span_name:
+          type: string
+          description: Name of root span
+          maxLength: 255
+        first_span_at:
+          type: string
+          format: date-time
+          description: Timestamp of first span received
+        last_span_at:
+          type: string
+          format: date-time
+          description: Timestamp of last span received
+        span_count:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Total number of spans in trace
+        input_preview:
+          type: string
+        output_preview:
+          type: string
+      required:
+      - first_span_at
+      - last_span_at
+      - trace_id
     PaginatedDataSetListList:
       type: object
       required:
@@ -4667,6 +5115,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ObjectiveList'
+    PaginatedOtelTraceRecordList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OtelTraceRecord'
     PatchedEvaluatorRequest:
       type: object
       properties:
@@ -4832,10 +5299,12 @@ components:
       enum:
       - user
       - assistant
+      - tool
       type: string
       description: |-
         * `user` - user
         * `assistant` - assistant
+        * `tool` - tool
     SkillExecutionValidatorResult:
       type: object
       properties:
@@ -4957,14 +5426,6 @@ components:
         * `public` - public
         * `public_unlisted` - public_unlisted
         * `private` - private
-    TargetEnum:
-      enum:
-      - agent_behavior
-      - user_behavior
-      type: string
-      description: |-
-        * `agent_behavior` - agent_behavior
-        * `user_behavior` - user_behavior
     ValidationResultStatus:
       enum:
       - pending
@@ -4978,6 +5439,22 @@ components:
       enum:
       - private
       - public
+    _FileUploadRequestRequest:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+      required:
+      - file
+    _FileUploadResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+      required:
+      - id
   securitySchemes:
     publicApiKey:
       type: apiKey
