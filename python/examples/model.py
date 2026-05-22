@@ -13,6 +13,6 @@ model = client.models.create(
 # Use the model in a evaluator
 evaluator = client.evaluators.create(
     name="My model test",
-    predicate="Hello, my model! {{response}}",
+    scoring_criteria="Hello, my model! {{response}}",
     model="ollama/llama3",
 )

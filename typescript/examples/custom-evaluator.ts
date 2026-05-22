@@ -4,7 +4,7 @@ const client = new Scorable({ apiKey: process.env.SCORABLE_API_KEY! });
 
 const networkTroubleshootingEvaluator = await client.evaluators.create({
   name: 'Network Troubleshooting',
-  predicate: `Assess the response for technical accuracy and appropriateness in the context of network troubleshooting.
+  scoring_criteria: `Assess the response for technical accuracy and appropriateness in the context of network troubleshooting.
             Is the advice technically sound and relevant to the user's question?
             Does the troubleshooting process effectively address the likely causes of the issue?
             Is the proposed solution valid and safe to implement?

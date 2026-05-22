@@ -6,7 +6,7 @@ client = Scorable()
 # Create an evaluator
 network_troubleshooting_evaluator = client.evaluators.create(
     name="Advanced Network Troubleshooting",
-    predicate="""Assess the response for technical accuracy and appropriateness in the context of network troubleshooting.
+    scoring_criteria="""Assess the response for technical accuracy and appropriateness in the context of network troubleshooting.
                 Is the advice technically sound and relevant to the user's question?
                 Does the troubleshooting process effectively address the likely causes of the issue?
                 Is the proposed solution valid and safe to implement?

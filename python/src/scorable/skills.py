@@ -1167,7 +1167,7 @@ class Evaluators:
     @with_sync_client
     def create(
         self,
-        predicate: str = "",
+        scoring_criteria: str = "",
         *,
         name: Optional[str] = None,
         intent: Optional[str] = None,
@@ -1183,8 +1183,7 @@ class Evaluators:
         """Create a new evaluator and return the result
 
         Args:
-          predicate: The question / predicate that is provided to the semantic quantification layer to
-          transform it into a final prompt before being passed to the model
+          scoring_criteria: The scoring criteria used to evaluate the output
 
           name: Name of the evaluator (defaulting to <unnamed>)
 
@@ -1221,7 +1220,7 @@ class Evaluators:
         evaluator_request = EvaluatorRequest(
             name=name,
             objective_id=objective_id,
-            prompt=predicate,
+            scoring_criteria=scoring_criteria,
             models=[model for model in [model] + (fallback_models or []) if model is not None],
             input_variables=_to_input_variables(input_variables),
             evaluator_demonstrations=_to_evaluator_demonstrations(evaluator_demonstrations),
@@ -1237,7 +1236,7 @@ class Evaluators:
     @with_async_client
     async def acreate(
         self,
-        predicate: str = "",
+        scoring_criteria: str = "",
         *,
         name: Optional[str] = None,
         intent: Optional[str] = None,
@@ -1254,8 +1253,7 @@ class Evaluators:
         Asynchronously create a new evaluator and return the result
 
         Args:
-          predicate: The question / predicate that is provided to the semantic quantification layer to
-          transform it into a final prompt before being passed to the model
+          scoring_criteria: The scoring criteria used to evaluate the output
 
           name: Name of the evaluator (defaulting to <unnamed>)
 
@@ -1291,7 +1289,7 @@ class Evaluators:
         evaluator_request = AEvaluatorRequest(
             name=name,
             objective_id=objective_id,
-            prompt=predicate,
+            scoring_criteria=scoring_criteria,
             models=[model for model in [model] + (fallback_models or []) if model is not None],
             input_variables=_ato_input_variables(input_variables),
             evaluator_demonstrations=_ato_evaluator_demonstrations(evaluator_demonstrations),
@@ -1314,7 +1312,7 @@ class Evaluators:
         input_variables: Optional[Union[List[InputVariable], List[InputVariableRequest]]] = None,
         model: Optional[ModelName] = None,
         name: Optional[str] = None,
-        predicate: Optional[str] = None,
+        scoring_criteria: Optional[str] = None,
         evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None,
         objective_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
@@ -1334,7 +1332,7 @@ class Evaluators:
             if model or fallback_models
             else None,
             name=name,
-            prompt=predicate,
+            scoring_criteria=scoring_criteria,
             objective_id=objective_id,
             evaluator_demonstrations=_to_evaluator_demonstrations(evaluator_demonstrations)
             if evaluator_demonstrations
@@ -1358,7 +1356,7 @@ class Evaluators:
         input_variables: Optional[Union[List[InputVariable], List[AInputVariableRequest]]] = None,
         model: Optional[ModelName] = None,
         name: Optional[str] = None,
-        predicate: Optional[str] = None,
+        scoring_criteria: Optional[str] = None,
         evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None,
         objective_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
@@ -1379,7 +1377,7 @@ class Evaluators:
             else None,
             name=name,
             objective_id=objective_id,
-            prompt=predicate,
+            scoring_criteria=scoring_criteria,
             evaluator_demonstrations=_ato_evaluator_demonstrations(evaluator_demonstrations)
             if evaluator_demonstrations
             else None,
