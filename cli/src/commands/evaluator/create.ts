@@ -52,7 +52,7 @@ export function registerCreateCommand(evaluator: Command): void {
 
         const payload: EvaluatorCreateParams = {
           name: opts.name,
-          predicate: opts.scoringCriteria,
+          scoring_criteria: opts.scoringCriteria,
         };
 
         if (opts.intent) payload.intent = opts.intent;
