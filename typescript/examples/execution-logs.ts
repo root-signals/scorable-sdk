@@ -6,7 +6,7 @@ const client = new Scorable({ apiKey: process.env.SCORABLE_API_KEY! });
 const evaluator = await client.evaluators.create({
   name: 'My evaluator',
   intent: 'Asses the response',
-  scoring_criteria: 'Is this a integer in the range 0-100: {{request}}',
+  scoring_criteria: 'Is this an integer in the range 0-100: {{request}}',
   model: 'gemini-3-flash',
 });
 
