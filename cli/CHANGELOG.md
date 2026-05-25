@@ -1,3 +1,8 @@
+## 0.11.0
+
+- Rename `evaluator create` and `evaluator update` to send `scoring_criteria` instead of `predicate`/`prompt`
+- Bump `@root-signals/scorable` to `^0.8.0`
+
 ## 0.10.0
 
 - Add `scorable model` command group for managing custom LLM models: `list`, `get`, `create`, `update` (PATCH), `delete`.
