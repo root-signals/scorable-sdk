@@ -27,8 +27,10 @@ export class Scorable {
   public readonly files: FilesResource;
 
   constructor(config: ClientConfig) {
+    const envBaseUrl =
+      typeof process !== 'undefined' ? process.env?.['SCORABLE_API_URL'] : undefined;
     this.config = {
-      baseUrl: 'https://api.scorable.ai',
+      baseUrl: envBaseUrl ?? 'https://api.scorable.ai',
       timeout: 30000,
       ...config,
     };
