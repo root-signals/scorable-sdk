@@ -1,3 +1,7 @@
+## 0.9.0
+
+- Add `SCORABLE_API_URL` environment variable support for configuring the API base URL (on-prem deployments)
+
 ## 0.8.0
 
 - Rename `EvaluatorCreateParams.predicate` → `scoring_criteria`

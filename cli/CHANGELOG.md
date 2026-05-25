@@ -1,3 +1,7 @@
+## 0.12.0
+
+- Add `--api-url <url>` global flag to override the API base URL (on-prem deployments; also overridable via `SCORABLE_API_URL` env var)
+
 ## 0.11.0
 
 - Rename `evaluator create` and `evaluator update` to send `scoring_criteria` instead of `predicate`/`prompt`

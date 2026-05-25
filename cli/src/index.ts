@@ -61,6 +61,13 @@ export function createCli(): Command {
     .version(version, "-V, --version", "Print version number")
     .addHelpText("before", buildBanner(version))
     .addHelpText("after", buildGettingStarted())
+    .option("--api-url <url>", "API base URL (overrides SCORABLE_API_URL env var)")
+    .hook("preAction", (thisCommand) => {
+      const opts = thisCommand.optsWithGlobals() as { apiUrl?: string };
+      if (opts.apiUrl) {
+        process.env["SCORABLE_API_URL"] = opts.apiUrl;
+      }
+    })
     .exitOverride()
     .action(() => {
       program.outputHelp();
