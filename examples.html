@@ -436,7 +436,7 @@ Full list of examples is available <a class="reference external" href="https://g
 
 <span class="n">network_troubleshooting_evaluator</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">evaluators</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Network Troubleshooting&quot;</span><span class="p">,</span>
-    <span class="n">predicate</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Assess the response for technical accuracy and appropriateness in the context of network troubleshooting.</span>
+    <span class="n">scoring_criteria</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Assess the response for technical accuracy and appropriateness in the context of network troubleshooting.</span>
 <span class="s2">            Is the advice technically sound and relevant to the user&#39;s question?</span>
 <span class="s2">            Does the troubleshooting process effectively address the likely causes of the issue?</span>
 <span class="s2">            Is the proposed solution valid and safe to implement?</span>
@@ -524,7 +524,7 @@ Full list of examples is available <a class="reference external" href="https://g
 <span class="c1"># Create an evaluator</span>
 <span class="n">network_troubleshooting_evaluator</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">evaluators</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Advanced Network Troubleshooting&quot;</span><span class="p">,</span>
-    <span class="n">predicate</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Assess the response for technical accuracy and appropriateness in the context of network troubleshooting.</span>
+    <span class="n">scoring_criteria</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Assess the response for technical accuracy and appropriateness in the context of network troubleshooting.</span>
 <span class="s2">                Is the advice technically sound and relevant to the user&#39;s question?</span>
 <span class="s2">                Does the troubleshooting process effectively address the likely causes of the issue?</span>
 <span class="s2">                Is the proposed solution valid and safe to implement?</span>
@@ -787,7 +787,7 @@ Full list of examples is available <a class="reference external" href="https://g
 <span class="c1"># Use the model in a evaluator</span>
 <span class="n">evaluator</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">evaluators</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My model test&quot;</span><span class="p">,</span>
-    <span class="n">predicate</span><span class="o">=</span><span class="s2">&quot;Hello, my model! {{response}}&quot;</span><span class="p">,</span>
+    <span class="n">scoring_criteria</span><span class="o">=</span><span class="s2">&quot;Hello, my model! {{response}}&quot;</span><span class="p">,</span>
     <span class="n">model</span><span class="o">=</span><span class="s2">&quot;ollama/llama3&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>

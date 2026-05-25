@@ -489,14 +489,13 @@ Module Contents
 
 
 
-   .. py:method:: acreate(predicate: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> AEvaluator
+   .. py:method:: acreate(scoring_criteria: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> AEvaluator
       :async:
 
 
       Asynchronously create a new evaluator and return the result
 
-      :param predicate: The question / predicate that is provided to the semantic quantification layer to
-      :param transform it into a final prompt before being passed to the model:
+      :param scoring_criteria: The scoring criteria used to evaluate the output
       :param name: Name of the evaluator (defaulting to <unnamed>)
       :param objective_id: Optional pre-existing objective id to assign to the evaluator.
       :param intent: The intent of the evaluator (defaulting to name); not available if objective_id is set.
@@ -597,7 +596,7 @@ Module Contents
 
 
 
-   .. py:method:: aupdate(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, predicate: Optional[str] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AEvaluator
+   .. py:method:: aupdate(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, scoring_criteria: Optional[str] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AEvaluator
       :async:
 
 
@@ -633,12 +632,11 @@ Module Contents
 
 
 
-   .. py:method:: create(predicate: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> Evaluator
+   .. py:method:: create(scoring_criteria: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> Evaluator
 
       Create a new evaluator and return the result
 
-      :param predicate: The question / predicate that is provided to the semantic quantification layer to
-      :param transform it into a final prompt before being passed to the model:
+      :param scoring_criteria: The scoring criteria used to evaluate the output
       :param name: Name of the evaluator (defaulting to <unnamed>)
       :param objective_id: Optional pre-existing objective id to assign to the evaluator.
       :param intent: The intent of the evaluator (defaulting to name); not available if objective_id is set.
@@ -727,7 +725,7 @@ Module Contents
 
 
 
-   .. py:method:: update(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, predicate: Optional[str] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Evaluator
+   .. py:method:: update(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, scoring_criteria: Optional[str] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Evaluator
 
       Update an evaluator and return the result
 
