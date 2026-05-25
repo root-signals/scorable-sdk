@@ -1,3 +1,9 @@
+## 0.8.0
+
+- Rename `EvaluatorCreateParams.predicate` → `scoring_criteria`
+- Rename `EvaluatorUpdateParams.prompt` → `scoring_criteria`
+- Rename `Evaluator.prompt`, `EvaluatorListOutput.prompt`, `EvaluatorRequest.prompt`, `PatchedEvaluatorRequest.prompt` → `scoring_criteria` in generated types
+
 ## 0.7.0
 
 - Add `models.verify(...)` to test an unsaved LLM model configuration via `POST /v1/models/verify/`. Exposes `VerifyModelData` and `VerifyModelResponse` types.
