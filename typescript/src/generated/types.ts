@@ -836,7 +836,7 @@ export interface components {
       name: string;
       readonly objective: components['schemas']['Objective'] | null;
       readonly owner: components['schemas']['NestedUserDetails'];
-      prompt: string;
+      scoring_criteria: string;
       readonly visibility: components['schemas']['VisibilityEnum'];
       /** Format: date-time */
       readonly updated_at: string | null;
@@ -962,7 +962,7 @@ export interface components {
       readonly name: string;
       readonly objective: components['schemas']['NestedObjectiveList'];
       readonly owner: components['schemas']['NestedUserDetails'];
-      readonly prompt: string;
+      readonly scoring_criteria: string;
       readonly visibility: components['schemas']['VisibilityEnum'];
       /** Format: date-time */
       readonly updated_at: string | null;
@@ -1033,7 +1033,7 @@ export interface components {
        * @default false
        */
       overwrite: boolean;
-      prompt: string;
+      scoring_criteria: string;
     };
     EvaluatorResult: {
       evaluator_name: string;
@@ -1767,7 +1767,7 @@ export interface components {
        * @default false
        */
       overwrite: boolean;
-      prompt?: string;
+      scoring_criteria?: string;
     };
     PatchedJudgeRequest: {
       evaluator_references?: components['schemas']['EvaluatorReferenceRequest'][];

@@ -26,7 +26,7 @@ export interface EvaluatorListParams extends ListParams {
 
 export interface EvaluatorCreateParams {
   name: string;
-  predicate: string;
+  scoring_criteria: string;
   intent?: string;
   model?: string;
   models?: string[];
@@ -39,7 +39,7 @@ export interface EvaluatorCreateParams {
 
 export interface EvaluatorUpdateParams {
   name?: string;
-  prompt?: string;
+  scoring_criteria?: string;
   models?: string[];
   objective_id?: string;
   objective_version_id?: string;
@@ -254,7 +254,7 @@ export class EvaluatorsResource {
       name: params.name,
       objective_id: objectiveId,
       overwrite: params.overwrite ?? false,
-      prompt: params.predicate,
+      scoring_criteria: params.scoring_criteria,
     };
     if (params.models) {
       requestBody.models = params.models;

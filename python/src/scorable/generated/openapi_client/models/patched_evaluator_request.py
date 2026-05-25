@@ -46,7 +46,7 @@ class PatchedEvaluatorRequest(BaseModel):
     overwrite: Optional[StrictBool] = Field(
         default=False, description="Overwrite existing skill with the same name. Only for POST requests."
     )
-    prompt: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=500000)]] = None
+    scoring_criteria: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=500000)]] = None
     __properties: ClassVar[List[str]] = [
         "change_note",
         "evaluator_demonstrations",
@@ -56,7 +56,7 @@ class PatchedEvaluatorRequest(BaseModel):
         "objective_id",
         "objective_version_id",
         "overwrite",
-        "prompt",
+        "scoring_criteria",
     ]
 
     model_config = ConfigDict(
@@ -152,7 +152,7 @@ class PatchedEvaluatorRequest(BaseModel):
                 "objective_id": obj.get("objective_id"),
                 "objective_version_id": obj.get("objective_version_id"),
                 "overwrite": obj.get("overwrite") if obj.get("overwrite") is not None else False,
-                "prompt": obj.get("prompt"),
+                "scoring_criteria": obj.get("scoring_criteria"),
             }
         )
         return _obj

@@ -6,7 +6,7 @@ client = Scorable()
 evaluator = client.evaluators.create(
     name="My evaluator",
     intent="Asses the response",
-    predicate="Is this a integer in the range 0-100: {{response}}",
+    scoring_criteria="Is this a integer in the range 0-100: {{response}}",
     model="gemini-3-flash",
     overwrite=True,
 )
