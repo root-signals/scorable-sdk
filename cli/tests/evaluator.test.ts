@@ -289,7 +289,7 @@ describe("TestEvaluatorUpdate", () => {
     expect(result.exitCode).toBe(0);
     expect(mockUpdate).toHaveBeenCalledWith(
       "eval-123",
-      expect.objectContaining({ prompt: "New scoring criteria" }),
+      expect.objectContaining({ scoring_criteria: "New scoring criteria" }),
     );
   });
 

@@ -28,7 +28,7 @@ export function registerUpdateCommand(evaluator: Command): void {
 
         const payload: EvaluatorUpdateParams = {};
         if (opts.name !== undefined) payload.name = opts.name;
-        if (opts.scoringCriteria !== undefined) payload.prompt = opts.scoringCriteria;
+        if (opts.scoringCriteria !== undefined) payload.scoring_criteria = opts.scoringCriteria;
         if (opts.objectiveId !== undefined) payload.objective_id = opts.objectiveId;
         if (opts.objectiveVersionId !== undefined)
           payload.objective_version_id = opts.objectiveVersionId;
