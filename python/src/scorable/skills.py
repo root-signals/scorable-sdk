@@ -1695,6 +1695,8 @@ class Evaluators:
         "Translation_Quality",
         "Context_Completeness",
         "Summarization_Quality",
+        "Tool_Selection",
+        "Knowledge_Retention",
     ]
 
     class Eval(Enum):
@@ -1731,6 +1733,8 @@ class Evaluators:
         Translation_Quality = "44e6722e-43e0-4791-a84f-0e1480adccd6"
         Context_Completeness = "7c8f9e3a-1b2d-4c5e-9f8a-6d7c4b3e2a1f"
         Summarization_Quality = "e7548186-af7c-49ef-be24-eda7c47adb6d"
+        Tool_Selection = "dd120733-d107-4e77-a78b-5f04ade1a969"
+        Knowledge_Retention = "193d0c31-6953-4f4d-840a-d42bdb23e5a7"
 
     def __getattr__(self, name: Union[EvaluatorName, str]) -> Union["PresetEvaluatorRunner", "APresetEvaluatorRunner"]:
         if name in self.Eval.__members__:
