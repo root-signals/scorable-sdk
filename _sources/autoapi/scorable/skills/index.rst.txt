@@ -92,7 +92,7 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: arun(response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, file_ids: Optional[List[uuid.UUID]] = None, *, _client: scorable.generated.openapi_aclient.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
+   .. py:method:: arun(response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, file_ids: Optional[List[uuid.UUID]] = None, *, _client: scorable.generated.openapi_aclient.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
       :async:
 
 
@@ -101,6 +101,7 @@ Module Contents
       :param response: LLM output.
       :param request: The prompt sent to the LLM.
       :param turns: Optional multi-turn conversation as a list of turns.
+      :param tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output for the evaluator.
       :param variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
@@ -189,13 +190,14 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: run(response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, file_ids: Optional[List[uuid.UUID]] = None, *, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
+   .. py:method:: run(response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, file_ids: Optional[List[uuid.UUID]] = None, *, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
 
       Run the evaluator.
 
       :param response: LLM output.
       :param request: The prompt sent to the LLM.
       :param turns: Optional multi-turn conversation as a list of turns.
+      :param tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
       :param contexts: Optional documents passed to RAG evaluators
       :param expected_output: Optional expected output for the evaluator.
       :param variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
@@ -376,6 +378,11 @@ Module Contents
 
 
 
+      .. py:attribute:: Knowledge_Retention
+         :value: '193d0c31-6953-4f4d-840a-d42bdb23e5a7'
+
+
+
       .. py:attribute:: Non_toxicity
          :value: 'e296e374-7539-4eb2-a74a-47847dd26fb8'
 
@@ -438,6 +445,11 @@ Module Contents
 
       .. py:attribute:: Summarization_Quality
          :value: 'e7548186-af7c-49ef-be24-eda7c47adb6d'
+
+
+
+      .. py:attribute:: Tool_Selection
+         :value: 'dd120733-d107-4e77-a78b-5f04ade1a969'
 
 
 
@@ -550,7 +562,7 @@ Module Contents
 
 
 
-   .. py:method:: arun(evaluator_id: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
+   .. py:method:: arun(evaluator_id: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
       :async:
 
 
@@ -560,6 +572,7 @@ Module Contents
       :param request: The prompt sent to the LLM.
       :param response: LLM output.
       :param turns: Optional multi-turn conversation as a list of turns.
+      :param tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
       :param contexts: Optional documents passed to RAG evaluators.
       :param expected_output: Optional expected output for the evaluator.
       :param evaluator_version_id: Version ID of the evaluator to run. If omitted, the latest version is used.
@@ -573,7 +586,7 @@ Module Contents
 
 
 
-   .. py:method:: arun_by_name(name: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
+   .. py:method:: arun_by_name(name: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
       :async:
 
 
@@ -583,6 +596,7 @@ Module Contents
       :param request: The prompt sent to the LLM.
       :param response: LLM output.
       :param turns: Optional multi-turn conversation as a list of turns.
+      :param tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
       :param contexts: Optional documents passed to RAG evaluators.
       :param expected_output: Optional expected output for the evaluator.
       :param evaluator_version_id: Version ID of the evaluator to run. If omitted, the latest version is used.
@@ -683,7 +697,7 @@ Module Contents
 
 
 
-   .. py:method:: run(evaluator_id: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
+   .. py:method:: run(evaluator_id: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
 
       Run the evaluator.
 
@@ -691,6 +705,7 @@ Module Contents
       :param request: The prompt sent to the LLM.
       :param response: LLM output.
       :param turns: Optional multi-turn conversation as a list of turns.
+      :param tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
       :param contexts: Optional documents passed to RAG evaluators.
       :param expected_output: Optional expected output for the evaluator.
       :param evaluator_version_id: Version ID of the evaluator to run. If omitted, the latest version is used.
@@ -704,7 +719,7 @@ Module Contents
 
 
 
-   .. py:method:: run_by_name(name: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
+   .. py:method:: run_by_name(name: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
 
       Run an evaluator by name.
 
@@ -712,6 +727,7 @@ Module Contents
       :param request: The prompt sent to the LLM.
       :param response: LLM output.
       :param turns: Optional multi-turn conversation as a list of turns.
+      :param tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
       :param contexts: Optional documents passed to RAG evaluators.
       :param expected_output: Optional expected output for the evaluator.
       :param evaluator_version_id: Version ID of the evaluator to run. If omitted, the latest version is used.
