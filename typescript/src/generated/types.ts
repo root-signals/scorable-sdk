@@ -308,6 +308,10 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    /**
+     * Upload a file
+     * @description Upload a PDF or image file (max 20 MB). Allowed types: pdf, png, jpg, jpeg, webp, svg. Returns the file ID to use in `file_ids` when executing evaluators or judges. If an identical file was already uploaded by this user, returns the existing file's ID with HTTP 200.
+     */
     post: operations['files_create'];
     delete?: never;
     options?: never;
@@ -755,6 +759,92 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/otel/evaluation-filters/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description CRUD API for OTEL trace evaluation filters. */
+    get: operations['otel_evaluation_filters_list'];
+    put?: never;
+    /** @description CRUD API for OTEL trace evaluation filters. */
+    post: operations['otel_evaluation_filters_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/otel/evaluation-filters/{id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description CRUD API for OTEL trace evaluation filters. */
+    get: operations['otel_evaluation_filters_retrieve'];
+    /** @description CRUD API for OTEL trace evaluation filters. */
+    put: operations['otel_evaluation_filters_update'];
+    post?: never;
+    /** @description CRUD API for OTEL trace evaluation filters. */
+    delete: operations['otel_evaluation_filters_destroy'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/otel/evaluation-filters/validate/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description CRUD API for OTEL trace evaluation filters. */
+    post: operations['otel_evaluation_filters_validate_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/otel/traces/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['otel_traces_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/otel/traces/{trace_id}/spans/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['otel_traces_spans_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -836,7 +926,6 @@ export interface components {
       name: string;
       readonly objective: components['schemas']['Objective'] | null;
       readonly owner: components['schemas']['NestedUserDetails'];
-      scoring_criteria: string;
       readonly visibility: components['schemas']['VisibilityEnum'];
       /** Format: date-time */
       readonly updated_at: string | null;
@@ -846,7 +935,7 @@ export interface components {
       /** meta */
       readonly _meta: unknown;
       /**
-       * @description Schema defining the input parameters required for execution. The schema consists of variables defined in the prompt template (predicate) and special variables like contexts and expected output.
+       * @description Schema defining the input parameters required for execution. The schema consists of variables defined in the scoring criteria and special variables like contexts and expected output.
        * @example {
        *       "response": {
        *         "type": "string"
@@ -872,6 +961,7 @@ export interface components {
           };
         };
       };
+      scoring_criteria: string;
     };
     EvaluatorCalibrationOutput: {
       variables: {
@@ -916,6 +1006,12 @@ export interface components {
     };
     EvaluatorExecutionRequest: {
       turns?: components['schemas']['MessageTurnRequest'][] | null;
+      /** @description OpenAI-style tool catalog available to the agent during the conversation. */
+      tools?:
+        | {
+            [key: string]: unknown;
+          }[]
+        | null;
       request?: string | null;
       response?: string | null;
       contexts?: string[];
@@ -962,14 +1058,13 @@ export interface components {
       readonly name: string;
       readonly objective: components['schemas']['NestedObjectiveList'];
       readonly owner: components['schemas']['NestedUserDetails'];
-      readonly scoring_criteria: string;
       readonly visibility: components['schemas']['VisibilityEnum'];
       /** Format: date-time */
       readonly updated_at: string | null;
       readonly updated_by: components['schemas']['NestedUserDetails'] | null;
       readonly version_id: string;
       /**
-       * @description Schema defining the input parameters required for execution. The schema consists of variables defined in the prompt template (predicate) and special variables like contexts and expected output.
+       * @description Schema defining the input parameters required for execution. The schema consists of variables defined in the scoring criteria and special variables like contexts and expected output.
        * @example {
        *       "response": {
        *         "type": "string"
@@ -995,6 +1090,7 @@ export interface components {
           };
         };
       };
+      readonly scoring_criteria: string;
     };
     EvaluatorReference: {
       /** Format: uuid */
@@ -1081,7 +1177,6 @@ export interface components {
       /** Format: uuid */
       parent_execution_log_id?: string | null;
       readonly prompt_template: string;
-      readonly rendered_prompt: string;
       /** Format: double */
       readonly score: number | null;
       readonly session_id: string;
@@ -1173,7 +1268,7 @@ export interface components {
       /** Format: uuid */
       readonly id: string;
       /**
-       * @description Schema defining the input parameters required for execution. The schema consists of variables defined in the prompt template (predicate) and special variables like contexts and expected output.
+       * @description Schema defining the input parameters required for execution. The schema consists of variables defined in the scoring criteria and special variables like contexts and expected output.
        * @example {
        *       "response": {
        *         "type": "string"
@@ -1227,8 +1322,13 @@ export interface components {
       readonly items: components['schemas']['JudgeBatchExecutionItem'][];
     };
     JudgeBatchExecutionInputRequest: {
-      messages?: components['schemas']['MessagesRequest'] | null;
       turns?: components['schemas']['MessageTurnRequest'][] | null;
+      /** @description OpenAI-style tool catalog available to the agent during the conversation. */
+      tools?:
+        | {
+            [key: string]: unknown;
+          }[]
+        | null;
       request?: string | null;
       response?: string | null;
       contexts?: string[];
@@ -1303,6 +1403,12 @@ export interface components {
     };
     JudgeExecutionRequest: {
       turns?: components['schemas']['MessageTurnRequest'][] | null;
+      /** @description OpenAI-style tool catalog available to the agent during the conversation. */
+      tools?:
+        | {
+            [key: string]: unknown;
+          }[]
+        | null;
       request?: string | null;
       response?: string | null;
       contexts?: string[];
@@ -1319,6 +1425,8 @@ export interface components {
     JudgeExecutionResponse: {
       /** @description List of results from each evaluator */
       evaluator_results: components['schemas']['EvaluatorResult'][];
+      /** Format: uuid */
+      execution_log_id?: string | null;
     };
     JudgeGeneratorRequest: {
       extra_contexts?: {
@@ -1379,7 +1487,7 @@ export interface components {
       readonly created_at: string;
       readonly visibility: components['schemas']['VisibilityEnum'];
       /**
-       * @description Schema defining the input parameters required for execution. The schema consists of variables defined in the prompt template (predicate) and special variables like contexts and expected output.
+       * @description Schema defining the input parameters required for execution. The schema consists of variables defined in the scoring criteria and special variables like contexts and expected output.
        * @example {
        *       "response": {
        *         "type": "string"
@@ -1413,6 +1521,12 @@ export interface components {
     };
     JudgeRectifierRequestRequest: {
       turns?: components['schemas']['MessageTurnRequest'][] | null;
+      /** @description OpenAI-style tool catalog available to the agent during the conversation. */
+      tools?:
+        | {
+            [key: string]: unknown;
+          }[]
+        | null;
       request?: string | null;
       response?: string | null;
       contexts?: string[];
@@ -1456,6 +1570,8 @@ export interface components {
     JudgeRectifierResponse: {
       /** @description List of results from each evaluator */
       evaluator_results: components['schemas']['EvaluatorResult'][];
+      /** Format: uuid */
+      execution_log_id?: string | null;
       /** @description Improved response from rectifier */
       improved_response: string;
       /** @description Original response before rectification */
@@ -1480,26 +1596,20 @@ export interface components {
       content: string;
       /** @description RAG contexts (only for assistant turns) */
       contexts?: string[];
-      tool_name?: string | null;
+      tool_call_id?: string;
+      tool_calls?: unknown;
       evaluation_justification?: string | null;
     };
     MessageTurnRequest: {
       role: components['schemas']['RoleEnum'];
-      content: string;
+      content?: string | null;
       contexts?: string[] | null;
-      tool_name?: string | null;
-    };
-    /**
-     * @description Serializer for multi-turn messages.
-     *
-     *     DEPRECATED: This serializer is deprecated and will be removed in Fall 2026.
-     *     Use the `turns` field directly on EvaluatorExecutionSerializerBase instead.
-     *     Both formats are currently supported for backwards compatibility.
-     */
-    MessagesRequest: {
-      turns: components['schemas']['MessageTurnRequest'][];
-      /** @default agent_behavior */
-      target: components['schemas']['TargetEnum'];
+      tool_calls?:
+        | {
+            [key: string]: unknown;
+          }[]
+        | null;
+      tool_call_id?: string | null;
     };
     Model: {
       readonly id: string;
@@ -1631,6 +1741,77 @@ export interface components {
       /** Format: uuid */
       test_dataset_id?: string | null;
     };
+    OtelTrace: {
+      trace_id: string;
+      span_id: string;
+      parent_span_id?: string;
+      /** Format: date-time */
+      timestamp: string;
+      span: unknown;
+    };
+    OtelTraceEvaluationFilterInputRequest: {
+      name: string;
+      evaluator_id?: string | null;
+      judge_id?: string | null;
+      /** @default {} */
+      filter_criteria: {
+        [key: string]: unknown;
+      };
+      /**
+       * Format: double
+       * @default 1
+       */
+      sampling_rate: number;
+      /** @default 10 */
+      delay_seconds: number;
+      /** @default true */
+      applies_to_new_only: boolean;
+      /** @default true */
+      is_active: boolean;
+      /** @default [] */
+      extractor_rules: {
+        [key: string]: unknown;
+      }[];
+    };
+    OtelTraceEvaluationFilterOutput: {
+      id: string;
+      name: string;
+      evaluator_id: string | null;
+      judge_id: string | null;
+      filter_criteria: {
+        [key: string]: unknown;
+      };
+      /** Format: double */
+      sampling_rate: number;
+      delay_seconds: number;
+      applies_to_new_only: boolean;
+      is_active: boolean;
+      extractor_rules: {
+        [key: string]: unknown;
+      }[];
+      created_at: string;
+      updated_at: string;
+    };
+    OtelTraceRecord: {
+      /** @description OTEL trace ID */
+      trace_id: string;
+      /** @description Name of root span */
+      root_span_name?: string;
+      /**
+       * Format: date-time
+       * @description Timestamp of first span received
+       */
+      first_span_at: string;
+      /**
+       * Format: date-time
+       * @description Timestamp of last span received
+       */
+      last_span_at: string;
+      /** @description Total number of spans in trace */
+      span_count?: number;
+      input_preview?: string;
+      output_preview?: string;
+    };
     PaginatedDataSetListList: {
       /**
        * Format: uri
@@ -1748,6 +1929,19 @@ export interface components {
       previous?: string | null;
       results: components['schemas']['ObjectiveList'][];
     };
+    PaginatedOtelTraceRecordList: {
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+       */
+      previous?: string | null;
+      results: components['schemas']['OtelTraceRecord'][];
+    };
     PatchedEvaluatorRequest: {
       change_note?: string | null;
       evaluator_demonstrations?: components['schemas']['EvaluatorDemonstrationsRequest'][] | null;
@@ -1821,9 +2015,10 @@ export interface components {
     /**
      * @description * `user` - user
      *     * `assistant` - assistant
+     *     * `tool` - tool
      * @enum {string}
      */
-    RoleEnum: 'user' | 'assistant';
+    RoleEnum: 'user' | 'assistant' | 'tool';
     SkillExecutionValidatorResult: {
       /** Format: uuid */
       readonly evaluator_id: string | null;
@@ -1867,12 +2062,6 @@ export interface components {
      */
     StatusEnum: 'unlisted' | 'listed' | 'public' | 'public_unlisted' | 'private';
     /**
-     * @description * `agent_behavior` - agent_behavior
-     *     * `user_behavior` - user_behavior
-     * @enum {string}
-     */
-    TargetEnum: 'agent_behavior' | 'user_behavior';
-    /**
      * @description * `pending` - Pending
      *     * `finished` - Finished
      * @enum {string}
@@ -1880,6 +2069,14 @@ export interface components {
     ValidationResultStatus: 'pending' | 'finished';
     /** @enum {string} */
     VisibilityEnum: 'private' | 'public';
+    _FileUploadRequestRequest: {
+      /** Format: binary */
+      file: string;
+    };
+    _FileUploadResponse: {
+      /** Format: uuid */
+      id: string;
+    };
   };
   responses: never;
   parameters: never;
@@ -2509,14 +2706,27 @@ export interface operations {
       path?: never;
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        'multipart/form-data': components['schemas']['_FileUploadRequestRequest'];
+      };
+    };
     responses: {
-      /** @description No response body */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['_FileUploadResponse'];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['_FileUploadResponse'];
+        };
       };
     };
   };
@@ -3502,6 +3712,192 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['PaginatedObjectiveList'];
+        };
+      };
+    };
+  };
+  otel_evaluation_filters_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OtelTraceEvaluationFilterOutput'][];
+        };
+      };
+    };
+  };
+  otel_evaluation_filters_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OtelTraceEvaluationFilterInputRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['OtelTraceEvaluationFilterInputRequest'];
+        'multipart/form-data': components['schemas']['OtelTraceEvaluationFilterInputRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OtelTraceEvaluationFilterOutput'];
+        };
+      };
+    };
+  };
+  otel_evaluation_filters_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OtelTraceEvaluationFilterOutput'];
+        };
+      };
+    };
+  };
+  otel_evaluation_filters_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OtelTraceEvaluationFilterInputRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['OtelTraceEvaluationFilterInputRequest'];
+        'multipart/form-data': components['schemas']['OtelTraceEvaluationFilterInputRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OtelTraceEvaluationFilterOutput'];
+        };
+      };
+    };
+  };
+  otel_evaluation_filters_destroy: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  otel_evaluation_filters_validate_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OtelTraceEvaluationFilterInputRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['OtelTraceEvaluationFilterInputRequest'];
+        'multipart/form-data': components['schemas']['OtelTraceEvaluationFilterInputRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  otel_traces_list: {
+    parameters: {
+      query?: {
+        /** @description The pagination cursor value. */
+        cursor?: string;
+        /** @description Comma-separated filter groups. Each group is `column;type;key;operator;value` (URL-encoded). Operators include `=`, `!=`, `contains`, `starts with`, `any of`, `none of`, and numeric comparisons (`>`, `>=`, `<`, `<=`). */
+        filters?: string;
+        /** @description Number of results to return per page. */
+        page_size?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PaginatedOtelTraceRecordList'];
+        };
+      };
+    };
+  };
+  otel_traces_spans_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        trace_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OtelTrace'][];
         };
       };
     };

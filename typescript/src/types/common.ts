@@ -84,6 +84,8 @@ export class ScorableError extends Error {
 
 export interface ExecutionPayload {
   turns?: components['schemas']['MessageTurnRequest'][];
+  /** OpenAI-style tool catalog available to the agent during the conversation. Used by tool-aware evaluators (e.g. Tool Selection). */
+  tools?: Record<string, unknown>[];
   request?: string;
   response?: string;
   contexts?: string[];

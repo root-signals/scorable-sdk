@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import AbstractAsyncContextManager, AbstractContextManager
 from enum import Enum
 from functools import partial
-from typing import AsyncIterator, Dict, Iterator, List, Literal, Optional, Union, cast
+from typing import Any, AsyncIterator, Dict, Iterator, List, Literal, Optional, Union, cast
 
 from pydantic import BaseModel, StrictStr
 
@@ -221,6 +221,7 @@ class Evaluator(AOpenAPIEvaluator):
         response: Optional[str] = None,
         request: Optional[str] = None,
         turns: Optional[List[MessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
@@ -240,6 +241,7 @@ class Evaluator(AOpenAPIEvaluator):
           response: LLM output.
           request: The prompt sent to the LLM.
           turns: Optional multi-turn conversation as a list of turns.
+          tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output for the evaluator.
           variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
@@ -262,6 +264,7 @@ class Evaluator(AOpenAPIEvaluator):
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             contexts=contexts,
             expected_output=expected_output,
             variables=variables,
@@ -303,6 +306,7 @@ class AEvaluator(AOpenAPIEvaluator):
         response: Optional[str] = None,
         request: Optional[str] = None,
         turns: Optional[List[AMessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
@@ -322,6 +326,7 @@ class AEvaluator(AOpenAPIEvaluator):
           response: LLM output.
           request: The prompt sent to the LLM.
           turns: Optional multi-turn conversation as a list of turns.
+          tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output for the evaluator.
           variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
@@ -344,6 +349,7 @@ class AEvaluator(AOpenAPIEvaluator):
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             contexts=contexts,
             expected_output=expected_output,
             variables=variables,
@@ -465,6 +471,7 @@ class PresetEvaluatorRunner:
         response: Optional[str] = None,
         request: Optional[str] = None,
         turns: Optional[List[MessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
@@ -483,6 +490,7 @@ class PresetEvaluatorRunner:
             response: LLM output.
             request: The prompt sent to the LLM.
             turns: Optional multi-turn conversation as a list of turns.
+            tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
             contexts: Optional documents passed to RAG evaluators
             expected_output: Optional expected output for the evaluator.
             variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
@@ -503,6 +511,7 @@ class PresetEvaluatorRunner:
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             contexts=contexts,
             expected_output=expected_output,
             variables=variables,
@@ -539,6 +548,7 @@ class APresetEvaluatorRunner:
         response: Optional[str] = None,
         request: Optional[str] = None,
         turns: Optional[List[AMessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         variables: Optional[dict[str, str]] = None,
@@ -557,6 +567,7 @@ class APresetEvaluatorRunner:
             response: LLM output.
             request: The prompt sent to the LLM.
             turns: Optional multi-turn conversation as a list of turns.
+            tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
             contexts: Optional documents passed to RAG evaluators
             expected_output: Optional expected output for the evaluator.
             variables: Optional additional variable mappings for the evaluator. For example, if the evaluator
@@ -577,6 +588,7 @@ class APresetEvaluatorRunner:
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             contexts=contexts,
             expected_output=expected_output,
             variables=variables,
@@ -633,6 +645,7 @@ class Evaluators:
         request: Optional[str] = None,
         response: Optional[str] = None,
         turns: Optional[List[MessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         evaluator_version_id: Optional[str] = None,
@@ -652,6 +665,7 @@ class Evaluators:
             request: The prompt sent to the LLM.
             response: LLM output.
             turns: Optional multi-turn conversation as a list of turns.
+            tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
             contexts: Optional documents passed to RAG evaluators.
             expected_output: Optional expected output for the evaluator.
             evaluator_version_id: Version ID of the evaluator to run. If omitted, the latest version is used.
@@ -674,6 +688,7 @@ class Evaluators:
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             contexts=contexts,
             expected_output=expected_output,
             variables=variables,
@@ -696,6 +711,7 @@ class Evaluators:
         request: Optional[str] = None,
         response: Optional[str] = None,
         turns: Optional[List[AMessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         evaluator_version_id: Optional[str] = None,
@@ -715,6 +731,7 @@ class Evaluators:
             request: The prompt sent to the LLM.
             response: LLM output.
             turns: Optional multi-turn conversation as a list of turns.
+            tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
             contexts: Optional documents passed to RAG evaluators.
             expected_output: Optional expected output for the evaluator.
             evaluator_version_id: Version ID of the evaluator to run. If omitted, the latest version is used.
@@ -736,6 +753,7 @@ class Evaluators:
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             contexts=contexts,
             expected_output=expected_output,
             variables=variables,
@@ -1503,6 +1521,7 @@ class Evaluators:
         request: Optional[str] = None,
         response: Optional[str] = None,
         turns: Optional[List[MessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         evaluator_version_id: Optional[str] = None,
@@ -1522,6 +1541,7 @@ class Evaluators:
             request: The prompt sent to the LLM.
             response: LLM output.
             turns: Optional multi-turn conversation as a list of turns.
+            tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
             contexts: Optional documents passed to RAG evaluators.
             expected_output: Optional expected output for the evaluator.
             evaluator_version_id: Version ID of the evaluator to run. If omitted, the latest version is used.
@@ -1544,6 +1564,7 @@ class Evaluators:
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             contexts=contexts,
             expected_output=expected_output,
             variables=variables,
@@ -1584,6 +1605,7 @@ class Evaluators:
         request: Optional[str] = None,
         response: Optional[str] = None,
         turns: Optional[List[AMessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         evaluator_version_id: Optional[str] = None,
@@ -1603,6 +1625,7 @@ class Evaluators:
             request: The prompt sent to the LLM.
             response: LLM output.
             turns: Optional multi-turn conversation as a list of turns.
+            tools: Optional OpenAI-style tool catalog available to the agent during the conversation.
             contexts: Optional documents passed to RAG evaluators.
             expected_output: Optional expected output for the evaluator.
             evaluator_version_id: Version ID of the evaluator to run. If omitted, the latest version is used.
@@ -1624,6 +1647,7 @@ class Evaluators:
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             contexts=contexts,
             expected_output=expected_output,
             variables=variables,
@@ -1671,6 +1695,8 @@ class Evaluators:
         "Translation_Quality",
         "Context_Completeness",
         "Summarization_Quality",
+        "Tool_Selection",
+        "Knowledge_Retention",
     ]
 
     class Eval(Enum):
@@ -1707,6 +1733,8 @@ class Evaluators:
         Translation_Quality = "44e6722e-43e0-4791-a84f-0e1480adccd6"
         Context_Completeness = "7c8f9e3a-1b2d-4c5e-9f8a-6d7c4b3e2a1f"
         Summarization_Quality = "e7548186-af7c-49ef-be24-eda7c47adb6d"
+        Tool_Selection = "dd120733-d107-4e77-a78b-5f04ade1a969"
+        Knowledge_Retention = "193d0c31-6953-4f4d-840a-d42bdb23e5a7"
 
     def __getattr__(self, name: Union[EvaluatorName, str]) -> Union["PresetEvaluatorRunner", "APresetEvaluatorRunner"]:
         if name in self.Eval.__members__:

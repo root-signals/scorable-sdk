@@ -152,32 +152,53 @@ import { Scorable } from '@root-signals/scorable';
 
 const client = new Scorable({ apiKey: process.env.SCORABLE_API_KEY! });
 
-// Execute evaluator with a multi-turn conversation
+// Execute evaluator with a multi-turn conversation.
+// Roles: "user" | "assistant" | "tool". Assistant turns may carry structured
+// `tool_calls`; tool results live in a dedicated "tool" role turn that
+// references the call by `tool_call_id`.
 const result = await client.evaluators.executeByName(
   'Helpfulness',
   {
     turns: [
+        { role: 'user', content: 'Hello, I need help with my order' },
+        { role: 'assistant', content: "I'd be happy to help! What's your order number?" },
+        { role: 'user', content: "It's ORDER-12345" },
         {
-          role: 'user',
-          content: 'Hello, I need help with my order'
+          role: 'assistant',
+          content: null,
+          tool_calls: [
+            {
+              id: 'call_1',
+              type: 'function',
+              function: { name: 'order_lookup', arguments: '{"order_number": "ORDER-12345"}' },
+            },
+          ],
+        },
+        {
+          role: 'tool',
+          tool_call_id: 'call_1',
+          content: '{"order_number": "ORDER-12345", "status": "shipped", "eta": "Jan 20"}',
         },
         {
           role: 'assistant',
-          content: "I'd be happy to help! What's your order number?"
+          content: 'I found your order. It is currently in transit and should arrive by Jan 20.',
         },
-        {
-          role: 'user',
-          content: "It's ORDER-12345"
+    ],
+    // Optional: tool catalog the agent had access to. Enables tool-aware
+    // evaluators (e.g. Tool Selection) to judge whether the right tool was
+    // picked from what was available.
+    tools: [
+      {
+        type: 'function',
+        function: {
+          name: 'order_lookup',
+          description: 'Look up an order by its order number.',
+          parameters: {
+            type: 'object',
+            properties: { order_number: { type: 'string' } },
+          },
         },
-        {
-          role: 'assistant',
-          content: "{'order_number': 'ORDER-12345', 'status': 'shipped', 'eta': 'Jan 20'}",
-          tool_name: 'order_lookup' // Optional: name of tool used
-        },
-        {
-          role: 'assistant',
-          content: 'I found your order. It is currently in transit and should arrive by Jan 20.'
-        }
+      },
     ],
     // Optional: RAG contexts can be provided per turn or globally
     contexts: ['Return policy: 30 days...'],

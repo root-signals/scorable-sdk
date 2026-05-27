@@ -62,7 +62,6 @@ export { DatasetsResource } from './resources/datasets.js';
 
 // Multi-turn conversation types
 export type Turn = components['schemas']['MessageTurnRequest'];
-export type Target = components['schemas']['TargetEnum'];
 export type Role = components['schemas']['RoleEnum'];
 
 // Generated types (re-export for advanced usage)
