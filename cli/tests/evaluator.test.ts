@@ -416,7 +416,9 @@ describe("TestEvaluatorExecute", () => {
       "eval-123",
       expect.objectContaining({ turns: expect.any(Array) }),
     );
-    const payload = mockExecute.mock.calls[0]?.[1] as { turns: { role: string; content: string | null }[] };
+    const payload = mockExecute.mock.calls[0]?.[1] as {
+      turns: { role: string; content: string | null }[];
+    };
     expect(payload.turns[1]?.content).toBeNull();
     expect(payload.turns[2]?.role).toBe("tool");
   });

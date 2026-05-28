@@ -38,7 +38,9 @@ export function registerUpdateCommand(evaluator: Command): void {
         if (opts.models !== undefined) {
           const r = parseJsonArg(opts.models, z.array(z.string()));
           if (!r.ok) {
-            printError("Invalid JSON format for --models. Expected an array of model name strings.");
+            printError(
+              "Invalid JSON format for --models. Expected an array of model name strings.",
+            );
             return;
           }
           payload.models = r.value;
