@@ -2,7 +2,7 @@ import { Command } from "commander";
 import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
-import { isTurnArray, isStringArray } from "../../utils.js";
+import { isTurnArray, isToolCatalog, isStringArray } from "../../utils.js";
 import type { JudgeExecutionPayload } from "@root-signals/scorable";
 
 async function readStdinDefault(): Promise<string> {
@@ -17,6 +17,7 @@ export async function executeJudgeByName(
     request?: string;
     response?: string;
     turns?: string;
+    tools?: string;
     contexts?: string;
     expectedOutput?: string;
     tag?: string[];
@@ -57,6 +58,20 @@ export async function executeJudgeByName(
       payload.turns = parsed;
     } catch {
       printError("Invalid JSON for --turns.");
+      return;
+    }
+  }
+
+  if (opts.tools) {
+    try {
+      const parsed: unknown = JSON.parse(opts.tools);
+      if (!isToolCatalog(parsed)) {
+        printError("Invalid JSON for --tools. Expected array of tool objects.");
+        return;
+      }
+      payload.tools = parsed;
+    } catch {
+      printError("Invalid JSON for --tools.");
       return;
     }
   }
@@ -107,8 +122,9 @@ export function registerExecuteByNameCommand(judge: Command): void {
     .option("--system-prompt <text>", "System prompt that was used for the LLM call")
     .option(
       "--turns <json>",
-      'JSON array of conversation turns. E.g., \'[{"role":"user","content":"Hello"}]\'',
+      'JSON array of conversation turns. Roles: user|assistant|tool. Assistant turns may carry `tool_calls`; tool results use a `tool` role with `tool_call_id`. E.g., \'[{"role":"user","content":"Hello"}]\'',
     )
+    .option("--tools <json>", "JSON array of OpenAI-style tool definitions available to the agent.")
     .addHelpText(
       "after",
       `
@@ -128,6 +144,11 @@ Examples:
   $ scorable judge execute-by-name "Customer Service Judge" \\
       --turns '[{"role":"user","content":"I haven\\'t received my refund and it\\'s been 10 days."},{"role":"assistant","content":"Thank you for contacting us. I will investigate this immediately and provide an update within 24 hours."}]'
 
+  # Tool-aware evaluation: assistant tool_calls + tool-role result + tool catalog
+  $ scorable judge execute-by-name "Agent Quality Judge" \\
+      --turns '[{"role":"user","content":"What is the weather in Paris?"},{"role":"assistant","content":null,"tool_calls":[{"id":"call_1","type":"function","function":{"name":"get_weather","arguments":"{\\"city\\":\\"Paris\\"}"}}]},{"role":"tool","tool_call_id":"call_1","content":"{\\"temp\\":12}"},{"role":"assistant","content":"It is 12C in Paris."}]' \\
+      --tools '[{"type":"function","function":{"name":"get_weather","description":"Get weather for a city","parameters":{"type":"object","properties":{"city":{"type":"string"}}}}}]'
+
   # Pipe the LLM response from stdin
   $ echo "We offer a 30-day money-back guarantee on all purchases." | \\
       scorable judge execute-by-name "Custom Returns Policy Judge" --request "Do you offer refunds?"`,
@@ -139,6 +160,7 @@ Examples:
           request?: string;
           response?: string;
           turns?: string;
+          tools?: string;
           contexts?: string;
           expectedOutput?: string;
           tag: string[];
