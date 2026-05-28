@@ -304,6 +304,14 @@ describe("TestEvaluatorUpdate", () => {
     expect(result.exitCode).toBe(0);
     expect(result.stderr).toContain("Invalid JSON format");
   });
+
+  it("rejects --models when the JSON is the wrong shape", async () => {
+    // Valid JSON, wrong shape — must be rejected by the schema, not silently sent.
+    const result = await runCli(["evaluator", "update", "eval-123", "--models", '"foo"']);
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toContain("Invalid JSON format");
+    expect(mockUpdate).not.toHaveBeenCalled();
+  });
 });
 
 // --- TestEvaluatorDelete ---

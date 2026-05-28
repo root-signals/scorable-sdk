@@ -4,7 +4,8 @@ import ora from "ora";
 import { requireApiKey } from "../../auth.js";
 import { apiRequest } from "../../client.js";
 import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
-import { loadFilterYaml } from "../../lib/filter-yaml.js";
+import { loadFilterYaml, Match } from "../../lib/filter-yaml.js";
+import { parseJsonArg } from "../../utils.js";
 
 interface CreateOptions {
   name?: string;
@@ -100,12 +101,14 @@ YAML manifest (only needed for custom extractor_rules):
 
       let filterCriteria: Record<string, unknown> | undefined;
       if (opts.filterCriteria) {
-        try {
-          filterCriteria = JSON.parse(opts.filterCriteria) as Record<string, unknown>;
-        } catch {
-          printError("Invalid JSON for --filter-criteria.");
+        const r = parseJsonArg(opts.filterCriteria, Match);
+        if (!r.ok) {
+          printError(
+            'Invalid JSON for --filter-criteria. Expected {"conditions":[{column,operator,value?,key?},...]}.',
+          );
           process.exit(1);
         }
+        filterCriteria = r.value;
       }
 
       let samplingRate: number | undefined;

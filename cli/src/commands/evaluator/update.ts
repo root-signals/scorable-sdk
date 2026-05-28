@@ -1,7 +1,9 @@
 import { Command } from "commander";
 import ora from "ora";
+import { z } from "zod";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
+import { parseJsonArg } from "../../utils.js";
 import type { EvaluatorUpdateParams } from "@root-signals/scorable";
 
 export function registerUpdateCommand(evaluator: Command): void {
@@ -34,12 +36,12 @@ export function registerUpdateCommand(evaluator: Command): void {
           payload.objective_version_id = opts.objectiveVersionId;
 
         if (opts.models !== undefined) {
-          try {
-            payload.models = JSON.parse(opts.models) as string[];
-          } catch {
-            printError("Invalid JSON format for --models.");
+          const r = parseJsonArg(opts.models, z.array(z.string()));
+          if (!r.ok) {
+            printError("Invalid JSON format for --models. Expected an array of model name strings.");
             return;
           }
+          payload.models = r.value;
         }
 
         if (Object.keys(payload).length === 0) {

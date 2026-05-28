@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z, type ZodType } from "zod";
 import type { Turn } from "@root-signals/scorable";
 
 const TurnSchema = z.object({
@@ -31,4 +31,20 @@ export function isStringRecord(v: unknown): v is Record<string, string> {
     !Array.isArray(v) &&
     Object.values(v as Record<string, unknown>).every((val) => typeof val === "string")
   );
+}
+
+// Parse a JSON-string CLI argument and validate it against a zod schema.
+// Callers print their own error message so existing wording stays stable.
+export type JsonArgResult<T> = { ok: true; value: T } | { ok: false };
+
+export function parseJsonArg<T>(raw: string, schema: ZodType<T>): JsonArgResult<T> {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return { ok: false };
+  }
+  const result = schema.safeParse(parsed);
+  if (!result.success) return { ok: false };
+  return { ok: true, value: result.data };
 }

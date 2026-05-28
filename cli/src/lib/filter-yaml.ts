@@ -10,7 +10,7 @@ const MatchCondition = z
   })
   .strict();
 
-const Match = z
+export const Match = z
   .object({
     conditions: z.array(MatchCondition).default([]),
   })
