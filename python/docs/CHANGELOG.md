@@ -1,3 +1,9 @@
+## 1.11.0
+
+- Add `tools` parameter (OpenAI-style tool catalog) to `evaluators.run`/`arun`/`run_by_name`/`arun_by_name`, `judges.run`/`arun`, and preset evaluator runners. Enables tool-aware evaluators like `Tool_Selection`.
+- Add `Tool_Selection` and `Knowledge_Retention` preset evaluator enum entries.
+- Multi-turn conversation turns: `content` is now nullable, and turns can carry structured `tool_calls` (assistant) and `tool_call_id` (new `tool` role) — see updated `examples/judge_multi_turn.py` and `examples/multi_turn_conversation.py`.
+
 ## 1.10.0
 
 - Rename `predicate` parameter to `scoring_criteria` in `Evaluators.create()`, `acreate()`, `update()`, and `aupdate()`
