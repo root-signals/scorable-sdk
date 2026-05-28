@@ -281,6 +281,20 @@ describe("TestJudgeUpdate", () => {
     expect(result.stderr).toContain("Invalid JSON format");
   });
 
+  it("rejects --evaluator-references without an id field", async () => {
+    // Valid JSON, missing the required `id` field — schema must reject.
+    const result = await runCli([
+      "judge",
+      "update",
+      "judge-123",
+      "--evaluator-references",
+      '[{"name":"x"}]',
+    ]);
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toContain("Invalid JSON format");
+    expect(mockUpdate).not.toHaveBeenCalled();
+  });
+
   it("test_update_judge_no_params", async () => {
     const result = await runCli(["judge", "update", "judge-123"]);
     expect(result.exitCode).toBe(0);

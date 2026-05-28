@@ -132,6 +132,22 @@ describe("TestOtelFilterCreate", () => {
     expect(result.stderr).toContain("Invalid JSON");
   });
 
+  it("rejects --filter-criteria when the JSON is not a Match", async () => {
+    // Valid JSON but not a Match — schema must reject the same way the YAML path does.
+    const result = await runCli([
+      "otel-filter",
+      "create",
+      "--name",
+      "x",
+      "--evaluator-id",
+      EVALUATOR_ID,
+      "--filter-criteria",
+      '{"wrong":"shape"}',
+    ]);
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("Invalid JSON");
+  });
+
   it("test_create__rejects_sampling_rate_outside_range", async () => {
     const result = await runCli([
       "otel-filter",

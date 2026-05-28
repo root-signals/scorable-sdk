@@ -1,3 +1,10 @@
+## 0.13.0
+
+- Bump `@root-signals/scorable` to `^0.10.0` for the new tool-call multi-turn shape.
+- `--turns` now accepts the structured tool-call shape: nullable `content`, assistant `tool_calls`, and a `tool` role with `tool_call_id`. Previously turns with `content: null` were rejected.
+- Add `--tools <json>` flag to `evaluator execute`, `evaluator execute-by-name`, `judge execute`, and `judge execute-by-name` for passing an OpenAI-style tool catalog.
+- Help text updated with a tool-aware evaluation example for each command.
+
 ## 0.12.0
 
 - Add `--api-url <url>` global flag to override the API base URL (on-prem deployments; also overridable via `SCORABLE_API_URL` env var)

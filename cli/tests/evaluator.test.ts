@@ -304,6 +304,14 @@ describe("TestEvaluatorUpdate", () => {
     expect(result.exitCode).toBe(0);
     expect(result.stderr).toContain("Invalid JSON format");
   });
+
+  it("rejects --models when the JSON is the wrong shape", async () => {
+    // Valid JSON, wrong shape — must be rejected by the schema, not silently sent.
+    const result = await runCli(["evaluator", "update", "eval-123", "--models", '"foo"']);
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toContain("Invalid JSON format");
+    expect(mockUpdate).not.toHaveBeenCalled();
+  });
 });
 
 // --- TestEvaluatorDelete ---
@@ -381,6 +389,80 @@ describe("TestEvaluatorExecute", () => {
     const result = await runCli(["evaluator", "execute", "eval-123", "--turns", "invalid-json"]);
     expect(result.exitCode).toBe(0);
     expect(result.stderr).toContain("Invalid JSON for --turns");
+  });
+
+  it("test_execute_evaluator_with_tool_call_turns", async () => {
+    mockExecute.mockResolvedValue({ result: "success", score: 0.9 });
+    const turns = JSON.stringify([
+      { role: "user", content: "Weather in Paris?" },
+      {
+        role: "assistant",
+        content: null,
+        tool_calls: [
+          {
+            id: "call_1",
+            type: "function",
+            function: { name: "get_weather", arguments: '{"city":"Paris"}' },
+          },
+        ],
+      },
+      { role: "tool", tool_call_id: "call_1", content: '{"temp":12}' },
+      { role: "assistant", content: "It is 12C in Paris." },
+    ]);
+    const result = await runCli(["evaluator", "execute", "eval-123", "--turns", turns]);
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("Evaluator execution successful");
+    expect(mockExecute).toHaveBeenCalledWith(
+      "eval-123",
+      expect.objectContaining({ turns: expect.any(Array) }),
+    );
+    const payload = mockExecute.mock.calls[0]?.[1] as {
+      turns: { role: string; content: string | null }[];
+    };
+    expect(payload.turns[1]?.content).toBeNull();
+    expect(payload.turns[2]?.role).toBe("tool");
+  });
+
+  it("test_execute_evaluator_with_tools_catalog", async () => {
+    mockExecute.mockResolvedValue({ result: "success", score: 0.9 });
+    const tools = JSON.stringify([
+      {
+        type: "function",
+        function: {
+          name: "get_weather",
+          description: "Get weather for a city",
+          parameters: { type: "object", properties: { city: { type: "string" } } },
+        },
+      },
+    ]);
+    const result = await runCli([
+      "evaluator",
+      "execute",
+      "eval-123",
+      "--request",
+      "Weather?",
+      "--tools",
+      tools,
+    ]);
+    expect(result.exitCode).toBe(0);
+    expect(mockExecute).toHaveBeenCalledWith(
+      "eval-123",
+      expect.objectContaining({ tools: expect.any(Array) }),
+    );
+  });
+
+  it("test_execute_evaluator_invalid_tools_json", async () => {
+    const result = await runCli([
+      "evaluator",
+      "execute",
+      "eval-123",
+      "--request",
+      "Hi",
+      "--tools",
+      "not-json",
+    ]);
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toContain("Invalid JSON for --tools");
   });
 
   it("test_execute_evaluator_with_variables", async () => {

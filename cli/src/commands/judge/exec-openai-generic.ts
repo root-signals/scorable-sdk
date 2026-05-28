@@ -1,4 +1,5 @@
 import { Command } from "commander";
+import { z } from "zod";
 import { requireApiKey } from "../../auth.js";
 import {
   printInfo,
@@ -8,7 +9,11 @@ import {
   printJson,
   handleSdkError,
 } from "../../output.js";
+import { parseJsonArg } from "../../utils.js";
 import { apiRequest } from "../../client.js";
+
+const MessagesSchema = z.array(z.object({ role: z.string() }).passthrough());
+const ExtraBodySchema = z.record(z.string(), z.unknown());
 
 export function registerExecOpenaiGenericCommand(judge: Command): void {
   judge
@@ -20,21 +25,25 @@ export function registerExecOpenaiGenericCommand(judge: Command): void {
     .action(async (opts: { model: string; messages: string; extraBody?: string }) => {
       const apiKey = await requireApiKey();
 
-      let messages: unknown;
-      try {
-        messages = JSON.parse(opts.messages);
-      } catch {
-        printError("Invalid JSON for --messages. Aborting.");
+      const messagesResult = parseJsonArg(opts.messages, MessagesSchema);
+      if (!messagesResult.ok) {
+        printError(
+          "Invalid JSON for --messages. Expected an array of objects each with a string `role`. Aborting.",
+        );
         return;
       }
 
-      const payload: Record<string, unknown> = { model: opts.model, messages };
+      const payload: Record<string, unknown> = {
+        model: opts.model,
+        messages: messagesResult.value,
+      };
 
       if (opts.extraBody) {
-        try {
-          payload["extra_body"] = JSON.parse(opts.extraBody);
-        } catch {
-          printWarning("Invalid JSON for --extra-body. Skipping.");
+        const extraResult = parseJsonArg(opts.extraBody, ExtraBodySchema);
+        if (extraResult.ok) {
+          payload["extra_body"] = extraResult.value;
+        } else {
+          printWarning("Invalid JSON for --extra-body (expected an object). Skipping.");
         }
       }
 

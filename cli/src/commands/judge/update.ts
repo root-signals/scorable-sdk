@@ -1,8 +1,12 @@
 import { Command } from "commander";
 import ora from "ora";
+import { z } from "zod";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
+import { parseJsonArg } from "../../utils.js";
 import type { UpdateJudgeData } from "@root-signals/scorable";
+
+const EvaluatorRefsSchema = z.array(z.object({ id: z.string() }).passthrough());
 
 export function registerUpdateCommand(judge: Command): void {
   judge
@@ -26,14 +30,14 @@ export function registerUpdateCommand(judge: Command): void {
         if (opts.stage !== undefined) payload.stage = opts.stage;
 
         if (opts.evaluatorReferences !== undefined) {
-          try {
-            payload.evaluator_references = JSON.parse(opts.evaluatorReferences) as Array<{
-              id: string;
-            }>;
-          } catch {
-            printError("Invalid JSON format for --evaluator-references.");
+          const r = parseJsonArg(opts.evaluatorReferences, EvaluatorRefsSchema);
+          if (!r.ok) {
+            printError(
+              'Invalid JSON format for --evaluator-references. Expected an array of objects with an "id" string.',
+            );
             return;
           }
+          payload.evaluator_references = r.value;
         }
 
         if (Object.keys(payload).length === 0) {

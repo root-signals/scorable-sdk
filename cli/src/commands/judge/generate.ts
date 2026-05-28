@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import ora from "ora";
 import chalk from "chalk";
+import { z } from "zod";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import {
   printSuccess,
@@ -10,6 +11,7 @@ import {
   printJson,
   handleSdkError,
 } from "../../output.js";
+import { parseJsonArg } from "../../utils.js";
 import { CliError } from "../../types.js";
 import { uploadFile } from "../file/upload.js";
 
@@ -80,12 +82,12 @@ offer to connect the guest with a human agent when uncertain."`,
 
         let extra_contexts: Record<string, string> | undefined;
         if (opts.extraContexts) {
-          try {
-            extra_contexts = JSON.parse(opts.extraContexts) as Record<string, string>;
-          } catch {
+          const r = parseJsonArg(opts.extraContexts, z.record(z.string(), z.string()));
+          if (!r.ok) {
             printError("Invalid --extra-contexts JSON: must be a key-value object.");
             throw new CliError(1, "Invalid extra-contexts JSON");
           }
+          extra_contexts = r.value;
         }
 
         const spinner = ora("Generating judge (this may take a moment)...").start();

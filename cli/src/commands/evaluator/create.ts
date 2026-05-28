@@ -1,7 +1,9 @@
 import { Command } from "commander";
 import ora from "ora";
+import { z } from "zod";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
+import { parseJsonArg } from "../../utils.js";
 import type { EvaluatorCreateParams } from "@root-signals/scorable";
 
 export function registerCreateCommand(evaluator: Command): void {
@@ -61,12 +63,14 @@ export function registerCreateCommand(evaluator: Command): void {
         if (opts.objectiveVersionId) payload.objective_version_id = opts.objectiveVersionId;
 
         if (opts.models) {
-          try {
-            payload.models = JSON.parse(opts.models) as string[];
-          } catch {
-            printError("Invalid JSON format for --models.");
+          const r = parseJsonArg(opts.models, z.array(z.string()));
+          if (!r.ok) {
+            printError(
+              "Invalid JSON format for --models. Expected an array of model name strings.",
+            );
             return;
           }
+          payload.models = r.value;
         }
 
         const spinner = ora("Creating...").start();
