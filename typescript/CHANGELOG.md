@@ -1,3 +1,8 @@
+## 0.10.0
+
+- Add `tools` field (OpenAI-style tool catalog) to `ExecutionPayload`. Enables tool-aware evaluators like Tool Selection.
+- Multi-turn conversation turns (`MessageTurnRequest`): `content` is now nullable, with new `tool_calls` (assistant) and `tool_call_id` fields, and a new `tool` role — see updated README multi-turn example.
+
 ## 0.9.0
 
 - Add `SCORABLE_API_URL` environment variable support for configuring the API base URL (on-prem deployments)
