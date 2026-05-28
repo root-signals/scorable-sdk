@@ -2,7 +2,7 @@ import { z, type ZodType } from "zod";
 import type { Turn } from "@root-signals/scorable";
 
 const TurnSchema = z.object({
-  role: z.enum(["user", "assistant", "tool", "system"]),
+  role: z.enum(["user", "assistant", "tool"]),
   content: z.string().nullable().optional(),
   contexts: z.array(z.string()).nullable().optional(),
   tool_calls: z.array(z.record(z.string(), z.unknown())).nullable().optional(),
