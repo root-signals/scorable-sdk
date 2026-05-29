@@ -47,7 +47,7 @@ tools = [
 ]
 
 evaluator_references = [
-    EvaluatorReferenceRequest(id=Evaluators.Eval.Planning_Efficiency.value),
+    EvaluatorReferenceRequest(id=Evaluators.Eval.Tool_Selection.value),
     EvaluatorReferenceRequest(id=Evaluators.Eval.Relevance.value),
 ]
 
