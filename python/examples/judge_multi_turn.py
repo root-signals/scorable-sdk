@@ -1,3 +1,5 @@
+import uuid
+
 from scorable import Scorable
 from scorable.generated.openapi_client.models.evaluator_reference_request import EvaluatorReferenceRequest
 from scorable.multiturn import Turn
@@ -52,7 +54,10 @@ evaluator_references = [
 ]
 
 judge = client.judges.create(
-    name="Customer Service Judge",
+    # Suffix keeps the example re-runnable: if a previous run created the judge
+    # and a later step failed (e.g. judge.run timeout), retrying with the same
+    # hardcoded name trips the unique-name-per-org constraint.
+    name=f"Customer Service Judge {uuid.uuid4().hex[:8]}",
     intent="Evaluate customer service agent conversations for helpfulness and accuracy",
     evaluator_references=evaluator_references,
 )
