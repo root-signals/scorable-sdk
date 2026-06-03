@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from contextlib import AbstractAsyncContextManager
 from functools import partial
-from typing import AsyncIterator, Dict, Iterator, List, Literal, Optional, Union, cast
+from typing import Any, AsyncIterator, Dict, Iterator, List, Literal, Optional, Union, cast
 
 from pydantic import StrictStr
 
@@ -84,6 +84,7 @@ class Judge(OpenApiJudge):
         response: Optional[str] = None,
         request: Optional[str] = None,
         turns: Optional[List[MessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -100,6 +101,7 @@ class Judge(OpenApiJudge):
           response: LLM output to evaluate
           request: The prompt sent to the LLM. Optional.
           turns: Optional multi-turn conversation as a list of turns.
+          tools: Optional list of tool definitions available to the assistant in the conversation.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
@@ -113,6 +115,7 @@ class Judge(OpenApiJudge):
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             contexts=contexts,
             expected_output=expected_output,
             tags=tags,
@@ -153,6 +156,7 @@ class AJudge(AOpenApiJudge):
         response: Optional[str] = None,
         request: Optional[str] = None,
         turns: Optional[List[AMessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -169,6 +173,7 @@ class AJudge(AOpenApiJudge):
           response: LLM output to evaluate
           request: The prompt sent to the LLM. Optional.
           turns: Optional multi-turn conversation as a list of turns.
+          tools: Optional list of tool definitions available to the assistant in the conversation.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
@@ -184,6 +189,7 @@ class AJudge(AOpenApiJudge):
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             tags=tags,
             user_id=user_id,
             session_id=session_id,
@@ -566,6 +572,7 @@ class Judges:
         response: Optional[str] = None,
         request: Optional[str] = None,
         turns: Optional[List[MessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -583,6 +590,7 @@ class Judges:
           response: LLM output to evaluate
           request: The prompt sent to the LLM. Optional.
           turns: Optional multi-turn conversation as a list of turns.
+          tools: Optional list of tool definitions available to the assistant in the conversation.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
@@ -596,6 +604,7 @@ class Judges:
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             contexts=contexts,
             expected_output=expected_output,
             tags=tags,
@@ -617,6 +626,7 @@ class Judges:
         response: Optional[str] = None,
         request: Optional[str] = None,
         turns: Optional[List[AMessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -634,6 +644,7 @@ class Judges:
           response: LLM output to evaluate
           request: The prompt sent to the LLM. Optional.
           turns: Optional multi-turn conversation as a list of turns.
+          tools: Optional list of tool definitions available to the assistant in the conversation.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
@@ -649,6 +660,7 @@ class Judges:
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             tags=tags,
             user_id=user_id,
             session_id=session_id,
@@ -668,6 +680,7 @@ class Judges:
         response: Optional[str] = None,
         request: Optional[str] = None,
         turns: Optional[List[MessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -685,6 +698,7 @@ class Judges:
           response: LLM output to evaluate
           request: The prompt sent to the LLM. Optional.
           turns: Optional multi-turn conversation as a list of turns.
+          tools: Optional list of tool definitions available to the assistant in the conversation.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
@@ -698,6 +712,7 @@ class Judges:
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             contexts=contexts,
             expected_output=expected_output,
             tags=tags,
@@ -719,6 +734,7 @@ class Judges:
         response: Optional[str] = None,
         request: Optional[str] = None,
         turns: Optional[List[AMessageTurnRequest]] = None,
+        tools: Optional[List[Dict[str, Any]]] = None,
         contexts: Optional[List[str]] = None,
         expected_output: Optional[str] = None,
         tags: Optional[List[str]] = None,
@@ -736,6 +752,7 @@ class Judges:
           response: LLM output to evaluate
           request: The prompt sent to the LLM. Optional.
           turns: Optional multi-turn conversation as a list of turns.
+          tools: Optional list of tool definitions available to the assistant in the conversation.
           contexts: Optional documents passed to RAG evaluators
           expected_output: Optional expected output
           tags: Optional tags to add to the judge execution
@@ -751,6 +768,7 @@ class Judges:
             request=request,
             response=response,
             turns=turns,
+            tools=tools,
             tags=tags,
             user_id=user_id,
             session_id=session_id,
