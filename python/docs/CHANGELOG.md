@@ -1,3 +1,7 @@
+## 1.11.1
+
+- Fix `tools` parameter not being forwarded by `judges.run`/`arun`/`run_by_name`/`arun_by_name`; the 1.11.0 release exposed `tools` on skills/evaluators only.
+
 ## 1.11.0
 
 - Add `tools` parameter (OpenAI-style tool catalog) to `evaluators.run`/`arun`/`run_by_name`/`arun_by_name`, `judges.run`/`arun`, and preset evaluator runners. Enables tool-aware evaluators like `Tool_Selection`.
