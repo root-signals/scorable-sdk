@@ -123,6 +123,7 @@ class Objectives:
         *,
         intent: Optional[str] = None,
         test_dataset_id: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> Objective:
@@ -132,11 +133,13 @@ class Objectives:
         Args:
           intent: The intent of the objective.
           test_dataset_id: The ID of the test dataset
+          project_id: Optional project to attribute the objective to.
         """
 
         request = ObjectiveRequest(
             intent=intent,
             test_dataset_id=test_dataset_id,
+            project_id=project_id,
         )
         api_instance = ObjectivesApi(_client)
         objective = api_instance.objectives_create(objective_request=request)
@@ -148,6 +151,7 @@ class Objectives:
         *,
         intent: Optional[str] = None,
         test_dataset_id: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AObjective:
@@ -157,11 +161,13 @@ class Objectives:
         Args:
           intent: The intent of the objective.
           test_dataset_id: The ID of the test dataset
+          project_id: Optional project to attribute the objective to.
         """
 
         request = AObjectiveRequest(
             intent=intent,
             test_dataset_id=test_dataset_id,
+            project_id=project_id,
         )
         api_instance = AObjectivesApi(_client)
         objective = await api_instance.objectives_create(objective_request=request)
@@ -234,34 +240,51 @@ class Objectives:
         return await api_instance.objectives_destroy(id=objective_id, _request_timeout=_request_timeout)
 
     @with_sync_client
-    def list(self, *, intent: Optional[str] = None, limit: int = 100, _client: ApiClient) -> Iterator[ObjectiveList]:
+    def list(
+        self,
+        *,
+        intent: Optional[str] = None,
+        limit: int = 100,
+        project_id: Optional[str] = None,
+        _client: ApiClient,
+    ) -> Iterator[ObjectiveList]:
         """
         Iterate through the objectives.
 
         Args:
           intent: Specific intent the returned objectives must match.
           limit: Number of entries to iterate through at most.
+          project_id: Optional project filter.
         """
 
         api_instance = ObjectivesApi(_client)
-        yield from iterate_cursor_list(partial(api_instance.objectives_list, intent=intent), limit=limit)
+        yield from iterate_cursor_list(
+            partial(api_instance.objectives_list, intent=intent, project_id=project_id),
+            limit=limit,
+        )
 
     @with_async_client
-    async def alist(self, *, intent: Optional[str] = None, limit: int = 100) -> AsyncIterator[AObjectiveList]:
+    async def alist(
+        self,
+        *,
+        intent: Optional[str] = None,
+        limit: int = 100,
+        project_id: Optional[str] = None,
+    ) -> AsyncIterator[AObjectiveList]:
         """
         Asynchronously iterate through the objectives.
 
         Args:
           intent: Specific intent the returned objectives must match.
           limit: Number of entries to iterate through at most.
-
+          project_id: Optional project filter.
         """
 
         context = self.client_context()
         assert isinstance(context, AbstractAsyncContextManager), "This method is not available in synchronous mode"
         async with context as client:
             api_instance = AObjectivesApi(client)
-            partial_list = partial(api_instance.objectives_list, intent=intent)
+            partial_list = partial(api_instance.objectives_list, intent=intent, project_id=project_id)
 
             cursor: Optional[StrictStr] = None
             while limit > 0:
@@ -284,11 +307,14 @@ class Objectives:
         *,
         intent: Optional[str] = None,
         test_dataset_id: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> Objective:
         """
         Update an existing objective.
+
+        Pass `project_id=` to move this resource to a different project within your organization.
 
         Args:
           objective_id: The objective to be updated.
@@ -298,6 +324,7 @@ class Objectives:
         request = PatchedObjectiveRequest(
             intent=intent,
             test_dataset_id=test_dataset_id,
+            project_id=project_id,
         )
         api_instance = ObjectivesApi(_client)
         return Objective._wrap(
@@ -316,21 +343,24 @@ class Objectives:
         *,
         intent: Optional[str] = None,
         test_dataset_id: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AObjective:
         """
         Asynchronously update an existing objective.
 
+        Pass `project_id=` to move this resource to a different project within your organization.
+
         Args:
           objective_id: The objective to be updated.
           intent: The intent of the objective.
-
         """
 
         request = APatchedObjectiveRequest(
             intent=intent,
             test_dataset_id=test_dataset_id,
+            project_id=project_id,
         )
         api_instance = AObjectivesApi(_client)
         return await AObjective._awrap(

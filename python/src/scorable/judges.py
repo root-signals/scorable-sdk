@@ -91,6 +91,7 @@ class Judge(OpenApiJudge):
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> JudgeExecutionResponse:
@@ -108,6 +109,7 @@ class Judge(OpenApiJudge):
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
+          project_id: Optional project to attribute the execution log to.
           _request_timeout: Optional timeout for the request
         """
         api_instance = JudgesApi(_client)
@@ -122,6 +124,7 @@ class Judge(OpenApiJudge):
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            project_id=project_id,
         )
         return api_instance.judges_execute_create(
             judge_id=self.id,
@@ -163,6 +166,7 @@ class AJudge(AOpenApiJudge):
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AJudgeExecutionResponse:
@@ -180,6 +184,7 @@ class AJudge(AOpenApiJudge):
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
+          project_id: Optional project to attribute the execution log to.
           _request_timeout: Optional timeout for the request
         """
         api_instance = AJudgesApi(_client)
@@ -194,6 +199,7 @@ class AJudge(AOpenApiJudge):
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            project_id=project_id,
         )
         return await api_instance.judges_execute_create(
             judge_id=self.id,
@@ -227,6 +233,7 @@ class Judges:
         strict: bool = False,
         name: Optional[str] = None,
         overwrite: bool = False,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> JudgeGeneratorResponse:
@@ -269,6 +276,7 @@ class Judges:
             judge_id=judge_id,
             file_id=file_id,
             visibility=_visibility_map[visibility],
+            project_id=project_id,
         )
         return api_instance.judges_generate_create(
             judge_generator_request=judge_request, _request_timeout=_request_timeout
@@ -287,6 +295,7 @@ class Judges:
         strict: bool = False,
         name: Optional[str] = None,
         overwrite: bool = False,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AJudgeGeneratorResponse:
@@ -329,6 +338,7 @@ class Judges:
             judge_id=judge_id,
             file_id=file_id,
             visibility=_visibility_map[visibility],
+            project_id=project_id,
         )
         return await api_instance.judges_generate_create(
             judge_generator_request=judge_request, _request_timeout=_request_timeout
@@ -342,6 +352,7 @@ class Judges:
         intent: str,
         evaluator_references: Optional[List[EvaluatorReferenceRequest]] = None,
         stage: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> Judge:
@@ -353,6 +364,7 @@ class Judges:
           intent: Intent for the judge
           evaluator_references: List of evaluator references to include in the judge
           stage: Stage for the judge
+          project_id: Optional project to attribute the judge to.
           _request_timeout: Optional timeout for the request
         """
         api_instance = JudgesApi(_client)
@@ -361,6 +373,7 @@ class Judges:
             intent=intent,
             evaluator_references=evaluator_references,
             stage=stage,
+            project_id=project_id,
         )
         return Judge._wrap(
             api_instance.judges_create(judge_request=request, _request_timeout=_request_timeout),
@@ -375,6 +388,7 @@ class Judges:
         intent: str,
         evaluator_references: Optional[List[AEvaluatorReferenceRequest]] = None,
         stage: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AJudge:
@@ -386,6 +400,7 @@ class Judges:
           intent: Intent for the judge
           evaluator_references: List of evaluator references to include in the judge
           stage: Stage for the judge
+          project_id: Optional project to attribute the judge to.
           _request_timeout: Optional timeout for the request
         """
         api_instance = AJudgesApi(_client)
@@ -394,6 +409,7 @@ class Judges:
             intent=intent,
             evaluator_references=evaluator_references,
             stage=stage,
+            project_id=project_id,
         )
         return await AJudge._awrap(
             await api_instance.judges_create(judge_request=request, _request_timeout=_request_timeout),
@@ -451,17 +467,26 @@ class Judges:
         return await api_instance.judges_destroy(id=judge_id, _request_timeout=_request_timeout)
 
     @with_sync_client
-    def list(self, *, limit: int = 100, _client: ApiClient) -> Iterator[Judge]:
+    def list(
+        self,
+        *,
+        limit: int = 100,
+        project_id: Optional[str] = None,
+        _client: ApiClient,
+    ) -> Iterator[Judge]:
         """
         Iterate through the judges.
 
         Args:
           limit: Number of entries to iterate through at most.
+          project_id: Optional project filter. Public judges are excluded when set.
         """
         api_instance = JudgesApi(_client)
         cursor: Optional[StrictStr] = None
         while limit > 0:
-            result: PaginatedJudgeListList = api_instance.judges_list(page_size=limit, cursor=cursor)
+            result: PaginatedJudgeListList = api_instance.judges_list(
+                page_size=limit, cursor=cursor, project_id=project_id
+            )
             if not result.results:
                 return
 
@@ -473,18 +498,19 @@ class Judges:
             if not (cursor := result.next):
                 return
 
-    async def alist(self, *, limit: int = 100) -> AsyncIterator[AJudge]:
+    async def alist(self, *, limit: int = 100, project_id: Optional[str] = None) -> AsyncIterator[AJudge]:
         """
         Asynchronously iterate through the judges.
 
         Args:
           limit: Number of entries to iterate through at most.
+          project_id: Optional project filter. Public judges are excluded when set.
         """
         context = self.client_context()
         assert isinstance(context, AbstractAsyncContextManager), "This method is not available in synchronous mode"
         async with context as client:
             api_instance = AJudgesApi(client)
-            partial_list = partial(api_instance.judges_list)
+            partial_list = partial(api_instance.judges_list, project_id=project_id)
 
             cursor: Optional[StrictStr] = None
             while limit > 0:
@@ -507,21 +533,26 @@ class Judges:
         *,
         name: Optional[str] = None,
         evaluator_references: Optional[List[EvaluatorReferenceRequest]] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> Judge:
         """
         Update an existing judge.
 
+        Pass `project_id=` to move this resource to a different project within your organization.
+
         Args:
           judge_id: The judge to be updated.
           name: New name for the judge
           evaluator_references: New list of evaluator references
+          project_id: Optional new project for the judge (move semantics).
         """
         api_instance = JudgesApi(_client)
         request = PatchedJudgeRequest(
             name=name,
             evaluator_references=evaluator_references,
+            project_id=project_id,
         )
         return Judge._wrap(
             api_instance.judges_partial_update(
@@ -539,21 +570,26 @@ class Judges:
         *,
         name: Optional[str] = None,
         evaluator_references: Optional[List[AEvaluatorReferenceRequest]] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AJudge:
         """
         Asynchronously update an existing judge.
 
+        Pass `project_id=` to move this resource to a different project within your organization.
+
         Args:
           judge_id: The judge to be updated.
           name: New name for the judge
           evaluator_references: New list of evaluator references
+          project_id: Optional new project for the judge (move semantics).
         """
         api_instance = AJudgesApi(_client)
         request = APatchedJudgeRequest(
             name=name,
             evaluator_references=evaluator_references,
+            project_id=project_id,
         )
         return await AJudge._awrap(
             await api_instance.judges_partial_update(
@@ -579,6 +615,7 @@ class Judges:
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> JudgeExecutionResponse:
@@ -597,6 +634,7 @@ class Judges:
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
+          project_id: Optional project to attribute the execution log to.
           _request_timeout: Optional timeout for the request
         """
         api_instance = JudgesApi(_client)
@@ -611,6 +649,7 @@ class Judges:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            project_id=project_id,
         )
         return api_instance.judges_execute_create(
             judge_id=judge_id,
@@ -633,6 +672,7 @@ class Judges:
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AJudgeExecutionResponse:
@@ -651,6 +691,7 @@ class Judges:
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
+          project_id: Optional project to attribute the execution log to.
           _request_timeout: Optional timeout for the request
         """
         api_instance = AJudgesApi(_client)
@@ -665,6 +706,7 @@ class Judges:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            project_id=project_id,
         )
         return await api_instance.judges_execute_create(
             judge_id=judge_id,
@@ -687,6 +729,7 @@ class Judges:
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> JudgeExecutionResponse:
@@ -705,6 +748,7 @@ class Judges:
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
+          project_id: Optional project to attribute the execution log to.
           _request_timeout: Optional timeout for the request
         """
         api_instance = JudgesApi(_client)
@@ -719,6 +763,7 @@ class Judges:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            project_id=project_id,
         )
         return api_instance.judges_execute_by_name_create(
             name=name,
@@ -741,6 +786,7 @@ class Judges:
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AJudgeExecutionResponse:
@@ -759,6 +805,7 @@ class Judges:
           user_id: Optional user identifier for tracking purposes.
           session_id: Optional session identifier for tracking purposes.
           system_prompt: Optional system prompt that was used for the LLM call.
+          project_id: Optional project to attribute the execution log to.
           _request_timeout: Optional timeout for the request
         """
         api_instance = AJudgesApi(_client)
@@ -773,6 +820,7 @@ class Judges:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            project_id=project_id,
         )
         return await api_instance.judges_execute_by_name_create(
             name=name,
