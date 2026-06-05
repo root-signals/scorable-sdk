@@ -230,6 +230,7 @@ class Evaluator(AOpenAPIEvaluator):
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
         file_ids: Optional[List[uuid.UUID]] = None,
+        project_id: Optional[str] = None,
         *,
         _client: ApiClient,
         _request_timeout: Optional[int] = None,
@@ -252,6 +253,7 @@ class Evaluator(AOpenAPIEvaluator):
           system_prompt: Optional system prompt that was used for the LLM call.
           file_ids: Optional list of file UUIDs (from Files.upload). PDFs are extracted to text
             context; images are passed directly to the model.
+          project_id: Optional project to attribute the execution log to.
         """
 
         if not response and not request and not turns:
@@ -273,6 +275,7 @@ class Evaluator(AOpenAPIEvaluator):
             session_id=session_id,
             system_prompt=system_prompt,
             file_ids=[str(f) for f in file_ids] if file_ids else None,
+            project_id=project_id,
         )
         return api_instance.evaluators_execute_create(
             id=self.id,
@@ -315,6 +318,7 @@ class AEvaluator(AOpenAPIEvaluator):
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
         file_ids: Optional[List[uuid.UUID]] = None,
+        project_id: Optional[str] = None,
         *,
         _client: AApiClient,
         _request_timeout: Optional[int] = None,
@@ -337,6 +341,7 @@ class AEvaluator(AOpenAPIEvaluator):
           system_prompt: Optional system prompt that was used for the LLM call.
           file_ids: Optional list of file UUIDs (from Files.upload). PDFs are extracted to text
             context; images are passed directly to the model.
+          project_id: Optional project to attribute the execution log to.
         """
 
         if not response and not request and not turns:
@@ -358,6 +363,7 @@ class AEvaluator(AOpenAPIEvaluator):
             session_id=session_id,
             system_prompt=system_prompt,
             file_ids=[str(f) for f in file_ids] if file_ids else None,
+            project_id=project_id,
         )
         return await api_instance.evaluators_execute_create(
             id=self.id,
@@ -479,6 +485,7 @@ class PresetEvaluatorRunner:
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        project_id: Optional[str] = None,
         *,
         _client: ApiClient,
         _request_timeout: Optional[int] = None,
@@ -519,6 +526,7 @@ class PresetEvaluatorRunner:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            project_id=project_id,
         )
         return api_instance.evaluators_execute_create(
             id=self.evaluator_id,
@@ -556,6 +564,7 @@ class APresetEvaluatorRunner:
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        project_id: Optional[str] = None,
         *,
         _client: AApiClient,
         _request_timeout: Optional[int] = None,
@@ -596,6 +605,7 @@ class APresetEvaluatorRunner:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            project_id=project_id,
         )
         return await api_instance.evaluators_execute_create(
             id=self.evaluator_id,
@@ -654,6 +664,7 @@ class Evaluators:
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> EvaluatorExecutionResult:
@@ -675,6 +686,7 @@ class Evaluators:
             user_id: Optional user identifier for tracking purposes.
             session_id: Optional session identifier for tracking purposes.
             system_prompt: Optional system prompt that was used for the LLM call.
+            project_id: Optional project to attribute the execution log to.
             _request_timeout: Optional timeout for the request.
         """
 
@@ -696,6 +708,7 @@ class Evaluators:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            project_id=project_id,
         )
         return api_instance.evaluators_execute_create(
             id=evaluator_id,
@@ -720,6 +733,7 @@ class Evaluators:
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AEvaluatorExecutionResult:
@@ -741,6 +755,7 @@ class Evaluators:
             user_id: Optional user identifier for tracking purposes.
             session_id: Optional session identifier for tracking purposes.
             system_prompt: Optional system prompt that was used for the LLM call.
+            project_id: Optional project to attribute the execution log to.
             _request_timeout: Optional timeout for the request.
         """
 
@@ -761,6 +776,7 @@ class Evaluators:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            project_id=project_id,
         )
         return await api_instance.evaluators_execute_create(
             id=evaluator_id,
@@ -1195,6 +1211,7 @@ class Evaluators:
         evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None,
         objective_id: Optional[str] = None,
         overwrite: bool = False,
+        project_id: Optional[str] = None,
         _client: ApiClient,
         _request_timeout: Optional[int] = None,
     ) -> Evaluator:
@@ -1243,6 +1260,7 @@ class Evaluators:
             input_variables=_to_input_variables(input_variables),
             evaluator_demonstrations=_to_evaluator_demonstrations(evaluator_demonstrations),
             overwrite=overwrite,
+            project_id=project_id,
         )
 
         evaluator = api_instance.evaluators_create(
@@ -1264,6 +1282,7 @@ class Evaluators:
         evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None,
         objective_id: Optional[str] = None,
         overwrite: bool = False,
+        project_id: Optional[str] = None,
         _client: ApiClient,
         _request_timeout: Optional[int] = None,
     ) -> AEvaluator:
@@ -1312,6 +1331,7 @@ class Evaluators:
             input_variables=_ato_input_variables(input_variables),
             evaluator_demonstrations=_ato_evaluator_demonstrations(evaluator_demonstrations),
             overwrite=overwrite,
+            project_id=project_id,
         )
 
         evaluator = await api_instance.evaluators_create(
@@ -1333,11 +1353,14 @@ class Evaluators:
         scoring_criteria: Optional[str] = None,
         evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None,
         objective_id: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> Evaluator:
         """
-        Update an evaluator and return the result
+        Update an evaluator and return the result.
+
+        Pass `project_id=` to move this resource to a different project within your organization.
 
         See the create method for more information on the arguments.
         """
@@ -1355,6 +1378,7 @@ class Evaluators:
             evaluator_demonstrations=_to_evaluator_demonstrations(evaluator_demonstrations)
             if evaluator_demonstrations
             else None,
+            project_id=project_id,
         )
 
         api_response = api_instance.evaluators_partial_update(
@@ -1377,11 +1401,14 @@ class Evaluators:
         scoring_criteria: Optional[str] = None,
         evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None,
         objective_id: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AEvaluator:
         """
-        Asynchronously update an evaluator and return the result
+        Asynchronously update an evaluator and return the result.
+
+        Pass `project_id=` to move this resource to a different project within your organization.
 
         See the create method for more information on the arguments.
         """
@@ -1399,6 +1426,7 @@ class Evaluators:
             evaluator_demonstrations=_ato_evaluator_demonstrations(evaluator_demonstrations)
             if evaluator_demonstrations
             else None,
+            project_id=project_id,
         )
         api_response = await api_instance.evaluators_partial_update(
             id=evaluator_id,
@@ -1447,6 +1475,7 @@ class Evaluators:
         limit: int = 100,
         name: Optional[str] = None,
         only_root_evaluators: bool = False,
+        project_id: Optional[str] = None,
         _client: ApiClient,
     ) -> Iterator[EvaluatorListOutput]:
         """
@@ -1457,6 +1486,7 @@ class Evaluators:
           limit: Number of entries to iterate through at most.
           name: Specific name the returned evaluators must match.
           only_root_evaluators: Returns only Scorable defined evaluators.
+          project_id: Optional project filter.
         """
 
         api_instance = EvaluatorsApi(_client)
@@ -1466,6 +1496,7 @@ class Evaluators:
                 name=name,
                 search=search_term,
                 is_root_evaluator=True if only_root_evaluators else None,
+                project_id=project_id,
             ),
             limit=limit,
         )
@@ -1477,6 +1508,7 @@ class Evaluators:
         limit: int = 100,
         name: Optional[str] = None,
         only_root_evaluators: bool = False,
+        project_id: Optional[str] = None,
     ) -> AsyncIterator[AEvaluatorListOutput]:
         """
         Asynchronously iterate through the evaluators.
@@ -1486,6 +1518,7 @@ class Evaluators:
           limit: Number of entries to iterate through at most.
           name: Specific name the returned evaluators must match.
           only_root_evaluators: Returns only Scorable defined evaluators.
+          project_id: Optional project filter.
         """
 
         context = self.client_context()
@@ -1497,6 +1530,7 @@ class Evaluators:
                 name=name,
                 search=search_term,
                 is_root_evaluator=True if only_root_evaluators else None,
+                project_id=project_id,
             )
 
             cursor: Optional[StrictStr] = None
@@ -1530,6 +1564,7 @@ class Evaluators:
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> EvaluatorExecutionResult:
@@ -1551,6 +1586,7 @@ class Evaluators:
             user_id: Optional user identifier for tracking purposes.
             session_id: Optional session identifier for tracking purposes.
             system_prompt: Optional system prompt that was used for the LLM call.
+            project_id: Optional project to attribute the execution log to.
             _request_timeout: Optional timeout for the request.
         """
 
@@ -1572,6 +1608,7 @@ class Evaluators:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            project_id=project_id,
         )
         return api_instance.evaluators_execute_by_name_create(
             name=name,
@@ -1614,6 +1651,7 @@ class Evaluators:
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
     ) -> AEvaluatorExecutionResult:
@@ -1635,6 +1673,7 @@ class Evaluators:
             user_id: Optional user identifier for tracking purposes.
             session_id: Optional session identifier for tracking purposes.
             system_prompt: Optional system prompt that was used for the LLM call.
+            project_id: Optional project to attribute the execution log to.
             _request_timeout: Optional timeout for the request.
         """
 
@@ -1655,6 +1694,7 @@ class Evaluators:
             user_id=user_id,
             session_id=session_id,
             system_prompt=system_prompt,
+            project_id=project_id,
         )
         return await api_instance.evaluators_execute_by_name_create(
             name=name,

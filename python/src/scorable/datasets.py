@@ -42,6 +42,7 @@ class DataSets:
         name: Optional[str] = None,
         path: Optional[str] = None,
         type: str = "reference",
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
     ) -> Optional[DataSetCreate]:
         """
@@ -50,6 +51,8 @@ class DataSets:
         """
 
         payload: Dict[str, Any] = {"name": name, "type": type, "tags": []}
+        if project_id is not None:
+            payload["project_id"] = project_id
         file = None
         try:
             if path:
@@ -79,6 +82,7 @@ class DataSets:
         name: Optional[str] = None,
         path: Optional[str] = None,
         type: str = "reference",
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
     ) -> Optional[ADataSetCreate]:
         """
@@ -90,6 +94,8 @@ class DataSets:
         payload = aiohttp.FormData()
         payload.add_field("name", name)
         payload.add_field("type", type)
+        if project_id is not None:
+            payload.add_field("project_id", project_id)
 
         file = None
         try:
@@ -149,6 +155,7 @@ class DataSets:
         search_term: Optional[str] = None,
         *,
         limit: int = 100,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
     ) -> Iterator[DataSetList]:
@@ -158,11 +165,18 @@ class DataSets:
         Args:
           limit: Number of entries to iterate through at most.
           search_term: Can be used to limit returned datasets.
+          project_id: Optional project filter.
         """
 
         api_instance = DatasetsApi(_client)
         yield from iterate_cursor_list(
-            partial(api_instance.datasets_list, search=search_term, _request_timeout=_request_timeout), limit=limit
+            partial(
+                api_instance.datasets_list,
+                search=search_term,
+                project_id=project_id,
+                _request_timeout=_request_timeout,
+            ),
+            limit=limit,
         )
 
     async def alist(
@@ -170,6 +184,7 @@ class DataSets:
         search_term: Optional[str] = None,
         *,
         limit: int = 100,
+        project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
     ) -> AsyncIterator[ADataSetList]:
         """
@@ -178,13 +193,19 @@ class DataSets:
         Args:
           limit: Number of entries to iterate through at most.
           search_term: Can be used to limit returned datasets.
+          project_id: Optional project filter.
         """
 
         context = self.client_context()
         assert isinstance(context, AbstractAsyncContextManager), "This method is not available in synchronous mode"
         async with context as client:
             api_instance = ADatasetsApi(client)
-            partial_list = partial(api_instance.datasets_list, search=search_term, _request_timeout=_request_timeout)
+            partial_list = partial(
+                api_instance.datasets_list,
+                search=search_term,
+                project_id=project_id,
+                _request_timeout=_request_timeout,
+            )
             cursor: Optional[StrictStr] = None
             while limit > 0:
                 result: APaginatedDataSetListList = await partial_list(page_size=limit, cursor=cursor)

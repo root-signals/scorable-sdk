@@ -111,3 +111,48 @@ async def test_arun_evaluator_by_name_with_tracking_params(mock_aevaluators_api)
     assert execution_request.user_id == "user-123"
     assert execution_request.session_id == "session-456"
     assert execution_request.system_prompt == "You are a helpful assistant."
+
+
+@pytest.mark.asyncio
+@patch("scorable.skills.EvaluatorsApi")
+async def test_run__passes_project_id_when_provided(mock_evaluators_api):
+    client = Scorable(api_key="fake")
+    instance = mock_evaluators_api.return_value
+    instance.evaluators_execute_create.return_value = "mock_success"
+
+    client.evaluators.run(
+        "evaluator-id-123",
+        response="test_response",
+        project_id="proj-1",
+    )
+
+    execution_request = instance.evaluators_execute_create.call_args.kwargs["evaluator_execution_request"]
+    assert execution_request.project_id == "proj-1"
+
+
+@pytest.mark.asyncio
+@patch("scorable.skills.EvaluatorsApi")
+async def test_run__omits_project_id_when_not_provided(mock_evaluators_api):
+    client = Scorable(api_key="fake")
+    instance = mock_evaluators_api.return_value
+    instance.evaluators_execute_create.return_value = "mock_success"
+
+    client.evaluators.run("evaluator-id-123", response="test_response")
+
+    execution_request = instance.evaluators_execute_create.call_args.kwargs["evaluator_execution_request"]
+    assert execution_request.project_id is None
+
+
+@patch("scorable.skills.EvaluatorsApi")
+def test_list__filters_by_project_id(mock_evaluators_api):
+    from unittest.mock import MagicMock
+
+    client = Scorable(api_key="fake")
+    instance = mock_evaluators_api.return_value
+    page = MagicMock(results=[], next=None)
+    instance.evaluators_list.return_value = page
+
+    list(client.evaluators.list(project_id="proj-1"))
+
+    instance.evaluators_list.assert_called_once()
+    assert instance.evaluators_list.call_args.kwargs["project_id"] == "proj-1"

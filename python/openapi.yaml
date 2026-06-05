@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Scorable API
-  version: 1.0.0
+  version: 1.0.0 (latest)
   description: Scorable JSON API provides a way to access Scorable using provisioned
     API token
 paths:
@@ -28,6 +28,12 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: project_id
+        schema:
+          type: string
+          format: uuid
+        description: Filter by project UUID
       - in: query
         name: search
         schema:
@@ -198,6 +204,13 @@ paths:
         schema:
           type: integer
       - in: query
+        name: project_id
+        schema:
+          type: string
+          format: uuid
+        description: Filter by project. Public evaluators are excluded when this filter
+          is set.
+      - in: query
         name: search
         schema:
           type: string
@@ -237,7 +250,7 @@ paths:
             examples:
               CreateAnEvaluator:
                 value:
-                  prompt: Does the {{response}} contain ambiguous language?
+                  scoring_criteria: Does the {{response}} contain ambiguous language?
                   name: Direct language
                   objective:
                     intent: Does the response contain ambiguous language?
@@ -345,13 +358,13 @@ paths:
                   input_variables:
                   - name: question
                 summary: Update a skill prompt
-              UpdateAnEvaluatorPrompt:
+              UpdateAnEvaluatorScoringCriteria:
                 value:
-                  prompt: Does the {{response}} contain ambiguous language? Explain
-                    your reasoning.
+                  scoring_criteria: Does the {{response}} contain ambiguous language?
+                    Explain your reasoning.
                   input_variables:
                   - name: response
-                summary: Update an evaluator prompt
+                summary: Update an evaluator scoring criteria
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PatchedEvaluatorRequest'
@@ -496,6 +509,17 @@ paths:
         required: true
       tags:
       - evaluators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DuplicateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DuplicateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DuplicateRequest'
       security:
       - publicApiKey: []
       responses:
@@ -858,6 +882,12 @@ paths:
         schema:
           type: integer
       - in: query
+        name: project_id
+        schema:
+          type: string
+          format: uuid
+        description: Filter logs by project UUID
+      - in: query
         name: search
         schema:
           type: string
@@ -1076,6 +1106,13 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: project_id
+        schema:
+          type: string
+          format: uuid
+        description: Filter by project. Public judges are excluded when this filter
+          is set.
       - in: query
         name: search
         schema:
@@ -1717,6 +1754,17 @@ paths:
         required: true
       tags:
       - judges
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DuplicateJudgeRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DuplicateJudgeRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DuplicateJudgeRequestRequest'
       security:
       - publicApiKey: []
       responses:
@@ -1796,6 +1844,12 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: project_id
+        schema:
+          type: string
+          format: uuid
+        description: Filter by project UUID
       - in: query
         name: status
         schema:
@@ -2286,6 +2340,12 @@ paths:
         schema:
           type: integer
       - in: query
+        name: project_id
+        schema:
+          type: string
+          format: uuid
+        description: Filter by project UUID
+      - in: query
         name: search
         schema:
           type: string
@@ -2667,6 +2727,128 @@ paths:
                 items:
                   $ref: '#/components/schemas/OtelTrace'
           description: ''
+  /v1/projects/:
+    get:
+      operationId: projects_list
+      description: List all projects in your organization.
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - projects
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProjectList'
+          description: ''
+    post:
+      operationId: projects_create
+      description: Create a new project.
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+        required: true
+      security:
+      - publicApiKey: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+  /v1/projects/{id}/:
+    get:
+      operationId: projects_retrieve
+      description: Retrieve a project.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - projects
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+    patch:
+      operationId: projects_partial_update
+      description: Update a project name or description.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectRequest'
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+    delete:
+      operationId: projects_destroy
+      description: Delete a project.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - projects
+      security:
+      - publicApiKey: []
+      responses:
+        '204':
+          description: No response body
 components:
   schemas:
     BatchExecutionStatus:
@@ -2731,6 +2913,12 @@ components:
         has_header:
           type: boolean
           default: false
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Project to associate this dataset with. Defaults to the organization's
+            default project.
       required:
       - id
       - owner
@@ -2762,6 +2950,12 @@ components:
         has_header:
           type: boolean
           default: false
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Project to associate this dataset with. Defaults to the organization's
+            default project.
     DataSetList:
       type: object
       properties:
@@ -2789,6 +2983,11 @@ components:
           readOnly: true
         status:
           $ref: '#/components/schemas/StatusEnum'
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
         _meta:
           readOnly: true
           title: ' meta'
@@ -2797,6 +2996,7 @@ components:
       - created_at
       - id
       - owner
+      - project_id
     DataSetType:
       enum:
       - reference
@@ -2819,6 +3019,20 @@ components:
       required:
       - end
       - start
+    DuplicateJudgeRequestRequest:
+      type: object
+      properties:
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+    DuplicateRequest:
+      type: object
+      properties:
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
     Evaluator:
       type: object
       properties:
@@ -2862,9 +3076,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/NestedUserDetails'
           readOnly: true
-        prompt:
+        project_id:
           type: string
-          maxLength: 500000
+          format: uuid
+          nullable: true
+          description: Project to assign this evaluator to. Defaults to org default
+            project.
         visibility:
           allOf:
           - $ref: '#/components/schemas/VisibilityEnum'
@@ -2889,8 +3106,8 @@ components:
         inputs:
           type: object
           description: Schema defining the input parameters required for execution.
-            The schema consists of variables defined in the prompt template (predicate)
-            and special variables like contexts and expected output.
+            The schema consists of variables defined in the scoring criteria and special
+            variables like contexts and expected output.
           additionalProperties:
             type: object
             required:
@@ -2921,15 +3138,22 @@ components:
             my_custom_variable:
               type: string
           readOnly: true
+        scoring_criteria:
+          type: string
+          maxLength: 500000
+        is_root_evaluator:
+          type: boolean
+          readOnly: true
       required:
       - _meta
       - created_at
       - id
       - inputs
+      - is_root_evaluator
       - name
       - objective
       - owner
-      - prompt
+      - scoring_criteria
       - updated_at
       - updated_by
       - version_id
@@ -3087,6 +3311,12 @@ components:
             format: uuid
           description: File IDs (from POST /v1/files/). Note, not all models support
             uploaded files as context.
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Project to assign the execution log to. Defaults to the resource's
+            project or org default.
         variables:
           type: object
           additionalProperties:
@@ -3134,6 +3364,10 @@ components:
         overwrite:
           type: boolean
           default: false
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - yaml
     EvaluatorListOutput:
@@ -3166,8 +3400,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/NestedUserDetails'
           readOnly: true
-        prompt:
+        project_id:
           type: string
+          format: uuid
+          nullable: true
           readOnly: true
         visibility:
           allOf:
@@ -3189,8 +3425,8 @@ components:
         inputs:
           type: object
           description: Schema defining the input parameters required for execution.
-            The schema consists of variables defined in the prompt template (predicate)
-            and special variables like contexts and expected output.
+            The schema consists of variables defined in the scoring criteria and special
+            variables like contexts and expected output.
           additionalProperties:
             type: object
             required:
@@ -3221,6 +3457,9 @@ components:
             my_custom_variable:
               type: string
           readOnly: true
+        scoring_criteria:
+          type: string
+          readOnly: true
       required:
       - _meta
       - created_at
@@ -3230,7 +3469,8 @@ components:
       - name
       - objective
       - owner
-      - prompt
+      - project_id
+      - scoring_criteria
       - updated_at
       - updated_by
       - version_id
@@ -3308,14 +3548,20 @@ components:
           default: false
           description: Overwrite existing skill with the same name. Only for POST
             requests.
-        prompt:
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Project to assign this evaluator to. Defaults to org default
+            project.
+        scoring_criteria:
           type: string
           minLength: 1
           maxLength: 500000
       required:
       - name
       - objective_id
-      - prompt
+      - scoring_criteria
     EvaluatorResult:
       type: object
       properties:
@@ -3463,8 +3709,10 @@ components:
           readOnly: true
           nullable: true
         classification:
-          readOnly: true
+          type: object
           nullable: true
+          additionalProperties: true
+          readOnly: true
         confidence:
           type: number
           format: double
@@ -3557,6 +3805,11 @@ components:
           type: string
           format: uuid
           nullable: true
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
         request_preview:
           type: string
           readOnly: true
@@ -3602,6 +3855,7 @@ components:
       - id
       - llm_output
       - owner
+      - project_id
       - request_preview
       - response_preview
       - score
@@ -3705,8 +3959,8 @@ components:
         inputs:
           type: object
           description: Schema defining the input parameters required for execution.
-            The schema consists of variables defined in the prompt template (predicate)
-            and special variables like contexts and expected output.
+            The schema consists of variables defined in the scoring criteria and special
+            variables like contexts and expected output.
           additionalProperties:
             type: object
             required:
@@ -3744,6 +3998,11 @@ components:
           type: string
           maxLength: 512
           minLength: 3
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Project to assign this judge to. Defaults to org default project.
         stage:
           type: string
           maxLength: 255
@@ -3808,6 +4067,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/NestedJudge'
           readOnly: true
+        project_id:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
         items:
           type: array
           items:
@@ -3821,6 +4085,7 @@ components:
       - failed_count
       - items
       - judge
+      - project_id
       - started_at
       - status
       - total_count
@@ -3877,6 +4142,12 @@ components:
             format: uuid
           description: File IDs (from POST /v1/files/). Note, not all models support
             uploaded files as context.
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Project to assign the execution log to. Defaults to the resource's
+            project or org default.
     JudgeBatchExecutionItem:
       type: object
       properties:
@@ -3989,6 +4260,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/NestedJudge'
           readOnly: true
+        project_id:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
       required:
       - batch_execution_id
       - completed_at
@@ -3996,6 +4272,7 @@ components:
       - created_at
       - failed_count
       - judge
+      - project_id
       - started_at
       - status
       - total_count
@@ -4017,6 +4294,12 @@ components:
           type: string
           format: uuid
           nullable: true
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Project to assign this batch execution to. Defaults to the
+            judge's project or org default.
       required:
       - inputs
     JudgeBatchExecutionResponse:
@@ -4036,6 +4319,10 @@ components:
         claim_token:
           type: string
           format: uuid
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - claim_token
     JudgeExecutionRequest:
@@ -4094,6 +4381,12 @@ components:
             format: uuid
           description: File IDs (from POST /v1/files/). Note, not all models support
             uploaded files as context.
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Project to assign the execution log to. Defaults to the resource's
+            project or org default.
         judge_version_id:
           type: string
           format: uuid
@@ -4164,6 +4457,10 @@ components:
           default: false
           description: When true, enables context-aware RAG evaluators (requires_contexts=True)
             even without file upload
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - intent
       - visibility
@@ -4240,8 +4537,8 @@ components:
         inputs:
           type: object
           description: Schema defining the input parameters required for execution.
-            The schema consists of variables defined in the prompt template (predicate)
-            and special variables like contexts and expected output.
+            The schema consists of variables defined in the scoring criteria and special
+            variables like contexts and expected output.
           additionalProperties:
             type: object
             required:
@@ -4282,6 +4579,11 @@ components:
           additionalProperties: {}
           readOnly: true
           title: ' meta'
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
       required:
       - _meta
       - created_at
@@ -4290,6 +4592,7 @@ components:
       - inputs
       - intent
       - name
+      - project_id
       - visibility
     JudgeRectifierRequestRequest:
       type: object
@@ -4347,6 +4650,12 @@ components:
             format: uuid
           description: File IDs (from POST /v1/files/). Note, not all models support
             uploaded files as context.
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Project to assign the execution log to. Defaults to the resource's
+            project or org default.
         judge_version_id:
           type: string
           format: uuid
@@ -4424,6 +4733,11 @@ components:
           type: string
           minLength: 3
           maxLength: 512
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Project to assign this judge to. Defaults to org default project.
         stage:
           type: string
           maxLength: 255
@@ -4779,6 +5093,11 @@ components:
           type: string
           format: date-time
           readOnly: true
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
         _meta:
           type: object
           additionalProperties: {}
@@ -4789,6 +5108,7 @@ components:
       - created_at
       - id
       - owner
+      - project_id
     ObjectiveRequest:
       type: object
       properties:
@@ -4804,6 +5124,13 @@ components:
           type: string
           format: uuid
           nullable: true
+        project_id:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+          description: Project to associate this objective with. Defaults to the organization's
+            default project.
     OtelTrace:
       type: object
       properties:
@@ -5134,6 +5461,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OtelTraceRecord'
+    PaginatedProjectList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
     PatchedEvaluatorRequest:
       type: object
       properties:
@@ -5179,7 +5525,13 @@ components:
           default: false
           description: Overwrite existing skill with the same name. Only for POST
             requests.
-        prompt:
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Project to assign this evaluator to. Defaults to org default
+            project.
+        scoring_criteria:
           type: string
           minLength: 1
           maxLength: 500000
@@ -5206,6 +5558,11 @@ components:
           type: string
           minLength: 3
           maxLength: 512
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Project to assign this judge to. Defaults to org default project.
         stage:
           type: string
           maxLength: 255
@@ -5251,6 +5608,65 @@ components:
           type: string
           format: uuid
           nullable: true
+        project_id:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+          description: Project to associate this objective with. Defaults to the organization's
+            default project.
+    PatchedProjectRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 512
+        description:
+          type: string
+        is_default:
+          type: boolean
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 512
+        description:
+          type: string
+        is_default:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        owner:
+          type: string
+          format: uuid
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - name
+      - owner
+    ProjectRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 512
+        description:
+          type: string
+        is_default:
+          type: boolean
+      required:
+      - name
     Provider:
       type: object
       properties:
@@ -5355,6 +5771,10 @@ components:
           type: string
           writeOnly: true
           minLength: 1
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
         dataset_range:
           allOf:
           - $ref: '#/components/schemas/DatasetRangeRequest'
@@ -5376,6 +5796,10 @@ components:
           type: string
           writeOnly: true
           minLength: 1
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
         dataset_range:
           allOf:
           - $ref: '#/components/schemas/DatasetRangeRequest'
