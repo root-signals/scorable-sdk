@@ -20,6 +20,8 @@ interface ListDatasetsParams {
   page_size?: number;
   search?: string;
   type?: 'reference' | 'test';
+  /** Filter datasets by project UUID. */
+  projectId?: string;
 }
 
 // File upload types
@@ -29,6 +31,8 @@ interface DatasetMetadata {
   url?: string;
   tags?: string[];
   has_header?: boolean;
+  /** Project to assign this dataset to. Defaults to the org's default project. */
+  projectId?: string;
 }
 
 // Handle Node.js Buffer type compatibility
@@ -41,8 +45,10 @@ export class DatasetsResource {
    * List datasets
    */
   async list(params?: ListDatasetsParams): Promise<PaginatedResponse<DatasetList>> {
+    const { projectId, ...rest } = params ?? {};
+    const query = projectId !== undefined ? { ...rest, project_id: projectId } : rest;
     const { data, error } = await this._client.GET('/v1/datasets/', {
-      params: { query: params ?? {} },
+      params: { query },
     });
 
     if (error) {
@@ -165,6 +171,9 @@ export class DatasetsResource {
       formData.append('has_header', metadata.has_header.toString());
     if (metadata.tags) {
       metadata.tags.forEach((tag) => formData.append('tags', tag));
+    }
+    if (metadata.projectId !== undefined) {
+      formData.append('project_id', metadata.projectId);
     }
 
     const requestBody = formData;

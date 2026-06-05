@@ -59,6 +59,14 @@ export type {
 
 // Additional resources
 export { DatasetsResource } from './resources/datasets.js';
+export { ProjectsResource } from './resources/projects.js';
+
+export type {
+  Project,
+  CreateProjectParams,
+  UpdateProjectParams,
+  ProjectListParams,
+} from './resources/projects.js';
 
 // Multi-turn conversation types
 export type Turn = components['schemas']['MessageTurnRequest'];

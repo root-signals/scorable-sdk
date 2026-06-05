@@ -98,4 +98,9 @@ export interface ExecutionPayload {
   system_prompt?: string;
   /** File IDs from client.files.upload(). PDFs are extracted to text context; images are passed directly to the model. */
   file_ids?: string[];
+  /**
+   * Project to assign the execution log to. Defaults to the resource's project,
+   * or the caller's org default project for public resources.
+   */
+  projectId?: string;
 }
