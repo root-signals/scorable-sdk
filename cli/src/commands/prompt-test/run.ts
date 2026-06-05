@@ -25,6 +25,7 @@ const UNICODE_CHARS = {
   middle: "│",
 };
 import { CliError } from "../../types.js";
+import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 import type { PromptTest, PromptTestConfig } from "../../types.js";
 
 function isPromptTestComplete(exp: PromptTest): boolean {
@@ -111,6 +112,7 @@ export async function runPromptTests(
   outputFile: string | undefined,
   configPath: string,
   sleep: (ms: number) => Promise<void> = (ms) => new Promise((r) => setTimeout(r, ms)),
+  projectIdOverride?: string,
 ): Promise<void> {
   let rawConfig: unknown;
   try {
@@ -141,6 +143,15 @@ export async function runPromptTests(
   const apiKey = await requireApiKey();
   printInfo("Starting prompt tests");
 
+  // Resolution: --project-id override > config file > env > settings.
+  // Passing `--project-id` to `run` invokes resolveProjectIdValue, which already
+  // covers the env/settings fallback. The config file lives below the flag and
+  // above env, so we honour it explicitly here.
+  const resolvedProjectId =
+    projectIdOverride !== undefined
+      ? resolveProjectIdValue(projectIdOverride)
+      : (config.project_id ?? resolveProjectIdValue(undefined));
+
   const experiments: Record<string, PromptTest> = {};
 
   for (const prompt of config.prompts) {
@@ -161,6 +172,7 @@ export async function runPromptTests(
       };
       if (config.response_schema) payload["response_schema"] = config.response_schema;
       if (config.dataset_id) payload["dataset_id"] = config.dataset_id;
+      if (resolvedProjectId !== undefined) payload["project_id"] = resolvedProjectId;
 
       const result = (await apiRequest("POST", "prompt-tests", {
         payload,
@@ -231,9 +243,10 @@ export function registerRunCommand(pt: Command): void {
     .description("Runs prompt tests from the prompt-tests.yaml file")
     .option("-o, --output <path>", "Output file path to save prompt test results as JSON")
     .option("-c, --config <path>", "Path to prompt testing configuration file", "prompt-tests.yaml")
-    .action(async (opts: { output?: string; config: string }) => {
+    .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC + " Overrides project_id from config file.")
+    .action(async (opts: { output?: string; config: string; projectId?: string }) => {
       try {
-        await runPromptTests(opts.output, opts.config);
+        await runPromptTests(opts.output, opts.config, undefined, opts.projectId);
       } catch (e) {
         handleSdkError(e);
       }

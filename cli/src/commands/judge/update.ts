@@ -4,6 +4,7 @@ import { z } from "zod";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import { parseJsonArg } from "../../utils.js";
+import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 import type { UpdateJudgeData } from "@root-signals/scorable";
 
 const EvaluatorRefsSchema = z.array(z.object({ id: z.string() }).passthrough());
@@ -18,10 +19,19 @@ export function registerUpdateCommand(judge: Command): void {
       "--evaluator-references <json>",
       'JSON string to update evaluator references. Use "[]" to clear.',
     )
+    .option(
+      "--project-id <uuid>",
+      "Move the judge to this project (within the same organization). " + PROJECT_ID_FLAG_DESC,
+    )
     .action(
       async (
         judgeId: string,
-        opts: { name?: string; stage?: string; evaluatorReferences?: string },
+        opts: {
+          name?: string;
+          stage?: string;
+          evaluatorReferences?: string;
+          projectId?: string;
+        },
       ) => {
         const apiKey = await requireApiKey();
 
@@ -39,6 +49,9 @@ export function registerUpdateCommand(judge: Command): void {
           }
           payload.evaluator_references = r.value;
         }
+
+        const projectId = resolveProjectIdValue(opts.projectId);
+        if (projectId !== undefined) payload.projectId = projectId;
 
         if (Object.keys(payload).length === 0) {
           printInfo("No update parameters provided. Aborting.");

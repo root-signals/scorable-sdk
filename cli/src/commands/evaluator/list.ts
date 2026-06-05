@@ -2,6 +2,7 @@ import { Command } from "commander";
 import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printMessage, printEvaluatorTable, handleSdkError } from "../../output.js";
+import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 import type { EvaluatorListParams } from "@root-signals/scorable";
 
 export function registerListCommand(evaluator: Command): void {
@@ -13,6 +14,7 @@ export function registerListCommand(evaluator: Command): void {
     .option("--search <term>", "A search term to filter by")
     .option("--name <name>", "Filter by exact evaluator name")
     .option("--ordering <field>", "Which field to use for ordering the results")
+    .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC)
     .action(
       async (opts: {
         pageSize?: number;
@@ -20,6 +22,7 @@ export function registerListCommand(evaluator: Command): void {
         search?: string;
         name?: string;
         ordering?: string;
+        projectId?: string;
       }) => {
         const apiKey = await requireApiKey();
 
@@ -29,6 +32,8 @@ export function registerListCommand(evaluator: Command): void {
         if (opts.search !== undefined) params.search = opts.search;
         if (opts.name !== undefined) params.name = opts.name;
         if (opts.ordering !== undefined) params.ordering = opts.ordering;
+        const projectId = resolveProjectIdValue(opts.projectId);
+        if (projectId !== undefined) params.projectId = projectId;
 
         const spinner = ora("Fetching...").start();
         try {

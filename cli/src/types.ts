@@ -40,6 +40,7 @@ export interface PromptTestConfig {
   evaluators: EvaluatorConfig[];
   response_schema?: Record<string, unknown>;
   dataset_id?: string;
+  project_id?: string;
 }
 
 export class CliError extends Error {

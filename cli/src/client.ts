@@ -11,6 +11,7 @@ interface RequestOptions {
   params?: Record<string, unknown>;
   apiKey?: string;
   baseUrl?: string;
+  headers?: Record<string, string>;
 }
 
 export interface ApiRequestResult {
@@ -49,6 +50,7 @@ export async function apiRequestStatus(
     "Content-Type": "application/json",
     Accept: "application/json",
     "User-Agent": `scorable/${version}`,
+    ...options?.headers,
   };
 
   let response: Response;

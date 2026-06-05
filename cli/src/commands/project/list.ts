@@ -1,52 +1,39 @@
 import { Command } from "commander";
 import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
-import { printMessage, printJudgeTable, handleSdkError } from "../../output.js";
-import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
-import type { JudgeListParams } from "@root-signals/scorable";
+import { printMessage, printProjectTable, handleSdkError } from "../../output.js";
+import type { ProjectListParams } from "@root-signals/scorable";
 
-export function registerListCommand(judge: Command): void {
-  judge
+export function registerListCommand(project: Command): void {
+  project
     .command("list")
-    .description("List judges with optional filters")
+    .description("List projects in your organization")
     .option("--page-size <number>", "Number of results to return per page", parseInt)
     .option("--cursor <cursor>", "The pagination cursor value")
     .option("--search <term>", "A search term to filter by")
-    .option("--name <name>", "Filter by exact judge name")
     .option("--ordering <field>", "Which field to use for ordering the results")
-    .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC)
     .action(
-      async (opts: {
-        pageSize?: number;
-        cursor?: string;
-        search?: string;
-        name?: string;
-        ordering?: string;
-        projectId?: string;
-      }) => {
+      async (opts: { pageSize?: number; cursor?: string; search?: string; ordering?: string }) => {
         const apiKey = await requireApiKey();
 
-        const params: JudgeListParams & { name?: string } = {};
+        const params: ProjectListParams = {};
         if (opts.pageSize !== undefined) params.page_size = opts.pageSize;
         if (opts.cursor !== undefined) params.cursor = opts.cursor;
         if (opts.search !== undefined) params.search = opts.search;
-        if (opts.name !== undefined) params.name = opts.name;
         if (opts.ordering !== undefined) params.ordering = opts.ordering;
-        const projectId = resolveProjectIdValue(opts.projectId);
-        if (projectId !== undefined) params.projectId = projectId;
 
         const spinner = ora("Fetching...").start();
         try {
           const client = getSdkClient(apiKey);
-          const response = await client.judges.list(params);
+          const response = await client.projects.list(params);
           spinner.stop();
 
           if (!response.results.length) {
-            printMessage("No judges found.");
+            printMessage("No projects found.");
             return;
           }
 
-          printJudgeTable(response.results, response.next);
+          printProjectTable(response.results, response.next);
         } catch (e) {
           spinner.stop();
           handleSdkError(e);

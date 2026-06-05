@@ -4,6 +4,7 @@ import { z } from "zod";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import { parseJsonArg } from "../../utils.js";
+import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 import type { CreateJudgeData } from "@root-signals/scorable";
 
 const EvaluatorRefsSchema = z.array(z.object({ id: z.string() }).passthrough());
@@ -19,12 +20,14 @@ export function registerCreateCommand(judge: Command): void {
       "--evaluator-references <json>",
       'JSON string for evaluator references. E.g., \'[{"id": "eval-id"}]\'',
     )
+    .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC)
     .action(
       async (opts: {
         name: string;
         intent: string;
         stage?: string;
         evaluatorReferences?: string;
+        projectId?: string;
       }) => {
         const apiKey = await requireApiKey();
 
@@ -41,6 +44,9 @@ export function registerCreateCommand(judge: Command): void {
           }
           payload.evaluator_references = r.value;
         }
+
+        const projectId = resolveProjectIdValue(opts.projectId);
+        if (projectId !== undefined) payload.projectId = projectId;
 
         const spinner = ora("Creating...").start();
         try {

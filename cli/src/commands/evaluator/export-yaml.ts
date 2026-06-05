@@ -4,6 +4,15 @@ import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printSuccess, handleSdkError } from "../../output.js";
 
+// YAML exports are portable artifacts; embedding an org-local UUID would make them
+// footgun-y to re-import in another org. Strip it before emitting.
+function stripProjectId(yaml: string): string {
+  return yaml
+    .split("\n")
+    .filter((line) => !/^\s*project_id\s*:/.test(line))
+    .join("\n");
+}
+
 export function registerExportYamlCommand(evaluator: Command): void {
   evaluator
     .command("export-yaml")
@@ -15,7 +24,7 @@ export function registerExportYamlCommand(evaluator: Command): void {
       try {
         const apiKey = await requireApiKey();
         const client = getSdkClient(apiKey);
-        const yaml = await client.evaluators.exportYaml(id);
+        const yaml = stripProjectId(await client.evaluators.exportYaml(id));
         spinner.stop();
         if (opts.output) {
           writeFileSync(opts.output, yaml, "utf8");

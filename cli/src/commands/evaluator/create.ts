@@ -4,6 +4,7 @@ import { z } from "zod";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import { parseJsonArg } from "../../utils.js";
+import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 import type { EvaluatorCreateParams } from "@root-signals/scorable";
 
 export function registerCreateCommand(evaluator: Command): void {
@@ -26,6 +27,7 @@ export function registerCreateCommand(evaluator: Command): void {
     )
     .option("--overwrite", "Overwrite if evaluator with same name exists")
     .option("--objective-version-id <id>", "Objective version ID")
+    .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC)
     .action(
       async (opts: {
         name: string;
@@ -35,6 +37,7 @@ export function registerCreateCommand(evaluator: Command): void {
         models?: string;
         overwrite?: boolean;
         objectiveVersionId?: string;
+        projectId?: string;
       }) => {
         if (!opts.intent && !opts.objectiveId) {
           printError("Either --intent or --objective-id is required.");
@@ -72,6 +75,9 @@ export function registerCreateCommand(evaluator: Command): void {
           }
           payload.models = r.value;
         }
+
+        const projectId = resolveProjectIdValue(opts.projectId);
+        if (projectId !== undefined) payload.projectId = projectId;
 
         const spinner = ora("Creating...").start();
         try {

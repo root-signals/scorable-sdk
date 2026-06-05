@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import { writeFileSync, existsSync } from "node:fs";
 import { printWarning, printSuccess, printInfo, printError } from "../../output.js";
+import { PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 
 const TEMPLATE = `# Prompt Testing Configuration
 # This file defines a test suite of prompt and model combinations, with optional evaluators.
@@ -51,10 +52,17 @@ evaluators:
 #   additionalProperties: false
 `;
 
+function buildTemplate(projectId?: string): string {
+  if (!projectId) return TEMPLATE;
+  // Append the project_id field to the template so it ends up in the generated config.
+  return `${TEMPLATE}\n# Project to assign prompt-test runs to. Override per-run with \`--project-id\`.\nproject_id: "${projectId}"\n`;
+}
+
 export function registerInitCommand(pt: Command): void {
   pt.command("init")
     .description("Initializes a new prompt-tests.yaml file in the current directory")
-    .action(async () => {
+    .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC)
+    .action(async (opts: { projectId?: string }) => {
       const configPath = "prompt-tests.yaml";
 
       if (existsSync(configPath)) {
@@ -71,7 +79,7 @@ export function registerInitCommand(pt: Command): void {
       }
 
       try {
-        writeFileSync(configPath, TEMPLATE);
+        writeFileSync(configPath, buildTemplate(opts.projectId));
         printSuccess(`'${configPath}' created successfully.`);
         printInfo("Update the file with your prompt test details and run `pt run`.");
       } catch (e) {
