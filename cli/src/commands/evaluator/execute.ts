@@ -3,6 +3,7 @@ import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import { isTurnArray, isToolCatalog, isStringArray, isStringRecord } from "../../utils.js";
+import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 import type { ExecutionPayload } from "@root-signals/scorable";
 
 async function readStdinDefault(): Promise<string> {
@@ -26,6 +27,7 @@ export async function executeEvaluator(
     systemPrompt?: string;
     variables?: string;
     fileIds?: string;
+    projectId?: string;
   },
   readStdin = readStdinDefault,
 ): Promise<void> {
@@ -119,6 +121,9 @@ export async function executeEvaluator(
     payload.file_ids = parsed;
   }
 
+  const projectId = resolveProjectIdValue(opts.projectId);
+  if (projectId !== undefined) payload.projectId = projectId;
+
   const spinner = ora("Running evaluator...").start();
   try {
     const client = getSdkClient(apiKey);
@@ -162,6 +167,7 @@ export function registerExecuteCommand(evaluator: Command): void {
       "--file-ids <json>",
       "JSON array of file UUIDs from 'scorable file upload'. E.g., '[\"uuid1\"]'",
     )
+    .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC)
     .addHelpText(
       "after",
       `
@@ -221,6 +227,7 @@ Examples:
           systemPrompt?: string;
           variables?: string;
           fileIds?: string;
+          projectId?: string;
         },
       ) => {
         try {

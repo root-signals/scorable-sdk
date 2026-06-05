@@ -78,6 +78,66 @@ export SCORABLE_API_KEY="sk-your-api-key"
 
 The key lookup order is: `SCORABLE_API_KEY` env var → `api_key` in `~/.scorable/settings.json` → `temporary_api_key` in `~/.scorable/settings.json`.
 
+## Projects
+
+A **project** is a workspace inside your organization that groups related judges, evaluators, datasets, and execution logs. Every resource belongs to a project; omitting the project at create/execute time files things under the org's default project.
+
+### Manage projects
+
+```bash
+scorable project list                                   # list all projects (default marked)
+scorable project get <project_id>                       # show a single project
+scorable project create --name "Production"             # create a project
+scorable project create --name "Production" --is-default
+scorable project update <project_id> --name "Renamed"
+scorable project update <project_id> --is-default       # promote to default
+scorable project set-default <project_id>               # convenience for `update --is-default`
+scorable project delete <project_id>
+```
+
+### `--project-id` on every project-aware command
+
+Every command that creates, executes, lists, or filters a project-scoped resource accepts `--project-id <uuid>`:
+
+```bash
+# Filter list endpoints
+scorable judge list --project-id <project_id>
+scorable evaluator list --project-id <project_id>
+scorable execution-log list --project-id <project_id>
+
+# Route an execution log to a project
+scorable judge execute <judge_id> --project-id <project_id>
+scorable evaluator execute <evaluator_id> --project-id <project_id>
+
+# Pin a resource to a project at creation
+scorable judge create --name X --intent Y --project-id <project_id>
+scorable evaluator import-yaml --file evaluator.yaml --project-id <project_id>
+
+# Move a resource between projects
+scorable judge update <judge_id> --project-id <other_project_id>
+
+# OpenAI-compat (translated to X-Project-Id header)
+scorable judge exec-openai <judge_id> --project-id <project_id>
+```
+
+### Setting a default project for your shell
+
+To avoid passing `--project-id` on every command, set an env var or persist a per-machine default:
+
+```bash
+# Environment variable (great for CI)
+export SCORABLE_PROJECT_ID=<project_id>
+
+# Persistent default written to ~/.scorable/settings.json
+scorable auth set-project <project_id>
+scorable auth show-project    # see what's resolved and from where
+scorable auth unset-project   # remove the saved default
+```
+
+Resolution order: `--project-id` flag → `SCORABLE_PROJECT_ID` env var → `project_id` in `~/.scorable/settings.json` → omitted (backend resolves to org default). Pass `--project-id ""` to explicitly opt out of an inherited default for a single invocation.
+
+`scorable auth logout` clears the entire auth section of `~/.scorable/settings.json`, including the saved project_id.
+
 ## Scorable Skills for AI Coding Agents
 
 Install Scorable skills into your project so your AI coding agent (Claude Code, Cursor, etc.) can integrate evaluators automatically:

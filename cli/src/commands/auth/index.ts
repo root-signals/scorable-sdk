@@ -1,8 +1,12 @@
 import { Command } from "commander";
 import ora from "ora";
 import { loadSettings, saveSettings, createDemoKey } from "../../auth.js";
-import { printSuccess, printError } from "../../output.js";
+import { printSuccess, printError, printInfo, printMessage } from "../../output.js";
+import { resolveProjectId } from "../../lib/project-id.js";
 import { CliError } from "../../types.js";
+
+// Keys owned by the auth surface that `auth logout` clears.
+const AUTH_SETTINGS_KEYS = ["api_key", "temporary_api_key", "project_id"] as const;
 
 export function registerAuthCommands(program: Command): void {
   const auth = program.command("auth").description("Manage authentication");
@@ -42,6 +46,76 @@ export function registerAuthCommands(program: Command): void {
         throw new CliError(1, "Failed to save API key");
       }
       printSuccess("API key saved to ~/.scorable/settings.json");
+    });
+
+  auth
+    .command("set-project <projectId>")
+    .description("Persist a project_id to ~/.scorable/settings.json")
+    .action((projectId: string) => {
+      if (!projectId.trim()) {
+        printError("Project ID must not be empty.");
+        throw new CliError(1, "Empty project id");
+      }
+      const settings = loadSettings();
+      settings["project_id"] = projectId.trim();
+      if (!saveSettings(settings)) {
+        printError("Failed to save project_id to ~/.scorable/settings.json");
+        throw new CliError(1, "Failed to save project_id");
+      }
+      printSuccess(`project_id saved to ~/.scorable/settings.json`);
+    });
+
+  auth
+    .command("unset-project")
+    .description("Remove the persisted project_id from ~/.scorable/settings.json")
+    .action(() => {
+      const settings = loadSettings();
+      if (!("project_id" in settings)) {
+        printInfo("No project_id was set.");
+        return;
+      }
+      delete settings["project_id"];
+      if (!saveSettings(settings)) {
+        printError("Failed to update ~/.scorable/settings.json");
+        throw new CliError(1, "Failed to update settings");
+      }
+      printSuccess("project_id removed from ~/.scorable/settings.json");
+    });
+
+  auth
+    .command("show-project")
+    .description("Print the resolved project_id and its source (flag/env/settings/none)")
+    .action(() => {
+      // No flag value here — flag resolution is per-invocation on other commands.
+      const resolved = resolveProjectId(undefined);
+      if (resolved.value === undefined) {
+        printMessage("project_id: <none> (source: none)");
+        return;
+      }
+      printMessage(`project_id: ${resolved.value} (source: ${resolved.source})`);
+    });
+
+  auth
+    .command("logout")
+    .description("Clear the auth section of ~/.scorable/settings.json (api keys + project_id)")
+    .action(() => {
+      const settings = loadSettings();
+      let touched = false;
+      for (const k of AUTH_SETTINGS_KEYS) {
+        if (k in settings) {
+          delete settings[k];
+          touched = true;
+        }
+      }
+      if (!touched) {
+        printInfo("Already logged out.");
+        return;
+      }
+      if (!saveSettings(settings)) {
+        printError("Failed to update ~/.scorable/settings.json");
+        throw new CliError(1, "Failed to update settings");
+      }
+      printSuccess("Logged out — cleared api_key, temporary_api_key, and project_id.");
     });
 
   auth

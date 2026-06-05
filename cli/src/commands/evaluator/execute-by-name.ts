@@ -3,6 +3,7 @@ import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import { isTurnArray, isToolCatalog, isStringArray, isStringRecord } from "../../utils.js";
+import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 import type { ExecutionPayload } from "@root-signals/scorable";
 
 async function readStdinDefault(): Promise<string> {
@@ -25,6 +26,7 @@ export async function executeEvaluatorByName(
     sessionId?: string;
     systemPrompt?: string;
     variables?: string;
+    projectId?: string;
   },
   readStdin = readStdinDefault,
 ): Promise<void> {
@@ -105,6 +107,9 @@ export async function executeEvaluatorByName(
     }
   }
 
+  const projectId = resolveProjectIdValue(opts.projectId);
+  if (projectId !== undefined) payload.projectId = projectId;
+
   const spinner = ora("Running evaluator...").start();
   try {
     const client = getSdkClient(apiKey);
@@ -144,6 +149,7 @@ export function registerExecuteByNameCommand(evaluator: Command): void {
       "--variables <json>",
       'JSON object of extra template variables. E.g., \'{"lang":"EN"}\'',
     )
+    .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC)
     .addHelpText(
       "after",
       `
@@ -192,6 +198,7 @@ Examples:
           sessionId?: string;
           systemPrompt?: string;
           variables?: string;
+          projectId?: string;
         },
       ) => {
         try {

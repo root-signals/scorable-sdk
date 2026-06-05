@@ -3,6 +3,7 @@ import { Command } from "commander";
 import ora from "ora";
 import { requireApiKey, getBaseUrl } from "../../auth.js";
 import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
+import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 
 export function registerImportYamlCommand(evaluator: Command): void {
   evaluator
@@ -10,7 +11,8 @@ export function registerImportYamlCommand(evaluator: Command): void {
     .description("Import an evaluator from a YAML file")
     .requiredOption("--file <path>", "Path to the YAML file to import")
     .option("--overwrite", "Overwrite if an evaluator with the same name already exists")
-    .action(async (opts: { file: string; overwrite?: boolean }) => {
+    .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC)
+    .action(async (opts: { file: string; overwrite?: boolean; projectId?: string }) => {
       let yamlContent: string;
       try {
         yamlContent = readFileSync(opts.file, "utf8");
@@ -23,13 +25,19 @@ export function registerImportYamlCommand(evaluator: Command): void {
       try {
         const apiKey = await requireApiKey();
         const baseUrl = getBaseUrl();
+        const projectId = resolveProjectIdValue(opts.projectId);
+        const body: Record<string, unknown> = {
+          yaml: yamlContent,
+          overwrite: opts.overwrite ?? false,
+        };
+        if (projectId !== undefined) body["project_id"] = projectId;
         const response = await fetch(`${baseUrl}/v1/evaluators/import-yaml/`, {
           method: "POST",
           headers: {
             Authorization: `Api-Key ${apiKey}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ yaml: yamlContent, overwrite: opts.overwrite ?? false }),
+          body: JSON.stringify(body),
         });
         if (!response.ok) {
           spinner.stop();

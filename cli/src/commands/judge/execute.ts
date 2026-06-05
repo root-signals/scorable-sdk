@@ -3,6 +3,7 @@ import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import { isTurnArray, isToolCatalog, isStringArray } from "../../utils.js";
+import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 import type { JudgeExecutionPayload } from "@root-signals/scorable";
 
 async function readStdinDefault(): Promise<string> {
@@ -24,6 +25,7 @@ export async function executeJudge(
     userId?: string;
     sessionId?: string;
     systemPrompt?: string;
+    projectId?: string;
   },
   readStdin = readStdinDefault,
 ): Promise<void> {
@@ -90,6 +92,9 @@ export async function executeJudge(
     }
   }
 
+  const projectId = resolveProjectIdValue(opts.projectId);
+  if (projectId !== undefined) payload.projectId = projectId;
+
   const spinner = ora("Running judge...").start();
   try {
     const client = getSdkClient(apiKey);
@@ -125,6 +130,7 @@ export function registerExecuteCommand(judge: Command): void {
       'JSON array of conversation turns. Roles: user|assistant|tool. Assistant turns may carry `tool_calls`; tool results use a `tool` role with `tool_call_id`. E.g., \'[{"role":"user","content":"Hello"}]\'',
     )
     .option("--tools <json>", "JSON array of OpenAI-style tool definitions available to the agent.")
+    .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC)
     .addHelpText(
       "after",
       `
@@ -174,6 +180,7 @@ Examples:
           userId?: string;
           sessionId?: string;
           systemPrompt?: string;
+          projectId?: string;
         },
       ) => {
         try {

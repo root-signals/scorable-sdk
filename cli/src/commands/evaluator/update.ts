@@ -4,6 +4,7 @@ import { z } from "zod";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printInfo, printSuccess, printError, printJson, handleSdkError } from "../../output.js";
 import { parseJsonArg } from "../../utils.js";
+import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 import type { EvaluatorUpdateParams } from "@root-signals/scorable";
 
 export function registerUpdateCommand(evaluator: Command): void {
@@ -15,6 +16,10 @@ export function registerUpdateCommand(evaluator: Command): void {
     .option("--models <json>", "JSON array of model names. E.g., '[\"gpt-5.5\"]'")
     .option("--objective-id <id>", "The new objective ID")
     .option("--objective-version-id <id>", "The new objective version ID")
+    .option(
+      "--project-id <uuid>",
+      "Move the evaluator to this project (within the same organization). " + PROJECT_ID_FLAG_DESC,
+    )
     .action(
       async (
         evaluatorId: string,
@@ -24,6 +29,7 @@ export function registerUpdateCommand(evaluator: Command): void {
           models?: string;
           objectiveId?: string;
           objectiveVersionId?: string;
+          projectId?: string;
         },
       ) => {
         const apiKey = await requireApiKey();
@@ -45,6 +51,9 @@ export function registerUpdateCommand(evaluator: Command): void {
           }
           payload.models = r.value;
         }
+
+        const projectId = resolveProjectIdValue(opts.projectId);
+        if (projectId !== undefined) payload.projectId = projectId;
 
         if (Object.keys(payload).length === 0) {
           printInfo("No update parameters provided. Aborting.");

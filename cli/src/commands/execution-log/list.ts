@@ -2,6 +2,7 @@ import { Command } from "commander";
 import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printMessage, printExecutionLogTable, handleSdkError } from "../../output.js";
+import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 import type { ExecutionLogListParams } from "@root-signals/scorable";
 
 export function registerListCommand(executionLog: Command): void {
@@ -20,6 +21,7 @@ export function registerListCommand(executionLog: Command): void {
     .option("--created-at-after <date>", "Filter logs created after this date (ISO 8601)")
     .option("--created-at-before <date>", "Filter logs created before this date (ISO 8601)")
     .option("--owner-email <email>", "Filter by owner email")
+    .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC)
     .action(
       async (opts: {
         pageSize?: number;
@@ -34,6 +36,7 @@ export function registerListCommand(executionLog: Command): void {
         createdAtAfter?: string;
         createdAtBefore?: string;
         ownerEmail?: string;
+        projectId?: string;
       }) => {
         const apiKey = await requireApiKey();
 
@@ -50,6 +53,8 @@ export function registerListCommand(executionLog: Command): void {
         if (opts.createdAtAfter !== undefined) params.created_at_after = opts.createdAtAfter;
         if (opts.createdAtBefore !== undefined) params.created_at_before = opts.createdAtBefore;
         if (opts.ownerEmail !== undefined) params.owner__email = opts.ownerEmail;
+        const projectId = resolveProjectIdValue(opts.projectId);
+        if (projectId !== undefined) params.projectId = projectId;
 
         const spinner = ora("Fetching...").start();
         try {

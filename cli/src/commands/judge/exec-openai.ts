@@ -10,6 +10,7 @@ import {
   handleSdkError,
 } from "../../output.js";
 import { parseJsonArg } from "../../utils.js";
+import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 import { apiRequest } from "../../client.js";
 
 const MessagesSchema = z.array(z.object({ role: z.string() }).passthrough());
@@ -22,10 +23,11 @@ export function registerExecOpenaiCommand(judge: Command): void {
     .requiredOption("--model <model>", "LLM model for judge execution (e.g., gpt-5.5)")
     .requiredOption("--messages <json>", "JSON string of the messages payload")
     .option("--extra-body <json>", "Optional JSON string for extra_body parameters")
+    .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC)
     .action(
       async (
         judgeIdInPath: string,
-        opts: { model: string; messages: string; extraBody?: string },
+        opts: { model: string; messages: string; extraBody?: string; projectId?: string },
       ) => {
         const apiKey = await requireApiKey();
 
@@ -57,6 +59,9 @@ export function registerExecOpenaiCommand(judge: Command): void {
         printInfo("Attempting to execute with OpenAI compatible payload:");
         printJson(payload);
 
+        const projectId = resolveProjectIdValue(opts.projectId);
+        const headers = projectId !== undefined ? { "X-Project-Id": projectId } : undefined;
+
         try {
           const result = await apiRequest(
             "POST",
@@ -64,6 +69,7 @@ export function registerExecOpenaiCommand(judge: Command): void {
             {
               payload,
               apiKey,
+              headers,
             },
           );
           if (result) {

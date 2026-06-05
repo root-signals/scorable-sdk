@@ -11,6 +11,7 @@ interface RequestOptions {
   params?: Record<string, unknown>;
   apiKey?: string;
   baseUrl?: string;
+  headers?: Record<string, string>;
 }
 
 export interface ApiRequestResult {
@@ -45,6 +46,7 @@ export async function apiRequestStatus(
   }
 
   const headers: Record<string, string> = {
+    ...options?.headers,
     Authorization: `Api-Key ${apiKey}`,
     "Content-Type": "application/json",
     Accept: "application/json",

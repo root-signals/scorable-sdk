@@ -12,6 +12,7 @@ import {
   handleSdkError,
 } from "../../output.js";
 import { parseJsonArg } from "../../utils.js";
+import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 import { CliError } from "../../types.js";
 import { uploadFile } from "../file/upload.js";
 
@@ -50,6 +51,7 @@ offer to connect the guest with a human agent when uncertain."`,
       "Path to a file (PDF, PNG, JPG) to upload and attach as context for the judge",
     )
     .option("--file-id <id>", "ID of an already-uploaded file to use as context for the judge")
+    .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC)
     .action(
       async (opts: {
         intent: string;
@@ -63,6 +65,7 @@ offer to connect the guest with a human agent when uncertain."`,
         contextAware: boolean;
         file?: string;
         fileId?: string;
+        projectId?: string;
       }) => {
         const acceptedVisibilities = ["private", "public"] as const;
         const visibility = opts.visibility;
@@ -99,6 +102,7 @@ offer to connect the guest with a human agent when uncertain."`,
           }
 
           const client = getSdkClient(apiKey);
+          const projectId = resolveProjectIdValue(opts.projectId);
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const result = (await client.judges.generate({
             intent: opts.intent,
@@ -110,6 +114,7 @@ offer to connect the guest with a human agent when uncertain."`,
             file_id: fileId,
             extra_contexts: extra_contexts ?? null,
             enable_context_aware_evaluators: opts.contextAware || undefined,
+            ...(projectId !== undefined ? { projectId } : {}),
             ...(opts.reasoningEffort && {
               generating_model_params: {
                 reasoning_effort: opts.reasoningEffort as "off" | "low" | "medium" | "high",
