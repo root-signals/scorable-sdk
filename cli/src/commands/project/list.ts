@@ -8,7 +8,7 @@ export function registerListCommand(project: Command): void {
   project
     .command("list")
     .description("List projects in your organization")
-    .option("--page-size <number>", "Number of results to return per page", parseInt)
+    .option("--page-size <number>", "Number of results to return per page", (v) => parseInt(v, 10))
     .option("--cursor <cursor>", "The pagination cursor value")
     .option("--search <term>", "A search term to filter by")
     .option("--ordering <field>", "Which field to use for ordering the results")

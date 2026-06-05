@@ -46,11 +46,11 @@ export async function apiRequestStatus(
   }
 
   const headers: Record<string, string> = {
+    ...options?.headers,
     Authorization: `Api-Key ${apiKey}`,
     "Content-Type": "application/json",
     Accept: "application/json",
     "User-Agent": `scorable/${version}`,
-    ...options?.headers,
   };
 
   let response: Response;
