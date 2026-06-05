@@ -1,3 +1,12 @@
+## 0.11.0
+
+- Add `projects` resource on the client (`client.projects`) with `list`/`get`/`create`/`update`/`delete`. Supports `is_default` for promoting a project as the org default.
+- Add optional `projectId` to `ExecutionPayload` (used by `evaluators.execute()` and `judges.run()`). Routes the resulting execution log to the specified project.
+- Add optional `projectId` to list method option types on judges, evaluators, datasets, objectives, and execution-logs.
+- Add optional `projectId` to create method option types on judges (create / generate / duplicate), evaluators (create / duplicate), datasets (upload metadata), and objectives.
+- Add optional `projectId` to update method option types on judges, evaluators, and objectives — moves the resource between projects within the same organization.
+- Response types expose nullable `project_id` via OpenAPI regeneration (`null` for public resources owned by other orgs).
+
 ## 0.10.0
 
 - Add `tools` field (OpenAI-style tool catalog) to `ExecutionPayload`. Enables tool-aware evaluators like Tool Selection.
