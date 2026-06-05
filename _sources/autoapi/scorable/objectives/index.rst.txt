@@ -58,7 +58,7 @@ Module Contents
       accesing an attribute of a :class:`scorable.client.Scorable` instance.
 
 
-   .. py:method:: acreate(*, intent: Optional[str] = None, test_dataset_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AObjective
+   .. py:method:: acreate(*, intent: Optional[str] = None, test_dataset_id: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AObjective
       :async:
 
 
@@ -66,6 +66,7 @@ Module Contents
 
       :param intent: The intent of the objective.
       :param test_dataset_id: The ID of the test dataset
+      :param project_id: Optional project to attribute the objective to.
 
 
 
@@ -89,7 +90,7 @@ Module Contents
 
 
 
-   .. py:method:: alist(*, intent: Optional[str] = None, limit: int = 100) -> AsyncIterator[scorable.generated.openapi_aclient.models.objective_list.ObjectiveList]
+   .. py:method:: alist(*, intent: Optional[str] = None, limit: int = 100, project_id: Optional[str] = None) -> AsyncIterator[scorable.generated.openapi_aclient.models.objective_list.ObjectiveList]
       :async:
 
 
@@ -97,26 +98,30 @@ Module Contents
 
       :param intent: Specific intent the returned objectives must match.
       :param limit: Number of entries to iterate through at most.
+      :param project_id: Optional project filter.
 
 
 
-   .. py:method:: aupdate(objective_id: str, *, intent: Optional[str] = None, test_dataset_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AObjective
+   .. py:method:: aupdate(objective_id: str, *, intent: Optional[str] = None, test_dataset_id: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AObjective
       :async:
 
 
       Asynchronously update an existing objective.
+
+      Pass `project_id=` to move this resource to a different project within your organization.
 
       :param objective_id: The objective to be updated.
       :param intent: The intent of the objective.
 
 
 
-   .. py:method:: create(*, intent: Optional[str] = None, test_dataset_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Objective
+   .. py:method:: create(*, intent: Optional[str] = None, test_dataset_id: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Objective
 
       Create a new objective and return its ID.
 
       :param intent: The intent of the objective.
       :param test_dataset_id: The ID of the test dataset
+      :param project_id: Optional project to attribute the objective to.
 
 
 
@@ -136,18 +141,21 @@ Module Contents
 
 
 
-   .. py:method:: list(*, intent: Optional[str] = None, limit: int = 100, _client: scorable.generated.openapi_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.objective_list.ObjectiveList]
+   .. py:method:: list(*, intent: Optional[str] = None, limit: int = 100, project_id: Optional[str] = None, _client: scorable.generated.openapi_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.objective_list.ObjectiveList]
 
       Iterate through the objectives.
 
       :param intent: Specific intent the returned objectives must match.
       :param limit: Number of entries to iterate through at most.
+      :param project_id: Optional project filter.
 
 
 
-   .. py:method:: update(objective_id: str, *, intent: Optional[str] = None, test_dataset_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Objective
+   .. py:method:: update(objective_id: str, *, intent: Optional[str] = None, test_dataset_id: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Objective
 
       Update an existing objective.
+
+      Pass `project_id=` to move this resource to a different project within your organization.
 
       :param objective_id: The objective to be updated.
       :param intent: The intent of the objective.

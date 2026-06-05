@@ -34,7 +34,7 @@ Module Contents
 
 
 
-   .. py:method:: alist(*, limit: int = 100, search_term: Optional[str] = None, tags: Optional[List[str]] = None, include: Optional[List[str]] = None, _request_timeout: Optional[int] = None) -> AsyncIterator[scorable.generated.openapi_aclient.models.execution_log_list.ExecutionLogList]
+   .. py:method:: alist(*, limit: int = 100, search_term: Optional[str] = None, tags: Optional[List[str]] = None, include: Optional[List[str]] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None) -> AsyncIterator[scorable.generated.openapi_aclient.models.execution_log_list.ExecutionLogList]
       :async:
 
 
@@ -44,6 +44,7 @@ Module Contents
       :param search_term: Can be used to limit returned logs. For example, a evaluator id or name.
       :param tags: Optional tags to filter the logs by.
       :param include: Optional fields to include in the response.
+      :param project_id: Optional project filter.
 
 
 
@@ -58,7 +59,7 @@ Module Contents
 
 
 
-   .. py:method:: list(*, limit: int = 100, search_term: Optional[str] = None, tags: Optional[List[str]] = None, include: Optional[List[str]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.execution_log_list.ExecutionLogList]
+   .. py:method:: list(*, limit: int = 100, search_term: Optional[str] = None, tags: Optional[List[str]] = None, include: Optional[List[str]] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.execution_log_list.ExecutionLogList]
 
       List execution logs
 
@@ -66,6 +67,7 @@ Module Contents
       :param search_term: Can be used to limit returned logs. For example, a evaluator id or name.
       :param tags: Optional tags to filter the logs by.
       :param include: Optional fields to include in the response.
+      :param project_id: Optional project filter.
 
 
 

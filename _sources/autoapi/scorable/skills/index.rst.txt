@@ -92,7 +92,7 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: arun(response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, file_ids: Optional[List[uuid.UUID]] = None, *, _client: scorable.generated.openapi_aclient.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
+   .. py:method:: arun(response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, file_ids: Optional[List[uuid.UUID]] = None, project_id: Optional[str] = None, *, _client: scorable.generated.openapi_aclient.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
       :async:
 
 
@@ -112,6 +112,7 @@ Module Contents
       :param system_prompt: Optional system prompt that was used for the LLM call.
       :param file_ids: Optional list of file UUIDs (from Files.upload). PDFs are extracted to text
                        context; images are passed directly to the model.
+      :param project_id: Optional project to attribute the execution log to.
 
 
 
@@ -190,7 +191,7 @@ Module Contents
    generated) superclass documentation.
 
 
-   .. py:method:: run(response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, file_ids: Optional[List[uuid.UUID]] = None, *, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
+   .. py:method:: run(response: Optional[str] = None, request: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, file_ids: Optional[List[uuid.UUID]] = None, project_id: Optional[str] = None, *, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
 
       Run the evaluator.
 
@@ -208,6 +209,7 @@ Module Contents
       :param system_prompt: Optional system prompt that was used for the LLM call.
       :param file_ids: Optional list of file UUIDs (from Files.upload). PDFs are extracted to text
                        context; images are passed directly to the model.
+      :param project_id: Optional project to attribute the execution log to.
 
 
 
@@ -501,7 +503,7 @@ Module Contents
 
 
 
-   .. py:method:: acreate(scoring_criteria: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> AEvaluator
+   .. py:method:: acreate(scoring_criteria: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, project_id: Optional[str] = None, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> AEvaluator
       :async:
 
 
@@ -549,7 +551,7 @@ Module Contents
 
 
 
-   .. py:method:: alist(search_term: Optional[str] = None, *, limit: int = 100, name: Optional[str] = None, only_root_evaluators: bool = False) -> AsyncIterator[scorable.generated.openapi_aclient.models.evaluator_list_output.EvaluatorListOutput]
+   .. py:method:: alist(search_term: Optional[str] = None, *, limit: int = 100, name: Optional[str] = None, only_root_evaluators: bool = False, project_id: Optional[str] = None) -> AsyncIterator[scorable.generated.openapi_aclient.models.evaluator_list_output.EvaluatorListOutput]
       :async:
 
 
@@ -559,10 +561,11 @@ Module Contents
       :param limit: Number of entries to iterate through at most.
       :param name: Specific name the returned evaluators must match.
       :param only_root_evaluators: Returns only Scorable defined evaluators.
+      :param project_id: Optional project filter.
 
 
 
-   .. py:method:: arun(evaluator_id: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
+   .. py:method:: arun(evaluator_id: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
       :async:
 
 
@@ -582,11 +585,12 @@ Module Contents
       :param user_id: Optional user identifier for tracking purposes.
       :param session_id: Optional session identifier for tracking purposes.
       :param system_prompt: Optional system prompt that was used for the LLM call.
+      :param project_id: Optional project to attribute the execution log to.
       :param _request_timeout: Optional timeout for the request.
 
 
 
-   .. py:method:: arun_by_name(name: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
+   .. py:method:: arun_by_name(name: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_aclient.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.EvaluatorExecutionResult
       :async:
 
 
@@ -606,15 +610,18 @@ Module Contents
       :param user_id: Optional user identifier for tracking purposes.
       :param session_id: Optional session identifier for tracking purposes.
       :param system_prompt: Optional system prompt that was used for the LLM call.
+      :param project_id: Optional project to attribute the execution log to.
       :param _request_timeout: Optional timeout for the request.
 
 
 
-   .. py:method:: aupdate(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, scoring_criteria: Optional[str] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AEvaluator
+   .. py:method:: aupdate(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, scoring_criteria: Optional[str] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AEvaluator
       :async:
 
 
-      Asynchronously update an evaluator and return the result
+      Asynchronously update an evaluator and return the result.
+
+      Pass `project_id=` to move this resource to a different project within your organization.
 
       See the create method for more information on the arguments.
 
@@ -646,7 +653,7 @@ Module Contents
 
 
 
-   .. py:method:: create(scoring_criteria: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> Evaluator
+   .. py:method:: create(scoring_criteria: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, project_id: Optional[str] = None, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> Evaluator
 
       Create a new evaluator and return the result
 
@@ -686,7 +693,7 @@ Module Contents
 
 
 
-   .. py:method:: list(search_term: Optional[str] = None, *, limit: int = 100, name: Optional[str] = None, only_root_evaluators: bool = False, _client: scorable.generated.openapi_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.evaluator_list_output.EvaluatorListOutput]
+   .. py:method:: list(search_term: Optional[str] = None, *, limit: int = 100, name: Optional[str] = None, only_root_evaluators: bool = False, project_id: Optional[str] = None, _client: scorable.generated.openapi_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.evaluator_list_output.EvaluatorListOutput]
 
       Iterate through the evaluators.
 
@@ -694,10 +701,11 @@ Module Contents
       :param limit: Number of entries to iterate through at most.
       :param name: Specific name the returned evaluators must match.
       :param only_root_evaluators: Returns only Scorable defined evaluators.
+      :param project_id: Optional project filter.
 
 
 
-   .. py:method:: run(evaluator_id: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
+   .. py:method:: run(evaluator_id: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
 
       Run the evaluator.
 
@@ -715,11 +723,12 @@ Module Contents
       :param user_id: Optional user identifier for tracking purposes.
       :param session_id: Optional session identifier for tracking purposes.
       :param system_prompt: Optional system prompt that was used for the LLM call.
+      :param project_id: Optional project to attribute the execution log to.
       :param _request_timeout: Optional timeout for the request.
 
 
 
-   .. py:method:: run_by_name(name: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
+   .. py:method:: run_by_name(name: str, *, request: Optional[str] = None, response: Optional[str] = None, turns: Optional[List[scorable.generated.openapi_client.models.message_turn_request.MessageTurnRequest]] = None, tools: Optional[List[Dict[str, Any]]] = None, contexts: Optional[List[str]] = None, expected_output: Optional[str] = None, evaluator_version_id: Optional[str] = None, variables: Optional[dict[str, str]] = None, tags: Optional[List[str]] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, system_prompt: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.evaluator_execution_result.EvaluatorExecutionResult
 
       Run an evaluator by name.
 
@@ -737,13 +746,16 @@ Module Contents
       :param user_id: Optional user identifier for tracking purposes.
       :param session_id: Optional session identifier for tracking purposes.
       :param system_prompt: Optional system prompt that was used for the LLM call.
+      :param project_id: Optional project to attribute the execution log to.
       :param _request_timeout: Optional timeout for the request.
 
 
 
-   .. py:method:: update(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, scoring_criteria: Optional[str] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Evaluator
+   .. py:method:: update(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, scoring_criteria: Optional[str] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Evaluator
 
-      Update an evaluator and return the result
+      Update an evaluator and return the result.
+
+      Pass `project_id=` to move this resource to a different project within your organization.
 
       See the create method for more information on the arguments.
 

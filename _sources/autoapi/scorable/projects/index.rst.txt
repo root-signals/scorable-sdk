@@ -1,0 +1,113 @@
+scorable.projects
+=================
+
+.. py:module:: scorable.projects
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   scorable.projects.Projects
+
+
+Module Contents
+---------------
+
+.. py:class:: Projects(client_context: scorable.utils.ClientContextCallable)
+
+   Projects API
+
+   .. note::
+
+      The construction of the API instance should be handled by
+      accessing an attribute of a :class:`scorable.client.Scorable` instance.
+
+
+   .. py:method:: acreate(*, name: str, description: str = '', is_default: Optional[bool] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.project.Project
+      :async:
+
+
+      Asynchronously create a new project.
+
+
+
+   .. py:method:: adelete(project_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> None
+      :async:
+
+
+      Asynchronously delete a project.
+
+
+
+   .. py:method:: alist(*, limit: int = 100, _request_timeout: Optional[int] = None) -> AsyncIterator[scorable.generated.openapi_aclient.models.project.Project]
+      :async:
+
+
+      Asynchronously iterate through all projects in your organization.
+
+      :param limit: Number of entries to iterate through at most.
+
+
+
+   .. py:method:: aretrieve(project_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.project.Project
+      :async:
+
+
+      Asynchronously retrieve a project by ID.
+
+
+
+   .. py:method:: aupdate(project_id: str, *, name: Optional[str] = None, description: Optional[str] = None, is_default: Optional[bool] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.project.Project
+      :async:
+
+
+      Asynchronously update a project.
+
+
+
+   .. py:method:: create(*, name: str, description: str = '', is_default: Optional[bool] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.project.Project
+
+      Create a new project.
+
+      :param name: Name of the project.
+      :param description: Optional description.
+      :param is_default: If True, this project becomes the organization's default and any
+                         previously default project is atomically demoted.
+
+
+
+   .. py:method:: delete(project_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> None
+
+      Delete a project.
+
+
+
+   .. py:method:: list(*, limit: int = 100, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.project.Project]
+
+      Iterate through all projects in your organization.
+
+      :param limit: Number of entries to iterate through at most.
+
+
+
+   .. py:method:: retrieve(project_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.project.Project
+
+      Retrieve a project by ID.
+
+
+
+   .. py:method:: update(project_id: str, *, name: Optional[str] = None, description: Optional[str] = None, is_default: Optional[bool] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.project.Project
+
+      Update a project.
+
+      Pass `is_default=True` to atomically promote this project to the organization's
+      default and demote the previous default. The backend rejects `is_default=False`
+      (the default is moved by promoting a different project, not cleared directly).
+
+
+
+   .. py:attribute:: client_context
+
+

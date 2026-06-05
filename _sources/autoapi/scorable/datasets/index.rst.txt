@@ -25,7 +25,7 @@ Module Contents
       accesing an attribute of a :class:`scorable.client.Scorable` instance.
 
 
-   .. py:method:: acreate(*, name: Optional[str] = None, path: Optional[str] = None, type: str = 'reference', _request_timeout: Optional[int] = None) -> Optional[scorable.generated.openapi_aclient.models.data_set_create.DataSetCreate]
+   .. py:method:: acreate(*, name: Optional[str] = None, path: Optional[str] = None, type: str = 'reference', project_id: Optional[str] = None, _request_timeout: Optional[int] = None) -> Optional[scorable.generated.openapi_aclient.models.data_set_create.DataSetCreate]
       :async:
 
 
@@ -51,7 +51,7 @@ Module Contents
 
 
 
-   .. py:method:: alist(search_term: Optional[str] = None, *, limit: int = 100, _request_timeout: Optional[int] = None) -> AsyncIterator[scorable.generated.openapi_aclient.models.data_set_list.DataSetList]
+   .. py:method:: alist(search_term: Optional[str] = None, *, limit: int = 100, project_id: Optional[str] = None, _request_timeout: Optional[int] = None) -> AsyncIterator[scorable.generated.openapi_aclient.models.data_set_list.DataSetList]
       :async:
 
 
@@ -59,10 +59,11 @@ Module Contents
 
       :param limit: Number of entries to iterate through at most.
       :param search_term: Can be used to limit returned datasets.
+      :param project_id: Optional project filter.
 
 
 
-   .. py:method:: create(*, name: Optional[str] = None, path: Optional[str] = None, type: str = 'reference', _request_timeout: Optional[int] = None) -> Optional[scorable.generated.openapi_client.models.data_set_create.DataSetCreate]
+   .. py:method:: create(*, name: Optional[str] = None, path: Optional[str] = None, type: str = 'reference', project_id: Optional[str] = None, _request_timeout: Optional[int] = None) -> Optional[scorable.generated.openapi_client.models.data_set_create.DataSetCreate]
 
       Create a dataset object with the given parameters to the registry.
       If the dataset has a path, it will be uploaded to the registry.
@@ -81,12 +82,13 @@ Module Contents
 
 
 
-   .. py:method:: list(search_term: Optional[str] = None, *, limit: int = 100, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.api_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.data_set_list.DataSetList]
+   .. py:method:: list(search_term: Optional[str] = None, *, limit: int = 100, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.api_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.data_set_list.DataSetList]
 
       Iterate through the datasets.
 
       :param limit: Number of entries to iterate through at most.
       :param search_term: Can be used to limit returned datasets.
+      :param project_id: Optional project filter.
 
 
 

@@ -31,6 +31,7 @@ Submodules
    /autoapi/scorable/models/index
    /autoapi/scorable/multiturn/index
    /autoapi/scorable/objectives/index
+   /autoapi/scorable/projects/index
    /autoapi/scorable/skills/index
 
 

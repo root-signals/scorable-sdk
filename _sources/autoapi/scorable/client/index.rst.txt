@@ -113,6 +113,13 @@ Module Contents
       Get Objectives API
 
 
+   .. py:property:: projects
+      :type: scorable.projects.Projects
+
+
+      Get Projects API
+
+
    .. py:attribute:: run_async
       :value: False
 
