@@ -6,6 +6,7 @@ import { ObjectivesResource } from '../../src/resources/objectives.js';
 import { ModelsResource } from '../../src/resources/models.js';
 import { ExecutionLogsResource } from '../../src/resources/execution-logs.js';
 import { DatasetsResource } from '../../src/resources/datasets.js';
+import { ProjectsResource } from '../../src/resources/projects.js';
 
 // Test utilities for creating clients and mock data
 export class TestUtils {
@@ -25,6 +26,7 @@ export class TestUtils {
     (client as any).models = new ModelsResource(mockClient);
     (client as any).executionLogs = new ExecutionLogsResource(mockClient);
     (client as any).datasets = new DatasetsResource(mockClient);
+    (client as any).projects = new ProjectsResource(mockClient as any);
 
     return client;
   }

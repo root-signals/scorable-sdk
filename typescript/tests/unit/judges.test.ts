@@ -35,6 +35,22 @@ describe('JudgesResource', () => {
         },
       });
     });
+
+    it('translates projectId to project_id on the wire when filtering', async () => {
+      await client.judges.list({ projectId: 'proj-abc' });
+
+      expect(mockClient.GET).toHaveBeenCalledWith('/v1/judges/', {
+        params: { query: { project_id: 'proj-abc' } },
+      });
+    });
+
+    it('omits project_id when not provided', async () => {
+      await client.judges.list({ page_size: 5 });
+
+      expect(mockClient.GET).toHaveBeenCalledWith('/v1/judges/', {
+        params: { query: { page_size: 5 } },
+      });
+    });
   });
 
   describe('get', () => {
@@ -167,6 +183,79 @@ describe('JudgesResource', () => {
         params: { path: { judge_id: judgeId } },
         body: executionData,
       });
+    });
+  });
+
+  describe('execute with projectId', () => {
+    it('passes projectId as project_id in the body when provided', async () => {
+      const judgeId = 'judge-123';
+      mockClient.setMockResponse('POST', '/v1/judges/{judge_id}/execute/', {
+        data: mockResponses.judges.execution,
+        error: undefined,
+      });
+
+      await client.judges.execute(judgeId, {
+        request: 'q',
+        response: 'r',
+        projectId: 'proj-xyz',
+      });
+
+      expect(mockClient.POST).toHaveBeenCalledWith('/v1/judges/{judge_id}/execute/', {
+        params: { path: { judge_id: judgeId } },
+        body: { request: 'q', response: 'r', project_id: 'proj-xyz' },
+      });
+    });
+
+    it('omits project_id when not provided', async () => {
+      const judgeId = 'judge-123';
+      mockClient.setMockResponse('POST', '/v1/judges/{judge_id}/execute/', {
+        data: mockResponses.judges.execution,
+        error: undefined,
+      });
+
+      await client.judges.execute(judgeId, { request: 'q', response: 'r' });
+
+      expect(mockClient.POST).toHaveBeenCalledWith('/v1/judges/{judge_id}/execute/', {
+        params: { path: { judge_id: judgeId } },
+        body: { request: 'q', response: 'r' },
+      });
+    });
+  });
+
+  describe('update with projectId (move)', () => {
+    it('sends project_id when moving a judge between projects', async () => {
+      const judgeId = 'judge-123';
+      mockClient.setMockResponse('PATCH', '/v1/judges/{id}/', {
+        data: { id: judgeId, name: 'x', project_id: 'proj-target' },
+        error: undefined,
+      });
+
+      await client.judges.update(judgeId, { projectId: 'proj-target' });
+
+      expect(mockClient.PATCH).toHaveBeenCalledWith('/v1/judges/{id}/', {
+        params: { path: { id: judgeId } },
+        body: { project_id: 'proj-target' },
+      });
+    });
+  });
+
+  describe('list returns null project_id for public judges', () => {
+    it('does not flag null project_id as an error', async () => {
+      mockClient.setMockResponse('GET', '/v1/judges/', {
+        data: {
+          results: [
+            { id: 'judge-public', name: 'Public Judge', intent: 'x', project_id: null },
+            { id: 'judge-private', name: 'Mine', intent: 'y', project_id: 'proj-mine' },
+          ],
+          next: null,
+          previous: null,
+        },
+        error: undefined,
+      });
+
+      const result = await client.judges.list();
+      expect(result.results[0].project_id).toBeNull();
+      expect(result.results[1].project_id).toBe('proj-mine');
     });
   });
 

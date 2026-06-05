@@ -22,6 +22,8 @@ export interface EvaluatorWithExecute extends EvaluatorDetail {
 
 export interface EvaluatorListParams extends ListParams {
   include_public?: boolean;
+  /** Filter evaluators by project UUID. Public evaluators are excluded when this filter is set. */
+  projectId?: string;
 }
 
 export interface EvaluatorCreateParams {
@@ -35,6 +37,8 @@ export interface EvaluatorCreateParams {
   objective_id?: string;
   objective_version_id?: string;
   evaluator_demonstrations?: EvaluatorDemonstration[];
+  /** Project to assign this evaluator to. Defaults to the org's default project. */
+  projectId?: string;
 }
 
 export interface EvaluatorUpdateParams {
@@ -45,6 +49,8 @@ export interface EvaluatorUpdateParams {
   objective_version_id?: string;
   change_note?: string;
   overwrite?: boolean;
+  /** Pass `projectId` to move this evaluator to a different project within your organization. */
+  projectId?: string;
 }
 
 export class EvaluatorsResource {
@@ -57,8 +63,10 @@ export class EvaluatorsResource {
    * List all accessible evaluators
    */
   async list(params: EvaluatorListParams = {}): Promise<PaginatedResponse<EvaluatorListItem>> {
+    const { projectId, ...rest } = params;
+    const query = projectId !== undefined ? { ...rest, project_id: projectId } : rest;
     const { data, error } = await this._client.GET('/v1/evaluators/', {
-      params: { query: params },
+      params: { query },
     });
 
     if (error) {
@@ -101,9 +109,15 @@ export class EvaluatorsResource {
    * Execute an evaluator by ID
    */
   async execute(id: string, payload: ExecutionPayload): Promise<ExecutionResult> {
+    const { projectId, ...rest } = payload;
+    const body = {
+      variables: {},
+      ...rest,
+      ...(projectId !== undefined ? { project_id: projectId } : {}),
+    };
     const { data, error } = await this._client.POST('/v1/evaluators/execute/{id}/', {
       params: { path: { id } },
-      body: { variables: {}, ...payload },
+      body,
     });
 
     if (error) {
@@ -122,9 +136,15 @@ export class EvaluatorsResource {
    * Execute an evaluator by name (convenience method)
    */
   async executeByName(name: string, payload: ExecutionPayload): Promise<ExecutionResult> {
+    const { projectId, ...rest } = payload;
+    const body = {
+      variables: {},
+      ...rest,
+      ...(projectId !== undefined ? { project_id: projectId } : {}),
+    };
     const { data, error } = await this._client.POST('/v1/evaluators/execute/by-name/', {
       params: { query: { name } },
-      body: { variables: {}, ...payload },
+      body,
     });
 
     if (error) {
@@ -140,13 +160,15 @@ export class EvaluatorsResource {
   }
 
   /**
-   * Duplicate an evaluator
+   * Duplicate an evaluator.
+   * Pass `projectId` to assign the duplicate to a specific project; defaults to the
+   * source evaluator's project.
    */
-  async duplicate(id: string): Promise<EvaluatorDetail> {
+  async duplicate(id: string, options: { projectId?: string } = {}): Promise<EvaluatorDetail> {
+    const body = options.projectId !== undefined ? { project_id: options.projectId } : {};
     const { data, error } = await this._client.POST('/v1/evaluators/duplicate/{id}/', {
       params: { path: { id } },
-      // @ts-expect-error - TODO: fix this
-      body: {},
+      body,
     });
 
     if (error) {
@@ -162,9 +184,15 @@ export class EvaluatorsResource {
   }
 
   async update(id: string, params: EvaluatorUpdateParams): Promise<EvaluatorDetail> {
+    const { projectId, ...rest } = params;
+    const body = {
+      overwrite: false,
+      ...rest,
+      ...(projectId !== undefined ? { project_id: projectId } : {}),
+    };
     const { data, error } = await this._client.PATCH('/v1/evaluators/{id}/', {
       params: { path: { id } },
-      body: { overwrite: false, ...params },
+      body,
     });
 
     if (error) {
@@ -271,6 +299,9 @@ export class EvaluatorsResource {
     }
     if (params.evaluator_demonstrations?.length) {
       requestBody.evaluator_demonstrations = params.evaluator_demonstrations;
+    }
+    if (params.projectId !== undefined) {
+      requestBody.project_id = params.projectId;
     }
 
     const { data, error } = await this._client.POST('/v1/evaluators/', {

@@ -16,6 +16,8 @@ export interface CreateObjectiveData {
   }>;
   force_create?: boolean;
   test_dataset_id?: string;
+  /** Project to assign this objective to. Defaults to the org's default project. */
+  projectId?: string;
 }
 
 export interface UpdateObjectiveData {
@@ -28,11 +30,15 @@ export interface UpdateObjectiveData {
   }>;
   force_create?: boolean;
   test_dataset_id?: string;
+  /** Pass `projectId` to move this objective to a different project within your organization. */
+  projectId?: string;
 }
 
 export interface ObjectiveListParams extends ListParams {
   has_validators?: boolean;
   intent?: string;
+  /** Filter objectives by project UUID. */
+  projectId?: string;
 }
 
 export class ObjectivesResource {
@@ -42,8 +48,10 @@ export class ObjectivesResource {
    * List all objectives
    */
   async list(params: ObjectiveListParams = {}): Promise<PaginatedResponse<ObjectiveList>> {
+    const { projectId, ...rest } = params;
+    const query = projectId !== undefined ? { ...rest, project_id: projectId } : rest;
     const { data, error } = await this._client.GET('/v1/objectives/', {
-      params: { query: params },
+      params: { query },
     });
 
     if (error) {
@@ -66,8 +74,10 @@ export class ObjectivesResource {
    * Create a new objective
    */
   async create(data: CreateObjectiveData): Promise<{ id: string }> {
+    const { projectId, ...rest } = data;
+    const body = projectId !== undefined ? { ...rest, project_id: projectId } : rest;
     const { data: responseData, error } = await this._client.POST('/v1/objectives/', {
-      body: data,
+      body,
     });
 
     if (error) {
@@ -106,9 +116,11 @@ export class ObjectivesResource {
    * Update an existing objective
    */
   async update(id: string, data: UpdateObjectiveData): Promise<ObjectiveDetail> {
+    const { projectId, ...rest } = data;
+    const body = projectId !== undefined ? { ...rest, project_id: projectId } : rest;
     const { data: responseData, error } = await this._client.PUT('/v1/objectives/{id}/', {
       params: { path: { id } },
-      body: data,
+      body,
     });
 
     if (error) {
@@ -169,9 +181,11 @@ export class ObjectivesResource {
    * Partially update an objective
    */
   async patch(id: string, data: Partial<UpdateObjectiveData>): Promise<ObjectiveDetail> {
+    const { projectId, ...rest } = data;
+    const body = projectId !== undefined ? { ...rest, project_id: projectId } : rest;
     const { data: responseData, error } = await this._client.PATCH('/v1/objectives/{id}/', {
       params: { path: { id } },
-      body: data,
+      body,
     });
 
     if (error) {
