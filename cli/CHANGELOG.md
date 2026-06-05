@@ -1,3 +1,17 @@
+## 0.14.0
+
+- Bump `@root-signals/scorable` to `^0.11.0` for the new `projects` resource and `projectId` support.
+- New `scorable project` command group: `list`, `get`, `create`, `update`, `delete`, `set-default`. `project create` and `project update` accept `--is-default` to promote a project as the org default (the previous default is unset atomically).
+- `project list` appends `(default)` to the default project's name.
+- `--project-id <uuid>` added to every command that creates, executes, lists, or filters a project-scoped resource: `evaluator` (`execute`, `execute-by-name`, `create`, `update`, `duplicate`, `import-yaml`, `list`), `judge` (`execute`, `execute-by-name`, `create`, `update`, `duplicate`, `generate`, `list`, `exec-openai`, `exec-openai-generic`), and `execution-log list`. Pass `--project-id ""` to opt out of an inherited default for a single invocation.
+- OpenAI-compatible commands (`judge exec-openai`, `judge exec-openai-generic`) translate `--project-id` to the `X-Project-Id` HTTP header per request (the OpenAI wire format can't carry it in the body).
+- `--project-id` resolution order: CLI flag → `SCORABLE_PROJECT_ID` env var → `project_id` in `~/.scorable/settings.json` → omitted (backend resolves to org default).
+- New `auth` subcommands for managing the persistent project preference: `auth set-project <uuid>` writes to settings; `auth unset-project` removes it; `auth show-project` prints the resolved project_id and its source. `auth logout` now also clears the saved project_id.
+- New `project_id` column on `evaluator list`, `judge list`, and `execution-log list` output (public resources show an empty cell).
+- `prompt-test init --project-id <uuid>` persists the project into the generated config file. `prompt-test run` reads it from the config; pass `run --project-id` to override per-invocation.
+- `evaluator export-yaml` strips `project_id` from the output so YAML stays portable across organizations.
+- Backend errors (cross-org `project_id`, duplicate project names, clearing the default) surface as a single-line stderr message with the backend's reason verbatim and exit 1.
+
 ## 0.13.0
 
 - Bump `@root-signals/scorable` to `^0.10.0` for the new tool-call multi-turn shape.
