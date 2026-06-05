@@ -12,6 +12,8 @@ export interface CreateJudgeData {
   intent: string;
   evaluator_references?: Array<{ id: string; version_id?: string }>;
   stage?: string;
+  /** Project to assign this judge to. Defaults to the org's default project. */
+  projectId?: string;
 }
 
 export interface UpdateJudgeData {
@@ -19,9 +21,20 @@ export interface UpdateJudgeData {
   intent?: string;
   evaluator_references?: Array<{ id: string; version_id?: string }>;
   stage?: string;
+  /** Pass `projectId` to move this judge to a different project within your organization. */
+  projectId?: string;
 }
 
-export type JudgeExecutionPayload = components['schemas']['JudgeExecutionRequest'];
+export type JudgeExecutionPayload = Omit<
+  components['schemas']['JudgeExecutionRequest'],
+  'project_id'
+> & {
+  /**
+   * Project to assign the execution log to. Defaults to the judge's project or org default.
+   * Translated to `project_id` on the wire.
+   */
+  projectId?: string;
+};
 export type JudgeRefinementPayload = components['schemas']['JudgeRectifierRequestRequest'];
 export type JudgeGeneratorResponse = components['schemas']['JudgeGeneratorResponse'];
 
@@ -39,11 +52,15 @@ export interface JudgeGenerateParams {
     temperature?: number;
   };
   enable_context_aware_evaluators?: boolean;
+  /** Project to assign the generated judge to. Defaults to the org's default project. */
+  projectId?: string;
 }
 
 export interface JudgeListParams extends ListParams {
   is_preset?: boolean;
   include_public?: boolean;
+  /** Filter judges by project UUID. Public judges are excluded when this filter is set. */
+  projectId?: string;
 }
 
 export class JudgesResource {
@@ -53,8 +70,10 @@ export class JudgesResource {
    * List all accessible judges
    */
   async list(params: JudgeListParams = {}): Promise<PaginatedResponse<Judge>> {
+    const { projectId, ...rest } = params;
+    const query = projectId !== undefined ? { ...rest, project_id: projectId } : rest;
     const { data, error } = await this._client.GET('/v1/judges/', {
-      params: { query: params },
+      params: { query },
     });
 
     if (error) {
@@ -77,8 +96,10 @@ export class JudgesResource {
    * Create a new judge
    */
   async create(data: CreateJudgeData): Promise<JudgeDetail> {
+    const { projectId, ...rest } = data;
+    const body = projectId !== undefined ? { ...rest, project_id: projectId } : rest;
     const { data: responseData, error } = await this._client.POST('/v1/judges/', {
-      body: data,
+      body,
     });
 
     if (error) {
@@ -117,9 +138,11 @@ export class JudgesResource {
    * Update an existing judge (partial update)
    */
   async update(id: string, data: UpdateJudgeData): Promise<JudgeDetail> {
+    const { projectId, ...rest } = data;
+    const body = projectId !== undefined ? { ...rest, project_id: projectId } : rest;
     const { data: responseData, error } = await this._client.PATCH('/v1/judges/{id}/', {
       params: { path: { id } },
-      body: data,
+      body,
     });
 
     if (error) {
@@ -156,9 +179,11 @@ export class JudgesResource {
    * Execute a judge
    */
   async execute(id: string, payload: JudgeExecutionPayload): Promise<JudgeExecutionResult> {
+    const { projectId, ...rest } = payload;
+    const body = projectId !== undefined ? { ...rest, project_id: projectId } : rest;
     const { data, error } = await this._client.POST('/v1/judges/{judge_id}/execute/', {
       params: { path: { judge_id: id } },
-      body: payload,
+      body,
     });
 
     if (error) {
@@ -177,9 +202,11 @@ export class JudgesResource {
    * Execute a judge by name (convenience method)
    */
   async executeByName(name: string, payload: JudgeExecutionPayload): Promise<JudgeExecutionResult> {
+    const { projectId, ...rest } = payload;
+    const body = projectId !== undefined ? { ...rest, project_id: projectId } : rest;
     const { data, error } = await this._client.POST('/v1/judges/execute/by-name/', {
       params: { query: { name } },
-      body: payload,
+      body,
     });
 
     if (error) {
@@ -208,6 +235,7 @@ export class JudgesResource {
     file_id,
     generating_model_params,
     enable_context_aware_evaluators,
+    projectId,
   }: JudgeGenerateParams): Promise<JudgeGeneratorResponse> {
     const { data, error } = await this._client.POST('/v1/judges/generate/', {
       body: {
@@ -222,6 +250,7 @@ export class JudgesResource {
         file_id: file_id ?? null,
         generating_model_params: generating_model_params ?? null,
         enable_context_aware_evaluators: enable_context_aware_evaluators ?? null,
+        ...(projectId !== undefined ? { project_id: projectId } : {}),
       },
     });
 
@@ -262,11 +291,15 @@ export class JudgesResource {
   }
 
   /**
-   * Duplicate a judge
+   * Duplicate a judge.
+   * Pass `projectId` to assign the duplicate to a specific project; defaults to the
+   * source judge's project.
    */
-  async duplicate(id: string): Promise<JudgeDetail> {
+  async duplicate(id: string, options: { projectId?: string } = {}): Promise<JudgeDetail> {
+    const body = options.projectId !== undefined ? { project_id: options.projectId } : undefined;
     const { data, error } = await this._client.POST('/v1/judges/{id}/duplicate/', {
       params: { path: { id } },
+      ...(body !== undefined ? { body } : {}),
     });
 
     if (error) {

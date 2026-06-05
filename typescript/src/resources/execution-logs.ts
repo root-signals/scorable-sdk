@@ -21,6 +21,8 @@ export interface ExecutionLogListParams extends ListParams {
   tags?: string;
   page_size?: number;
   cursor?: string;
+  /** Filter execution logs by project UUID. */
+  projectId?: string;
 }
 
 export class ExecutionLogsResource {
@@ -30,8 +32,10 @@ export class ExecutionLogsResource {
    * List execution logs with filtering and pagination
    */
   async list(params: ExecutionLogListParams = {}): Promise<PaginatedResponse<ExecutionLogList>> {
+    const { projectId, ...rest } = params;
+    const query = projectId !== undefined ? { ...rest, project_id: projectId } : rest;
     const { data, error } = await this._client.GET('/v1/execution-logs/', {
-      params: { query: params },
+      params: { query },
     });
 
     if (error) {

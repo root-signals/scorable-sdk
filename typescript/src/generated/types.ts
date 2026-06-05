@@ -845,6 +845,43 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/v1/projects/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description List all projects in your organization. */
+    get: operations['projects_list'];
+    put?: never;
+    /** @description Create a new project. */
+    post: operations['projects_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/projects/{id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Retrieve a project. */
+    get: operations['projects_retrieve'];
+    put?: never;
+    post?: never;
+    /** @description Delete a project. */
+    delete: operations['projects_destroy'];
+    options?: never;
+    head?: never;
+    /** @description Update a project name or description. */
+    patch: operations['projects_partial_update'];
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -876,6 +913,11 @@ export interface components {
       readonly owner: components['schemas']['NestedUserDetails'];
       /** @default false */
       has_header: boolean;
+      /**
+       * Format: uuid
+       * @description Project to associate this dataset with. Defaults to the organization's default project.
+       */
+      project_id?: string | null;
     };
     DataSetCreateRequest: {
       name?: string | null;
@@ -889,6 +931,11 @@ export interface components {
       tags?: string[];
       /** @default false */
       has_header: boolean;
+      /**
+       * Format: uuid
+       * @description Project to associate this dataset with. Defaults to the organization's default project.
+       */
+      project_id?: string | null;
     };
     DataSetList: {
       /** Format: uuid */
@@ -900,6 +947,8 @@ export interface components {
       /** Format: date-time */
       readonly created_at: string;
       status?: components['schemas']['StatusEnum'];
+      /** Format: uuid */
+      readonly project_id: string | null;
       /** meta */
       readonly _meta: unknown;
     };
@@ -912,6 +961,14 @@ export interface components {
     DatasetRangeRequest: {
       start: number | null;
       end: number | null;
+    };
+    DuplicateJudgeRequestRequest: {
+      /** Format: uuid */
+      project_id?: string | null;
+    };
+    DuplicateRequest: {
+      /** Format: uuid */
+      project_id?: string | null;
     };
     Evaluator: {
       change_note?: string | null;
@@ -926,6 +983,11 @@ export interface components {
       name: string;
       readonly objective: components['schemas']['Objective'] | null;
       readonly owner: components['schemas']['NestedUserDetails'];
+      /**
+       * Format: uuid
+       * @description Project to assign this evaluator to. Defaults to org default project.
+       */
+      project_id?: string | null;
       readonly visibility: components['schemas']['VisibilityEnum'];
       /** Format: date-time */
       readonly updated_at: string | null;
@@ -962,6 +1024,7 @@ export interface components {
         };
       };
       scoring_criteria: string;
+      readonly is_root_evaluator: boolean;
     };
     EvaluatorCalibrationOutput: {
       variables: {
@@ -1024,6 +1087,11 @@ export interface components {
       /** @description File IDs (from POST /v1/files/). Note, not all models support uploaded files as context. */
       file_ids?: string[];
       /**
+       * Format: uuid
+       * @description Project to assign the execution log to. Defaults to the resource's project or org default.
+       */
+      project_id?: string | null;
+      /**
        * @description Extra variables to be used in the execution of the evaluator. Optional.
        * @default {}
        */
@@ -1046,6 +1114,8 @@ export interface components {
       yaml: string;
       /** @default false */
       overwrite: boolean;
+      /** Format: uuid */
+      project_id?: string | null;
     };
     EvaluatorListOutput: {
       /** meta */
@@ -1058,6 +1128,8 @@ export interface components {
       readonly name: string;
       readonly objective: components['schemas']['NestedObjectiveList'];
       readonly owner: components['schemas']['NestedUserDetails'];
+      /** Format: uuid */
+      readonly project_id: string | null;
       readonly visibility: components['schemas']['VisibilityEnum'];
       /** Format: date-time */
       readonly updated_at: string | null;
@@ -1129,6 +1201,11 @@ export interface components {
        * @default false
        */
       overwrite: boolean;
+      /**
+       * Format: uuid
+       * @description Project to assign this evaluator to. Defaults to org default project.
+       */
+      project_id?: string | null;
       scoring_criteria: string;
     };
     EvaluatorResult: {
@@ -1187,7 +1264,9 @@ export interface components {
       readonly variables: {
         [key: string]: string;
       } | null;
-      readonly classification: unknown;
+      readonly classification: {
+        [key: string]: unknown;
+      } | null;
       /** Format: double */
       readonly confidence: number | null;
     };
@@ -1214,6 +1293,8 @@ export interface components {
       readonly owner: components['schemas']['NestedUserDetails'];
       /** Format: uuid */
       parent_execution_log_id?: string | null;
+      /** Format: uuid */
+      readonly project_id: string | null;
       /** @description Truncated preview of the request to the LLM model. */
       readonly request_preview: string;
       /** @description Truncated preview of the response from the LLM model. */
@@ -1297,6 +1378,11 @@ export interface components {
       /** @description Intent for the judge */
       intent: string;
       name: string;
+      /**
+       * Format: uuid
+       * @description Project to assign this judge to. Defaults to org default project.
+       */
+      project_id?: string | null;
       stage?: string;
       readonly visibility: components['schemas']['VisibilityEnum'];
       /** Format: uuid */
@@ -1319,6 +1405,8 @@ export interface components {
       /** Format: date-time */
       readonly completed_at: string | null;
       readonly judge: components['schemas']['NestedJudge'];
+      /** Format: uuid */
+      readonly project_id: string | null;
       readonly items: components['schemas']['JudgeBatchExecutionItem'][];
     };
     JudgeBatchExecutionInputRequest: {
@@ -1339,6 +1427,11 @@ export interface components {
       system_prompt?: string | null;
       /** @description File IDs (from POST /v1/files/). Note, not all models support uploaded files as context. */
       file_ids?: string[];
+      /**
+       * Format: uuid
+       * @description Project to assign the execution log to. Defaults to the resource's project or org default.
+       */
+      project_id?: string | null;
     };
     JudgeBatchExecutionItem: {
       /** @description Position in the batch (0-indexed) */
@@ -1385,12 +1478,19 @@ export interface components {
       /** Format: date-time */
       readonly completed_at: string | null;
       readonly judge: components['schemas']['NestedJudge'];
+      /** Format: uuid */
+      readonly project_id: string | null;
     };
     JudgeBatchExecutionRequest: {
       inputs: components['schemas']['JudgeBatchExecutionInputRequest'][];
       tags?: string[];
       /** Format: uuid */
       judge_version_id?: string | null;
+      /**
+       * Format: uuid
+       * @description Project to assign this batch execution to. Defaults to the judge's project or org default.
+       */
+      project_id?: string | null;
     };
     JudgeBatchExecutionResponse: {
       /** Format: uuid */
@@ -1400,6 +1500,8 @@ export interface components {
     JudgeClaimRequestRequest: {
       /** Format: uuid */
       claim_token: string;
+      /** Format: uuid */
+      project_id?: string | null;
     };
     JudgeExecutionRequest: {
       turns?: components['schemas']['MessageTurnRequest'][] | null;
@@ -1419,6 +1521,11 @@ export interface components {
       system_prompt?: string | null;
       /** @description File IDs (from POST /v1/files/). Note, not all models support uploaded files as context. */
       file_ids?: string[];
+      /**
+       * Format: uuid
+       * @description Project to assign the execution log to. Defaults to the resource's project or org default.
+       */
+      project_id?: string | null;
       /** Format: uuid */
       judge_version_id?: string | null;
     };
@@ -1454,6 +1561,8 @@ export interface components {
        * @default false
        */
       enable_context_aware_evaluators: boolean | null;
+      /** Format: uuid */
+      project_id?: string | null;
     };
     JudgeGeneratorResponse: {
       /** Format: uuid */
@@ -1518,6 +1627,8 @@ export interface components {
       readonly _meta: {
         [key: string]: unknown;
       };
+      /** Format: uuid */
+      readonly project_id: string | null;
     };
     JudgeRectifierRequestRequest: {
       turns?: components['schemas']['MessageTurnRequest'][] | null;
@@ -1537,6 +1648,11 @@ export interface components {
       system_prompt?: string | null;
       /** @description File IDs (from POST /v1/files/). Note, not all models support uploaded files as context. */
       file_ids?: string[];
+      /**
+       * Format: uuid
+       * @description Project to assign the execution log to. Defaults to the resource's project or org default.
+       */
+      project_id?: string | null;
       /** Format: uuid */
       judge_version_id?: string | null;
       /**
@@ -1589,6 +1705,11 @@ export interface components {
       /** @description Intent for the judge */
       intent: string;
       name: string;
+      /**
+       * Format: uuid
+       * @description Project to assign this judge to. Defaults to org default project.
+       */
+      project_id?: string | null;
       stage?: string;
     };
     MessageLogTurn: {
@@ -1729,6 +1850,8 @@ export interface components {
       readonly owner: components['schemas']['NestedUserDetails'];
       /** Format: date-time */
       readonly created_at: string;
+      /** Format: uuid */
+      readonly project_id: string | null;
       /** meta */
       readonly _meta: {
         [key: string]: unknown;
@@ -1740,6 +1863,11 @@ export interface components {
       force_create?: boolean;
       /** Format: uuid */
       test_dataset_id?: string | null;
+      /**
+       * Format: uuid
+       * @description Project to associate this objective with. Defaults to the organization's default project.
+       */
+      project_id?: string | null;
     };
     OtelTrace: {
       trace_id: string;
@@ -1942,6 +2070,19 @@ export interface components {
       previous?: string | null;
       results: components['schemas']['OtelTraceRecord'][];
     };
+    PaginatedProjectList: {
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+       */
+      previous?: string | null;
+      results: components['schemas']['Project'][];
+    };
     PatchedEvaluatorRequest: {
       change_note?: string | null;
       evaluator_demonstrations?: components['schemas']['EvaluatorDemonstrationsRequest'][] | null;
@@ -1961,6 +2102,11 @@ export interface components {
        * @default false
        */
       overwrite: boolean;
+      /**
+       * Format: uuid
+       * @description Project to assign this evaluator to. Defaults to org default project.
+       */
+      project_id?: string | null;
       scoring_criteria?: string;
     };
     PatchedJudgeRequest: {
@@ -1973,6 +2119,11 @@ export interface components {
       /** @description Intent for the judge */
       intent?: string;
       name?: string;
+      /**
+       * Format: uuid
+       * @description Project to assign this judge to. Defaults to org default project.
+       */
+      project_id?: string | null;
       stage?: string;
     };
     PatchedModelRequest: {
@@ -1989,6 +2140,32 @@ export interface components {
       force_create?: boolean;
       /** Format: uuid */
       test_dataset_id?: string | null;
+      /**
+       * Format: uuid
+       * @description Project to associate this objective with. Defaults to the organization's default project.
+       */
+      project_id?: string | null;
+    };
+    PatchedProjectRequest: {
+      name?: string;
+      description?: string;
+      is_default?: boolean;
+    };
+    Project: {
+      /** Format: uuid */
+      readonly id: string;
+      name: string;
+      description?: string;
+      is_default?: boolean;
+      /** Format: date-time */
+      readonly created_at: string | null;
+      /** Format: uuid */
+      readonly owner: string;
+    };
+    ProjectRequest: {
+      name: string;
+      description?: string;
+      is_default?: boolean;
     };
     Provider: {
       readonly id: string;
@@ -2033,12 +2210,16 @@ export interface components {
     SkillTestDataRequest: {
       test_data?: string[][] | null;
       test_dataset_id?: string;
+      /** Format: uuid */
+      project_id?: string | null;
       /** @description Specifies the range of dataset rows to use */
       dataset_range?: components['schemas']['DatasetRangeRequest'] | null;
     };
     SkillTestInputRequest: {
       test_data?: string[][] | null;
       test_dataset_id?: string;
+      /** Format: uuid */
+      project_id?: string | null;
       /** @description Specifies the range of dataset rows to use */
       dataset_range?: components['schemas']['DatasetRangeRequest'] | null;
       prompt: string;
@@ -2095,6 +2276,8 @@ export interface operations {
         ordering?: string;
         /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description Filter by project UUID */
+        project_id?: string;
         /** @description Search for dataset by name */
         search?: string;
         /** @description Filter by type. Possible values: reference, test */
@@ -2204,6 +2387,8 @@ export interface operations {
         owner__last_name?: string;
         /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description Filter by project. Public evaluators are excluded when this filter is set. */
+        project_id?: string;
         /** @description Search for evaluators by name or description. */
         search?: string;
         /**
@@ -2414,7 +2599,13 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['DuplicateRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['DuplicateRequest'];
+        'multipart/form-data': components['schemas']['DuplicateRequest'];
+      };
+    };
     responses: {
       201: {
         headers: {
@@ -2583,6 +2774,8 @@ export interface operations {
         ordering?: string;
         /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description Filter logs by project UUID */
+        project_id?: string;
         /** @description Filter with skill name or id */
         search?: string;
         /** @description Filter logs by external session identifier (exact match) */
@@ -2750,6 +2943,8 @@ export interface operations {
         ordering?: string;
         /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description Filter by project. Public judges are excluded when this filter is set. */
+        project_id?: string;
         /** @description Search for judge by name, intent... */
         search?: string;
       };
@@ -3144,7 +3339,13 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['DuplicateJudgeRequestRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['DuplicateJudgeRequestRequest'];
+        'multipart/form-data': components['schemas']['DuplicateJudgeRequestRequest'];
+      };
+    };
     responses: {
       201: {
         headers: {
@@ -3197,6 +3398,8 @@ export interface operations {
         judge_id?: string;
         /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description Filter by project UUID */
+        project_id?: string;
         /** @description Filter by status */
         status?: string;
       };
@@ -3551,6 +3754,8 @@ export interface operations {
         ordering?: string;
         /** @description Number of results to return per page. */
         page_size?: number;
+        /** @description Filter by project UUID */
+        project_id?: string;
         /** @description Search for objectives by intent. */
         search?: string;
       };
@@ -3898,6 +4103,123 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['OtelTrace'][];
+        };
+      };
+    };
+  };
+  projects_list: {
+    parameters: {
+      query?: {
+        /** @description The pagination cursor value. */
+        cursor?: string;
+        /** @description Number of results to return per page. */
+        page_size?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PaginatedProjectList'];
+        };
+      };
+    };
+  };
+  projects_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ProjectRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['ProjectRequest'];
+        'multipart/form-data': components['schemas']['ProjectRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Project'];
+        };
+      };
+    };
+  };
+  projects_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Project'];
+        };
+      };
+    };
+  };
+  projects_destroy: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  projects_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['PatchedProjectRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['PatchedProjectRequest'];
+        'multipart/form-data': components['schemas']['PatchedProjectRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Project'];
         };
       };
     };

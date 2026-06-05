@@ -522,6 +522,40 @@ The TypeScript SDK provides access to all Scorable API resources:
   - `get(id)` - Get dataset details
   - `delete(id)` - Remove dataset
 
+- **`client.projects`** - Group resources within an organization
+  - `list()` - List projects
+  - `get(id)` - Get project details
+  - `create({ name, description?, is_default? })` - Create project
+  - `update(id, { name?, description?, is_default? })` - Update project; `is_default: true` atomically promotes this project as the org default
+  - `delete(id)` - Remove project (blocked if it has attached resources)
+
+## Project Scoping
+
+Every judge, evaluator, dataset, objective, and execution log belongs to a **project** (a workspace inside your organization). Most calls accept an optional `projectId` to control which project a resource is created in, attached to, or filtered by. Omitting `projectId` falls back to the org's default project.
+
+```typescript
+// Create a judge in a specific project
+await client.judges.create({
+  name: 'Customer support',
+  intent: 'Evaluate support reply quality',
+  projectId: '<project-uuid>',
+});
+
+// Filter list endpoints by project
+const supportJudges = await client.judges.list({ projectId: '<project-uuid>' });
+
+// Route an execution log to a specific project (overrides the judge's own project)
+await client.judges.execute(judgeId, {
+  response: '...',
+  request: '...',
+  projectId: '<project-uuid>',
+});
+
+// Move an existing resource to another project
+await client.judges.update(judgeId, { projectId: '<other-project-uuid>' });
+```
+
+Response models expose `project_id` as `string | null` — `null` for public resources owned by other organizations.
 
 ## Contributing
 

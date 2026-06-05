@@ -11,6 +11,7 @@ import { ModelsResource } from './resources/models.js';
 import { ExecutionLogsResource } from './resources/execution-logs.js';
 import { DatasetsResource } from './resources/datasets.js';
 import { FilesResource } from './resources/files.js';
+import { ProjectsResource } from './resources/projects.js';
 
 export class Scorable {
   private client: ReturnType<typeof createClient<paths>>;
@@ -25,6 +26,7 @@ export class Scorable {
   public readonly executionLogs: ExecutionLogsResource;
   public readonly datasets: DatasetsResource;
   public readonly files: FilesResource;
+  public readonly projects: ProjectsResource;
 
   constructor(config: ClientConfig) {
     const envBaseUrl =
@@ -52,6 +54,7 @@ export class Scorable {
     this.executionLogs = new ExecutionLogsResource(this.client);
     this.datasets = new DatasetsResource(this.client);
     this.files = new FilesResource(this.config);
+    this.projects = new ProjectsResource(this.client);
   }
 
   /**

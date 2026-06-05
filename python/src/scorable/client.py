@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from .judges import Judges
     from .models import Models
     from .objectives import Objectives
+    from .projects import Projects
     from .skills import Evaluators
 
 
@@ -208,6 +209,13 @@ class Scorable:
         from .judges import Judges
 
         return Judges(self.get_client_context)
+
+    @cached_property
+    def projects(self) -> Projects:
+        """Get Projects API"""
+        from .projects import Projects
+
+        return Projects(self.get_client_context)
 
     @cached_property
     def beta(self) -> Beta:

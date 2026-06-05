@@ -38,6 +38,14 @@ describe('EvaluatorsResource', () => {
       });
     });
 
+    it('translates projectId to project_id when filtering', async () => {
+      await client.evaluators.list({ projectId: 'proj-abc' });
+
+      expect(mockClient.GET).toHaveBeenCalledWith('/v1/evaluators/', {
+        params: { query: { project_id: 'proj-abc' } },
+      });
+    });
+
     it('should handle empty results', async () => {
       mockClient.setMockResponse('GET', '/v1/evaluators/', {
         data: { results: [], next: null, previous: null },
@@ -104,6 +112,59 @@ describe('EvaluatorsResource', () => {
       });
 
       await expect(client.evaluators.execute(evaluatorId, {})).rejects.toThrow();
+    });
+  });
+
+  describe('execute with projectId', () => {
+    it('passes projectId as project_id in the body when provided', async () => {
+      const evaluatorId = 'eval-123';
+      mockClient.setMockResponse('POST', '/v1/evaluators/execute/{id}/', {
+        data: mockResponses.evaluators.execution,
+        error: undefined,
+      });
+
+      await client.evaluators.execute(evaluatorId, {
+        request: 'q',
+        response: 'r',
+        projectId: 'proj-xyz',
+      });
+
+      expect(mockClient.POST).toHaveBeenCalledWith('/v1/evaluators/execute/{id}/', {
+        params: { path: { id: evaluatorId } },
+        body: { variables: {}, request: 'q', response: 'r', project_id: 'proj-xyz' },
+      });
+    });
+
+    it('omits project_id when not provided', async () => {
+      const evaluatorId = 'eval-123';
+      mockClient.setMockResponse('POST', '/v1/evaluators/execute/{id}/', {
+        data: mockResponses.evaluators.execution,
+        error: undefined,
+      });
+
+      await client.evaluators.execute(evaluatorId, { request: 'q', response: 'r' });
+
+      expect(mockClient.POST).toHaveBeenCalledWith('/v1/evaluators/execute/{id}/', {
+        params: { path: { id: evaluatorId } },
+        body: { variables: {}, request: 'q', response: 'r' },
+      });
+    });
+  });
+
+  describe('update with projectId (move)', () => {
+    it('sends project_id when moving an evaluator between projects', async () => {
+      const evaluatorId = 'eval-123';
+      mockClient.PATCH.mockResolvedValueOnce({
+        data: { id: evaluatorId, name: 'x', project_id: 'proj-target' },
+        error: undefined,
+      });
+
+      await client.evaluators.update(evaluatorId, { projectId: 'proj-target' });
+
+      expect(mockClient.PATCH).toHaveBeenCalledWith('/v1/evaluators/{id}/', {
+        params: { path: { id: evaluatorId } },
+        body: { overwrite: false, project_id: 'proj-target' },
+      });
     });
   });
 

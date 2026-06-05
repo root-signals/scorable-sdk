@@ -1,3 +1,13 @@
+## 1.12.0
+
+- Add `Projects` resource (`client.projects`) with `list`/`retrieve`/`create`/`update`/`delete` (sync and async). Supports `is_default` for promoting a project as the org default.
+- Add optional `project_id` to execution methods (`Judge.run`/`arun`, `Judges.run`/`arun`/`run_by_name`/`arun_by_name`/`generate`/`agenerate`, `Evaluator.run`/`arun`, `Evaluators.run`/`arun`/`run_by_name`/`arun_by_name`, preset evaluator runners). Routes the resulting execution log to the specified project; falls back to org default when omitted.
+- Add optional `project_id` query filter to list methods (`Judges.list`/`alist`, `Evaluators.list`/`alist`, `DataSets.list`/`alist`, `ExecutionLogs.list`/`alist`, `Objectives.list`/`alist`).
+- Add optional `project_id` to create methods (`Judges.create`/`acreate`/`generate`/`agenerate`, `Evaluators.create`/`acreate`, `DataSets.create`/`acreate`, `Objectives.create`/`acreate`).
+- Add `project_id` to update methods on `Judges`, `Evaluators`, and `Objectives` to move a resource between projects within the same organization.
+- Response models now expose nullable `project_id` (`None` for public resources owned by other orgs).
+- Fix `tools` parameter not being forwarded by `judges.run`/`arun`/`run_by_name`/`arun_by_name`; the 1.11.0 release exposed `tools` on skills/evaluators only.
+
 ## 1.11.0
 
 - Add `tools` parameter (OpenAI-style tool catalog) to `evaluators.run`/`arun`/`run_by_name`/`arun_by_name`, `judges.run`/`arun`, and preset evaluator runners. Enables tool-aware evaluators like `Tool_Selection`.
