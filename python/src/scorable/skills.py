@@ -10,7 +10,7 @@ from enum import Enum
 from functools import partial
 from typing import Any, AsyncIterator, Dict, Iterator, List, Literal, Optional, Union, cast
 
-from pydantic import BaseModel, StrictStr
+from pydantic import BaseModel, ConfigDict, StrictStr
 
 from scorable.calibration import CalibrationExperimentHandle
 from scorable.generated.openapi_aclient.models.evaluator_request import EvaluatorRequest as AEvaluatorRequest
@@ -63,7 +63,6 @@ from .generated.openapi_client import ApiClient as ApiClient
 from .generated.openapi_client.api.evaluators_api import EvaluatorsApi as EvaluatorsApi
 from .generated.openapi_client.api.objectives_api import ObjectivesApi as ObjectivesApi
 from .generated.openapi_client.models.evaluator import Evaluator as SyncGeneratedEvaluator
-from .generated.openapi_client.models.evaluator_calibration_output import EvaluatorCalibrationOutput
 from .generated.openapi_client.models.evaluator_demonstrations_request import (
     EvaluatorDemonstrationsRequest,
 )
@@ -160,7 +159,8 @@ class CalibrateBatchParameters:
 
 
 class CalibrateBatchResult(BaseModel):
-    results: List[EvaluatorCalibrationOutput]
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    results: List[CalibrationExperimentHandle]
     rms_errors_model: Dict[str, float]
     mae_errors_model: Dict[str, float]
     rms_errors_prompt: Dict[str, float]
@@ -410,6 +410,24 @@ def _test_data_to_inputs(test_data: Optional[List[List[str]]]) -> Optional[List[
             entry["request"] = row[2]
         inputs.append(entry)
     return inputs
+
+
+def _accumulate_calibration_errors(
+    handle: "CalibrationExperimentHandle",
+    model: str,
+    prompt: str,
+    model_errors: Dict[str, Dict[str, float]],
+    prompt_errors: Dict[str, Dict[str, float]],
+) -> None:
+    for task in handle.tasks:
+        score = task.score or 0
+        expected = task.expected_score or 0
+        squared_error = (score - expected) ** 2
+        abs_error = abs(score - expected)
+        for bucket, key in ((model_errors, model), (prompt_errors, prompt)):
+            bucket[key]["sum_squared_errors"] += squared_error
+            bucket[key]["abs_errors"] += abs_error
+            bucket[key]["count"] += 1
 
 
 def _to_evaluator_demonstrations(
@@ -958,89 +976,47 @@ class Evaluators:
         prompt_errors: Dict[str, Dict[str, float]] = defaultdict(
             lambda: {"sum_squared_errors": 0, "abs_errors": 0, "count": 0}
         )
+        all_results: List[CalibrationExperimentHandle] = []
 
-        all_results = []
+        def run_one(param: CalibrateBatchParameters) -> CalibrationExperimentHandle:
+            handle = self.calibrate(
+                name=param.name,
+                test_dataset_id=test_dataset_id,
+                test_data=test_data,
+                prompt=param.prompt,
+                model=param.model,
+                _request_timeout=_request_timeout,
+            )
+            return handle.wait()
 
-        use_thread_pool = parallel_requests > 1
-
-        def process_results(results: List[EvaluatorCalibrationOutput], param: CalibrateBatchParameters) -> None:
-            for result in results:
-                score = result.result.score or 0
-                expected_score = result.result.expected_score or 0
-                squared_error = (score - expected_score) ** 2
-                abs_error = abs(score - expected_score)
-
-                # TODO multiple thread race condition
-                model_errors[param.model]["sum_squared_errors"] += squared_error
-                model_errors[param.model]["abs_errors"] += abs_error
-                model_errors[param.model]["count"] += 1
-
-                prompt_errors[param.prompt]["sum_squared_errors"] += squared_error
-                prompt_errors[param.prompt]["abs_errors"] += abs_error
-                prompt_errors[param.prompt]["count"] += 1
-
-                all_results.append(result)
-
-        if use_thread_pool:
+        if parallel_requests > 1:
             with ThreadPoolExecutor(max_workers=parallel_requests) as executor:
-                futures = {
-                    executor.submit(
-                        self.calibrate,
-                        name=param.name,
-                        test_dataset_id=test_dataset_id,
-                        test_data=test_data,
-                        prompt=param.prompt,
-                        model=param.model,
-                        reference_variables=param.reference_variables,
-                        input_variables=param.input_variables,
-                        _request_timeout=_request_timeout,
-                    ): param
-                    for param in evaluator_definitions
-                }
-
+                futures = {executor.submit(run_one, param): param for param in evaluator_definitions}
                 for future in as_completed(futures):
                     param = futures[future]
                     try:
-                        results = future.result()
-                        process_results(results, param)
+                        handle = future.result()
+                        _accumulate_calibration_errors(handle, param.model, param.prompt, model_errors, prompt_errors)
+                        all_results.append(handle)
                     except Exception as exc:
                         raise ValueError(f"Calibration failed for {param.prompt} with model {param.model}") from exc
         else:
             for param in evaluator_definitions:
                 try:
-                    results = self.calibrate(
-                        name=param.name,
-                        test_dataset_id=test_dataset_id,
-                        test_data=test_data,
-                        prompt=param.prompt,
-                        model=param.model,
-                        reference_variables=param.reference_variables,
-                        input_variables=param.input_variables,
-                        _request_timeout=_request_timeout,
-                    )
-                    process_results(results, param)
+                    handle = run_one(param)
+                    _accumulate_calibration_errors(handle, param.model, param.prompt, model_errors, prompt_errors)
+                    all_results.append(handle)
                 except Exception as exc:
                     raise ValueError(f"Calibration failed for {param.prompt} with model {param.model}") from exc
 
         rms_errors_model = {
-            model: math.sqrt(data["sum_squared_errors"] / data["count"])
-            for model, data in model_errors.items()
-            if data["count"] > 0
+            m: math.sqrt(d["sum_squared_errors"] / d["count"]) for m, d in model_errors.items() if d["count"]
         }
-
         rms_errors_prompt = {
-            prompt: math.sqrt(data["sum_squared_errors"] / data["count"])
-            for prompt, data in prompt_errors.items()
-            if data["count"] > 0
+            p: math.sqrt(d["sum_squared_errors"] / d["count"]) for p, d in prompt_errors.items() if d["count"]
         }
-
-        mae_errors_model = {
-            model: data["abs_errors"] / data["count"] for model, data in model_errors.items() if data["count"] > 0
-        }
-
-        mae_errors_prompt = {
-            prompt: data["abs_errors"] / data["count"] for prompt, data in prompt_errors.items() if data["count"] > 0
-        }
+        mae_errors_model = {m: d["abs_errors"] / d["count"] for m, d in model_errors.items() if d["count"]}
+        mae_errors_prompt = {p: d["abs_errors"] / d["count"] for p, d in prompt_errors.items() if d["count"]}
 
         return CalibrateBatchResult(
             results=all_results,
