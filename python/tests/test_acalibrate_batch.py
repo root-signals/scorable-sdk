@@ -47,7 +47,6 @@ async def test_acalibrate_batch__aggregates_rmse_per_model_and_prompt(mock_creat
     client = Scorable(api_key="fake", run_async=True)
     params = [
         ACalibrateBatchParameters(
-            name="a",
             prompt="P",
             model="gpt-4",
             reference_variables=None,

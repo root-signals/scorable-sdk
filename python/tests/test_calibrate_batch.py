@@ -45,7 +45,7 @@ def test_calibrate_batch__aggregates_rmse_per_model_and_prompt(mock_create, mock
 
     client = Scorable(api_key="fake")
     params = [
-        CalibrateBatchParameters(name="a", prompt="P", model="gpt-4", reference_variables=None, input_variables=None),
+        CalibrateBatchParameters(prompt="P", model="gpt-4", reference_variables=None, input_variables=None),
     ]
     result = client.evaluators.calibrate_batch(evaluator_definitions=params, test_data=[["0.75", "o"], ["0.55", "o2"]])
     # sqrt(((0.8-0.75)^2 + (0.9-0.55)^2)/2)

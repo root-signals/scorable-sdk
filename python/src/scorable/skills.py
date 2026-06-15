@@ -121,13 +121,11 @@ class EvaluatorDemonstration(BaseModel):
 class ACalibrateBatchParameters:
     def __init__(
         self,
-        name: str,
         prompt: str,
         model: "ModelName",
         reference_variables: Optional[Union[List["ReferenceVariable"], List["AReferenceVariableRequest"]]] = None,
         input_variables: Optional[Union[List["InputVariable"], List["AInputVariableRequest"]]] = None,
     ):
-        self.name = name
         self.prompt = prompt
         self.model = model
         self.reference_variables = reference_variables
@@ -146,13 +144,11 @@ class ACalibrateBatchResult(BaseModel):
 class CalibrateBatchParameters:
     def __init__(
         self,
-        name: str,
         prompt: str,
         model: "ModelName",
         reference_variables: Optional[Union[List["ReferenceVariable"], List["ReferenceVariableRequest"]]] = None,
         input_variables: Optional[Union[List["InputVariable"], List["InputVariableRequest"]]] = None,
     ):
-        self.name = name
         self.prompt = prompt
         self.model = model
         self.reference_variables = reference_variables
@@ -386,19 +382,6 @@ def _to_input_variables(
     return [_convert_to_generated_model(entry) for entry in input_variables or {}]
 
 
-def _to_reference_variables(
-    reference_variables: Optional[Union[List[ReferenceVariable], List[ReferenceVariableRequest]]],
-) -> List[ReferenceVariableRequest]:
-    def _convert_to_generated_model(
-        entry: Union[ReferenceVariable, ReferenceVariableRequest],
-    ) -> ReferenceVariableRequest:
-        if not isinstance(entry, ReferenceVariableRequest):
-            return ReferenceVariableRequest(name=entry.name, dataset=entry.dataset_id)
-        return entry
-
-    return [_convert_to_generated_model(entry) for entry in reference_variables or {}]
-
-
 def _test_data_to_inputs(test_data: Optional[List[List[str]]]) -> Optional[List[Dict[str, str]]]:
     if test_data is None:
         return None
@@ -458,19 +441,6 @@ def _ato_input_variables(
         return entry
 
     return [_convert_to_generated_model(entry) for entry in input_variables or {}]
-
-
-def _ato_reference_variables(
-    reference_variables: Optional[Union[List[ReferenceVariable], List[AReferenceVariableRequest]]],
-) -> List[AReferenceVariableRequest]:
-    def _convert_to_generated_model(
-        entry: Union[ReferenceVariable, AReferenceVariableRequest],
-    ) -> AReferenceVariableRequest:
-        if not isinstance(entry, AReferenceVariableRequest):
-            return AReferenceVariableRequest(name=entry.name, dataset=entry.dataset_id)
-        return entry
-
-    return [_convert_to_generated_model(entry) for entry in reference_variables or {}]
 
 
 def _ato_evaluator_demonstrations(
@@ -887,7 +857,6 @@ class Evaluators:
     def calibrate(
         self,
         *,
-        name: str,
         test_dataset_id: Optional[str] = None,
         test_data: Optional[List[List[str]]] = None,
         prompt: str,
@@ -919,7 +888,6 @@ class Evaluators:
     async def acalibrate(
         self,
         *,
-        name: str,
         test_dataset_id: Optional[str] = None,
         test_data: Optional[List[List[str]]] = None,
         prompt: str,
@@ -981,7 +949,6 @@ class Evaluators:
 
         def run_one(param: CalibrateBatchParameters) -> CalibrationExperimentHandle:
             handle = self.calibrate(
-                name=param.name,
                 test_dataset_id=test_dataset_id,
                 test_data=test_data,
                 prompt=param.prompt,
@@ -1065,7 +1032,6 @@ class Evaluators:
             async with sem:
                 try:
                     handle = await self.acalibrate(
-                        name=param.name,
                         test_dataset_id=test_dataset_id,
                         test_data=test_data,
                         prompt=param.prompt,

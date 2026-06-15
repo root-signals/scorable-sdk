@@ -38,7 +38,6 @@ def test_calibrate__returns_handle_and_waits_to_completion(mock_create, mock_ret
 
     client = Scorable(api_key="fake")
     handle = client.evaluators.calibrate(
-        name="ev",
         prompt="Is {{response}} faithful to {{request}}?",
         model="gpt-4-turbo",
         test_data=[["0.1", "out", "in"]],
@@ -52,6 +51,36 @@ def test_calibrate__returns_handle_and_waits_to_completion(mock_create, mock_ret
     sent = mock_create.call_args.kwargs["calibration_experiment_request"]
     assert sent.prompt == "Is {{response}} faithful to {{request}}?"
     assert sent.inputs == [{"expected_score": "0.1", "response": "out", "request": "in"}]
+
+
+def test_calibrate__wait_returns_on_failed_status(mock_create, mock_retrieve):
+    mock_create.return_value = _experiment("pending")
+    mock_retrieve.return_value = _experiment("failed")
+
+    client = Scorable(api_key="fake")
+    handle = client.evaluators.calibrate(prompt="P {{response}}", model="gpt-4-turbo", test_data=[["0.1", "out"]])
+    handle.wait(poll_interval=0.0, timeout=5.0)
+    assert handle.status == "failed"
+
+
+def test_calibrate__requires_exactly_one_of_test_data_or_dataset():
+    client = Scorable(api_key="fake")
+    with pytest.raises(ValueError):
+        client.evaluators.calibrate(prompt="P {{response}}", model="gpt-4-turbo")
+    with pytest.raises(ValueError):
+        client.evaluators.calibrate(
+            prompt="P {{response}}", model="gpt-4-turbo", test_dataset_id="d", test_data=[["0.1", "o"]]
+        )
+
+
+def test_calibrate__passes_dataset_id_when_test_dataset_id_given(mock_create, mock_retrieve):
+    mock_create.return_value = _experiment("completed", rmse=0.0)
+
+    client = Scorable(api_key="fake")
+    client.evaluators.calibrate(prompt="P {{response}}", model="gpt-4-turbo", test_dataset_id="ds-1")
+    sent = mock_create.call_args.kwargs["calibration_experiment_request"]
+    assert sent.dataset_id == "ds-1"
+    assert sent.inputs is None
 
 
 def test_calibrate_existing__posts_evaluator_id(mock_create, mock_retrieve):

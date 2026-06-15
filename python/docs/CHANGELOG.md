@@ -4,6 +4,7 @@
 - BREAKING: `calibrate_batch`/`acalibrate_batch` `results` now hold `CalibrationExperimentHandle` objects; the `rms_errors_model`/`rms_errors_prompt`/`mae_errors_model`/`mae_errors_prompt` aggregates are unchanged.
 - BREAKING: `calibrate`/`acalibrate` no longer accept `reference_variables`/`input_variables`. Inline calibration derives input variables from the prompt; to calibrate an evaluator that uses reference variables, create it first and use `calibrate_existing`.
 - `calibrate`/`calibrate_existing` still accept `test_data`/`test_dataset_id`. `test_data` rows are converted to experiment inputs using the convention `[expected_score, response, request]`.
+- BREAKING: `calibrate`/`acalibrate` and `CalibrateBatchParameters`/`ACalibrateBatchParameters` no longer take a `name` (inline calibration experiments are not named).
 
 ## 1.12.0
 

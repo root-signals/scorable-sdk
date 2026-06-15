@@ -37,7 +37,6 @@ async def test_acalibrate__returns_handle_and_waits(mock_create, mock_retrieve):
 
     client = Scorable(api_key="fake", run_async=True)
     handle = await client.evaluators.acalibrate(
-        name="ev",
         prompt="Is {{response}} faithful to {{request}}?",
         model="gpt-4-turbo",
         test_data=[["0.1", "out", "in"]],
