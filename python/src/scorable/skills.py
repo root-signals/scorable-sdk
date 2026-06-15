@@ -928,7 +928,7 @@ class Evaluators:
         _client: AApiClient,
     ) -> ACalibrationExperimentHandle:
         """
-        Asynchronously run calibration set for an evaluator definition.
+        Asynchronously run calibration for an inline evaluator definition.
         See the create evaluator method for more details on the parameters.
         """
 
