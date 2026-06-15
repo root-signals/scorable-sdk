@@ -12,7 +12,14 @@ from typing import Any, AsyncIterator, Dict, Iterator, List, Literal, Optional, 
 
 from pydantic import BaseModel, ConfigDict, StrictStr
 
-from scorable.calibration import CalibrationExperimentHandle
+from scorable.calibration import ACalibrationExperimentHandle, CalibrationExperimentHandle
+from scorable.generated.openapi_aclient.api.experiments_api import ExperimentsApi as AExperimentsApi
+from scorable.generated.openapi_aclient.models.calibration_experiment import (
+    CalibrationExperiment as ACalibrationExperiment,
+)
+from scorable.generated.openapi_aclient.models.calibration_experiment_request import (
+    CalibrationExperimentRequest as ACalibrationExperimentRequest,
+)
 from scorable.generated.openapi_aclient.models.evaluator_request import EvaluatorRequest as AEvaluatorRequest
 from scorable.generated.openapi_aclient.models.paginated_evaluator_list import (
     PaginatedEvaluatorList as APaginatedEvaluatorList,
@@ -40,9 +47,6 @@ from .generated.openapi_aclient.models import (
 )
 from .generated.openapi_aclient.models.evaluator import Evaluator as AOpenAPIEvaluator
 from .generated.openapi_aclient.models.evaluator import Evaluator as GeneratedEvaluator
-from .generated.openapi_aclient.models.evaluator_calibration_output import (
-    EvaluatorCalibrationOutput as AEvaluatorCalibrationOutput,
-)
 from .generated.openapi_aclient.models.evaluator_list_output import EvaluatorListOutput as AEvaluatorListOutput
 from .generated.openapi_aclient.models.input_variable_request import InputVariableRequest as AInputVariableRequest
 from .generated.openapi_aclient.models.message_turn_request import (
@@ -54,10 +58,6 @@ from .generated.openapi_aclient.models.patched_evaluator_request import (
 )
 from .generated.openapi_aclient.models.reference_variable_request import (
     ReferenceVariableRequest as AReferenceVariableRequest,
-)
-from .generated.openapi_aclient.models.skill_test_data_request import SkillTestDataRequest as ASkillTestDataRequest
-from .generated.openapi_aclient.models.skill_test_input_request import (
-    SkillTestInputRequest as ASkillTestInputRequest,
 )
 from .generated.openapi_client import ApiClient as ApiClient
 from .generated.openapi_client.api.evaluators_api import EvaluatorsApi as EvaluatorsApi
@@ -135,7 +135,8 @@ class ACalibrateBatchParameters:
 
 
 class ACalibrateBatchResult(BaseModel):
-    results: List[AEvaluatorCalibrationOutput]
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    results: List[ACalibrationExperimentHandle]
     rms_errors_model: Dict[str, float]
     mae_errors_model: Dict[str, float]
     rms_errors_prompt: Dict[str, float]
@@ -413,7 +414,7 @@ def _test_data_to_inputs(test_data: Optional[List[List[str]]]) -> Optional[List[
 
 
 def _accumulate_calibration_errors(
-    handle: "CalibrationExperimentHandle",
+    handle: Union["CalibrationExperimentHandle", "ACalibrationExperimentHandle"],
     model: str,
     prompt: str,
     model_errors: Dict[str, Dict[str, float]],
@@ -822,6 +823,10 @@ class Evaluators:
     def _get_experiment(self, experiment_id: str, *, _client: ApiClient) -> CalibrationExperiment:
         return ExperimentsApi(_client).experiments_calibration_retrieve(experiment_id)
 
+    @with_async_client
+    async def _aget_experiment(self, experiment_id: str, *, _client: AApiClient) -> ACalibrationExperiment:
+        return await AExperimentsApi(_client).experiments_calibration_retrieve(experiment_id)
+
     @with_sync_client
     def calibrate_existing(
         self,
@@ -859,7 +864,7 @@ class Evaluators:
         test_data: Optional[List[List[str]]] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
-    ) -> List[AEvaluatorCalibrationOutput]:
+    ) -> ACalibrationExperimentHandle:
         """
         Asynchronously run calibration set on an existing evaluator.
         """
@@ -868,14 +873,15 @@ class Evaluators:
             raise ValueError("Either test_dataset_id or test_data must be provided")
         if test_dataset_id and test_data:
             raise ValueError("Only one of test_dataset_id or test_data must be provided")
-        api_instance = AEvaluatorsApi(_client)
-        evaluator_test_request = ASkillTestDataRequest(
-            test_dataset_id=test_dataset_id,
-            test_data=test_data,
+        request = ACalibrationExperimentRequest(
+            evaluator_id=evaluator_id,
+            dataset_id=test_dataset_id,
+            inputs=_test_data_to_inputs(test_data),
         )
-        return await api_instance.evaluators_calibrate_create2(
-            evaluator_id, evaluator_test_request, _request_timeout=_request_timeout
+        experiment = await AExperimentsApi(_client).experiments_calibration_create(
+            calibration_experiment_request=request, _request_timeout=_request_timeout
         )
+        return ACalibrationExperimentHandle(experiment, refresher=self._aget_experiment)
 
     @with_sync_client
     def calibrate(
@@ -918,11 +924,9 @@ class Evaluators:
         test_data: Optional[List[List[str]]] = None,
         prompt: str,
         model: ModelName,
-        reference_variables: Optional[Union[List[ReferenceVariable], List[AReferenceVariableRequest]]] = None,
-        input_variables: Optional[Union[List[InputVariable], List[AInputVariableRequest]]] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
-    ) -> List[AEvaluatorCalibrationOutput]:
+    ) -> ACalibrationExperimentHandle:
         """
         Asynchronously run calibration set for an evaluator definition.
         See the create evaluator method for more details on the parameters.
@@ -932,19 +936,16 @@ class Evaluators:
             raise ValueError("Either test_dataset_id or test_data must be provided")
         if test_dataset_id and test_data:
             raise ValueError("Only one of test_dataset_id or test_data must be provided")
-        api_instance = AEvaluatorsApi(_client)
-        evaluator_test_request = ASkillTestInputRequest(
-            name=name,
-            test_dataset_id=test_dataset_id,
-            test_data=test_data,
+        request = ACalibrationExperimentRequest(
             prompt=prompt,
-            models=[model],
-            is_evaluator=True,
-            objective=AObjectiveRequest(intent="Calibration"),
-            reference_variables=_ato_reference_variables(reference_variables),
-            input_variables=_ato_input_variables(input_variables),
+            model=model,
+            dataset_id=test_dataset_id,
+            inputs=_test_data_to_inputs(test_data),
         )
-        return await api_instance.evaluators_calibrate_create(evaluator_test_request, _request_timeout=_request_timeout)
+        experiment = await AExperimentsApi(_client).experiments_calibration_create(
+            calibration_experiment_request=request, _request_timeout=_request_timeout
+        )
+        return ACalibrationExperimentHandle(experiment, refresher=self._aget_experiment)
 
     def calibrate_batch(
         self,
@@ -1056,66 +1057,37 @@ class Evaluators:
         prompt_errors: Dict[str, Dict[str, float]] = defaultdict(
             lambda: {"sum_squared_errors": 0, "abs_errors": 0, "count": 0}
         )
-
-        all_results = []
-
-        async def process_results(results: List[AEvaluatorCalibrationOutput], param: ACalibrateBatchParameters) -> None:
-            for result in results:
-                score = result.result.score or 0
-                expected_score = result.result.expected_score or 0
-                squared_error = (score - expected_score) ** 2
-                abs_error = abs(score - expected_score)
-
-                model_errors[param.model]["sum_squared_errors"] += squared_error
-                model_errors[param.model]["abs_errors"] += abs_error
-                model_errors[param.model]["count"] += 1
-
-                prompt_errors[param.prompt]["sum_squared_errors"] += squared_error
-                prompt_errors[param.prompt]["abs_errors"] += abs_error
-                prompt_errors[param.prompt]["count"] += 1
-
-                all_results.append(result)
+        all_results: List[ACalibrationExperimentHandle] = []
 
         sem = asyncio.Semaphore(parallel_requests)
 
         async def bounded_calibrate(param: ACalibrateBatchParameters) -> None:
             async with sem:
                 try:
-                    results = await self.acalibrate(
+                    handle = await self.acalibrate(
                         name=param.name,
                         test_dataset_id=test_dataset_id,
                         test_data=test_data,
                         prompt=param.prompt,
                         model=param.model,
-                        reference_variables=param.reference_variables,
-                        input_variables=param.input_variables,
                         _request_timeout=_request_timeout,
                     )
-                    await process_results(results, param)
+                    await handle.wait()
+                    _accumulate_calibration_errors(handle, param.model, param.prompt, model_errors, prompt_errors)
+                    all_results.append(handle)
                 except Exception as exc:
                     raise ValueError(f"Calibration failed for {param.prompt} with model {param.model}") from exc
 
         await asyncio.gather(*(bounded_calibrate(param) for param in evaluator_definitions))
 
         rms_errors_model = {
-            model: math.sqrt(data["sum_squared_errors"] / data["count"])
-            for model, data in model_errors.items()
-            if data["count"] > 0
+            m: math.sqrt(d["sum_squared_errors"] / d["count"]) for m, d in model_errors.items() if d["count"]
         }
-
         rms_errors_prompt = {
-            prompt: math.sqrt(data["sum_squared_errors"] / data["count"])
-            for prompt, data in prompt_errors.items()
-            if data["count"] > 0
+            p: math.sqrt(d["sum_squared_errors"] / d["count"]) for p, d in prompt_errors.items() if d["count"]
         }
-
-        mae_errors_model = {
-            model: data["abs_errors"] / data["count"] for model, data in model_errors.items() if data["count"] > 0
-        }
-
-        mae_errors_prompt = {
-            prompt: data["abs_errors"] / data["count"] for prompt, data in prompt_errors.items() if data["count"] > 0
-        }
+        mae_errors_model = {m: d["abs_errors"] / d["count"] for m, d in model_errors.items() if d["count"]}
+        mae_errors_prompt = {p: d["abs_errors"] / d["count"] for p, d in prompt_errors.items() if d["count"]}
 
         return ACalibrateBatchResult(
             results=all_results,
