@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Scorable API
-  version: 1.0.0 (latest)
+  version: 1.0.0
   description: Scorable JSON API provides a way to access Scorable using provisioned
     API token
 paths:
@@ -1017,6 +1017,83 @@ paths:
                 type: array
                 items:
                   type: string
+          description: ''
+  /v1/experiments/calibration/:
+    get:
+      operationId: experiments_calibration_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - experiments
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCalibrationExperimentListList'
+          description: ''
+    post:
+      operationId: experiments_calibration_create
+      tags:
+      - experiments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalibrationExperimentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CalibrationExperimentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CalibrationExperimentRequest'
+      security:
+      - publicApiKey: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalibrationExperiment'
+          description: ''
+  /v1/experiments/calibration/{id}/:
+    get:
+      operationId: experiments_calibration_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - experiments
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalibrationExperiment'
           description: ''
   /v1/files/:
     post:
@@ -2883,6 +2960,293 @@ components:
           maxItems: 15
       required:
       - log_ids
+    CalibrationExperiment:
+      type: object
+      properties:
+        avg_cost:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,10})?$
+          readOnly: true
+          nullable: true
+        avg_model_call_duration:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        dataset_id:
+          type: string
+          format: uuid
+          nullable: true
+        dataset_range:
+          allOf:
+          - $ref: '#/components/schemas/DatasetRange'
+          nullable: true
+          description: Optional range to specify dataset subset. Zero-based indexing.
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        inputs:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+          nullable: true
+          description: 'List of variable mappings for direct input, e.g. [{''var1'':
+            ''value1'', ''var2'': ''value2''}]'
+        model_params: {}
+        model:
+          type: string
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/NestedUserDetails'
+          readOnly: true
+        prompt:
+          type: string
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ExperimentStatusEnum'
+          readOnly: true
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalibrationTask'
+          readOnly: true
+        variable_to_column:
+          type: object
+          additionalProperties:
+            type: integer
+            minimum: 0
+          nullable: true
+          description: 'Mapping of variable names to column indices, e.g. {''var1'':
+            2, ''var2'': 4}'
+        rmse:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        evaluator_demonstrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluatorDemonstrations'
+          nullable: true
+      required:
+      - avg_cost
+      - avg_model_call_duration
+      - id
+      - owner
+      - rmse
+      - status
+      - tasks
+    CalibrationExperimentBehaviorEnum:
+      enum:
+      - thorough
+      - fast
+      - balanced
+      type: string
+      description: |-
+        * `thorough` - thorough
+        * `fast` - fast
+        * `balanced` - balanced
+    CalibrationExperimentList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        dataset_id:
+          type: string
+          format: uuid
+        prompt:
+          type: string
+        model:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        total_tasks:
+          type: integer
+          readOnly: true
+        avg_model_call_duration:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ExperimentStatusEnum'
+          readOnly: true
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/NestedUserDetails'
+          readOnly: true
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+      required:
+      - avg_model_call_duration
+      - created_at
+      - dataset_id
+      - id
+      - model
+      - owner
+      - project_id
+      - prompt
+      - status
+      - total_tasks
+    CalibrationExperimentRequest:
+      type: object
+      properties:
+        dataset_id:
+          type: string
+          format: uuid
+          nullable: true
+        dataset_range:
+          allOf:
+          - $ref: '#/components/schemas/DatasetRangeRequest'
+          nullable: true
+          description: Optional range to specify dataset subset. Zero-based indexing.
+        inputs:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+              minLength: 1
+          nullable: true
+          description: 'List of variable mappings for direct input, e.g. [{''var1'':
+            ''value1'', ''var2'': ''value2''}]'
+        model_params: {}
+        model:
+          type: string
+          minLength: 1
+        prompt:
+          type: string
+          minLength: 1
+        project_id:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+          description: Project to associate this experiment with. Defaults to the
+            organization's default project.
+        variable_to_column:
+          type: object
+          additionalProperties:
+            type: integer
+            minimum: 0
+          nullable: true
+          description: 'Mapping of variable names to column indices, e.g. {''var1'':
+            2, ''var2'': 4}'
+        evaluator_demonstrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluatorDemonstrationsRequest'
+          nullable: true
+        behavior:
+          allOf:
+          - $ref: '#/components/schemas/CalibrationExperimentBehaviorEnum'
+          writeOnly: true
+          default: balanced
+          description: |-
+            Evaluation mode. 'thorough' runs the decomposed, claim-by-claim evaluation.
+
+            * `thorough` - thorough
+            * `fast` - fast
+            * `balanced` - balanced
+        evaluator_id:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+          description: Calibrate an existing evaluator by id. Mutually exclusive with
+            inline 'prompt'+'model'.
+        version_id:
+          type: string
+          format: uuid
+          writeOnly: true
+          nullable: true
+          description: Optional version of the evaluator to calibrate. Defaults to
+            the latest version.
+    CalibrationTask:
+      type: object
+      properties:
+        cost:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,10})?$
+          nullable: true
+        execution_log_id:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        expected_score:
+          type: number
+          format: double
+          nullable: true
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        justification:
+          type: string
+        model_call_duration:
+          type: number
+          format: double
+          nullable: true
+        score:
+          type: number
+          format: double
+          nullable: true
+        status:
+          $ref: '#/components/schemas/ExperimentStatusEnum'
+        variables:
+          type: object
+          additionalProperties:
+            type: string
+          default: {}
+      required:
+      - execution_log_id
+      - id
+    CalibrationTaskRequest:
+      type: object
+      properties:
+        cost:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,10})?$
+          nullable: true
+        expected_score:
+          type: number
+          format: double
+          nullable: true
+        justification:
+          type: string
+        model_call_duration:
+          type: number
+          format: double
+          nullable: true
+        score:
+          type: number
+          format: double
+          nullable: true
+        status:
+          $ref: '#/components/schemas/ExperimentStatusEnum'
+        variables:
+          type: object
+          additionalProperties:
+            type: string
+            minLength: 1
+          default: {}
     DataSetCreate:
       type: object
       properties:
@@ -2982,7 +3346,7 @@ components:
           format: date-time
           readOnly: true
         status:
-          $ref: '#/components/schemas/StatusEnum'
+          $ref: '#/components/schemas/VisibilityEnum'
         project_id:
           type: string
           format: uuid
@@ -3005,6 +3369,20 @@ components:
       description: |-
         * `reference` - REFERENCE
         * `test` - TEST
+    DatasetRange:
+      type: object
+      properties:
+        start:
+          type: integer
+          minimum: 0
+          nullable: true
+        end:
+          type: integer
+          minimum: 0
+          nullable: true
+      required:
+      - end
+      - start
     DatasetRangeRequest:
       type: object
       properties:
@@ -3144,6 +3522,8 @@ components:
         is_root_evaluator:
           type: boolean
           readOnly: true
+        behavior:
+          $ref: '#/components/schemas/EvaluatorBehaviorEnum'
       required:
       - _meta
       - created_at
@@ -3158,6 +3538,16 @@ components:
       - updated_by
       - version_id
       - visibility
+    EvaluatorBehaviorEnum:
+      enum:
+      - thorough
+      - fast
+      - balanced
+      type: string
+      description: |-
+        * `thorough` - Thorough
+        * `fast` - Fast
+        * `balanced` - Balanced
     EvaluatorCalibrationOutput:
       type: object
       properties:
@@ -3558,6 +3948,8 @@ components:
           type: string
           minLength: 1
           maxLength: 500000
+        behavior:
+          $ref: '#/components/schemas/EvaluatorBehaviorEnum'
       required:
       - name
       - objective_id
@@ -3594,10 +3986,6 @@ components:
     ExecutionLogDetails:
       type: object
       properties:
-        chat_id:
-          type: string
-          readOnly: true
-          nullable: true
         cost:
           type: number
           format: double
@@ -3675,7 +4063,7 @@ components:
           type: string
           format: uuid
           nullable: true
-        prompt_template:
+        scoring_criteria:
           type: string
           readOnly: true
         score:
@@ -3702,6 +4090,7 @@ components:
           items:
             $ref: '#/components/schemas/SkillExecutionValidatorResult'
           readOnly: true
+          description: On Judge logs, list of evaluator results.
         variables:
           type: object
           additionalProperties:
@@ -3719,7 +4108,6 @@ components:
           readOnly: true
           nullable: true
       required:
-      - chat_id
       - classification
       - confidence
       - cost
@@ -3737,8 +4125,8 @@ components:
       - model
       - model_call_duration
       - owner
-      - prompt_template
       - score
+      - scoring_criteria
       - session_id
       - system_prompt
       - tags
@@ -3863,6 +4251,16 @@ components:
       - tags
       - user_id
       - variables
+    ExperimentStatusEnum:
+      enum:
+      - pending
+      - completed
+      - failed
+      type: string
+      description: |-
+        * `pending` - pending
+        * `completed` - completed
+        * `failed` - failed
     GenerationModelParamsRequest:
       type: object
       properties:
@@ -5271,6 +5669,25 @@ components:
       - first_span_at
       - last_span_at
       - trace_id
+    PaginatedCalibrationExperimentListList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalibrationExperimentList'
     PaginatedDataSetListList:
       type: object
       required:
@@ -5535,6 +5952,8 @@ components:
           type: string
           minLength: 1
           maxLength: 500000
+        behavior:
+          $ref: '#/components/schemas/EvaluatorBehaviorEnum'
     PatchedJudgeRequest:
       type: object
       properties:
@@ -5836,20 +6255,6 @@ components:
           default: false
       required:
       - prompt
-    StatusEnum:
-      enum:
-      - unlisted
-      - listed
-      - public
-      - public_unlisted
-      - private
-      type: string
-      description: |-
-        * `unlisted` - unlisted
-        * `listed` - listed
-        * `public` - public
-        * `public_unlisted` - public_unlisted
-        * `private` - private
     ValidationResultStatus:
       enum:
       - pending
@@ -5859,10 +6264,13 @@ components:
         * `pending` - Pending
         * `finished` - Finished
     VisibilityEnum:
-      type: string
       enum:
-      - private
       - public
+      - private
+      type: string
+      description: |-
+        * `public` - public
+        * `private` - private
     _FileUploadRequestRequest:
       type: object
       properties:
