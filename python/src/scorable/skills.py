@@ -12,6 +12,7 @@ from typing import Any, AsyncIterator, Dict, Iterator, List, Literal, Optional, 
 
 from pydantic import BaseModel, StrictStr
 
+from scorable.calibration import CalibrationExperimentHandle
 from scorable.generated.openapi_aclient.models.evaluator_request import EvaluatorRequest as AEvaluatorRequest
 from scorable.generated.openapi_aclient.models.paginated_evaluator_list import (
     PaginatedEvaluatorList as APaginatedEvaluatorList,
@@ -19,6 +20,9 @@ from scorable.generated.openapi_aclient.models.paginated_evaluator_list import (
 from scorable.generated.openapi_aclient.models.paginated_evaluator_list_output_list import (
     PaginatedEvaluatorListOutputList as APaginatedEvaluatorListOutputList,
 )
+from scorable.generated.openapi_client.api.experiments_api import ExperimentsApi
+from scorable.generated.openapi_client.models.calibration_experiment import CalibrationExperiment
+from scorable.generated.openapi_client.models.calibration_experiment_request import CalibrationExperimentRequest
 from scorable.generated.openapi_client.models.evaluator_request import EvaluatorRequest
 from scorable.generated.openapi_client.models.paginated_evaluator_list import PaginatedEvaluatorList
 
@@ -71,8 +75,6 @@ from .generated.openapi_client.models.message_turn_request import MessageTurnReq
 from .generated.openapi_client.models.objective_request import ObjectiveRequest
 from .generated.openapi_client.models.patched_evaluator_request import PatchedEvaluatorRequest
 from .generated.openapi_client.models.reference_variable_request import ReferenceVariableRequest
-from .generated.openapi_client.models.skill_test_data_request import SkillTestDataRequest
-from .generated.openapi_client.models.skill_test_input_request import SkillTestInputRequest
 from .utils import ClientContextCallable, aiterate_cursor_list, iterate_cursor_list, with_async_client, with_sync_client
 
 ModelName = Union[
@@ -394,6 +396,20 @@ def _to_reference_variables(
         return entry
 
     return [_convert_to_generated_model(entry) for entry in reference_variables or {}]
+
+
+def _test_data_to_inputs(test_data: Optional[List[List[str]]]) -> Optional[List[Dict[str, str]]]:
+    if test_data is None:
+        return None
+    inputs: List[Dict[str, str]] = []
+    for row in test_data:
+        entry: Dict[str, str] = {"expected_score": row[0]}
+        if len(row) > 1:
+            entry["response"] = row[1]
+        if len(row) > 2:
+            entry["request"] = row[2]
+        inputs.append(entry)
+    return inputs
 
 
 def _to_evaluator_demonstrations(
@@ -785,6 +801,10 @@ class Evaluators:
         )
 
     @with_sync_client
+    def _get_experiment(self, experiment_id: str, *, _client: ApiClient) -> CalibrationExperiment:
+        return ExperimentsApi(_client).experiments_calibration_retrieve(experiment_id)
+
+    @with_sync_client
     def calibrate_existing(
         self,
         evaluator_id: str,
@@ -793,7 +813,7 @@ class Evaluators:
         test_data: Optional[List[List[str]]] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
-    ) -> List[EvaluatorCalibrationOutput]:
+    ) -> CalibrationExperimentHandle:
         """
         Run calibration set on an existing evaluator.
         """
@@ -802,14 +822,15 @@ class Evaluators:
             raise ValueError("Either test_dataset_id or test_data must be provided")
         if test_dataset_id and test_data:
             raise ValueError("Only one of test_dataset_id or test_data must be provided")
-        api_instance = EvaluatorsApi(_client)
-        evaluator_test_request = SkillTestDataRequest(
-            test_dataset_id=test_dataset_id,
-            test_data=test_data,
+        request = CalibrationExperimentRequest(
+            evaluator_id=evaluator_id,
+            dataset_id=test_dataset_id,
+            inputs=_test_data_to_inputs(test_data),
         )
-        return api_instance.evaluators_calibrate_create2(
-            evaluator_id, evaluator_test_request, _request_timeout=_request_timeout
+        experiment = ExperimentsApi(_client).experiments_calibration_create(
+            calibration_experiment_request=request, _request_timeout=_request_timeout
         )
+        return CalibrationExperimentHandle(experiment, refresher=self._get_experiment)
 
     @with_async_client
     async def acalibrate_existing(
@@ -847,13 +868,11 @@ class Evaluators:
         test_data: Optional[List[List[str]]] = None,
         prompt: str,
         model: ModelName,
-        reference_variables: Optional[Union[List[ReferenceVariable], List[ReferenceVariableRequest]]] = None,
-        input_variables: Optional[Union[List[InputVariable], List[InputVariableRequest]]] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
-    ) -> List[EvaluatorCalibrationOutput]:
+    ) -> CalibrationExperimentHandle:
         """
-        Run calibration set for an evaluator definition.
+        Run calibration for an inline evaluator definition.
         See the create evaluator method for more details on the parameters.
         """
 
@@ -861,19 +880,16 @@ class Evaluators:
             raise ValueError("Either test_dataset_id or test_data must be provided")
         if test_dataset_id and test_data:
             raise ValueError("Only one of test_dataset_id or test_data must be provided")
-        api_instance = EvaluatorsApi(_client)
-        evaluator_test_request = SkillTestInputRequest(
-            name=name,
-            test_dataset_id=test_dataset_id,
-            test_data=test_data,
+        request = CalibrationExperimentRequest(
             prompt=prompt,
-            models=[model],
-            is_evaluator=True,
-            objective=ObjectiveRequest(intent="Calibration"),
-            reference_variables=_to_reference_variables(reference_variables),
-            input_variables=_to_input_variables(input_variables),
+            model=model,
+            dataset_id=test_dataset_id,
+            inputs=_test_data_to_inputs(test_data),
         )
-        return api_instance.evaluators_calibrate_create(evaluator_test_request, _request_timeout=_request_timeout)
+        experiment = ExperimentsApi(_client).experiments_calibration_create(
+            calibration_experiment_request=request, _request_timeout=_request_timeout
+        )
+        return CalibrationExperimentHandle(experiment, refresher=self._get_experiment)
 
     @with_async_client
     async def acalibrate(
