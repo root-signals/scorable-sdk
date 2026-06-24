@@ -1,3 +1,11 @@
+## 2.0.0
+
+- BREAKING: Evaluator calibration now runs through the experiments calibration endpoint. `Evaluators.calibrate`, `calibrate_existing`, and the async `acalibrate`/`acalibrate_existing` return a `CalibrationExperimentHandle` (await `.wait()` to run to completion, then read `.rmse`/`.tasks`/`.status`) instead of a `List[EvaluatorCalibrationOutput]`.
+- BREAKING: `calibrate_batch`/`acalibrate_batch` `results` now hold `CalibrationExperimentHandle` objects; the `rms_errors_model`/`rms_errors_prompt`/`mae_errors_model`/`mae_errors_prompt` aggregates are unchanged.
+- BREAKING: `calibrate`/`acalibrate` no longer accept `reference_variables`/`input_variables`. Inline calibration derives input variables from the prompt; to calibrate an evaluator that uses reference variables, create it first and use `calibrate_existing`.
+- `calibrate`/`calibrate_existing` still accept `test_data`/`test_dataset_id`. `test_data` rows are converted to experiment inputs using the convention `[expected_score, response, request]`.
+- BREAKING: `calibrate`/`acalibrate` and `CalibrateBatchParameters`/`ACalibrateBatchParameters` no longer take a `name` (inline calibration experiments are not named).
+
 ## 1.12.0
 
 - Add `Projects` resource (`client.projects`) with `list`/`retrieve`/`create`/`update`/`delete` (sync and async). Supports `is_default` for promoting a project as the org default.

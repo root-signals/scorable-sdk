@@ -10,8 +10,16 @@ from enum import Enum
 from functools import partial
 from typing import Any, AsyncIterator, Dict, Iterator, List, Literal, Optional, Union, cast
 
-from pydantic import BaseModel, StrictStr
+from pydantic import BaseModel, ConfigDict, StrictStr
 
+from scorable.calibration import ACalibrationExperimentHandle, CalibrationExperimentHandle
+from scorable.generated.openapi_aclient.api.experiments_api import ExperimentsApi as AExperimentsApi
+from scorable.generated.openapi_aclient.models.calibration_experiment import (
+    CalibrationExperiment as ACalibrationExperiment,
+)
+from scorable.generated.openapi_aclient.models.calibration_experiment_request import (
+    CalibrationExperimentRequest as ACalibrationExperimentRequest,
+)
 from scorable.generated.openapi_aclient.models.evaluator_request import EvaluatorRequest as AEvaluatorRequest
 from scorable.generated.openapi_aclient.models.paginated_evaluator_list import (
     PaginatedEvaluatorList as APaginatedEvaluatorList,
@@ -19,6 +27,9 @@ from scorable.generated.openapi_aclient.models.paginated_evaluator_list import (
 from scorable.generated.openapi_aclient.models.paginated_evaluator_list_output_list import (
     PaginatedEvaluatorListOutputList as APaginatedEvaluatorListOutputList,
 )
+from scorable.generated.openapi_client.api.experiments_api import ExperimentsApi
+from scorable.generated.openapi_client.models.calibration_experiment import CalibrationExperiment
+from scorable.generated.openapi_client.models.calibration_experiment_request import CalibrationExperimentRequest
 from scorable.generated.openapi_client.models.evaluator_request import EvaluatorRequest
 from scorable.generated.openapi_client.models.paginated_evaluator_list import PaginatedEvaluatorList
 
@@ -36,9 +47,6 @@ from .generated.openapi_aclient.models import (
 )
 from .generated.openapi_aclient.models.evaluator import Evaluator as AOpenAPIEvaluator
 from .generated.openapi_aclient.models.evaluator import Evaluator as GeneratedEvaluator
-from .generated.openapi_aclient.models.evaluator_calibration_output import (
-    EvaluatorCalibrationOutput as AEvaluatorCalibrationOutput,
-)
 from .generated.openapi_aclient.models.evaluator_list_output import EvaluatorListOutput as AEvaluatorListOutput
 from .generated.openapi_aclient.models.input_variable_request import InputVariableRequest as AInputVariableRequest
 from .generated.openapi_aclient.models.message_turn_request import (
@@ -51,15 +59,10 @@ from .generated.openapi_aclient.models.patched_evaluator_request import (
 from .generated.openapi_aclient.models.reference_variable_request import (
     ReferenceVariableRequest as AReferenceVariableRequest,
 )
-from .generated.openapi_aclient.models.skill_test_data_request import SkillTestDataRequest as ASkillTestDataRequest
-from .generated.openapi_aclient.models.skill_test_input_request import (
-    SkillTestInputRequest as ASkillTestInputRequest,
-)
 from .generated.openapi_client import ApiClient as ApiClient
 from .generated.openapi_client.api.evaluators_api import EvaluatorsApi as EvaluatorsApi
 from .generated.openapi_client.api.objectives_api import ObjectivesApi as ObjectivesApi
 from .generated.openapi_client.models.evaluator import Evaluator as SyncGeneratedEvaluator
-from .generated.openapi_client.models.evaluator_calibration_output import EvaluatorCalibrationOutput
 from .generated.openapi_client.models.evaluator_demonstrations_request import (
     EvaluatorDemonstrationsRequest,
 )
@@ -71,8 +74,6 @@ from .generated.openapi_client.models.message_turn_request import MessageTurnReq
 from .generated.openapi_client.models.objective_request import ObjectiveRequest
 from .generated.openapi_client.models.patched_evaluator_request import PatchedEvaluatorRequest
 from .generated.openapi_client.models.reference_variable_request import ReferenceVariableRequest
-from .generated.openapi_client.models.skill_test_data_request import SkillTestDataRequest
-from .generated.openapi_client.models.skill_test_input_request import SkillTestInputRequest
 from .utils import ClientContextCallable, aiterate_cursor_list, iterate_cursor_list, with_async_client, with_sync_client
 
 ModelName = Union[
@@ -120,13 +121,11 @@ class EvaluatorDemonstration(BaseModel):
 class ACalibrateBatchParameters:
     def __init__(
         self,
-        name: str,
         prompt: str,
         model: "ModelName",
         reference_variables: Optional[Union[List["ReferenceVariable"], List["AReferenceVariableRequest"]]] = None,
         input_variables: Optional[Union[List["InputVariable"], List["AInputVariableRequest"]]] = None,
     ):
-        self.name = name
         self.prompt = prompt
         self.model = model
         self.reference_variables = reference_variables
@@ -134,7 +133,8 @@ class ACalibrateBatchParameters:
 
 
 class ACalibrateBatchResult(BaseModel):
-    results: List[AEvaluatorCalibrationOutput]
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    results: List[ACalibrationExperimentHandle]
     rms_errors_model: Dict[str, float]
     mae_errors_model: Dict[str, float]
     rms_errors_prompt: Dict[str, float]
@@ -144,13 +144,11 @@ class ACalibrateBatchResult(BaseModel):
 class CalibrateBatchParameters:
     def __init__(
         self,
-        name: str,
         prompt: str,
         model: "ModelName",
         reference_variables: Optional[Union[List["ReferenceVariable"], List["ReferenceVariableRequest"]]] = None,
         input_variables: Optional[Union[List["InputVariable"], List["InputVariableRequest"]]] = None,
     ):
-        self.name = name
         self.prompt = prompt
         self.model = model
         self.reference_variables = reference_variables
@@ -158,7 +156,8 @@ class CalibrateBatchParameters:
 
 
 class CalibrateBatchResult(BaseModel):
-    results: List[EvaluatorCalibrationOutput]
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    results: List[CalibrationExperimentHandle]
     rms_errors_model: Dict[str, float]
     mae_errors_model: Dict[str, float]
     rms_errors_prompt: Dict[str, float]
@@ -383,17 +382,36 @@ def _to_input_variables(
     return [_convert_to_generated_model(entry) for entry in input_variables or {}]
 
 
-def _to_reference_variables(
-    reference_variables: Optional[Union[List[ReferenceVariable], List[ReferenceVariableRequest]]],
-) -> List[ReferenceVariableRequest]:
-    def _convert_to_generated_model(
-        entry: Union[ReferenceVariable, ReferenceVariableRequest],
-    ) -> ReferenceVariableRequest:
-        if not isinstance(entry, ReferenceVariableRequest):
-            return ReferenceVariableRequest(name=entry.name, dataset=entry.dataset_id)
-        return entry
+def _test_data_to_inputs(test_data: Optional[List[List[str]]]) -> Optional[List[Dict[str, str]]]:
+    if test_data is None:
+        return None
+    inputs: List[Dict[str, str]] = []
+    for row in test_data:
+        entry: Dict[str, str] = {"expected_score": row[0]}
+        if len(row) > 1:
+            entry["response"] = row[1]
+        if len(row) > 2:
+            entry["request"] = row[2]
+        inputs.append(entry)
+    return inputs
 
-    return [_convert_to_generated_model(entry) for entry in reference_variables or {}]
+
+def _accumulate_calibration_errors(
+    handle: Union["CalibrationExperimentHandle", "ACalibrationExperimentHandle"],
+    model: str,
+    prompt: str,
+    model_errors: Dict[str, Dict[str, float]],
+    prompt_errors: Dict[str, Dict[str, float]],
+) -> None:
+    for task in handle.tasks:
+        score = task.score or 0
+        expected = task.expected_score or 0
+        squared_error = (score - expected) ** 2
+        abs_error = abs(score - expected)
+        for bucket, key in ((model_errors, model), (prompt_errors, prompt)):
+            bucket[key]["sum_squared_errors"] += squared_error
+            bucket[key]["abs_errors"] += abs_error
+            bucket[key]["count"] += 1
 
 
 def _to_evaluator_demonstrations(
@@ -423,19 +441,6 @@ def _ato_input_variables(
         return entry
 
     return [_convert_to_generated_model(entry) for entry in input_variables or {}]
-
-
-def _ato_reference_variables(
-    reference_variables: Optional[Union[List[ReferenceVariable], List[AReferenceVariableRequest]]],
-) -> List[AReferenceVariableRequest]:
-    def _convert_to_generated_model(
-        entry: Union[ReferenceVariable, AReferenceVariableRequest],
-    ) -> AReferenceVariableRequest:
-        if not isinstance(entry, AReferenceVariableRequest):
-            return AReferenceVariableRequest(name=entry.name, dataset=entry.dataset_id)
-        return entry
-
-    return [_convert_to_generated_model(entry) for entry in reference_variables or {}]
 
 
 def _ato_evaluator_demonstrations(
@@ -785,6 +790,14 @@ class Evaluators:
         )
 
     @with_sync_client
+    def _get_experiment(self, experiment_id: str, *, _client: ApiClient) -> CalibrationExperiment:
+        return ExperimentsApi(_client).experiments_calibration_retrieve(experiment_id)
+
+    @with_async_client
+    async def _aget_experiment(self, experiment_id: str, *, _client: AApiClient) -> ACalibrationExperiment:
+        return await AExperimentsApi(_client).experiments_calibration_retrieve(experiment_id)
+
+    @with_sync_client
     def calibrate_existing(
         self,
         evaluator_id: str,
@@ -793,7 +806,7 @@ class Evaluators:
         test_data: Optional[List[List[str]]] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
-    ) -> List[EvaluatorCalibrationOutput]:
+    ) -> CalibrationExperimentHandle:
         """
         Run calibration set on an existing evaluator.
         """
@@ -802,14 +815,15 @@ class Evaluators:
             raise ValueError("Either test_dataset_id or test_data must be provided")
         if test_dataset_id and test_data:
             raise ValueError("Only one of test_dataset_id or test_data must be provided")
-        api_instance = EvaluatorsApi(_client)
-        evaluator_test_request = SkillTestDataRequest(
-            test_dataset_id=test_dataset_id,
-            test_data=test_data,
+        request = CalibrationExperimentRequest(
+            evaluator_id=evaluator_id,
+            dataset_id=test_dataset_id,
+            inputs=_test_data_to_inputs(test_data),
         )
-        return api_instance.evaluators_calibrate_create2(
-            evaluator_id, evaluator_test_request, _request_timeout=_request_timeout
+        experiment = ExperimentsApi(_client).experiments_calibration_create(
+            calibration_experiment_request=request, _request_timeout=_request_timeout
         )
+        return CalibrationExperimentHandle(experiment, refresher=self._get_experiment)
 
     @with_async_client
     async def acalibrate_existing(
@@ -820,7 +834,7 @@ class Evaluators:
         test_data: Optional[List[List[str]]] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
-    ) -> List[AEvaluatorCalibrationOutput]:
+    ) -> ACalibrationExperimentHandle:
         """
         Asynchronously run calibration set on an existing evaluator.
         """
@@ -829,31 +843,29 @@ class Evaluators:
             raise ValueError("Either test_dataset_id or test_data must be provided")
         if test_dataset_id and test_data:
             raise ValueError("Only one of test_dataset_id or test_data must be provided")
-        api_instance = AEvaluatorsApi(_client)
-        evaluator_test_request = ASkillTestDataRequest(
-            test_dataset_id=test_dataset_id,
-            test_data=test_data,
+        request = ACalibrationExperimentRequest(
+            evaluator_id=evaluator_id,
+            dataset_id=test_dataset_id,
+            inputs=_test_data_to_inputs(test_data),
         )
-        return await api_instance.evaluators_calibrate_create2(
-            evaluator_id, evaluator_test_request, _request_timeout=_request_timeout
+        experiment = await AExperimentsApi(_client).experiments_calibration_create(
+            calibration_experiment_request=request, _request_timeout=_request_timeout
         )
+        return ACalibrationExperimentHandle(experiment, refresher=self._aget_experiment)
 
     @with_sync_client
     def calibrate(
         self,
         *,
-        name: str,
         test_dataset_id: Optional[str] = None,
         test_data: Optional[List[List[str]]] = None,
         prompt: str,
         model: ModelName,
-        reference_variables: Optional[Union[List[ReferenceVariable], List[ReferenceVariableRequest]]] = None,
-        input_variables: Optional[Union[List[InputVariable], List[InputVariableRequest]]] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
-    ) -> List[EvaluatorCalibrationOutput]:
+    ) -> CalibrationExperimentHandle:
         """
-        Run calibration set for an evaluator definition.
+        Run calibration for an inline evaluator definition.
         See the create evaluator method for more details on the parameters.
         """
 
@@ -861,36 +873,30 @@ class Evaluators:
             raise ValueError("Either test_dataset_id or test_data must be provided")
         if test_dataset_id and test_data:
             raise ValueError("Only one of test_dataset_id or test_data must be provided")
-        api_instance = EvaluatorsApi(_client)
-        evaluator_test_request = SkillTestInputRequest(
-            name=name,
-            test_dataset_id=test_dataset_id,
-            test_data=test_data,
+        request = CalibrationExperimentRequest(
             prompt=prompt,
-            models=[model],
-            is_evaluator=True,
-            objective=ObjectiveRequest(intent="Calibration"),
-            reference_variables=_to_reference_variables(reference_variables),
-            input_variables=_to_input_variables(input_variables),
+            model=model,
+            dataset_id=test_dataset_id,
+            inputs=_test_data_to_inputs(test_data),
         )
-        return api_instance.evaluators_calibrate_create(evaluator_test_request, _request_timeout=_request_timeout)
+        experiment = ExperimentsApi(_client).experiments_calibration_create(
+            calibration_experiment_request=request, _request_timeout=_request_timeout
+        )
+        return CalibrationExperimentHandle(experiment, refresher=self._get_experiment)
 
     @with_async_client
     async def acalibrate(
         self,
         *,
-        name: str,
         test_dataset_id: Optional[str] = None,
         test_data: Optional[List[List[str]]] = None,
         prompt: str,
         model: ModelName,
-        reference_variables: Optional[Union[List[ReferenceVariable], List[AReferenceVariableRequest]]] = None,
-        input_variables: Optional[Union[List[InputVariable], List[AInputVariableRequest]]] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
-    ) -> List[AEvaluatorCalibrationOutput]:
+    ) -> ACalibrationExperimentHandle:
         """
-        Asynchronously run calibration set for an evaluator definition.
+        Asynchronously run calibration for an inline evaluator definition.
         See the create evaluator method for more details on the parameters.
         """
 
@@ -898,19 +904,16 @@ class Evaluators:
             raise ValueError("Either test_dataset_id or test_data must be provided")
         if test_dataset_id and test_data:
             raise ValueError("Only one of test_dataset_id or test_data must be provided")
-        api_instance = AEvaluatorsApi(_client)
-        evaluator_test_request = ASkillTestInputRequest(
-            name=name,
-            test_dataset_id=test_dataset_id,
-            test_data=test_data,
+        request = ACalibrationExperimentRequest(
             prompt=prompt,
-            models=[model],
-            is_evaluator=True,
-            objective=AObjectiveRequest(intent="Calibration"),
-            reference_variables=_ato_reference_variables(reference_variables),
-            input_variables=_ato_input_variables(input_variables),
+            model=model,
+            dataset_id=test_dataset_id,
+            inputs=_test_data_to_inputs(test_data),
         )
-        return await api_instance.evaluators_calibrate_create(evaluator_test_request, _request_timeout=_request_timeout)
+        experiment = await AExperimentsApi(_client).experiments_calibration_create(
+            calibration_experiment_request=request, _request_timeout=_request_timeout
+        )
+        return ACalibrationExperimentHandle(experiment, refresher=self._aget_experiment)
 
     def calibrate_batch(
         self,
@@ -942,89 +945,46 @@ class Evaluators:
         prompt_errors: Dict[str, Dict[str, float]] = defaultdict(
             lambda: {"sum_squared_errors": 0, "abs_errors": 0, "count": 0}
         )
+        all_results: List[CalibrationExperimentHandle] = []
 
-        all_results = []
+        def run_one(param: CalibrateBatchParameters) -> CalibrationExperimentHandle:
+            handle = self.calibrate(
+                test_dataset_id=test_dataset_id,
+                test_data=test_data,
+                prompt=param.prompt,
+                model=param.model,
+                _request_timeout=_request_timeout,
+            )
+            return handle.wait()
 
-        use_thread_pool = parallel_requests > 1
-
-        def process_results(results: List[EvaluatorCalibrationOutput], param: CalibrateBatchParameters) -> None:
-            for result in results:
-                score = result.result.score or 0
-                expected_score = result.result.expected_score or 0
-                squared_error = (score - expected_score) ** 2
-                abs_error = abs(score - expected_score)
-
-                # TODO multiple thread race condition
-                model_errors[param.model]["sum_squared_errors"] += squared_error
-                model_errors[param.model]["abs_errors"] += abs_error
-                model_errors[param.model]["count"] += 1
-
-                prompt_errors[param.prompt]["sum_squared_errors"] += squared_error
-                prompt_errors[param.prompt]["abs_errors"] += abs_error
-                prompt_errors[param.prompt]["count"] += 1
-
-                all_results.append(result)
-
-        if use_thread_pool:
+        if parallel_requests > 1:
             with ThreadPoolExecutor(max_workers=parallel_requests) as executor:
-                futures = {
-                    executor.submit(
-                        self.calibrate,
-                        name=param.name,
-                        test_dataset_id=test_dataset_id,
-                        test_data=test_data,
-                        prompt=param.prompt,
-                        model=param.model,
-                        reference_variables=param.reference_variables,
-                        input_variables=param.input_variables,
-                        _request_timeout=_request_timeout,
-                    ): param
-                    for param in evaluator_definitions
-                }
-
+                futures = {executor.submit(run_one, param): param for param in evaluator_definitions}
                 for future in as_completed(futures):
                     param = futures[future]
                     try:
-                        results = future.result()
-                        process_results(results, param)
+                        handle = future.result()
+                        _accumulate_calibration_errors(handle, param.model, param.prompt, model_errors, prompt_errors)
+                        all_results.append(handle)
                     except Exception as exc:
                         raise ValueError(f"Calibration failed for {param.prompt} with model {param.model}") from exc
         else:
             for param in evaluator_definitions:
                 try:
-                    results = self.calibrate(
-                        name=param.name,
-                        test_dataset_id=test_dataset_id,
-                        test_data=test_data,
-                        prompt=param.prompt,
-                        model=param.model,
-                        reference_variables=param.reference_variables,
-                        input_variables=param.input_variables,
-                        _request_timeout=_request_timeout,
-                    )
-                    process_results(results, param)
+                    handle = run_one(param)
+                    _accumulate_calibration_errors(handle, param.model, param.prompt, model_errors, prompt_errors)
+                    all_results.append(handle)
                 except Exception as exc:
                     raise ValueError(f"Calibration failed for {param.prompt} with model {param.model}") from exc
 
         rms_errors_model = {
-            model: math.sqrt(data["sum_squared_errors"] / data["count"])
-            for model, data in model_errors.items()
-            if data["count"] > 0
+            m: math.sqrt(d["sum_squared_errors"] / d["count"]) for m, d in model_errors.items() if d["count"]
         }
-
         rms_errors_prompt = {
-            prompt: math.sqrt(data["sum_squared_errors"] / data["count"])
-            for prompt, data in prompt_errors.items()
-            if data["count"] > 0
+            p: math.sqrt(d["sum_squared_errors"] / d["count"]) for p, d in prompt_errors.items() if d["count"]
         }
-
-        mae_errors_model = {
-            model: data["abs_errors"] / data["count"] for model, data in model_errors.items() if data["count"] > 0
-        }
-
-        mae_errors_prompt = {
-            prompt: data["abs_errors"] / data["count"] for prompt, data in prompt_errors.items() if data["count"] > 0
-        }
+        mae_errors_model = {m: d["abs_errors"] / d["count"] for m, d in model_errors.items() if d["count"]}
+        mae_errors_prompt = {p: d["abs_errors"] / d["count"] for p, d in prompt_errors.items() if d["count"]}
 
         return CalibrateBatchResult(
             results=all_results,
@@ -1064,66 +1024,36 @@ class Evaluators:
         prompt_errors: Dict[str, Dict[str, float]] = defaultdict(
             lambda: {"sum_squared_errors": 0, "abs_errors": 0, "count": 0}
         )
-
-        all_results = []
-
-        async def process_results(results: List[AEvaluatorCalibrationOutput], param: ACalibrateBatchParameters) -> None:
-            for result in results:
-                score = result.result.score or 0
-                expected_score = result.result.expected_score or 0
-                squared_error = (score - expected_score) ** 2
-                abs_error = abs(score - expected_score)
-
-                model_errors[param.model]["sum_squared_errors"] += squared_error
-                model_errors[param.model]["abs_errors"] += abs_error
-                model_errors[param.model]["count"] += 1
-
-                prompt_errors[param.prompt]["sum_squared_errors"] += squared_error
-                prompt_errors[param.prompt]["abs_errors"] += abs_error
-                prompt_errors[param.prompt]["count"] += 1
-
-                all_results.append(result)
+        all_results: List[ACalibrationExperimentHandle] = []
 
         sem = asyncio.Semaphore(parallel_requests)
 
         async def bounded_calibrate(param: ACalibrateBatchParameters) -> None:
             async with sem:
                 try:
-                    results = await self.acalibrate(
-                        name=param.name,
+                    handle = await self.acalibrate(
                         test_dataset_id=test_dataset_id,
                         test_data=test_data,
                         prompt=param.prompt,
                         model=param.model,
-                        reference_variables=param.reference_variables,
-                        input_variables=param.input_variables,
                         _request_timeout=_request_timeout,
                     )
-                    await process_results(results, param)
+                    await handle.wait()
+                    _accumulate_calibration_errors(handle, param.model, param.prompt, model_errors, prompt_errors)
+                    all_results.append(handle)
                 except Exception as exc:
                     raise ValueError(f"Calibration failed for {param.prompt} with model {param.model}") from exc
 
         await asyncio.gather(*(bounded_calibrate(param) for param in evaluator_definitions))
 
         rms_errors_model = {
-            model: math.sqrt(data["sum_squared_errors"] / data["count"])
-            for model, data in model_errors.items()
-            if data["count"] > 0
+            m: math.sqrt(d["sum_squared_errors"] / d["count"]) for m, d in model_errors.items() if d["count"]
         }
-
         rms_errors_prompt = {
-            prompt: math.sqrt(data["sum_squared_errors"] / data["count"])
-            for prompt, data in prompt_errors.items()
-            if data["count"] > 0
+            p: math.sqrt(d["sum_squared_errors"] / d["count"]) for p, d in prompt_errors.items() if d["count"]
         }
-
-        mae_errors_model = {
-            model: data["abs_errors"] / data["count"] for model, data in model_errors.items() if data["count"] > 0
-        }
-
-        mae_errors_prompt = {
-            prompt: data["abs_errors"] / data["count"] for prompt, data in prompt_errors.items() if data["count"] > 0
-        }
+        mae_errors_model = {m: d["abs_errors"] / d["count"] for m, d in model_errors.items() if d["count"]}
+        mae_errors_prompt = {p: d["abs_errors"] / d["count"] for p, d in prompt_errors.items() if d["count"]}
 
         return ACalibrateBatchResult(
             results=all_results,

@@ -21,8 +21,9 @@ network_troubleshooting_evaluator = client.evaluators.create(
 )
 
 
-# Run first calibration (benchmarking).
-test_result = client.evaluators.calibrate_existing(
+# Run first calibration (benchmarking). Calibration runs as a background
+# experiment; the handle drives it to completion with wait().
+calibration = client.evaluators.calibrate_existing(
     evaluator_id=network_troubleshooting_evaluator.id,
     # The test data is a list of lists, where each inner
     # list contains an expected score for a given request and response.
@@ -38,9 +39,9 @@ test_result = client.evaluators.calibrate_existing(
             "Okay, let's check some basics. First, can you tell me what operating system your computer is running (Windows, macOS, etc.)? Also, can you check the Ethernet cable connecting your computer to the router to ensure it is securely plugged in at both ends? After confirming these steps, open a command prompt or terminal and run `ping 8.8.8.8`. Let me know the results. If you are using wireless connection, try to move closer to the router and see if that improves the connectivity. If the ping fails consistently, the issue might be with your ISP. If the connection improves closer to the router, consider improving your wireless coverage with a range extender or by repositioning the router.",
         ],
     ],
-)
+).wait()
 
-print(test_result[0].result)
+print(calibration.rmse)
 
 # Improve the evaluator with demonstrations,
 # penalize the vague "I'm sorry" response by setting an expected score of 0.1
@@ -55,7 +56,7 @@ client.evaluators.update(
     ],
 )
 # Run second calibration
-test_result = client.evaluators.calibrate_existing(
+calibration = client.evaluators.calibrate_existing(
     evaluator_id=network_troubleshooting_evaluator.id,
     test_data=[
         [
@@ -64,7 +65,8 @@ test_result = client.evaluators.calibrate_existing(
             "I'm sorry to hear that your internet isn't working. Let's troubleshoot this step by step.",
         ],
     ],
-)
+).wait()
 
 # Check the results. See that the vague "I'm sorry" response receives a lower score.
-print(test_result[0].result)
+for task in calibration.tasks:
+    print(task.score, task.expected_score, task.justification)
