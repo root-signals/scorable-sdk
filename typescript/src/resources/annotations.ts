@@ -23,8 +23,8 @@ export interface CreateAnnotationData {
 }
 
 export interface UpdateAnnotationData {
-  value?: number;
-  category?: string;
+  value?: number | null;
+  category?: string | null;
   rationale?: string;
   status?: AnnotationStatus;
 }

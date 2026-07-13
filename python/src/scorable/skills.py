@@ -703,8 +703,8 @@ class Evaluators:
     ) -> CalibrationRun:
         """Start a calibration run for a saved evaluator against a labelled dataset.
 
-        Returns the run with ``status="pending"``; poll ``client.calibration_runs.get(run.id)`` for
-        its agreement metrics and per-item results.
+        Returns the run with ``status="pending"``; poll the calibration run until it completes to
+        read its agreement metrics and per-item results.
 
         Args:
           evaluator_id: The saved evaluator to calibrate.
@@ -734,8 +734,8 @@ class Evaluators:
     ) -> ACalibrationRun:
         """Asynchronously start a calibration run for a saved evaluator against a labelled dataset.
 
-        Returns the run with ``status="pending"``; poll ``client.calibration_runs.get(run.id)`` for
-        its agreement metrics and per-item results.
+        Returns the run with ``status="pending"``; poll the calibration run until it completes to
+        read its agreement metrics and per-item results.
 
         Args:
           evaluator_id: The saved evaluator to calibrate.
