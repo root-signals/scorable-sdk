@@ -23,6 +23,8 @@ from .generated.openapi_aclient.configuration import Configuration as _AConfigur
 from .generated.openapi_client.configuration import Configuration as _Configuration
 
 if TYPE_CHECKING:
+    from .annotations import Annotations
+    from .calibration_runs import CalibrationRuns
     from .datasets import DataSets
     from .execution_logs import ExecutionLogs
     from .files import Files
@@ -30,6 +32,7 @@ if TYPE_CHECKING:
     from .models import Models
     from .objectives import Objectives
     from .projects import Projects
+    from .score_configs import ScoreConfigs
     from .skills import Evaluators
 
 
@@ -216,6 +219,27 @@ class Scorable:
         from .projects import Projects
 
         return Projects(self.get_client_context)
+
+    @cached_property
+    def annotations(self) -> Annotations:
+        """Get Annotations API"""
+        from .annotations import Annotations
+
+        return Annotations(self.get_client_context)
+
+    @cached_property
+    def calibration_runs(self) -> CalibrationRuns:
+        """Get Calibration Runs API"""
+        from .calibration_runs import CalibrationRuns
+
+        return CalibrationRuns(self.get_client_context)
+
+    @cached_property
+    def score_configs(self) -> ScoreConfigs:
+        """Get Score Configs API"""
+        from .score_configs import ScoreConfigs
+
+        return ScoreConfigs(self.get_client_context)
 
     @cached_property
     def beta(self) -> Beta:
