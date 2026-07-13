@@ -168,7 +168,6 @@ class Annotations:
             limit=limit,
         )
 
-    @with_async_client
     async def alist(
         self,
         *,

@@ -88,6 +88,18 @@ def test_delete_annotation__succeeds(mock_api):
 
 @pytest.mark.asyncio
 @patch("scorable.annotations.AAnnotationsApi")
+async def test_alist_annotations__iterates_as_async_generator(mock_api):
+    client = Scorable(api_key="fake", run_async=True)
+    instance = mock_api.return_value
+    instance.annotations_list = AsyncMock(return_value=MagicMock(results=[MagicMock(id="a1")], next=None))
+
+    result = [a async for a in client.annotations.alist(dataset="ds1")]
+
+    assert [a.id for a in result] == ["a1"]
+
+
+@pytest.mark.asyncio
+@patch("scorable.annotations.AAnnotationsApi")
 async def test_acreate_annotation__sends_value(mock_api):
     client = Scorable(api_key="fake", run_async=True)
     instance = mock_api.return_value

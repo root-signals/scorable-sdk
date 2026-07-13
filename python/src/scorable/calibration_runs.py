@@ -143,7 +143,6 @@ class CalibrationRuns:
             partial(api_instance.calibration_runs_list, evaluator_external_id=evaluator_id), limit=limit
         )
 
-    @with_async_client
     async def alist(self, *, evaluator_id: Optional[str] = None, limit: int = 100) -> AsyncIterator[ACalibrationRun]:
         """Asynchronously iterate through calibration runs."""
 
@@ -171,7 +170,6 @@ class CalibrationRuns:
         api_instance = CalibrationRunsApi(_client)
         yield from iterate_cursor_list(partial(api_instance.calibration_runs_items_list, id=run_id), limit=limit)
 
-    @with_async_client
     async def alist_items(self, run_id: str, *, limit: int = 100) -> AsyncIterator[ACalibrationRunItem]:
         """Asynchronously iterate through the per-example results of a calibration run."""
 

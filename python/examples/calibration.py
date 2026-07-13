@@ -4,6 +4,19 @@ from scorable import Scorable
 
 client = Scorable()
 
+
+def wait_for_completion(run, timeout: float = 120.0):
+    deadline = time.monotonic() + timeout
+    while run.status in ("pending", "running"):
+        if time.monotonic() > deadline:
+            raise TimeoutError(f"Calibration run {run.id} did not finish within {timeout}s")
+        time.sleep(2)
+        run = client.calibration_runs.get(run.id)
+    if run.status == "failed":
+        raise RuntimeError(f"Calibration run {run.id} failed: {run.error}")
+    return run
+
+
 # Create an evaluator
 network_troubleshooting_evaluator = client.evaluators.create(
     name="Advanced Network Troubleshooting",
@@ -45,9 +58,7 @@ client.annotations.create(dataset_item_id=thorough.id, value=0.95)
 
 # Run a calibration run: measure how well the evaluator agrees with the human labels.
 run = client.evaluators.calibrate_run(network_troubleshooting_evaluator.id, dataset_id=dataset.id)
-while run.status in ("pending", "running"):
-    time.sleep(2)
-    run = client.calibration_runs.get(run.id)
+run = wait_for_completion(run)
 print("Calibration metrics:", run.metrics)
 
 # Improve the evaluator by pointing it at the labelled dataset as few-shot demonstrations.
@@ -58,7 +69,5 @@ client.evaluators.update(
 
 # Re-run calibration and compare the metrics.
 run = client.evaluators.calibrate_run(network_troubleshooting_evaluator.id, dataset_id=dataset.id)
-while run.status in ("pending", "running"):
-    time.sleep(2)
-    run = client.calibration_runs.get(run.id)
+run = wait_for_completion(run)
 print("Calibration metrics after demonstrations:", run.metrics)

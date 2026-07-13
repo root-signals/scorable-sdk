@@ -31,6 +31,8 @@ from .generated.openapi_client.models.dataset_item_request import DatasetItemReq
 from .generated.openapi_client.models.patched_dataset_item_request import PatchedDatasetItemRequest
 from .utils import ClientContextCallable, iterate_cursor_list, with_async_client, with_sync_client
 
+MAX_BULK_ITEMS = 5000
+
 
 class DataSets:
     """
@@ -267,7 +269,7 @@ class DataSets:
         self,
         dataset_id: str,
         *,
-        response: str = "",
+        response: str,
         request: str = "",
         expected_output: str = "",
         contexts: Optional[List[str]] = None,
@@ -298,7 +300,7 @@ class DataSets:
         self,
         dataset_id: str,
         *,
-        response: str = "",
+        response: str,
         request: str = "",
         expected_output: str = "",
         contexts: Optional[List[str]] = None,
@@ -335,6 +337,8 @@ class DataSets:
     ) -> List[DatasetItem]:
         """Bulk add items to a dataset (at most 5000 per call)."""
 
+        if len(items) > MAX_BULK_ITEMS:
+            raise ValueError(f"at most {MAX_BULK_ITEMS} items per bulk request")
         item_requests = [DatasetItemRequest.model_validate(item) for item in items]
         api_instance = DatasetsApi(_client)
         return api_instance.datasets_items_bulk_create(
@@ -352,6 +356,8 @@ class DataSets:
     ) -> List[ADatasetItem]:
         """Asynchronously bulk add items to a dataset (at most 5000 per call)."""
 
+        if len(items) > MAX_BULK_ITEMS:
+            raise ValueError(f"at most {MAX_BULK_ITEMS} items per bulk request")
         item_requests = [ADatasetItemRequest.model_validate(item) for item in items]
         api_instance = ADatasetsApi(_client)
         return await api_instance.datasets_items_bulk_create(
@@ -381,7 +387,6 @@ class DataSets:
             limit=limit,
         )
 
-    @with_async_client
     async def alist_items(
         self,
         dataset_id: str,

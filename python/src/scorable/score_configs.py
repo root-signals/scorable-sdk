@@ -121,7 +121,6 @@ class ScoreConfigs:
         api_instance = ScoreConfigsApi(_client)
         yield from iterate_cursor_list(partial(api_instance.score_configs_list), limit=limit)
 
-    @with_async_client
     async def alist(self, *, limit: int = 100) -> AsyncIterator[AScoreConfig]:
         """Asynchronously iterate through the score configs."""
 
