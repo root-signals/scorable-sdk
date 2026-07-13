@@ -12,6 +12,9 @@ import { ExecutionLogsResource } from './resources/execution-logs.js';
 import { DatasetsResource } from './resources/datasets.js';
 import { FilesResource } from './resources/files.js';
 import { ProjectsResource } from './resources/projects.js';
+import { AnnotationsResource } from './resources/annotations.js';
+import { CalibrationRunsResource } from './resources/calibration-runs.js';
+import { ScoreConfigsResource } from './resources/score-configs.js';
 
 export class Scorable {
   private client: ReturnType<typeof createClient<paths>>;
@@ -27,6 +30,9 @@ export class Scorable {
   public readonly datasets: DatasetsResource;
   public readonly files: FilesResource;
   public readonly projects: ProjectsResource;
+  public readonly annotations: AnnotationsResource;
+  public readonly calibrationRuns: CalibrationRunsResource;
+  public readonly scoreConfigs: ScoreConfigsResource;
 
   constructor(config: ClientConfig) {
     const envBaseUrl =
@@ -55,6 +61,9 @@ export class Scorable {
     this.datasets = new DatasetsResource(this.client);
     this.files = new FilesResource(this.config);
     this.projects = new ProjectsResource(this.client);
+    this.annotations = new AnnotationsResource(this.client);
+    this.calibrationRuns = new CalibrationRunsResource(this.client);
+    this.scoreConfigs = new ScoreConfigsResource(this.client);
   }
 
   /**

@@ -4,6 +4,88 @@
  */
 
 export interface paths {
+  '/v1/annotations/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['annotations_list'];
+    put?: never;
+    /** @description Create an annotation. */
+    post: operations['annotations_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/annotations/{id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['annotations_retrieve'];
+    put: operations['annotations_update'];
+    post?: never;
+    delete: operations['annotations_destroy'];
+    options?: never;
+    head?: never;
+    patch: operations['annotations_partial_update'];
+    trace?: never;
+  };
+  '/v1/calibration-runs/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['calibration_runs_list'];
+    put?: never;
+    /** @description Start a calibration run. */
+    post: operations['calibration_runs_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/calibration-runs/{id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['calibration_runs_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/calibration-runs/{id}/items/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['calibration_runs_items_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/datasets/': {
     parameters: {
       query?: never;
@@ -16,6 +98,56 @@ export interface paths {
     put?: never;
     /** @description Create a new dataset. */
     post: operations['datasets_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/datasets/{dataset_id}/items/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['datasets_items_list'];
+    put?: never;
+    /** @description Create a dataset item. */
+    post: operations['datasets_items_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/datasets/{dataset_id}/items/{item_id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['datasets_items_retrieve'];
+    put: operations['datasets_items_update'];
+    post?: never;
+    delete: operations['datasets_items_destroy'];
+    options?: never;
+    head?: never;
+    patch: operations['datasets_items_partial_update'];
+    trace?: never;
+  };
+  '/v1/datasets/{dataset_id}/items/bulk/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Bulk create dataset items. */
+    post: operations['datasets_items_bulk_create'];
     delete?: never;
     options?: never;
     head?: never;
@@ -87,7 +219,10 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** @description Test an evaluator definition using calibration data */
+    /**
+     * @deprecated
+     * @description Test an evaluator definition using calibration data
+     */
     post: operations['evaluators_calibrate_create'];
     delete?: never;
     options?: never;
@@ -104,7 +239,10 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** @description Test an existing evaluator using calibration data */
+    /**
+     * @deprecated
+     * @description Test an existing evaluator using calibration data
+     */
     post: operations['evaluators_calibrate_create_2'];
     delete?: never;
     options?: never;
@@ -882,10 +1020,79 @@ export interface paths {
     patch: operations['projects_partial_update'];
     trace?: never;
   };
+  '/v1/score-configs/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['score_configs_list'];
+    put?: never;
+    /** @description Create a score config. */
+    post: operations['score_configs_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/score-configs/{id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['score_configs_retrieve'];
+    put: operations['score_configs_update'];
+    post?: never;
+    delete: operations['score_configs_destroy'];
+    options?: never;
+    head?: never;
+    patch: operations['score_configs_partial_update'];
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    Annotation: {
+      /** Format: uuid */
+      readonly id: string;
+      /** Format: uuid */
+      dataset_item?: string | null;
+      /** Format: uuid */
+      execution_log?: string | null;
+      /** Format: uuid */
+      score_config?: string;
+      /** Format: double */
+      value?: number | null;
+      category?: string | null;
+      rationale?: string;
+      status?: components['schemas']['AnnotationStatusEnum'];
+      /** Format: date-time */
+      readonly created_at: string | null;
+    };
+    AnnotationRequest: {
+      /** Format: uuid */
+      dataset_item?: string | null;
+      /** Format: uuid */
+      execution_log?: string | null;
+      /** Format: uuid */
+      score_config?: string;
+      /** Format: double */
+      value?: number | null;
+      category?: string | null;
+      rationale?: string;
+      status?: components['schemas']['AnnotationStatusEnum'];
+    };
+    /**
+     * @description * `draft` - draft
+     *     * `published` - published
+     * @enum {string}
+     */
+    AnnotationStatusEnum: 'draft' | 'published';
     /**
      * @description * `pending` - pending
      *     * `processing` - processing
@@ -900,6 +1107,72 @@ export interface components {
       /** @default [] */
       tags: string[];
     };
+    CalibrationRun: {
+      /** Format: uuid */
+      readonly id: string;
+      /** Format: uuid */
+      readonly evaluator_external_id: string;
+      /** Format: uuid */
+      readonly evaluator_version_id: string;
+      /** Format: uuid */
+      readonly score_config: string | null;
+      readonly source_type: components['schemas']['CalibrationSourceTypeEnum'];
+      /** Format: uuid */
+      readonly dataset: string | null;
+      readonly status: components['schemas']['CalibrationRunStatusEnum'];
+      readonly metrics: unknown;
+      readonly n_examples: number;
+      readonly n_skipped: number;
+      readonly error: string;
+      /** Format: date-time */
+      readonly created_at: string | null;
+    };
+    CalibrationRunCreateRequest: {
+      /** Format: uuid */
+      evaluator_external_id: string;
+      /** Format: uuid */
+      evaluator_version_id?: string | null;
+      /** Format: uuid */
+      score_config_id?: string | null;
+      source: components['schemas']['CalibrationRunSourceRequest'];
+    };
+    CalibrationRunItem: {
+      /** Format: uuid */
+      readonly id: string;
+      /** Format: uuid */
+      readonly annotation: string | null;
+      /** Format: uuid */
+      readonly dataset_item: string | null;
+      /** Format: uuid */
+      readonly execution_log: string | null;
+      /** Format: double */
+      readonly evaluator_score: number | null;
+      /** Format: double */
+      readonly human_value: number | null;
+      readonly status: components['schemas']['ExperimentStatusEnum'];
+      readonly justification: string;
+      /** Format: date-time */
+      readonly created_at: string | null;
+    };
+    CalibrationRunSourceRequest: {
+      type: components['schemas']['CalibrationSourceTypeEnum'];
+      /** Format: uuid */
+      dataset_id?: string | null;
+    };
+    /**
+     * @description * `pending` - pending
+     *     * `running` - running
+     *     * `completed` - completed
+     *     * `failed` - failed
+     * @enum {string}
+     */
+    CalibrationRunStatusEnum: 'pending' | 'running' | 'completed' | 'failed';
+    /**
+     * @description * `dataset` - dataset
+     *     * `logs` - logs
+     * @enum {string}
+     */
+    CalibrationSourceTypeEnum: 'dataset' | 'logs';
     DataSetCreate: {
       /** Format: uuid */
       readonly id: string;
@@ -958,6 +1231,36 @@ export interface components {
      * @enum {string}
      */
     DataSetType: 'reference' | 'test';
+    DatasetItem: {
+      /** Format: uuid */
+      readonly id: string;
+      /** Format: uuid */
+      readonly external_id: string;
+      /** Format: uuid */
+      readonly version_id: string;
+      /** @default true */
+      readonly is_latest_version: boolean;
+      response: string;
+      request?: string;
+      expected_output?: string;
+      contexts?: unknown;
+      variables?: unknown;
+      metadata?: unknown;
+      change_note?: string;
+      readonly is_archived: boolean;
+      readonly annotations: components['schemas']['Annotation'][];
+      /** Format: date-time */
+      readonly created_at: string | null;
+    };
+    DatasetItemRequest: {
+      response: string;
+      request?: string;
+      expected_output?: string;
+      contexts?: unknown;
+      variables?: unknown;
+      metadata?: unknown;
+      change_note?: string;
+    };
     DatasetRangeRequest: {
       start: number | null;
       end: number | null;
@@ -974,6 +1277,11 @@ export interface components {
       change_note?: string | null;
       /** Format: date-time */
       readonly created_at: string;
+      /**
+       * Format: uuid
+       * @description Dataset whose annotations for this evaluator are used as few-shot demonstrations.
+       */
+      demonstration_dataset_id?: string | null;
       evaluator_demonstrations?: components['schemas']['EvaluatorDemonstrations'][] | null;
       /** Format: uuid */
       readonly id: string;
@@ -1025,7 +1333,15 @@ export interface components {
       };
       scoring_criteria: string;
       readonly is_root_evaluator: boolean;
+      behavior?: components['schemas']['EvaluatorBehaviorEnum'];
     };
+    /**
+     * @description * `thorough` - Thorough
+     *     * `fast` - Fast
+     *     * `balanced` - Balanced
+     * @enum {string}
+     */
+    EvaluatorBehaviorEnum: 'thorough' | 'fast' | 'balanced';
     EvaluatorCalibrationOutput: {
       variables: {
         [key: string]: unknown;
@@ -1184,6 +1500,11 @@ export interface components {
     };
     EvaluatorRequest: {
       change_note?: string | null;
+      /**
+       * Format: uuid
+       * @description Dataset whose annotations for this evaluator are used as few-shot demonstrations.
+       */
+      demonstration_dataset_id?: string | null;
       evaluator_demonstrations?: components['schemas']['EvaluatorDemonstrationsRequest'][] | null;
       input_variables?: components['schemas']['InputVariableRequest'][];
       /** @description Primary model (index 0) and an optional list of fallback models to use if the primary model is not available. If not provided, a default model will be used. */
@@ -1207,6 +1528,7 @@ export interface components {
        */
       project_id?: string | null;
       scoring_criteria: string;
+      behavior?: components['schemas']['EvaluatorBehaviorEnum'];
     };
     EvaluatorResult: {
       evaluator_name: string;
@@ -1221,7 +1543,6 @@ export interface components {
       confidence: number | null;
     };
     ExecutionLogDetails: {
-      readonly chat_id: string | null;
       /** Format: double */
       readonly cost: number | null;
       readonly turns: components['schemas']['MessageLogTurn'][] | null;
@@ -1253,13 +1574,14 @@ export interface components {
       readonly owner: components['schemas']['NestedUserDetails'];
       /** Format: uuid */
       parent_execution_log_id?: string | null;
-      readonly prompt_template: string;
+      readonly scoring_criteria: string;
       /** Format: double */
       readonly score: number | null;
       readonly session_id: string;
       readonly system_prompt: string;
       readonly tags: string[];
       readonly user_id: string;
+      /** @description On Judge logs, list of evaluator results. */
       readonly evaluator_results: components['schemas']['SkillExecutionValidatorResult'][];
       readonly variables: {
         [key: string]: string;
@@ -1309,6 +1631,13 @@ export interface components {
         [key: string]: string;
       } | null;
     };
+    /**
+     * @description * `pending` - pending
+     *     * `completed` - completed
+     *     * `failed` - failed
+     * @enum {string}
+     */
+    ExperimentStatusEnum: 'pending' | 'completed' | 'failed';
     GenerationModelParamsRequest: {
       seed?: number | null;
       /** @default off */
@@ -1384,7 +1713,7 @@ export interface components {
        */
       project_id?: string | null;
       stage?: string;
-      readonly visibility: components['schemas']['VisibilityEnum'];
+      visibility?: components['schemas']['VisibilityEnum'];
       /** Format: uuid */
       readonly version_id: string;
     };
@@ -1711,6 +2040,7 @@ export interface components {
        */
       project_id?: string | null;
       stage?: string;
+      visibility?: components['schemas']['VisibilityEnum'];
     };
     MessageLogTurn: {
       role: components['schemas']['RoleEnum'];
@@ -1825,6 +2155,8 @@ export interface components {
     NestedUserDetailsRequest: {
       full_name: string;
     };
+    /** @enum {unknown} */
+    NullEnum: null;
     Objective: {
       /** Format: uuid */
       readonly id: string;
@@ -1890,7 +2222,7 @@ export interface components {
        * @default 1
        */
       sampling_rate: number;
-      /** @default 10 */
+      /** @default 20 */
       delay_seconds: number;
       /** @default true */
       applies_to_new_only: boolean;
@@ -1940,6 +2272,45 @@ export interface components {
       input_preview?: string;
       output_preview?: string;
     };
+    PaginatedAnnotationList: {
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+       */
+      previous?: string | null;
+      results: components['schemas']['Annotation'][];
+    };
+    PaginatedCalibrationRunItemList: {
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+       */
+      previous?: string | null;
+      results: components['schemas']['CalibrationRunItem'][];
+    };
+    PaginatedCalibrationRunList: {
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+       */
+      previous?: string | null;
+      results: components['schemas']['CalibrationRun'][];
+    };
     PaginatedDataSetListList: {
       /**
        * Format: uri
@@ -1952,6 +2323,19 @@ export interface components {
        */
       previous?: string | null;
       results: components['schemas']['DataSetList'][];
+    };
+    PaginatedDatasetItemList: {
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+       */
+      previous?: string | null;
+      results: components['schemas']['DatasetItem'][];
     };
     PaginatedEvaluatorList: {
       /**
@@ -2083,8 +2467,48 @@ export interface components {
       previous?: string | null;
       results: components['schemas']['Project'][];
     };
+    PaginatedScoreConfigList: {
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+       */
+      previous?: string | null;
+      results: components['schemas']['ScoreConfig'][];
+    };
+    PatchedAnnotationRequest: {
+      /** Format: uuid */
+      dataset_item?: string | null;
+      /** Format: uuid */
+      execution_log?: string | null;
+      /** Format: uuid */
+      score_config?: string;
+      /** Format: double */
+      value?: number | null;
+      category?: string | null;
+      rationale?: string;
+      status?: components['schemas']['AnnotationStatusEnum'];
+    };
+    PatchedDatasetItemRequest: {
+      response?: string;
+      request?: string;
+      expected_output?: string;
+      contexts?: unknown;
+      variables?: unknown;
+      metadata?: unknown;
+      change_note?: string;
+    };
     PatchedEvaluatorRequest: {
       change_note?: string | null;
+      /**
+       * Format: uuid
+       * @description Dataset whose annotations for this evaluator are used as few-shot demonstrations.
+       */
+      demonstration_dataset_id?: string | null;
       evaluator_demonstrations?: components['schemas']['EvaluatorDemonstrationsRequest'][] | null;
       input_variables?: components['schemas']['InputVariableRequest'][];
       /** @description Primary model (index 0) and an optional list of fallback models to use if the primary model is not available. If not provided, a default model will be used. */
@@ -2108,6 +2532,7 @@ export interface components {
        */
       project_id?: string | null;
       scoring_criteria?: string;
+      behavior?: components['schemas']['EvaluatorBehaviorEnum'];
     };
     PatchedJudgeRequest: {
       evaluator_references?: components['schemas']['EvaluatorReferenceRequest'][];
@@ -2125,6 +2550,7 @@ export interface components {
        */
       project_id?: string | null;
       stage?: string;
+      visibility?: components['schemas']['VisibilityEnum'];
     };
     PatchedModelRequest: {
       default_key?: string | null;
@@ -2150,6 +2576,15 @@ export interface components {
       name?: string;
       description?: string;
       is_default?: boolean;
+    };
+    PatchedScoreConfigRequest: {
+      name?: string;
+      type?: components['schemas']['ScoreConfigTypeEnum'];
+      categories?: unknown;
+      /** Format: double */
+      min_value?: number | null;
+      /** Format: double */
+      max_value?: number | null;
     };
     Project: {
       /** Format: uuid */
@@ -2196,6 +2631,36 @@ export interface components {
      * @enum {string}
      */
     RoleEnum: 'user' | 'assistant' | 'tool';
+    ScoreConfig: {
+      /** Format: uuid */
+      readonly id: string;
+      name: string;
+      type?: components['schemas']['ScoreConfigTypeEnum'];
+      categories?: unknown;
+      /** Format: double */
+      min_value?: number | null;
+      /** Format: double */
+      max_value?: number | null;
+      readonly is_default: boolean;
+      /** Format: date-time */
+      readonly created_at: string | null;
+    };
+    ScoreConfigRequest: {
+      name: string;
+      type?: components['schemas']['ScoreConfigTypeEnum'];
+      categories?: unknown;
+      /** Format: double */
+      min_value?: number | null;
+      /** Format: double */
+      max_value?: number | null;
+    };
+    /**
+     * @description * `binary` - binary
+     *     * `continuous` - continuous
+     *     * `categorical` - categorical
+     * @enum {string}
+     */
+    ScoreConfigTypeEnum: 'binary' | 'continuous' | 'categorical';
     SkillExecutionValidatorResult: {
       /** Format: uuid */
       readonly evaluator_id: string | null;
@@ -2209,14 +2674,23 @@ export interface components {
     };
     SkillTestDataRequest: {
       test_data?: string[][] | null;
+      /** @description Deprecated: superseded by the annotation-based dataset (DatasetItem + Annotation). */
       test_dataset_id?: string;
       /** Format: uuid */
       project_id?: string | null;
       /** @description Specifies the range of dataset rows to use */
       dataset_range?: components['schemas']['DatasetRangeRequest'] | null;
     };
+    /**
+     * @description * `fast` - fast
+     *     * `balanced` - balanced
+     *     * `thorough` - thorough
+     * @enum {string}
+     */
+    SkillTestInputBehaviorEnum: 'fast' | 'balanced' | 'thorough';
     SkillTestInputRequest: {
       test_data?: string[][] | null;
+      /** @description Deprecated: superseded by the annotation-based dataset (DatasetItem + Annotation). */
       test_dataset_id?: string;
       /** Format: uuid */
       project_id?: string | null;
@@ -2232,16 +2706,17 @@ export interface components {
       objective?: components['schemas']['ObjectiveRequest'] | null;
       /** @default false */
       is_evaluator: boolean;
+      behavior?:
+        | (components['schemas']['SkillTestInputBehaviorEnum'] | components['schemas']['NullEnum'])
+        | null;
     };
     /**
-     * @description * `unlisted` - unlisted
-     *     * `listed` - listed
-     *     * `public` - public
+     * @description * `public` - public
      *     * `public_unlisted` - public_unlisted
      *     * `private` - private
      * @enum {string}
      */
-    StatusEnum: 'unlisted' | 'listed' | 'public' | 'public_unlisted' | 'private';
+    StatusEnum: 'public' | 'public_unlisted' | 'private';
     /**
      * @description * `pending` - Pending
      *     * `finished` - Finished
@@ -2267,6 +2742,258 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  annotations_list: {
+    parameters: {
+      query?: {
+        /** @description The pagination cursor value. */
+        cursor?: string;
+        /** @description Filter by the dataset the items belong to. */
+        dataset?: string;
+        /** @description Filter by dataset item id. */
+        dataset_item?: string;
+        /** @description Filter by execution log id. */
+        execution_log?: string;
+        /** @description Number of results to return per page. */
+        page_size?: number;
+        /** @description Filter by score config id. */
+        score_config?: string;
+        /** @description Filter by status (draft or published). */
+        status?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PaginatedAnnotationList'];
+        };
+      };
+    };
+  };
+  annotations_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['AnnotationRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['AnnotationRequest'];
+        'multipart/form-data': components['schemas']['AnnotationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Annotation'];
+        };
+      };
+    };
+  };
+  annotations_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Annotation'];
+        };
+      };
+    };
+  };
+  annotations_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['AnnotationRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['AnnotationRequest'];
+        'multipart/form-data': components['schemas']['AnnotationRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Annotation'];
+        };
+      };
+    };
+  };
+  annotations_destroy: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  annotations_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['PatchedAnnotationRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['PatchedAnnotationRequest'];
+        'multipart/form-data': components['schemas']['PatchedAnnotationRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Annotation'];
+        };
+      };
+    };
+  };
+  calibration_runs_list: {
+    parameters: {
+      query?: {
+        /** @description The pagination cursor value. */
+        cursor?: string;
+        /** @description Filter by evaluator external id. */
+        evaluator_external_id?: string;
+        /** @description Number of results to return per page. */
+        page_size?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PaginatedCalibrationRunList'];
+        };
+      };
+    };
+  };
+  calibration_runs_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CalibrationRunCreateRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['CalibrationRunCreateRequest'];
+        'multipart/form-data': components['schemas']['CalibrationRunCreateRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CalibrationRun'];
+        };
+      };
+    };
+  };
+  calibration_runs_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CalibrationRun'];
+        };
+      };
+    };
+  };
+  calibration_runs_items_list: {
+    parameters: {
+      query?: {
+        /** @description The pagination cursor value. */
+        cursor?: string;
+        /** @description Number of results to return per page. */
+        page_size?: number;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PaginatedCalibrationRunItemList'];
+        };
+      };
+    };
+  };
   datasets_list: {
     parameters: {
       query?: {
@@ -2320,6 +3047,187 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['DataSetCreate'];
+        };
+      };
+    };
+  };
+  datasets_items_list: {
+    parameters: {
+      query?: {
+        /** @description The pagination cursor value. */
+        cursor?: string;
+        /** @description Include archived items when true (defaults to excluding them). */
+        is_archived?: boolean;
+        /** @description Number of results to return per page. */
+        page_size?: number;
+      };
+      header?: never;
+      path: {
+        dataset_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PaginatedDatasetItemList'];
+        };
+      };
+    };
+  };
+  datasets_items_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        dataset_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DatasetItemRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['DatasetItemRequest'];
+        'multipart/form-data': components['schemas']['DatasetItemRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['DatasetItem'];
+        };
+      };
+    };
+  };
+  datasets_items_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        dataset_id: string;
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['DatasetItem'];
+        };
+      };
+    };
+  };
+  datasets_items_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        dataset_id: string;
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DatasetItemRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['DatasetItemRequest'];
+        'multipart/form-data': components['schemas']['DatasetItemRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['DatasetItem'];
+        };
+      };
+    };
+  };
+  datasets_items_destroy: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        dataset_id: string;
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  datasets_items_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        dataset_id: string;
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['PatchedDatasetItemRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['PatchedDatasetItemRequest'];
+        'multipart/form-data': components['schemas']['PatchedDatasetItemRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['DatasetItem'];
+        };
+      };
+    };
+  };
+  datasets_items_bulk_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        dataset_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DatasetItemRequest'][];
+        'application/x-www-form-urlencoded': components['schemas']['DatasetItemRequest'][];
+        'multipart/form-data': components['schemas']['DatasetItemRequest'][];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['DatasetItem'][];
         };
       };
     };
@@ -4220,6 +5128,150 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['Project'];
+        };
+      };
+    };
+  };
+  score_configs_list: {
+    parameters: {
+      query?: {
+        /** @description The pagination cursor value. */
+        cursor?: string;
+        /** @description Number of results to return per page. */
+        page_size?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PaginatedScoreConfigList'];
+        };
+      };
+    };
+  };
+  score_configs_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ScoreConfigRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['ScoreConfigRequest'];
+        'multipart/form-data': components['schemas']['ScoreConfigRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ScoreConfig'];
+        };
+      };
+    };
+  };
+  score_configs_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ScoreConfig'];
+        };
+      };
+    };
+  };
+  score_configs_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ScoreConfigRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['ScoreConfigRequest'];
+        'multipart/form-data': components['schemas']['ScoreConfigRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ScoreConfig'];
+        };
+      };
+    };
+  };
+  score_configs_destroy: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  score_configs_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['PatchedScoreConfigRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['PatchedScoreConfigRequest'];
+        'multipart/form-data': components['schemas']['PatchedScoreConfigRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ScoreConfig'];
         };
       };
     };
