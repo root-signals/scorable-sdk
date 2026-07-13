@@ -47,7 +47,7 @@ class Judge(BaseModel):
         default=None, description="Project to assign this judge to. Defaults to org default project."
     )
     stage: Optional[Annotated[str, Field(strict=True, max_length=255)]] = None
-    visibility: VisibilityEnum
+    visibility: Optional[VisibilityEnum] = None
     version_id: StrictStr
     __properties: ClassVar[List[str]] = [
         "_meta",
@@ -100,7 +100,6 @@ class Judge(BaseModel):
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
-        * OpenAPI `readOnly` fields are excluded.
         """
         excluded_fields: Set[str] = set(
             [
@@ -110,7 +109,6 @@ class Judge(BaseModel):
                 "files",
                 "id",
                 "inputs",
-                "visibility",
                 "version_id",
             ]
         )

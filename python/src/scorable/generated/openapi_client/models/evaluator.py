@@ -22,6 +22,7 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictStr
 from typing_extensions import Annotated, Self
 
+from scorable.generated.openapi_client.models.evaluator_behavior_enum import EvaluatorBehaviorEnum
 from scorable.generated.openapi_client.models.evaluator_demonstrations import EvaluatorDemonstrations
 from scorable.generated.openapi_client.models.evaluator_inputs_value import EvaluatorInputsValue
 from scorable.generated.openapi_client.models.input_variable import InputVariable
@@ -37,6 +38,9 @@ class Evaluator(BaseModel):
 
     change_note: Optional[StrictStr] = None
     created_at: datetime
+    demonstration_dataset_id: Optional[StrictStr] = Field(
+        default=None, description="Dataset whose annotations for this evaluator are used as few-shot demonstrations."
+    )
     evaluator_demonstrations: Optional[List[EvaluatorDemonstrations]] = None
     id: StrictStr
     input_variables: Optional[List[InputVariable]] = None
@@ -60,9 +64,11 @@ class Evaluator(BaseModel):
     )
     scoring_criteria: Annotated[str, Field(strict=True, max_length=500000)]
     is_root_evaluator: StrictBool
+    behavior: Optional[EvaluatorBehaviorEnum] = None
     __properties: ClassVar[List[str]] = [
         "change_note",
         "created_at",
+        "demonstration_dataset_id",
         "evaluator_demonstrations",
         "id",
         "input_variables",
@@ -79,6 +85,7 @@ class Evaluator(BaseModel):
         "inputs",
         "scoring_criteria",
         "is_root_evaluator",
+        "behavior",
     ]
 
     model_config = ConfigDict(
@@ -178,6 +185,11 @@ class Evaluator(BaseModel):
         if self.change_note is None and "change_note" in self.model_fields_set:
             _dict["change_note"] = None
 
+        # set to None if demonstration_dataset_id (nullable) is None
+        # and model_fields_set contains the field
+        if self.demonstration_dataset_id is None and "demonstration_dataset_id" in self.model_fields_set:
+            _dict["demonstration_dataset_id"] = None
+
         # set to None if evaluator_demonstrations (nullable) is None
         # and model_fields_set contains the field
         if self.evaluator_demonstrations is None and "evaluator_demonstrations" in self.model_fields_set:
@@ -223,6 +235,7 @@ class Evaluator(BaseModel):
             {
                 "change_note": obj.get("change_note"),
                 "created_at": obj.get("created_at"),
+                "demonstration_dataset_id": obj.get("demonstration_dataset_id"),
                 "evaluator_demonstrations": [
                     EvaluatorDemonstrations.from_dict(_item) for _item in obj["evaluator_demonstrations"]
                 ]
@@ -249,6 +262,7 @@ class Evaluator(BaseModel):
                 else None,
                 "scoring_criteria": obj.get("scoring_criteria"),
                 "is_root_evaluator": obj.get("is_root_evaluator"),
+                "behavior": obj.get("behavior"),
             }
         )
         return _obj

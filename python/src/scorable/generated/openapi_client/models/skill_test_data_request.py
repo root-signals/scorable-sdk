@@ -32,7 +32,9 @@ class SkillTestDataRequest(BaseModel):
     """  # noqa: E501
 
     test_data: Optional[List[List[Annotated[str, Field(min_length=1, strict=True)]]]] = None
-    test_dataset_id: Optional[Annotated[str, Field(min_length=1, strict=True)]] = None
+    test_dataset_id: Optional[Annotated[str, Field(min_length=1, strict=True)]] = Field(
+        default=None, description="Deprecated: superseded by the annotation-based dataset (DatasetItem + Annotation)."
+    )
     project_id: Optional[StrictStr] = None
     dataset_range: Optional[SkillTestDataRequestDatasetRange] = None
     __properties: ClassVar[List[str]] = ["test_data", "test_dataset_id", "project_id", "dataset_range"]

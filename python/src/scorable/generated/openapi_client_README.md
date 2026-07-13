@@ -54,15 +54,15 @@ configuration.api_key['publicApiKey'] = os.environ["API_KEY"]
 # Enter a context with an instance of the API client
 with scorable.generated.openapi_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = scorable.generated.openapi_client.DatasetsApi(api_client)
-    data_set_create_request = {"name":"My data set","url":"https://example.com"} # DataSetCreateRequest |  (optional)
+    api_instance = scorable.generated.openapi_client.AnnotationsApi(api_client)
+    annotation_request = scorable.generated.openapi_client.AnnotationRequest() # AnnotationRequest |  (optional)
 
     try:
-        api_response = api_instance.datasets_create(data_set_create_request=data_set_create_request)
-        print("The response of DatasetsApi->datasets_create:\n")
+        api_response = api_instance.annotations_create(annotation_request=annotation_request)
+        print("The response of AnnotationsApi->annotations_create:\n")
         pprint(api_response)
     except ApiException as e:
-        print("Exception when calling DatasetsApi->datasets_create: %s\n" % e)
+        print("Exception when calling AnnotationsApi->annotations_create: %s\n" % e)
 
 ```
 
@@ -72,8 +72,25 @@ All URIs are relative to *https://api.localhost:8000*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*AnnotationsApi* | [**annotations_create**](scorable/generated/openapi_client/docs/AnnotationsApi.md#annotations_create) | **POST** /v1/annotations/ | 
+*AnnotationsApi* | [**annotations_destroy**](scorable/generated/openapi_client/docs/AnnotationsApi.md#annotations_destroy) | **DELETE** /v1/annotations/{id}/ | 
+*AnnotationsApi* | [**annotations_list**](scorable/generated/openapi_client/docs/AnnotationsApi.md#annotations_list) | **GET** /v1/annotations/ | 
+*AnnotationsApi* | [**annotations_partial_update**](scorable/generated/openapi_client/docs/AnnotationsApi.md#annotations_partial_update) | **PATCH** /v1/annotations/{id}/ | 
+*AnnotationsApi* | [**annotations_retrieve**](scorable/generated/openapi_client/docs/AnnotationsApi.md#annotations_retrieve) | **GET** /v1/annotations/{id}/ | 
+*AnnotationsApi* | [**annotations_update**](scorable/generated/openapi_client/docs/AnnotationsApi.md#annotations_update) | **PUT** /v1/annotations/{id}/ | 
+*CalibrationRunsApi* | [**calibration_runs_create**](scorable/generated/openapi_client/docs/CalibrationRunsApi.md#calibration_runs_create) | **POST** /v1/calibration-runs/ | 
+*CalibrationRunsApi* | [**calibration_runs_items_list**](scorable/generated/openapi_client/docs/CalibrationRunsApi.md#calibration_runs_items_list) | **GET** /v1/calibration-runs/{id}/items/ | 
+*CalibrationRunsApi* | [**calibration_runs_list**](scorable/generated/openapi_client/docs/CalibrationRunsApi.md#calibration_runs_list) | **GET** /v1/calibration-runs/ | 
+*CalibrationRunsApi* | [**calibration_runs_retrieve**](scorable/generated/openapi_client/docs/CalibrationRunsApi.md#calibration_runs_retrieve) | **GET** /v1/calibration-runs/{id}/ | 
 *DatasetsApi* | [**datasets_create**](scorable/generated/openapi_client/docs/DatasetsApi.md#datasets_create) | **POST** /v1/datasets/ | 
 *DatasetsApi* | [**datasets_destroy**](scorable/generated/openapi_client/docs/DatasetsApi.md#datasets_destroy) | **DELETE** /v1/datasets/{id}/ | 
+*DatasetsApi* | [**datasets_items_bulk_create**](scorable/generated/openapi_client/docs/DatasetsApi.md#datasets_items_bulk_create) | **POST** /v1/datasets/{dataset_id}/items/bulk/ | 
+*DatasetsApi* | [**datasets_items_create**](scorable/generated/openapi_client/docs/DatasetsApi.md#datasets_items_create) | **POST** /v1/datasets/{dataset_id}/items/ | 
+*DatasetsApi* | [**datasets_items_destroy**](scorable/generated/openapi_client/docs/DatasetsApi.md#datasets_items_destroy) | **DELETE** /v1/datasets/{dataset_id}/items/{item_id}/ | 
+*DatasetsApi* | [**datasets_items_list**](scorable/generated/openapi_client/docs/DatasetsApi.md#datasets_items_list) | **GET** /v1/datasets/{dataset_id}/items/ | 
+*DatasetsApi* | [**datasets_items_partial_update**](scorable/generated/openapi_client/docs/DatasetsApi.md#datasets_items_partial_update) | **PATCH** /v1/datasets/{dataset_id}/items/{item_id}/ | 
+*DatasetsApi* | [**datasets_items_retrieve**](scorable/generated/openapi_client/docs/DatasetsApi.md#datasets_items_retrieve) | **GET** /v1/datasets/{dataset_id}/items/{item_id}/ | 
+*DatasetsApi* | [**datasets_items_update**](scorable/generated/openapi_client/docs/DatasetsApi.md#datasets_items_update) | **PUT** /v1/datasets/{dataset_id}/items/{item_id}/ | 
 *DatasetsApi* | [**datasets_list**](scorable/generated/openapi_client/docs/DatasetsApi.md#datasets_list) | **GET** /v1/datasets/ | 
 *DatasetsApi* | [**datasets_retrieve**](scorable/generated/openapi_client/docs/DatasetsApi.md#datasets_retrieve) | **GET** /v1/datasets/{id}/ | 
 *EvaluatorsApi* | [**evaluators_calibrate_create**](scorable/generated/openapi_client/docs/EvaluatorsApi.md#evaluators_calibrate_create) | **POST** /v1/evaluators/calibrate/ | 
@@ -146,20 +163,38 @@ Class | Method | HTTP request | Description
 *ProjectsApi* | [**projects_list**](scorable/generated/openapi_client/docs/ProjectsApi.md#projects_list) | **GET** /v1/projects/ | 
 *ProjectsApi* | [**projects_partial_update**](scorable/generated/openapi_client/docs/ProjectsApi.md#projects_partial_update) | **PATCH** /v1/projects/{id}/ | 
 *ProjectsApi* | [**projects_retrieve**](scorable/generated/openapi_client/docs/ProjectsApi.md#projects_retrieve) | **GET** /v1/projects/{id}/ | 
+*ScoreConfigsApi* | [**score_configs_create**](scorable/generated/openapi_client/docs/ScoreConfigsApi.md#score_configs_create) | **POST** /v1/score-configs/ | 
+*ScoreConfigsApi* | [**score_configs_destroy**](scorable/generated/openapi_client/docs/ScoreConfigsApi.md#score_configs_destroy) | **DELETE** /v1/score-configs/{id}/ | 
+*ScoreConfigsApi* | [**score_configs_list**](scorable/generated/openapi_client/docs/ScoreConfigsApi.md#score_configs_list) | **GET** /v1/score-configs/ | 
+*ScoreConfigsApi* | [**score_configs_partial_update**](scorable/generated/openapi_client/docs/ScoreConfigsApi.md#score_configs_partial_update) | **PATCH** /v1/score-configs/{id}/ | 
+*ScoreConfigsApi* | [**score_configs_retrieve**](scorable/generated/openapi_client/docs/ScoreConfigsApi.md#score_configs_retrieve) | **GET** /v1/score-configs/{id}/ | 
+*ScoreConfigsApi* | [**score_configs_update**](scorable/generated/openapi_client/docs/ScoreConfigsApi.md#score_configs_update) | **PUT** /v1/score-configs/{id}/ | 
 
 
 ## Documentation For Models
 
+ - [Annotation](scorable/generated/openapi_client/docs/Annotation.md)
+ - [AnnotationRequest](scorable/generated/openapi_client/docs/AnnotationRequest.md)
+ - [AnnotationStatusEnum](scorable/generated/openapi_client/docs/AnnotationStatusEnum.md)
  - [BatchExecutionStatus](scorable/generated/openapi_client/docs/BatchExecutionStatus.md)
  - [BatchSetTagsModelRequest](scorable/generated/openapi_client/docs/BatchSetTagsModelRequest.md)
+ - [CalibrationRun](scorable/generated/openapi_client/docs/CalibrationRun.md)
+ - [CalibrationRunCreateRequest](scorable/generated/openapi_client/docs/CalibrationRunCreateRequest.md)
+ - [CalibrationRunItem](scorable/generated/openapi_client/docs/CalibrationRunItem.md)
+ - [CalibrationRunSourceRequest](scorable/generated/openapi_client/docs/CalibrationRunSourceRequest.md)
+ - [CalibrationRunStatusEnum](scorable/generated/openapi_client/docs/CalibrationRunStatusEnum.md)
+ - [CalibrationSourceTypeEnum](scorable/generated/openapi_client/docs/CalibrationSourceTypeEnum.md)
  - [DataSetCreate](scorable/generated/openapi_client/docs/DataSetCreate.md)
  - [DataSetCreateRequest](scorable/generated/openapi_client/docs/DataSetCreateRequest.md)
  - [DataSetList](scorable/generated/openapi_client/docs/DataSetList.md)
  - [DataSetType](scorable/generated/openapi_client/docs/DataSetType.md)
+ - [DatasetItem](scorable/generated/openapi_client/docs/DatasetItem.md)
+ - [DatasetItemRequest](scorable/generated/openapi_client/docs/DatasetItemRequest.md)
  - [DatasetRangeRequest](scorable/generated/openapi_client/docs/DatasetRangeRequest.md)
  - [DuplicateJudgeRequestRequest](scorable/generated/openapi_client/docs/DuplicateJudgeRequestRequest.md)
  - [DuplicateRequest](scorable/generated/openapi_client/docs/DuplicateRequest.md)
  - [Evaluator](scorable/generated/openapi_client/docs/Evaluator.md)
+ - [EvaluatorBehaviorEnum](scorable/generated/openapi_client/docs/EvaluatorBehaviorEnum.md)
  - [EvaluatorCalibrationOutput](scorable/generated/openapi_client/docs/EvaluatorCalibrationOutput.md)
  - [EvaluatorCalibrationResult](scorable/generated/openapi_client/docs/EvaluatorCalibrationResult.md)
  - [EvaluatorDemonstrations](scorable/generated/openapi_client/docs/EvaluatorDemonstrations.md)
@@ -179,6 +214,7 @@ Class | Method | HTTP request | Description
  - [ExecutionLogDetailsEvaluatorLatenciesInner](scorable/generated/openapi_client/docs/ExecutionLogDetailsEvaluatorLatenciesInner.md)
  - [ExecutionLogList](scorable/generated/openapi_client/docs/ExecutionLogList.md)
  - [ExecutionLogListEvaluationContext](scorable/generated/openapi_client/docs/ExecutionLogListEvaluationContext.md)
+ - [ExperimentStatusEnum](scorable/generated/openapi_client/docs/ExperimentStatusEnum.md)
  - [FileUploadResponse](scorable/generated/openapi_client/docs/FileUploadResponse.md)
  - [GenerationModelParamsRequest](scorable/generated/openapi_client/docs/GenerationModelParamsRequest.md)
  - [ID](scorable/generated/openapi_client/docs/ID.md)
@@ -221,6 +257,7 @@ Class | Method | HTTP request | Description
  - [NestedObjectiveList](scorable/generated/openapi_client/docs/NestedObjectiveList.md)
  - [NestedUserDetails](scorable/generated/openapi_client/docs/NestedUserDetails.md)
  - [NestedUserDetailsRequest](scorable/generated/openapi_client/docs/NestedUserDetailsRequest.md)
+ - [NullEnum](scorable/generated/openapi_client/docs/NullEnum.md)
  - [Objective](scorable/generated/openapi_client/docs/Objective.md)
  - [ObjectiveList](scorable/generated/openapi_client/docs/ObjectiveList.md)
  - [ObjectiveRequest](scorable/generated/openapi_client/docs/ObjectiveRequest.md)
@@ -228,7 +265,11 @@ Class | Method | HTTP request | Description
  - [OtelTraceEvaluationFilterInputRequest](scorable/generated/openapi_client/docs/OtelTraceEvaluationFilterInputRequest.md)
  - [OtelTraceEvaluationFilterOutput](scorable/generated/openapi_client/docs/OtelTraceEvaluationFilterOutput.md)
  - [OtelTraceRecord](scorable/generated/openapi_client/docs/OtelTraceRecord.md)
+ - [PaginatedAnnotationList](scorable/generated/openapi_client/docs/PaginatedAnnotationList.md)
+ - [PaginatedCalibrationRunItemList](scorable/generated/openapi_client/docs/PaginatedCalibrationRunItemList.md)
+ - [PaginatedCalibrationRunList](scorable/generated/openapi_client/docs/PaginatedCalibrationRunList.md)
  - [PaginatedDataSetListList](scorable/generated/openapi_client/docs/PaginatedDataSetListList.md)
+ - [PaginatedDatasetItemList](scorable/generated/openapi_client/docs/PaginatedDatasetItemList.md)
  - [PaginatedEvaluatorList](scorable/generated/openapi_client/docs/PaginatedEvaluatorList.md)
  - [PaginatedEvaluatorListOutputList](scorable/generated/openapi_client/docs/PaginatedEvaluatorListOutputList.md)
  - [PaginatedExecutionLogListList](scorable/generated/openapi_client/docs/PaginatedExecutionLogListList.md)
@@ -239,20 +280,28 @@ Class | Method | HTTP request | Description
  - [PaginatedObjectiveListList](scorable/generated/openapi_client/docs/PaginatedObjectiveListList.md)
  - [PaginatedOtelTraceRecordList](scorable/generated/openapi_client/docs/PaginatedOtelTraceRecordList.md)
  - [PaginatedProjectList](scorable/generated/openapi_client/docs/PaginatedProjectList.md)
+ - [PaginatedScoreConfigList](scorable/generated/openapi_client/docs/PaginatedScoreConfigList.md)
+ - [PatchedAnnotationRequest](scorable/generated/openapi_client/docs/PatchedAnnotationRequest.md)
+ - [PatchedDatasetItemRequest](scorable/generated/openapi_client/docs/PatchedDatasetItemRequest.md)
  - [PatchedEvaluatorRequest](scorable/generated/openapi_client/docs/PatchedEvaluatorRequest.md)
  - [PatchedJudgeRequest](scorable/generated/openapi_client/docs/PatchedJudgeRequest.md)
  - [PatchedModelRequest](scorable/generated/openapi_client/docs/PatchedModelRequest.md)
  - [PatchedObjectiveRequest](scorable/generated/openapi_client/docs/PatchedObjectiveRequest.md)
  - [PatchedProjectRequest](scorable/generated/openapi_client/docs/PatchedProjectRequest.md)
+ - [PatchedScoreConfigRequest](scorable/generated/openapi_client/docs/PatchedScoreConfigRequest.md)
  - [Project](scorable/generated/openapi_client/docs/Project.md)
  - [ProjectRequest](scorable/generated/openapi_client/docs/ProjectRequest.md)
  - [Provider](scorable/generated/openapi_client/docs/Provider.md)
  - [ReasoningEffortEnum](scorable/generated/openapi_client/docs/ReasoningEffortEnum.md)
  - [ReferenceVariableRequest](scorable/generated/openapi_client/docs/ReferenceVariableRequest.md)
  - [RoleEnum](scorable/generated/openapi_client/docs/RoleEnum.md)
+ - [ScoreConfig](scorable/generated/openapi_client/docs/ScoreConfig.md)
+ - [ScoreConfigRequest](scorable/generated/openapi_client/docs/ScoreConfigRequest.md)
+ - [ScoreConfigTypeEnum](scorable/generated/openapi_client/docs/ScoreConfigTypeEnum.md)
  - [SkillExecutionValidatorResult](scorable/generated/openapi_client/docs/SkillExecutionValidatorResult.md)
  - [SkillTestDataRequest](scorable/generated/openapi_client/docs/SkillTestDataRequest.md)
  - [SkillTestDataRequestDatasetRange](scorable/generated/openapi_client/docs/SkillTestDataRequestDatasetRange.md)
+ - [SkillTestInputBehaviorEnum](scorable/generated/openapi_client/docs/SkillTestInputBehaviorEnum.md)
  - [SkillTestInputRequest](scorable/generated/openapi_client/docs/SkillTestInputRequest.md)
  - [StatusEnum](scorable/generated/openapi_client/docs/StatusEnum.md)
  - [ValidationResultStatus](scorable/generated/openapi_client/docs/ValidationResultStatus.md)

@@ -19,7 +19,7 @@ import re  # noqa: F401
 from datetime import datetime
 from typing import Any, ClassVar, Dict, List, Optional, Set, Union
 
-from pydantic import BaseModel, ConfigDict, StrictFloat, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, StrictStr
 from typing_extensions import Self
 
 from scorable.generated.openapi_aclient.models.execution_log_details_evaluation_context import (
@@ -38,7 +38,6 @@ class ExecutionLogDetails(BaseModel):
     ExecutionLogDetails
     """  # noqa: E501
 
-    chat_id: Optional[StrictStr]
     cost: Optional[Union[StrictFloat, StrictInt]]
     turns: Optional[List[MessageLogTurn]]
     created_at: Optional[datetime]
@@ -55,18 +54,19 @@ class ExecutionLogDetails(BaseModel):
     model: StrictStr
     owner: NestedUserDetails
     parent_execution_log_id: Optional[StrictStr] = None
-    prompt_template: StrictStr
+    scoring_criteria: StrictStr
     score: Optional[Union[StrictFloat, StrictInt]]
     session_id: StrictStr
     system_prompt: StrictStr
     tags: List[StrictStr]
     user_id: StrictStr
-    evaluator_results: List[SkillExecutionValidatorResult]
+    evaluator_results: List[SkillExecutionValidatorResult] = Field(
+        description="On Judge logs, list of evaluator results."
+    )
     variables: Optional[Dict[str, StrictStr]]
     classification: Optional[Dict[str, Any]]
     confidence: Optional[Union[StrictFloat, StrictInt]]
     __properties: ClassVar[List[str]] = [
-        "chat_id",
         "cost",
         "turns",
         "created_at",
@@ -83,7 +83,7 @@ class ExecutionLogDetails(BaseModel):
         "model",
         "owner",
         "parent_execution_log_id",
-        "prompt_template",
+        "scoring_criteria",
         "score",
         "session_id",
         "system_prompt",
@@ -147,11 +147,9 @@ class ExecutionLogDetails(BaseModel):
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
-        * OpenAPI `readOnly` fields are excluded.
         """
         excluded_fields: Set[str] = set(
             [
-                "chat_id",
                 "cost",
                 "turns",
                 "created_at",
@@ -165,7 +163,7 @@ class ExecutionLogDetails(BaseModel):
                 "llm_output",
                 "model",
                 "owner",
-                "prompt_template",
+                "scoring_criteria",
                 "score",
                 "session_id",
                 "system_prompt",
@@ -210,11 +208,6 @@ class ExecutionLogDetails(BaseModel):
                 if _item:
                     _items.append(_item.to_dict())
             _dict["evaluator_results"] = _items
-        # set to None if chat_id (nullable) is None
-        # and model_fields_set contains the field
-        if self.chat_id is None and "chat_id" in self.model_fields_set:
-            _dict["chat_id"] = None
-
         # set to None if cost (nullable) is None
         # and model_fields_set contains the field
         if self.cost is None and "cost" in self.model_fields_set:
@@ -283,7 +276,6 @@ class ExecutionLogDetails(BaseModel):
 
         _obj = cls.model_validate(
             {
-                "chat_id": obj.get("chat_id"),
                 "cost": obj.get("cost"),
                 "turns": [MessageLogTurn.from_dict(_item) for _item in obj["turns"]]
                 if obj.get("turns") is not None
@@ -308,7 +300,7 @@ class ExecutionLogDetails(BaseModel):
                 "model": obj.get("model"),
                 "owner": NestedUserDetails.from_dict(obj["owner"]) if obj.get("owner") is not None else None,
                 "parent_execution_log_id": obj.get("parent_execution_log_id"),
-                "prompt_template": obj.get("prompt_template"),
+                "scoring_criteria": obj.get("scoring_criteria"),
                 "score": obj.get("score"),
                 "session_id": obj.get("session_id"),
                 "system_prompt": obj.get("system_prompt"),

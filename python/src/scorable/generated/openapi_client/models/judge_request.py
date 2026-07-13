@@ -22,6 +22,7 @@ from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Annotated, Self
 
 from scorable.generated.openapi_client.models.evaluator_reference_request import EvaluatorReferenceRequest
+from scorable.generated.openapi_client.models.visibility_enum import VisibilityEnum
 
 
 class JudgeRequest(BaseModel):
@@ -40,7 +41,16 @@ class JudgeRequest(BaseModel):
         default=None, description="Project to assign this judge to. Defaults to org default project."
     )
     stage: Optional[Annotated[str, Field(strict=True, max_length=255)]] = None
-    __properties: ClassVar[List[str]] = ["evaluator_references", "file_id", "intent", "name", "project_id", "stage"]
+    visibility: Optional[VisibilityEnum] = None
+    __properties: ClassVar[List[str]] = [
+        "evaluator_references",
+        "file_id",
+        "intent",
+        "name",
+        "project_id",
+        "stage",
+        "visibility",
+    ]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -119,6 +129,7 @@ class JudgeRequest(BaseModel):
                 "name": obj.get("name"),
                 "project_id": obj.get("project_id"),
                 "stage": obj.get("stage"),
+                "visibility": obj.get("visibility"),
             }
         )
         return _obj
