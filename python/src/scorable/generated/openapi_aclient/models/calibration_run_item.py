@@ -36,8 +36,11 @@ class CalibrationRunItem(BaseModel):
     execution_log: Optional[StrictStr]
     evaluator_score: Optional[Union[StrictFloat, StrictInt]]
     human_value: Optional[Union[StrictFloat, StrictInt]]
+    disagreement: Optional[Union[StrictFloat, StrictInt]]
     status: ExperimentStatusEnum
     justification: StrictStr
+    request: StrictStr
+    response: StrictStr
     created_at: Optional[datetime]
     __properties: ClassVar[List[str]] = [
         "id",
@@ -46,8 +49,11 @@ class CalibrationRunItem(BaseModel):
         "execution_log",
         "evaluator_score",
         "human_value",
+        "disagreement",
         "status",
         "justification",
+        "request",
+        "response",
         "created_at",
     ]
 
@@ -89,6 +95,9 @@ class CalibrationRunItem(BaseModel):
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
+        * OpenAPI `readOnly` fields are excluded.
+        * OpenAPI `readOnly` fields are excluded.
+        * OpenAPI `readOnly` fields are excluded.
         """
         excluded_fields: Set[str] = set(
             [
@@ -98,8 +107,11 @@ class CalibrationRunItem(BaseModel):
                 "execution_log",
                 "evaluator_score",
                 "human_value",
+                "disagreement",
                 "status",
                 "justification",
+                "request",
+                "response",
                 "created_at",
             ]
         )
@@ -134,6 +146,11 @@ class CalibrationRunItem(BaseModel):
         if self.human_value is None and "human_value" in self.model_fields_set:
             _dict["human_value"] = None
 
+        # set to None if disagreement (nullable) is None
+        # and model_fields_set contains the field
+        if self.disagreement is None and "disagreement" in self.model_fields_set:
+            _dict["disagreement"] = None
+
         # set to None if created_at (nullable) is None
         # and model_fields_set contains the field
         if self.created_at is None and "created_at" in self.model_fields_set:
@@ -158,8 +175,11 @@ class CalibrationRunItem(BaseModel):
                 "execution_log": obj.get("execution_log"),
                 "evaluator_score": obj.get("evaluator_score"),
                 "human_value": obj.get("human_value"),
+                "disagreement": obj.get("disagreement"),
                 "status": obj.get("status"),
                 "justification": obj.get("justification"),
+                "request": obj.get("request"),
+                "response": obj.get("response"),
                 "created_at": obj.get("created_at"),
             }
         )

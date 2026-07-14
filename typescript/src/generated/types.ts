@@ -1149,8 +1149,12 @@ export interface components {
       readonly evaluator_score: number | null;
       /** Format: double */
       readonly human_value: number | null;
+      /** Format: double */
+      readonly disagreement: number | null;
       readonly status: components['schemas']['ExperimentStatusEnum'];
       readonly justification: string;
+      readonly request: string;
+      readonly response: string;
       /** Format: date-time */
       readonly created_at: string | null;
     };

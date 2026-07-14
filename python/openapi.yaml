@@ -3752,11 +3752,22 @@ components:
           format: double
           readOnly: true
           nullable: true
+        disagreement:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
         status:
           allOf:
           - $ref: '#/components/schemas/ExperimentStatusEnum'
           readOnly: true
         justification:
+          type: string
+          readOnly: true
+        request:
+          type: string
+          readOnly: true
+        response:
           type: string
           readOnly: true
         created_at:
@@ -3768,11 +3779,14 @@ components:
       - annotation
       - created_at
       - dataset_item
+      - disagreement
       - evaluator_score
       - execution_log
       - human_value
       - id
       - justification
+      - request
+      - response
       - status
     CalibrationRunSourceRequest:
       type: object
