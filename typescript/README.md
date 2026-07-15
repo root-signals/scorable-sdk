@@ -488,6 +488,7 @@ The TypeScript SDK provides access to all Scorable API resources:
   - `execute(id, payload)` - Run evaluation
   - `executeByName(name, payload)` - Run by name
   - `duplicate(id)` - Copy evaluator
+  - `calibrateRun(id, { datasetId })` - Run calibration against a labelled dataset and measure agreement
 
 - **`client.judges`** - Composite evaluation with multiple evaluators
   - `list()` - List available judges
@@ -517,10 +518,15 @@ The TypeScript SDK provides access to all Scorable API resources:
 
 - **`client.datasets`** - Manage evaluation datasets
   - `list()` - List datasets
-  - `create(data)` - Create dataset
+  - `create(data)` - Create dataset (an empty `type: 'test'` dataset can be populated with items)
   - `upload(file, metadata)` - Upload data
   - `get(id)` - Get dataset details
   - `delete(id)` - Remove dataset
+  - `addItem(datasetId, item)` / `addItems(datasetId, items)` - Add labelled request/response items
+  - `listItems(datasetId, params)` - List items
+  - `getItem(datasetId, itemId)` - Get an item
+  - `updateItem(datasetId, itemId, item)` - Update an item
+  - `archiveItem(datasetId, itemId)` - Archive an item
 
 - **`client.projects`** - Group resources within an organization
   - `list()` - List projects
@@ -528,6 +534,20 @@ The TypeScript SDK provides access to all Scorable API resources:
   - `create({ name, description?, is_default? })` - Create project
   - `update(id, { name?, description?, is_default? })` - Update project; `is_default: true` atomically promotes this project as the org default
   - `delete(id)` - Remove project (blocked if it has attached resources)
+
+### Labelling & Calibration
+- **`client.scoreConfigs`** - Define how labels map to scores (continuous, binary, categorical)
+  - `list()` / `get(id)` / `create(data)` / `update(id, data)` / `delete(id)`
+
+- **`client.annotations`** - Label dataset items with an expected score
+  - `list()` / `get(id)` / `create(data)` / `update(id, data)` / `delete(id)`
+  - Omitting `scoreConfigId` on `create` uses the global identity "Score" config, so a raw expected score can be set with just `value`
+
+- **`client.calibrationRuns`** - Measure how well an evaluator agrees with the labelled dataset
+  - `create(data)` - Start a calibration run
+  - `get(id)` - Get a run and its metrics
+  - `list(params)` - List runs
+  - `listItems(id, params)` - Per-item results; each item exposes `human_value`, `evaluator_score`, `disagreement`, and the `request`/`response` that was scored
 
 ## Project Scoping
 
