@@ -17,14 +17,9 @@ Classes
 
 .. autoapisummary::
 
-   scorable.skills.ACalibrateBatchParameters
-   scorable.skills.ACalibrateBatchResult
    scorable.skills.AEvaluator
    scorable.skills.APresetEvaluatorRunner
-   scorable.skills.CalibrateBatchParameters
-   scorable.skills.CalibrateBatchResult
    scorable.skills.Evaluator
-   scorable.skills.EvaluatorDemonstration
    scorable.skills.Evaluators
    scorable.skills.InputVariable
    scorable.skills.PresetEvaluatorRunner
@@ -34,52 +29,6 @@ Classes
 
 Module Contents
 ---------------
-
-.. py:class:: ACalibrateBatchParameters(name: str, prompt: str, model: ModelName, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_aclient.models.reference_variable_request.ReferenceVariableRequest]]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None)
-
-   .. py:attribute:: input_variables
-      :value: None
-
-
-
-   .. py:attribute:: model
-
-
-   .. py:attribute:: name
-
-
-   .. py:attribute:: prompt
-
-
-   .. py:attribute:: reference_variables
-      :value: None
-
-
-
-.. py:class:: ACalibrateBatchResult
-
-   Bases: :py:obj:`pydantic.BaseModel`
-
-
-   .. py:attribute:: mae_errors_model
-      :type:  Dict[str, float]
-
-
-   .. py:attribute:: mae_errors_prompt
-      :type:  Dict[str, float]
-
-
-   .. py:attribute:: results
-      :type:  List[scorable.generated.openapi_aclient.models.evaluator_calibration_output.EvaluatorCalibrationOutput]
-
-
-   .. py:attribute:: rms_errors_model
-      :type:  Dict[str, float]
-
-
-   .. py:attribute:: rms_errors_prompt
-      :type:  Dict[str, float]
-
 
 .. py:class:: AEvaluator
 
@@ -134,52 +83,6 @@ Module Contents
 
 
 
-.. py:class:: CalibrateBatchParameters(name: str, prompt: str, model: ModelName, reference_variables: Optional[Union[List[ReferenceVariable], List[scorable.generated.openapi_client.models.reference_variable_request.ReferenceVariableRequest]]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None)
-
-   .. py:attribute:: input_variables
-      :value: None
-
-
-
-   .. py:attribute:: model
-
-
-   .. py:attribute:: name
-
-
-   .. py:attribute:: prompt
-
-
-   .. py:attribute:: reference_variables
-      :value: None
-
-
-
-.. py:class:: CalibrateBatchResult
-
-   Bases: :py:obj:`pydantic.BaseModel`
-
-
-   .. py:attribute:: mae_errors_model
-      :type:  Dict[str, float]
-
-
-   .. py:attribute:: mae_errors_prompt
-      :type:  Dict[str, float]
-
-
-   .. py:attribute:: results
-      :type:  List[scorable.generated.openapi_client.models.evaluator_calibration_output.EvaluatorCalibrationOutput]
-
-
-   .. py:attribute:: rms_errors_model
-      :type:  Dict[str, float]
-
-
-   .. py:attribute:: rms_errors_prompt
-      :type:  Dict[str, float]
-
-
 .. py:class:: Evaluator
 
    Bases: :py:obj:`scorable.generated.openapi_aclient.models.evaluator.Evaluator`
@@ -215,36 +118,6 @@ Module Contents
 
    .. py:attribute:: client_context
       :type:  scorable.utils.ClientContextCallable
-
-
-.. py:class:: EvaluatorDemonstration
-
-   Bases: :py:obj:`pydantic.BaseModel`
-
-
-   Evaluator demonstration
-
-   Demonstrations are used to train an evaluator to adjust its behavior.
-
-
-   .. py:attribute:: justification
-      :type:  Optional[str]
-      :value: None
-
-
-
-   .. py:attribute:: request
-      :type:  Optional[str]
-      :value: None
-
-
-
-   .. py:attribute:: response
-      :type:  str
-
-
-   .. py:attribute:: score
-      :type:  float
 
 
 .. py:class:: Evaluators(client_context: scorable.utils.ClientContextCallable)
@@ -480,30 +353,22 @@ Module Contents
 
 
 
-   .. py:method:: acalibrate_batch(*, evaluator_definitions: List[ACalibrateBatchParameters], test_dataset_id: Optional[str] = None, test_data: Optional[List[List[str]]] = None, parallel_requests: int = 1, _request_timeout: Optional[int] = None) -> ACalibrateBatchResult
+   .. py:method:: acalibrate_run(evaluator_id: str, *, dataset_id: str, score_config_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.calibration_run.CalibrationRun
       :async:
 
 
-      Asynchronously run calibration for a set of prompts and models
+      Asynchronously start a calibration run for a saved evaluator against a labelled dataset.
 
-      :param evaluator_definitions: List of evaluator definitions.
-      :param test_dataset_id: ID of the dataset to be used to test the evaluator.
-      :param test_data: Snapshot of data to be used to test the evaluator.
-      :param parallel_requests: Number of parallel requests.
+      Returns the run with ``status="pending"``; poll the calibration run until it completes to
+      read its agreement metrics and per-item results.
 
-      Returns a model with the results and errors for each model and prompt.
-
-
-
-   .. py:method:: acalibrate_existing(evaluator_id: str, *, test_dataset_id: Optional[str] = None, test_data: Optional[List[List[str]]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> List[scorable.generated.openapi_aclient.models.evaluator_calibration_output.EvaluatorCalibrationOutput]
-      :async:
-
-
-      Asynchronously run calibration set on an existing evaluator.
+      :param evaluator_id: The saved evaluator to calibrate.
+      :param dataset_id: The dataset whose published annotations to calibrate against.
+      :param score_config_id: Optional score config; omitting it uses the dataset's continuous scores.
 
 
 
-   .. py:method:: acreate(scoring_criteria: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, project_id: Optional[str] = None, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> AEvaluator
+   .. py:method:: acreate(scoring_criteria: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, demonstration_dataset_id: Optional[str] = None, objective_id: Optional[str] = None, overwrite: bool = False, project_id: Optional[str] = None, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> AEvaluator
       :async:
 
 
@@ -518,8 +383,8 @@ Module Contents
       :param fallback_models: The fallback models to use in case the primary model fails.
       :param input_variables: An optional list of input variables for
                               the evaluator.
-      :param evaluator_demonstrations: An optional list of evaluator demonstrations to guide
-                                       the evaluator's behavior.
+      :param demonstration_dataset_id: An optional dataset of labelled examples whose published
+                                       annotations are resolved into few-shot demonstrations at evaluation time.
       :param overwrite: Whether to overwrite an evaluator with the same name if it exists.
 
 
@@ -615,7 +480,7 @@ Module Contents
 
 
 
-   .. py:method:: aupdate(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, scoring_criteria: Optional[str] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AEvaluator
+   .. py:method:: aupdate(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_aclient.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, scoring_criteria: Optional[str] = None, demonstration_dataset_id: Optional[str] = None, objective_id: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> AEvaluator
       :async:
 
 
@@ -634,26 +499,20 @@ Module Contents
 
 
 
-   .. py:method:: calibrate_batch(*, evaluator_definitions: List[CalibrateBatchParameters], test_dataset_id: Optional[str] = None, test_data: Optional[List[List[str]]] = None, parallel_requests: int = 1, _request_timeout: Optional[int] = None) -> CalibrateBatchResult
+   .. py:method:: calibrate_run(evaluator_id: str, *, dataset_id: str, score_config_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.calibration_run.CalibrationRun
 
-      Run calibration for a set of prompts and models
+      Start a calibration run for a saved evaluator against a labelled dataset.
 
-      :param evaluator_definitions: List of evaluator definitions.
-      :param test_dataset_id: ID of the dataset to be used to test the evaluator.
-      :param test_data: Snapshot of data to be used to test the evaluator.
-      :param parallel_requests: Number of parallel requests.
+      Returns the run with ``status="pending"``; poll the calibration run until it completes to
+      read its agreement metrics and per-item results.
 
-      Returns a model with the results and errors for each model and prompt.
-
-
-
-   .. py:method:: calibrate_existing(evaluator_id: str, *, test_dataset_id: Optional[str] = None, test_data: Optional[List[List[str]]] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> List[scorable.generated.openapi_client.models.evaluator_calibration_output.EvaluatorCalibrationOutput]
-
-      Run calibration set on an existing evaluator.
+      :param evaluator_id: The saved evaluator to calibrate.
+      :param dataset_id: The dataset whose published annotations to calibrate against.
+      :param score_config_id: Optional score config; omitting it uses the dataset's continuous scores.
 
 
 
-   .. py:method:: create(scoring_criteria: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, overwrite: bool = False, project_id: Optional[str] = None, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> Evaluator
+   .. py:method:: create(scoring_criteria: str = '', *, name: Optional[str] = None, intent: Optional[str] = None, model: Optional[ModelName] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, demonstration_dataset_id: Optional[str] = None, objective_id: Optional[str] = None, overwrite: bool = False, project_id: Optional[str] = None, _client: scorable.generated.openapi_client.ApiClient, _request_timeout: Optional[int] = None) -> Evaluator
 
       Create a new evaluator and return the result
 
@@ -666,8 +525,8 @@ Module Contents
       :param fallback_models: The fallback models to use in case the primary model fails.
       :param input_variables: An optional list of input variables for
                               the evaluator.
-      :param evaluator_demonstrations: An optional list of evaluator demonstrations to guide
-                                       the evaluator's behavior.
+      :param demonstration_dataset_id: An optional dataset of labelled examples whose published
+                                       annotations are resolved into few-shot demonstrations at evaluation time.
       :param overwrite: Whether to overwrite an evaluator with the same name if it exists.
 
 
@@ -751,7 +610,7 @@ Module Contents
 
 
 
-   .. py:method:: update(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, scoring_criteria: Optional[str] = None, evaluator_demonstrations: Optional[List[EvaluatorDemonstration]] = None, objective_id: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Evaluator
+   .. py:method:: update(evaluator_id: str, *, change_note: Optional[str] = None, fallback_models: Optional[List[ModelName]] = None, input_variables: Optional[Union[List[InputVariable], List[scorable.generated.openapi_client.models.input_variable_request.InputVariableRequest]]] = None, model: Optional[ModelName] = None, name: Optional[str] = None, scoring_criteria: Optional[str] = None, demonstration_dataset_id: Optional[str] = None, objective_id: Optional[str] = None, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> Evaluator
 
       Update an evaluator and return the result.
 

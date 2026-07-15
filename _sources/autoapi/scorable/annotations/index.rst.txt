@@ -1,0 +1,120 @@
+scorable.annotations
+====================
+
+.. py:module:: scorable.annotations
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   scorable.annotations.Annotations
+
+
+Module Contents
+---------------
+
+.. py:class:: Annotations(client_context: scorable.utils.ClientContextCallable)
+
+   Annotations API.
+
+   An annotation is a human label attached to exactly one target - a dataset item or an execution
+   log - using a score config. For binary/categorical configs pass ``category`` (the label); for
+   continuous configs pass ``value``. Omitting ``score_config_id`` defaults to the global identity
+   "Score" config, so a raw score can be labelled with just ``value``.
+
+   .. note::
+
+      The construction of the API instance should be handled by accessing an attribute of a
+      :class:`scorable.client.Scorable` instance.
+
+
+   .. py:method:: acreate(*, dataset_item_id: Optional[str] = None, execution_log_id: Optional[str] = None, value: Optional[float] = None, category: Optional[str] = None, rationale: str = '', status: str = 'published', score_config_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.annotation.Annotation
+      :async:
+
+
+      Asynchronously create an annotation.
+
+
+
+   .. py:method:: adelete(annotation_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> None
+      :async:
+
+
+      Asynchronously delete an annotation.
+
+
+
+   .. py:method:: aget(annotation_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.annotation.Annotation
+      :async:
+
+
+      Asynchronously get an annotation by ID.
+
+
+
+   .. py:method:: alist(*, dataset: Optional[str] = None, score_config: Optional[str] = None, status: Optional[str] = None, dataset_item: Optional[str] = None, execution_log: Optional[str] = None, limit: int = 100) -> AsyncIterator[scorable.generated.openapi_aclient.models.annotation.Annotation]
+      :async:
+
+
+      Asynchronously iterate through annotations.
+
+
+
+   .. py:method:: aupdate(annotation_id: str, *, value: Optional[float] = None, category: Optional[str] = None, rationale: Optional[str] = None, status: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.annotation.Annotation
+      :async:
+
+
+      Asynchronously update an annotation.
+
+
+
+   .. py:method:: create(*, dataset_item_id: Optional[str] = None, execution_log_id: Optional[str] = None, value: Optional[float] = None, category: Optional[str] = None, rationale: str = '', status: str = 'published', score_config_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.annotation.Annotation
+
+      Create an annotation.
+
+      :param dataset_item_id: The dataset item to annotate (mutually exclusive with execution_log_id).
+      :param execution_log_id: The execution log to annotate (mutually exclusive with dataset_item_id).
+      :param value: The score for continuous configs.
+      :param category: The label for binary/categorical configs.
+      :param rationale: Optional free-text justification.
+      :param status: ``draft`` or ``published`` (default ``published``).
+      :param score_config_id: The score config; defaults to the global identity "Score" config.
+
+
+
+   .. py:method:: delete(annotation_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> None
+
+      Delete an annotation.
+
+
+
+   .. py:method:: get(annotation_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.annotation.Annotation
+
+      Get an annotation by ID.
+
+
+
+   .. py:method:: list(*, dataset: Optional[str] = None, score_config: Optional[str] = None, status: Optional[str] = None, dataset_item: Optional[str] = None, execution_log: Optional[str] = None, limit: int = 100, _client: scorable.generated.openapi_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.annotation.Annotation]
+
+      Iterate through annotations.
+
+      :param dataset: Filter by the dataset the annotated items belong to.
+      :param score_config: Filter by score config id.
+      :param status: Filter by ``draft`` or ``published``.
+      :param dataset_item: Filter by dataset item id.
+      :param execution_log: Filter by execution log id.
+      :param limit: Number of entries to iterate through at most.
+
+
+
+   .. py:method:: update(annotation_id: str, *, value: Optional[float] = None, category: Optional[str] = None, rationale: Optional[str] = None, status: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.annotation.Annotation
+
+      Update an annotation. The target is immutable; ``value``/``category`` are re-derived.
+
+
+
+   .. py:attribute:: client_context
+
+

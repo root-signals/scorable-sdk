@@ -35,6 +35,12 @@ Module Contents
    Evaluator
 
 
+   .. py:attribute:: behavior
+      :type:  Optional[scorable.generated.openapi_aclient.models.evaluator_behavior_enum.EvaluatorBehaviorEnum]
+      :value: None
+
+
+
    .. py:attribute:: change_note
       :type:  Optional[pydantic.StrictStr]
       :value: None
@@ -43,6 +49,10 @@ Module Contents
 
    .. py:attribute:: created_at
       :type:  datetime.datetime
+
+
+   .. py:attribute:: demonstration_dataset_id
+      :type:  Optional[pydantic.StrictStr]
 
 
    .. py:attribute:: evaluator_demonstrations

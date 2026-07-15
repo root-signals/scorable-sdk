@@ -35,10 +35,6 @@ Module Contents
    ExecutionLogDetails
 
 
-   .. py:attribute:: chat_id
-      :type:  Optional[pydantic.StrictStr]
-
-
    .. py:attribute:: classification
       :type:  Optional[Dict[str, Any]]
 
@@ -116,12 +112,12 @@ Module Contents
 
 
 
-   .. py:attribute:: prompt_template
-      :type:  pydantic.StrictStr
-
-
    .. py:attribute:: score
       :type:  Optional[Union[pydantic.StrictFloat, pydantic.StrictInt]]
+
+
+   .. py:attribute:: scoring_criteria
+      :type:  pydantic.StrictStr
 
 
    .. py:attribute:: session_id

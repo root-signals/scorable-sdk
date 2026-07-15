@@ -22,6 +22,8 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
+   /autoapi/scorable/annotations/index
+   /autoapi/scorable/calibration_runs/index
    /autoapi/scorable/client/index
    /autoapi/scorable/datasets/index
    /autoapi/scorable/execution_logs/index
@@ -32,6 +34,7 @@ Submodules
    /autoapi/scorable/multiturn/index
    /autoapi/scorable/objectives/index
    /autoapi/scorable/projects/index
+   /autoapi/scorable/score_configs/index
    /autoapi/scorable/skills/index
 
 

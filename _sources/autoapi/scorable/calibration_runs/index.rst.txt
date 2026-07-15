@@ -1,0 +1,99 @@
+scorable.calibration_runs
+=========================
+
+.. py:module:: scorable.calibration_runs
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   scorable.calibration_runs.CalibrationRuns
+
+
+Module Contents
+---------------
+
+.. py:class:: CalibrationRuns(client_context: scorable.utils.ClientContextCallable)
+
+   Calibration runs API.
+
+   A calibration run measures the agreement between an evaluator and the human annotations on a
+   dataset, producing per-example results and aggregate metrics. Runs execute asynchronously: a
+   freshly created run has ``status="pending"``; poll :meth:`get` until it is ``completed`` or
+   ``failed`` to read its ``metrics``.
+
+   .. note::
+
+      The construction of the API instance should be handled by accessing an attribute of a
+      :class:`scorable.client.Scorable` instance.
+
+
+   .. py:method:: acreate(*, evaluator_id: str, dataset_id: str, score_config_id: Optional[str] = None, evaluator_version_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.calibration_run.CalibrationRun
+      :async:
+
+
+      Asynchronously start a calibration run.
+
+
+
+   .. py:method:: aget(run_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.calibration_run.CalibrationRun
+      :async:
+
+
+      Asynchronously get a calibration run by ID.
+
+
+
+   .. py:method:: alist(*, evaluator_id: Optional[str] = None, limit: int = 100) -> AsyncIterator[scorable.generated.openapi_aclient.models.calibration_run.CalibrationRun]
+      :async:
+
+
+      Asynchronously iterate through calibration runs.
+
+
+
+   .. py:method:: alist_items(run_id: str, *, limit: int = 100) -> AsyncIterator[scorable.generated.openapi_aclient.models.calibration_run_item.CalibrationRunItem]
+      :async:
+
+
+      Asynchronously iterate through the per-example results of a calibration run.
+
+
+
+   .. py:method:: create(*, evaluator_id: str, dataset_id: str, score_config_id: Optional[str] = None, evaluator_version_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.calibration_run.CalibrationRun
+
+      Start a calibration run against a labelled dataset and return it (``status="pending"``).
+
+      :param evaluator_id: The saved evaluator to calibrate.
+      :param dataset_id: The dataset whose published annotations to calibrate against.
+      :param score_config_id: Optional score config; omitting it uses the dataset's continuous scores.
+      :param evaluator_version_id: Optional specific evaluator version.
+
+
+
+   .. py:method:: get(run_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.calibration_run.CalibrationRun
+
+      Get a calibration run by ID (poll this for ``status`` and ``metrics``).
+
+
+
+   .. py:method:: list(*, evaluator_id: Optional[str] = None, limit: int = 100, _client: scorable.generated.openapi_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.calibration_run.CalibrationRun]
+
+      Iterate through calibration runs, optionally filtered by evaluator.
+
+      :param evaluator_id: Filter by evaluator external id.
+      :param limit: Number of entries to iterate through at most.
+
+
+
+   .. py:method:: list_items(run_id: str, *, limit: int = 100, _client: scorable.generated.openapi_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.calibration_run_item.CalibrationRunItem]
+
+      Iterate through the per-example results of a calibration run.
+
+
+
+   .. py:attribute:: client_context
+
+

@@ -4,6 +4,14 @@ scorable.datasets
 .. py:module:: scorable.datasets
 
 
+Attributes
+----------
+
+.. autoapisummary::
+
+   scorable.datasets.MAX_BULK_ITEMS
+
+
 Classes
 -------
 
@@ -25,6 +33,30 @@ Module Contents
       accesing an attribute of a :class:`scorable.client.Scorable` instance.
 
 
+   .. py:method:: aadd_item(dataset_id: str, *, response: str, request: str = '', expected_output: str = '', contexts: Optional[List[str]] = None, variables: Optional[Dict[str, Any]] = None, metadata: Optional[Dict[str, Any]] = None, change_note: str = '', _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.dataset_item.DatasetItem
+      :async:
+
+
+      Asynchronously add a single item to a dataset.
+
+
+
+   .. py:method:: aadd_items(dataset_id: str, items: List[Dict[str, Any]], *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> List[scorable.generated.openapi_aclient.models.dataset_item.DatasetItem]
+      :async:
+
+
+      Asynchronously bulk add items to a dataset (at most 5000 per call).
+
+
+
+   .. py:method:: aarchive_item(dataset_id: str, item_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> None
+      :async:
+
+
+      Asynchronously archive (soft-delete) a dataset item.
+
+
+
    .. py:method:: acreate(*, name: Optional[str] = None, path: Optional[str] = None, type: str = 'reference', project_id: Optional[str] = None, _request_timeout: Optional[int] = None) -> Optional[scorable.generated.openapi_aclient.models.data_set_create.DataSetCreate]
       :async:
 
@@ -32,6 +64,18 @@ Module Contents
       Asynchronously create a dataset object with the given parameters to the registry.
       If the dataset has a path, it will be uploaded to the registry.
 
+
+
+
+   .. py:method:: add_item(dataset_id: str, *, response: str, request: str = '', expected_output: str = '', contexts: Optional[List[str]] = None, variables: Optional[Dict[str, Any]] = None, metadata: Optional[Dict[str, Any]] = None, change_note: str = '', _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.api_client.ApiClient) -> scorable.generated.openapi_client.models.dataset_item.DatasetItem
+
+      Add a single item to a dataset.
+
+
+
+   .. py:method:: add_items(dataset_id: str, items: List[Dict[str, Any]], *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.api_client.ApiClient) -> List[scorable.generated.openapi_client.models.dataset_item.DatasetItem]
+
+      Bulk add items to a dataset (at most 5000 per call).
 
 
 
@@ -51,6 +95,14 @@ Module Contents
 
 
 
+   .. py:method:: aget_item(dataset_id: str, item_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.dataset_item.DatasetItem
+      :async:
+
+
+      Asynchronously get a single dataset item.
+
+
+
    .. py:method:: alist(search_term: Optional[str] = None, *, limit: int = 100, project_id: Optional[str] = None, _request_timeout: Optional[int] = None) -> AsyncIterator[scorable.generated.openapi_aclient.models.data_set_list.DataSetList]
       :async:
 
@@ -60,6 +112,28 @@ Module Contents
       :param limit: Number of entries to iterate through at most.
       :param search_term: Can be used to limit returned datasets.
       :param project_id: Optional project filter.
+
+
+
+   .. py:method:: alist_items(dataset_id: str, *, include_archived: bool = False, limit: int = 100) -> AsyncIterator[scorable.generated.openapi_aclient.models.dataset_item.DatasetItem]
+      :async:
+
+
+      Asynchronously iterate through the items of a dataset.
+
+
+
+   .. py:method:: archive_item(dataset_id: str, item_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.api_client.ApiClient) -> None
+
+      Archive (soft-delete) a dataset item.
+
+
+
+   .. py:method:: aupdate_item(dataset_id: str, item_id: str, *, response: Optional[str] = None, request: Optional[str] = None, expected_output: Optional[str] = None, contexts: Optional[List[str]] = None, variables: Optional[Dict[str, Any]] = None, metadata: Optional[Dict[str, Any]] = None, change_note: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.dataset_item.DatasetItem
+      :async:
+
+
+      Asynchronously edit a dataset item.
 
 
 
@@ -82,6 +156,12 @@ Module Contents
 
 
 
+   .. py:method:: get_item(dataset_id: str, item_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.api_client.ApiClient) -> scorable.generated.openapi_client.models.dataset_item.DatasetItem
+
+      Get a single dataset item.
+
+
+
    .. py:method:: list(search_term: Optional[str] = None, *, limit: int = 100, project_id: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.api_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.data_set_list.DataSetList]
 
       Iterate through the datasets.
@@ -92,6 +172,22 @@ Module Contents
 
 
 
+   .. py:method:: list_items(dataset_id: str, *, include_archived: bool = False, limit: int = 100, _client: scorable.generated.openapi_client.api_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.dataset_item.DatasetItem]
+
+      Iterate through the latest-version items of a dataset (with embedded published annotations).
+
+      :param dataset_id: The dataset to list items from.
+      :param include_archived: Include archived items when true.
+      :param limit: Number of entries to iterate through at most.
+
+
+
+   .. py:method:: update_item(dataset_id: str, item_id: str, *, response: Optional[str] = None, request: Optional[str] = None, expected_output: Optional[str] = None, contexts: Optional[List[str]] = None, variables: Optional[Dict[str, Any]] = None, metadata: Optional[Dict[str, Any]] = None, change_note: Optional[str] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.api_client.ApiClient) -> scorable.generated.openapi_client.models.dataset_item.DatasetItem
+
+      Edit a dataset item. Editing creates a new version; only the latest version is editable.
+
+
+
    .. py:attribute:: api_key
 
 
@@ -99,5 +195,9 @@ Module Contents
 
 
    .. py:attribute:: client_context
+
+
+.. py:data:: MAX_BULK_ITEMS
+   :value: 5000
 
 

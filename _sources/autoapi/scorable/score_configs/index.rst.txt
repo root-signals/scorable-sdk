@@ -1,0 +1,110 @@
+scorable.score_configs
+======================
+
+.. py:module:: scorable.score_configs
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   scorable.score_configs.ScoreConfigs
+
+
+Module Contents
+---------------
+
+.. py:class:: ScoreConfigs(client_context: scorable.utils.ClientContextCallable)
+
+   Score configs API.
+
+   A score config describes the label scale used when annotating and calibrating: ``binary``,
+   ``continuous`` or ``categorical``. Your organization's own configs are returned alongside the
+   read-only public globals (the identity "Score" config and "Thumbs").
+
+   .. note::
+
+      The construction of the API instance should be handled by accessing an attribute of a
+      :class:`scorable.client.Scorable` instance.
+
+
+   .. py:method:: acreate(*, name: str, type: str, categories: Optional[List[dict[str, Any]]] = None, min_value: Optional[float] = None, max_value: Optional[float] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.score_config.ScoreConfig
+      :async:
+
+
+      Asynchronously create a score config.
+
+
+
+   .. py:method:: adelete(score_config_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> None
+      :async:
+
+
+      Asynchronously delete a score config.
+
+
+
+   .. py:method:: aget(score_config_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.score_config.ScoreConfig
+      :async:
+
+
+      Asynchronously get a score config by ID.
+
+
+
+   .. py:method:: alist(*, limit: int = 100) -> AsyncIterator[scorable.generated.openapi_aclient.models.score_config.ScoreConfig]
+      :async:
+
+
+      Asynchronously iterate through the score configs.
+
+
+
+   .. py:method:: aupdate(score_config_id: str, *, name: Optional[str] = None, type: Optional[str] = None, categories: Optional[List[dict[str, Any]]] = None, min_value: Optional[float] = None, max_value: Optional[float] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_aclient.ApiClient) -> scorable.generated.openapi_aclient.models.score_config.ScoreConfig
+      :async:
+
+
+      Asynchronously update a score config.
+
+
+
+   .. py:method:: create(*, name: str, type: str, categories: Optional[List[dict[str, Any]]] = None, min_value: Optional[float] = None, max_value: Optional[float] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.score_config.ScoreConfig
+
+      Create a score config.
+
+      :param name: Human-readable name.
+      :param type: One of ``binary``, ``continuous`` or ``categorical``.
+      :param categories: For binary/categorical configs, a list of ``{"label": ..., "value": ...}``.
+      :param min_value: For continuous configs, the lower bound (defaults to 0).
+      :param max_value: For continuous configs, the upper bound (defaults to 1).
+
+
+
+   .. py:method:: delete(score_config_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> None
+
+      Delete a score config.
+
+
+
+   .. py:method:: get(score_config_id: str, *, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.score_config.ScoreConfig
+
+      Get a score config by ID.
+
+
+
+   .. py:method:: list(*, limit: int = 100, _client: scorable.generated.openapi_client.ApiClient) -> Iterator[scorable.generated.openapi_client.models.score_config.ScoreConfig]
+
+      Iterate through the score configs (your organization's own plus public globals).
+
+
+
+   .. py:method:: update(score_config_id: str, *, name: Optional[str] = None, type: Optional[str] = None, categories: Optional[List[dict[str, Any]]] = None, min_value: Optional[float] = None, max_value: Optional[float] = None, _request_timeout: Optional[int] = None, _client: scorable.generated.openapi_client.ApiClient) -> scorable.generated.openapi_client.models.score_config.ScoreConfig
+
+      Update a score config. Public globals are read-only.
+
+
+
+   .. py:attribute:: client_context
+
+
