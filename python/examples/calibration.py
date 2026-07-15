@@ -71,3 +71,13 @@ client.evaluators.update(
 run = client.evaluators.calibrate_run(network_troubleshooting_evaluator.id, dataset_id=dataset.id)
 run = wait_for_completion(run)
 print("Calibration metrics after demonstrations:", run.metrics)
+
+# Inspect the per-item results to see which inputs the evaluator disagreed with most. Items come
+# ordered by largest disagreement first; each carries the request/response that was scored, the
+# human (expected) and evaluator scores, and their absolute difference (disagreement).
+print("\nLargest disagreements:")
+for item in list(client.calibration_runs.list_items(run.id))[:5]:
+    delta = f"{item.disagreement:.2f}" if item.disagreement is not None else "n/a"
+    print(f"  |Δ|={delta}  human={item.human_value}  evaluator={item.evaluator_score}")
+    print(f"    request:  {item.request}")
+    print(f"    response: {item.response}")

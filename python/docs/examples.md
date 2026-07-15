@@ -42,7 +42,9 @@ Evaluator runs can be tagged with free-form tags. User ID and session ID can be 
 
 ## Adjust evaluator behavior
 
-An evaluator behaviour can be adjusted by providing demonstrations.
+An evaluator's behaviour can be adjusted by providing demonstrations. The example below builds a
+labelled dataset, runs calibration, compares the metrics before and after adding demonstrations, and
+inspects the per-item results — the request/response inputs the evaluator disagreed with most.
 
 ```{literalinclude} ../examples/calibration.py
 ```
