@@ -15,6 +15,9 @@ import { registerOtelFilterCommands } from "./commands/otel-filter/index.js";
 import { registerOtelTraceCommands } from "./commands/otel-trace/index.js";
 import { registerModelCommands } from "./commands/model/index.js";
 import { registerProjectCommands } from "./commands/project/index.js";
+import { registerAnnotationCommands } from "./commands/annotation/index.js";
+import { registerCalibrationRunCommands } from "./commands/calibration-run/index.js";
+import { registerDatasetItemCommands } from "./commands/dataset-item/index.js";
 
 const { version } = createRequire(import.meta.url)("../package.json") as {
   version: string;
@@ -85,6 +88,9 @@ export function createCli(): Command {
   registerOtelTraceCommands(program);
   registerModelCommands(program);
   registerProjectCommands(program);
+  registerAnnotationCommands(program);
+  registerCalibrationRunCommands(program);
+  registerDatasetItemCommands(program);
 
   return program;
 }
