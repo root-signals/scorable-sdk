@@ -27,6 +27,10 @@ export function registerCreateCommand(evaluator: Command): void {
     )
     .option("--overwrite", "Overwrite if evaluator with same name exists")
     .option("--objective-version-id <id>", "Objective version ID")
+    .option(
+      "--demonstration-dataset <id>",
+      "Dataset of labelled examples resolved into few-shot demonstrations at evaluation time.",
+    )
     .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC)
     .action(
       async (opts: {
@@ -37,6 +41,7 @@ export function registerCreateCommand(evaluator: Command): void {
         models?: string;
         overwrite?: boolean;
         objectiveVersionId?: string;
+        demonstrationDataset?: string;
         projectId?: string;
       }) => {
         if (!opts.intent && !opts.objectiveId) {
@@ -64,6 +69,7 @@ export function registerCreateCommand(evaluator: Command): void {
         if (opts.objectiveId) payload.objective_id = opts.objectiveId;
         if (opts.overwrite !== undefined) payload.overwrite = opts.overwrite;
         if (opts.objectiveVersionId) payload.objective_version_id = opts.objectiveVersionId;
+        if (opts.demonstrationDataset) payload.demonstration_dataset_id = opts.demonstrationDataset;
 
         if (opts.models) {
           const r = parseJsonArg(opts.models, z.array(z.string()));

@@ -17,6 +17,10 @@ export function registerUpdateCommand(evaluator: Command): void {
     .option("--objective-id <id>", "The new objective ID")
     .option("--objective-version-id <id>", "The new objective version ID")
     .option(
+      "--demonstration-dataset <id>",
+      "Dataset of labelled examples resolved into few-shot demonstrations at evaluation time.",
+    )
+    .option(
       "--project-id <uuid>",
       "Move the evaluator to this project (within the same organization). " + PROJECT_ID_FLAG_DESC,
     )
@@ -29,6 +33,7 @@ export function registerUpdateCommand(evaluator: Command): void {
           models?: string;
           objectiveId?: string;
           objectiveVersionId?: string;
+          demonstrationDataset?: string;
           projectId?: string;
         },
       ) => {
@@ -40,6 +45,8 @@ export function registerUpdateCommand(evaluator: Command): void {
         if (opts.objectiveId !== undefined) payload.objective_id = opts.objectiveId;
         if (opts.objectiveVersionId !== undefined)
           payload.objective_version_id = opts.objectiveVersionId;
+        if (opts.demonstrationDataset !== undefined)
+          payload.demonstration_dataset_id = opts.demonstrationDataset;
 
         if (opts.models !== undefined) {
           const r = parseJsonArg(opts.models, z.array(z.string()));

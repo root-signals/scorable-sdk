@@ -1,3 +1,12 @@
+## 0.15.0
+
+- Bump `@root-signals/scorable` to `^0.12.0` for the annotation-store resources.
+- New `scorable dataset-item` command group: `add`, `add-bulk`, `list`, `get`, `update`, `archive` — build labelled datasets programmatically.
+- New `scorable annotation` command group: `create`, `list`, `get`, `update`, `delete`. Label a dataset item (or execution log) with an expected score; omitting `--score-config-id` uses the global identity "Score" config.
+- New `scorable calibration-run` command group: `create`, `get`, `list`, `items` — start a calibration run against a labelled dataset and read its per-example results (human/evaluator scores, disagreement, request/response).
+- New `scorable evaluator calibrate <id> --dataset-id <id>` to start a calibration run for a saved evaluator.
+- `evaluator create` / `evaluator update` accept `--demonstration-dataset <id>` to attach a labelled dataset as few-shot demonstrations.
+
 ## 0.14.0
 
 - Bump `@root-signals/scorable` to `^0.11.0` for the new `projects` resource and `projectId` support.

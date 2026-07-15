@@ -336,6 +336,59 @@ scorable evaluator execute-by-name "My Evaluator" --request "What is 2+2?" --res
 
 Accepts the same options as `execute`, including `--variables`.
 
+## Labelling & Calibration
+
+Build a labelled dataset, then calibrate a saved evaluator against it to measure how well it agrees with your expected scores.
+
+### Dataset items
+
+Populate a `test`-type dataset with request/response items.
+
+```bash
+scorable dataset-item add <dataset_id> --response "Paris" --request "Capital of France?"
+scorable dataset-item add-bulk <dataset_id> --items '[{"response":"Paris","request":"Capital of France?"}]'
+scorable dataset-item list <dataset_id>                       # latest-version items (with embedded annotations)
+scorable dataset-item list <dataset_id> --include-archived
+scorable dataset-item get <dataset_id> <item_id>
+scorable dataset-item update <dataset_id> <item_id> --response "Paris, France"
+scorable dataset-item archive <dataset_id> <item_id>
+```
+
+### Annotations
+
+Label a dataset item (or execution log) with an expected score. Omitting `--score-config-id` uses the global identity "Score" config, so a raw expected score can be set with just `--value`.
+
+```bash
+scorable annotation create --dataset-item-id <item_id> --value 0.9
+scorable annotation create --dataset-item-id <item_id> --category "👍" --score-config-id <config_id>
+scorable annotation list --dataset <dataset_id>
+scorable annotation get <annotation_id>
+scorable annotation update <annotation_id> --value 0.8
+scorable annotation delete <annotation_id>
+```
+
+### Calibration runs
+
+Start a calibration run against a labelled dataset and read its per-example results (human vs. evaluator score, disagreement, and the request/response that was scored).
+
+```bash
+scorable evaluator calibrate <evaluator_id> --dataset-id <dataset_id>
+# ...or the equivalent calibration-run command:
+scorable calibration-run create --evaluator-id <evaluator_id> --dataset-id <dataset_id>
+scorable calibration-run get <run_id>                         # poll for status + metrics
+scorable calibration-run list --evaluator-id <evaluator_id>
+scorable calibration-run items <run_id>                       # per-example results
+```
+
+### Demonstrations
+
+Attach a labelled dataset as few-shot demonstrations on an evaluator.
+
+```bash
+scorable evaluator create --name "My Evaluator" ... --demonstration-dataset <dataset_id>
+scorable evaluator update <evaluator_id> --demonstration-dataset <dataset_id>
+```
+
 ## Custom Model Management
 
 Bring your own LLM (BYO-LLM) — register a custom or self-hosted model, then reference it from evaluators and judges.
