@@ -34,7 +34,7 @@ class OtelTraceEvaluationFilterInputRequest(BaseModel):
     sampling_rate: Optional[
         Union[Annotated[float, Field(le=1, strict=True, ge=0)], Annotated[int, Field(le=1, strict=True, ge=0)]]
     ] = 1.0
-    delay_seconds: Optional[Annotated[int, Field(strict=True, ge=0)]] = 10
+    delay_seconds: Optional[Annotated[int, Field(strict=True, ge=0)]] = 20
     applies_to_new_only: Optional[StrictBool] = True
     is_active: Optional[StrictBool] = True
     extractor_rules: Optional[List[Dict[str, Any]]] = None
@@ -115,7 +115,7 @@ class OtelTraceEvaluationFilterInputRequest(BaseModel):
                 "judge_id": obj.get("judge_id"),
                 "filter_criteria": obj.get("filter_criteria"),
                 "sampling_rate": obj.get("sampling_rate") if obj.get("sampling_rate") is not None else 1.0,
-                "delay_seconds": obj.get("delay_seconds") if obj.get("delay_seconds") is not None else 10,
+                "delay_seconds": obj.get("delay_seconds") if obj.get("delay_seconds") is not None else 20,
                 "applies_to_new_only": obj.get("applies_to_new_only")
                 if obj.get("applies_to_new_only") is not None
                 else True,

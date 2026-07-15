@@ -5,6 +5,298 @@ info:
   description: Scorable JSON API provides a way to access Scorable using provisioned
     API token
 paths:
+  /v1/annotations/:
+    get:
+      operationId: annotations_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - in: query
+        name: dataset
+        schema:
+          type: string
+          format: uuid
+        description: Filter by the dataset the items belong to.
+      - in: query
+        name: dataset_item
+        schema:
+          type: string
+          format: uuid
+        description: Filter by dataset item id.
+      - in: query
+        name: execution_log
+        schema:
+          type: string
+          format: uuid
+        description: Filter by execution log id.
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: score_config
+        schema:
+          type: string
+          format: uuid
+        description: Filter by score config id.
+      - in: query
+        name: status
+        schema:
+          type: string
+        description: Filter by status (draft or published).
+      tags:
+      - annotations
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAnnotationList'
+          description: ''
+    post:
+      operationId: annotations_create
+      description: Create an annotation.
+      tags:
+      - annotations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnotationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AnnotationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AnnotationRequest'
+      security:
+      - publicApiKey: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+          description: ''
+  /v1/annotations/{id}/:
+    get:
+      operationId: annotations_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - annotations
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+          description: ''
+    put:
+      operationId: annotations_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - annotations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnotationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AnnotationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AnnotationRequest'
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+          description: ''
+    patch:
+      operationId: annotations_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - annotations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAnnotationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAnnotationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAnnotationRequest'
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+          description: ''
+    delete:
+      operationId: annotations_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - annotations
+      security:
+      - publicApiKey: []
+      responses:
+        '204':
+          description: No response body
+  /v1/calibration-runs/:
+    get:
+      operationId: calibration_runs_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - in: query
+        name: evaluator_external_id
+        schema:
+          type: string
+        description: Filter by evaluator external id.
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - calibration-runs
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCalibrationRunList'
+          description: ''
+    post:
+      operationId: calibration_runs_create
+      description: Start a calibration run.
+      tags:
+      - calibration-runs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalibrationRunCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CalibrationRunCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CalibrationRunCreateRequest'
+        required: true
+      security:
+      - publicApiKey: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalibrationRun'
+          description: ''
+  /v1/calibration-runs/{id}/:
+    get:
+      operationId: calibration_runs_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - calibration-runs
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalibrationRun'
+          description: ''
+  /v1/calibration-runs/{id}/items/:
+    get:
+      operationId: calibration_runs_items_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - calibration-runs
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCalibrationRunItemList'
+          description: ''
   /v1/datasets/:
     get:
       operationId: datasets_list
@@ -99,6 +391,243 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DataSetCreate'
+          description: ''
+  /v1/datasets/{dataset_id}/items/:
+    get:
+      operationId: datasets_items_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - in: path
+        name: dataset_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: is_archived
+        schema:
+          type: boolean
+        description: Include archived items when true (defaults to excluding them).
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - datasets
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDatasetItemList'
+          description: ''
+    post:
+      operationId: datasets_items_create
+      description: Create a dataset item.
+      parameters:
+      - in: path
+        name: dataset_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - datasets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetItemRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DatasetItemRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DatasetItemRequest'
+        required: true
+      security:
+      - publicApiKey: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetItem'
+          description: ''
+  /v1/datasets/{dataset_id}/items/{item_id}/:
+    get:
+      operationId: datasets_items_retrieve
+      parameters:
+      - in: path
+        name: dataset_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: item_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - datasets
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetItem'
+          description: ''
+    put:
+      operationId: datasets_items_update
+      parameters:
+      - in: path
+        name: dataset_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: item_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - datasets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetItemRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DatasetItemRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DatasetItemRequest'
+        required: true
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetItem'
+          description: ''
+    patch:
+      operationId: datasets_items_partial_update
+      parameters:
+      - in: path
+        name: dataset_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: item_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - datasets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDatasetItemRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDatasetItemRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDatasetItemRequest'
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetItem'
+          description: ''
+    delete:
+      operationId: datasets_items_destroy
+      parameters:
+      - in: path
+        name: dataset_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: item_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - datasets
+      security:
+      - publicApiKey: []
+      responses:
+        '204':
+          description: No response body
+  /v1/datasets/{dataset_id}/items/bulk/:
+    post:
+      operationId: datasets_items_bulk_create
+      description: Bulk create dataset items.
+      parameters:
+      - in: path
+        name: dataset_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - datasets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/DatasetItemRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/DatasetItemRequest'
+          multipart/form-data:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/DatasetItemRequest'
+        required: true
+      security:
+      - publicApiKey: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DatasetItem'
           description: ''
   /v1/datasets/{id}/:
     get:
@@ -440,6 +969,7 @@ paths:
         required: true
       security:
       - publicApiKey: []
+      deprecated: true
       responses:
         '200':
           content:
@@ -488,6 +1018,7 @@ paths:
               $ref: '#/components/schemas/SkillTestDataRequest'
       security:
       - publicApiKey: []
+      deprecated: true
       responses:
         '200':
           content:
@@ -2849,8 +3380,233 @@ paths:
       responses:
         '204':
           description: No response body
+  /v1/score-configs/:
+    get:
+      operationId: score_configs_list
+      parameters:
+      - name: cursor
+        required: false
+        in: query
+        description: The pagination cursor value.
+        schema:
+          type: string
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - score-configs
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedScoreConfigList'
+          description: ''
+    post:
+      operationId: score_configs_create
+      description: Create a score config.
+      tags:
+      - score-configs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoreConfigRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ScoreConfigRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ScoreConfigRequest'
+        required: true
+      security:
+      - publicApiKey: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreConfig'
+          description: ''
+  /v1/score-configs/{id}/:
+    get:
+      operationId: score_configs_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - score-configs
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreConfig'
+          description: ''
+    put:
+      operationId: score_configs_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - score-configs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoreConfigRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ScoreConfigRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ScoreConfigRequest'
+        required: true
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreConfig'
+          description: ''
+    patch:
+      operationId: score_configs_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - score-configs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedScoreConfigRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedScoreConfigRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedScoreConfigRequest'
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreConfig'
+          description: ''
+    delete:
+      operationId: score_configs_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - score-configs
+      security:
+      - publicApiKey: []
+      responses:
+        '204':
+          description: No response body
 components:
   schemas:
+    Annotation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        dataset_item:
+          type: string
+          format: uuid
+          nullable: true
+        execution_log:
+          type: string
+          format: uuid
+          nullable: true
+        score_config:
+          type: string
+          format: uuid
+        value:
+          type: number
+          format: double
+          nullable: true
+        category:
+          type: string
+          nullable: true
+          maxLength: 255
+        rationale:
+          type: string
+        status:
+          $ref: '#/components/schemas/AnnotationStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - id
+    AnnotationRequest:
+      type: object
+      properties:
+        dataset_item:
+          type: string
+          format: uuid
+          nullable: true
+        execution_log:
+          type: string
+          format: uuid
+          nullable: true
+        score_config:
+          type: string
+          format: uuid
+        value:
+          type: number
+          format: double
+          nullable: true
+        category:
+          type: string
+          nullable: true
+          maxLength: 255
+        rationale:
+          type: string
+        status:
+          $ref: '#/components/schemas/AnnotationStatusEnum'
+    AnnotationStatusEnum:
+      enum:
+      - draft
+      - published
+      type: string
+      description: |-
+        * `draft` - draft
+        * `published` - published
     BatchExecutionStatus:
       enum:
       - pending
@@ -2883,6 +3639,186 @@ components:
           maxItems: 15
       required:
       - log_ids
+    CalibrationRun:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        evaluator_external_id:
+          type: string
+          format: uuid
+          readOnly: true
+        evaluator_version_id:
+          type: string
+          format: uuid
+          readOnly: true
+        score_config:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        source_type:
+          allOf:
+          - $ref: '#/components/schemas/CalibrationSourceTypeEnum'
+          readOnly: true
+        dataset:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/CalibrationRunStatusEnum'
+          readOnly: true
+        metrics:
+          readOnly: true
+        n_examples:
+          type: integer
+          readOnly: true
+        n_skipped:
+          type: integer
+          readOnly: true
+        error:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - dataset
+      - error
+      - evaluator_external_id
+      - evaluator_version_id
+      - id
+      - metrics
+      - n_examples
+      - n_skipped
+      - score_config
+      - source_type
+      - status
+    CalibrationRunCreateRequest:
+      type: object
+      properties:
+        evaluator_external_id:
+          type: string
+          format: uuid
+        evaluator_version_id:
+          type: string
+          format: uuid
+          nullable: true
+        score_config_id:
+          type: string
+          format: uuid
+          nullable: true
+        source:
+          $ref: '#/components/schemas/CalibrationRunSourceRequest'
+      required:
+      - evaluator_external_id
+      - source
+    CalibrationRunItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        annotation:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        dataset_item:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        execution_log:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        evaluator_score:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        human_value:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        disagreement:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ExperimentStatusEnum'
+          readOnly: true
+        justification:
+          type: string
+          readOnly: true
+        request:
+          type: string
+          readOnly: true
+        response:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - annotation
+      - created_at
+      - dataset_item
+      - disagreement
+      - evaluator_score
+      - execution_log
+      - human_value
+      - id
+      - justification
+      - request
+      - response
+      - status
+    CalibrationRunSourceRequest:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/CalibrationSourceTypeEnum'
+        dataset_id:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - type
+    CalibrationRunStatusEnum:
+      enum:
+      - pending
+      - running
+      - completed
+      - failed
+      type: string
+      description: |-
+        * `pending` - pending
+        * `running` - running
+        * `completed` - completed
+        * `failed` - failed
+    CalibrationSourceTypeEnum:
+      enum:
+      - dataset
+      - logs
+      type: string
+      description: |-
+        * `dataset` - dataset
+        * `logs` - logs
     DataSetCreate:
       type: object
       properties:
@@ -3005,6 +3941,75 @@ components:
       description: |-
         * `reference` - REFERENCE
         * `test` - TEST
+    DatasetItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        external_id:
+          type: string
+          format: uuid
+          readOnly: true
+        version_id:
+          type: string
+          format: uuid
+          readOnly: true
+        is_latest_version:
+          type: boolean
+          readOnly: true
+          default: true
+        response:
+          type: string
+        request:
+          type: string
+        expected_output:
+          type: string
+        contexts: {}
+        variables: {}
+        metadata: {}
+        change_note:
+          type: string
+        is_archived:
+          type: boolean
+          readOnly: true
+        annotations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Annotation'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - annotations
+      - created_at
+      - external_id
+      - id
+      - is_archived
+      - is_latest_version
+      - response
+      - version_id
+    DatasetItemRequest:
+      type: object
+      properties:
+        response:
+          type: string
+          minLength: 1
+        request:
+          type: string
+        expected_output:
+          type: string
+        contexts: {}
+        variables: {}
+        metadata: {}
+        change_note:
+          type: string
+      required:
+      - response
     DatasetRangeRequest:
       type: object
       properties:
@@ -3043,6 +4048,12 @@ components:
           type: string
           format: date-time
           readOnly: true
+        demonstration_dataset_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Dataset whose annotations for this evaluator are used as few-shot
+            demonstrations.
         evaluator_demonstrations:
           type: array
           items:
@@ -3144,6 +4155,8 @@ components:
         is_root_evaluator:
           type: boolean
           readOnly: true
+        behavior:
+          $ref: '#/components/schemas/EvaluatorBehaviorEnum'
       required:
       - _meta
       - created_at
@@ -3158,6 +4171,16 @@ components:
       - updated_by
       - version_id
       - visibility
+    EvaluatorBehaviorEnum:
+      enum:
+      - thorough
+      - fast
+      - balanced
+      type: string
+      description: |-
+        * `thorough` - Thorough
+        * `fast` - Fast
+        * `balanced` - Balanced
     EvaluatorCalibrationOutput:
       type: object
       properties:
@@ -3509,6 +4532,12 @@ components:
         change_note:
           type: string
           nullable: true
+        demonstration_dataset_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Dataset whose annotations for this evaluator are used as few-shot
+            demonstrations.
         evaluator_demonstrations:
           type: array
           items:
@@ -3558,6 +4587,8 @@ components:
           type: string
           minLength: 1
           maxLength: 500000
+        behavior:
+          $ref: '#/components/schemas/EvaluatorBehaviorEnum'
       required:
       - name
       - objective_id
@@ -3594,10 +4625,6 @@ components:
     ExecutionLogDetails:
       type: object
       properties:
-        chat_id:
-          type: string
-          readOnly: true
-          nullable: true
         cost:
           type: number
           format: double
@@ -3675,7 +4702,7 @@ components:
           type: string
           format: uuid
           nullable: true
-        prompt_template:
+        scoring_criteria:
           type: string
           readOnly: true
         score:
@@ -3702,6 +4729,7 @@ components:
           items:
             $ref: '#/components/schemas/SkillExecutionValidatorResult'
           readOnly: true
+          description: On Judge logs, list of evaluator results.
         variables:
           type: object
           additionalProperties:
@@ -3719,7 +4747,6 @@ components:
           readOnly: true
           nullable: true
       required:
-      - chat_id
       - classification
       - confidence
       - cost
@@ -3737,8 +4764,8 @@ components:
       - model
       - model_call_duration
       - owner
-      - prompt_template
       - score
+      - scoring_criteria
       - session_id
       - system_prompt
       - tags
@@ -3863,6 +4890,16 @@ components:
       - tags
       - user_id
       - variables
+    ExperimentStatusEnum:
+      enum:
+      - pending
+      - completed
+      - failed
+      type: string
+      description: |-
+        * `pending` - pending
+        * `completed` - completed
+        * `failed` - failed
     GenerationModelParamsRequest:
       type: object
       properties:
@@ -4007,9 +5044,7 @@ components:
           type: string
           maxLength: 255
         visibility:
-          allOf:
-          - $ref: '#/components/schemas/VisibilityEnum'
-          readOnly: true
+          $ref: '#/components/schemas/VisibilityEnum'
         version_id:
           type: string
           format: uuid
@@ -4024,7 +5059,6 @@ components:
       - intent
       - name
       - version_id
-      - visibility
     JudgeBatchExecutionDetail:
       type: object
       properties:
@@ -4741,6 +5775,8 @@ components:
         stage:
           type: string
           maxLength: 255
+        visibility:
+          $ref: '#/components/schemas/VisibilityEnum'
       required:
       - intent
       - name
@@ -5028,6 +6064,9 @@ components:
           minLength: 1
       required:
       - full_name
+    NullEnum:
+      enum:
+      - null
     Objective:
       type: object
       properties:
@@ -5177,7 +6216,7 @@ components:
         delay_seconds:
           type: integer
           minimum: 0
-          default: 10
+          default: 20
         applies_to_new_only:
           type: boolean
           default: true
@@ -5271,6 +6310,63 @@ components:
       - first_span_at
       - last_span_at
       - trace_id
+    PaginatedAnnotationList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Annotation'
+    PaginatedCalibrationRunItemList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalibrationRunItem'
+    PaginatedCalibrationRunList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalibrationRun'
     PaginatedDataSetListList:
       type: object
       required:
@@ -5290,6 +6386,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DataSetList'
+    PaginatedDatasetItemList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetItem'
     PaginatedEvaluatorList:
       type: object
       required:
@@ -5480,12 +6595,78 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Project'
+    PaginatedScoreConfigList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScoreConfig'
+    PatchedAnnotationRequest:
+      type: object
+      properties:
+        dataset_item:
+          type: string
+          format: uuid
+          nullable: true
+        execution_log:
+          type: string
+          format: uuid
+          nullable: true
+        score_config:
+          type: string
+          format: uuid
+        value:
+          type: number
+          format: double
+          nullable: true
+        category:
+          type: string
+          nullable: true
+          maxLength: 255
+        rationale:
+          type: string
+        status:
+          $ref: '#/components/schemas/AnnotationStatusEnum'
+    PatchedDatasetItemRequest:
+      type: object
+      properties:
+        response:
+          type: string
+          minLength: 1
+        request:
+          type: string
+        expected_output:
+          type: string
+        contexts: {}
+        variables: {}
+        metadata: {}
+        change_note:
+          type: string
     PatchedEvaluatorRequest:
       type: object
       properties:
         change_note:
           type: string
           nullable: true
+        demonstration_dataset_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Dataset whose annotations for this evaluator are used as few-shot
+            demonstrations.
         evaluator_demonstrations:
           type: array
           items:
@@ -5535,6 +6716,8 @@ components:
           type: string
           minLength: 1
           maxLength: 500000
+        behavior:
+          $ref: '#/components/schemas/EvaluatorBehaviorEnum'
     PatchedJudgeRequest:
       type: object
       properties:
@@ -5566,6 +6749,8 @@ components:
         stage:
           type: string
           maxLength: 255
+        visibility:
+          $ref: '#/components/schemas/VisibilityEnum'
     PatchedModelRequest:
       type: object
       properties:
@@ -5626,6 +6811,24 @@ components:
           type: string
         is_default:
           type: boolean
+    PatchedScoreConfigRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        type:
+          $ref: '#/components/schemas/ScoreConfigTypeEnum'
+        categories: {}
+        min_value:
+          type: number
+          format: double
+          nullable: true
+        max_value:
+          type: number
+          format: double
+          nullable: true
     Project:
       type: object
       properties:
@@ -5721,6 +6924,70 @@ components:
         * `user` - user
         * `assistant` - assistant
         * `tool` - tool
+    ScoreConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        type:
+          $ref: '#/components/schemas/ScoreConfigTypeEnum'
+        categories: {}
+        min_value:
+          type: number
+          format: double
+          nullable: true
+        max_value:
+          type: number
+          format: double
+          nullable: true
+        is_default:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - id
+      - is_default
+      - name
+    ScoreConfigRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        type:
+          $ref: '#/components/schemas/ScoreConfigTypeEnum'
+        categories: {}
+        min_value:
+          type: number
+          format: double
+          nullable: true
+        max_value:
+          type: number
+          format: double
+          nullable: true
+      required:
+      - name
+    ScoreConfigTypeEnum:
+      enum:
+      - binary
+      - continuous
+      - categorical
+      type: string
+      description: |-
+        * `binary` - binary
+        * `continuous` - continuous
+        * `categorical` - categorical
     SkillExecutionValidatorResult:
       type: object
       properties:
@@ -5771,6 +7038,8 @@ components:
           type: string
           writeOnly: true
           minLength: 1
+          description: 'Deprecated: superseded by the annotation-based dataset (DatasetItem
+            + Annotation).'
         project_id:
           type: string
           format: uuid
@@ -5780,6 +7049,16 @@ components:
           - $ref: '#/components/schemas/DatasetRangeRequest'
           nullable: true
           description: Specifies the range of dataset rows to use
+    SkillTestInputBehaviorEnum:
+      enum:
+      - fast
+      - balanced
+      - thorough
+      type: string
+      description: |-
+        * `fast` - fast
+        * `balanced` - balanced
+        * `thorough` - thorough
     SkillTestInputRequest:
       type: object
       properties:
@@ -5796,6 +7075,8 @@ components:
           type: string
           writeOnly: true
           minLength: 1
+          description: 'Deprecated: superseded by the annotation-based dataset (DatasetItem
+            + Annotation).'
         project_id:
           type: string
           format: uuid
@@ -5834,19 +7115,20 @@ components:
         is_evaluator:
           type: boolean
           default: false
+        behavior:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/SkillTestInputBehaviorEnum'
+          - $ref: '#/components/schemas/NullEnum'
       required:
       - prompt
     StatusEnum:
       enum:
-      - unlisted
-      - listed
       - public
       - public_unlisted
       - private
       type: string
       description: |-
-        * `unlisted` - unlisted
-        * `listed` - listed
         * `public` - public
         * `public_unlisted` - public_unlisted
         * `private` - private

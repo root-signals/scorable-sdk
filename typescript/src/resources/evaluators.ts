@@ -14,7 +14,7 @@ export type EvaluatorListItem = components['schemas']['EvaluatorListOutput'];
 export type EvaluatorDetail = components['schemas']['Evaluator'];
 export type ExecutionResult = components['schemas']['EvaluatorExecutionResult'];
 export type EvaluatorRequest = components['schemas']['EvaluatorRequest'];
-export type EvaluatorDemonstration = components['schemas']['EvaluatorDemonstrationsRequest'];
+export type CalibrationRun = components['schemas']['CalibrationRun'];
 
 export interface EvaluatorWithExecute extends EvaluatorDetail {
   execute(payload: ExecutionPayload): Promise<ExecutionResult>;
@@ -36,7 +36,8 @@ export interface EvaluatorCreateParams {
   overwrite?: boolean;
   objective_id?: string;
   objective_version_id?: string;
-  evaluator_demonstrations?: EvaluatorDemonstration[];
+  /** A dataset of labelled examples resolved into few-shot demonstrations at evaluation time. */
+  demonstration_dataset_id?: string;
   /** Project to assign this evaluator to. Defaults to the org's default project. */
   projectId?: string;
 }
@@ -49,6 +50,8 @@ export interface EvaluatorUpdateParams {
   objective_version_id?: string;
   change_note?: string;
   overwrite?: boolean;
+  /** A dataset of labelled examples resolved into few-shot demonstrations at evaluation time. */
+  demonstration_dataset_id?: string;
   /** Pass `projectId` to move this evaluator to a different project within your organization. */
   projectId?: string;
 }
@@ -244,6 +247,33 @@ export class EvaluatorsResource {
     return response.text();
   }
 
+  /**
+   * Start a calibration run for a saved evaluator against a labelled dataset.
+   * Returns the run with `status: "pending"`; poll `client.calibrationRuns.get(run.id)` for its
+   * agreement metrics and per-item results.
+   */
+  async calibrateRun(
+    id: string,
+    options: { datasetId: string; scoreConfigId?: string },
+  ): Promise<CalibrationRun> {
+    const { data, error } = await this._client.POST('/v1/calibration-runs/', {
+      body: {
+        evaluator_external_id: id,
+        ...(options.scoreConfigId !== undefined ? { score_config_id: options.scoreConfigId } : {}),
+        source: { type: 'dataset' as const, dataset_id: options.datasetId },
+      },
+    });
+    if (error) {
+      throw new ScorableError(
+        (error as ApiError)?.status ?? 500,
+        'CALIBRATE_EVALUATOR_FAILED',
+        error,
+        `Failed to start calibration run for evaluator ${id}`,
+      );
+    }
+    return data;
+  }
+
   async create(params: EvaluatorCreateParams): Promise<EvaluatorWithExecute> {
     if (params.objective_id && params.intent) {
       throw new ScorableError(
@@ -297,8 +327,8 @@ export class EvaluatorsResource {
     if (params.objective_version_id) {
       requestBody.objective_version_id = params.objective_version_id;
     }
-    if (params.evaluator_demonstrations?.length) {
-      requestBody.evaluator_demonstrations = params.evaluator_demonstrations;
+    if (params.demonstration_dataset_id !== undefined) {
+      requestBody.demonstration_dataset_id = params.demonstration_dataset_id;
     }
     if (params.projectId !== undefined) {
       requestBody.project_id = params.projectId;

@@ -64,7 +64,7 @@ class EvaluatorsApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> List[EvaluatorCalibrationOutput]:
-        """evaluators_calibrate_create
+        """(Deprecated) evaluators_calibrate_create
 
         Test an evaluator definition using calibration data
 
@@ -91,6 +91,7 @@ class EvaluatorsApi:
         :type _host_index: int, optional
         :return: Returns the result object.
         """  # noqa: E501
+        warnings.warn("POST /v1/evaluators/calibrate/ is deprecated.", DeprecationWarning, stacklevel=2)
 
         _param = self._evaluators_calibrate_create_serialize(
             skill_test_input_request=skill_test_input_request,
@@ -124,7 +125,7 @@ class EvaluatorsApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> ApiResponse[List[EvaluatorCalibrationOutput]]:
-        """evaluators_calibrate_create
+        """(Deprecated) evaluators_calibrate_create
 
         Test an evaluator definition using calibration data
 
@@ -151,6 +152,7 @@ class EvaluatorsApi:
         :type _host_index: int, optional
         :return: Returns the result object.
         """  # noqa: E501
+        warnings.warn("POST /v1/evaluators/calibrate/ is deprecated.", DeprecationWarning, stacklevel=2)
 
         _param = self._evaluators_calibrate_create_serialize(
             skill_test_input_request=skill_test_input_request,
@@ -184,7 +186,7 @@ class EvaluatorsApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> RESTResponseType:
-        """evaluators_calibrate_create
+        """(Deprecated) evaluators_calibrate_create
 
         Test an evaluator definition using calibration data
 
@@ -211,6 +213,7 @@ class EvaluatorsApi:
         :type _host_index: int, optional
         :return: Returns the result object.
         """  # noqa: E501
+        warnings.warn("POST /v1/evaluators/calibrate/ is deprecated.", DeprecationWarning, stacklevel=2)
 
         _param = self._evaluators_calibrate_create_serialize(
             skill_test_input_request=skill_test_input_request,
@@ -299,7 +302,7 @@ class EvaluatorsApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> List[EvaluatorCalibrationOutput]:
-        """evaluators_calibrate_create2
+        """(Deprecated) evaluators_calibrate_create2
 
         Test an existing evaluator using calibration data
 
@@ -328,6 +331,7 @@ class EvaluatorsApi:
         :type _host_index: int, optional
         :return: Returns the result object.
         """  # noqa: E501
+        warnings.warn("POST /v1/evaluators/calibrate/{id} is deprecated.", DeprecationWarning, stacklevel=2)
 
         _param = self._evaluators_calibrate_create2_serialize(
             id=id,
@@ -363,7 +367,7 @@ class EvaluatorsApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> ApiResponse[List[EvaluatorCalibrationOutput]]:
-        """evaluators_calibrate_create2
+        """(Deprecated) evaluators_calibrate_create2
 
         Test an existing evaluator using calibration data
 
@@ -392,6 +396,7 @@ class EvaluatorsApi:
         :type _host_index: int, optional
         :return: Returns the result object.
         """  # noqa: E501
+        warnings.warn("POST /v1/evaluators/calibrate/{id} is deprecated.", DeprecationWarning, stacklevel=2)
 
         _param = self._evaluators_calibrate_create2_serialize(
             id=id,
@@ -427,7 +432,7 @@ class EvaluatorsApi:
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
     ) -> RESTResponseType:
-        """evaluators_calibrate_create2
+        """(Deprecated) evaluators_calibrate_create2
 
         Test an existing evaluator using calibration data
 
@@ -456,6 +461,7 @@ class EvaluatorsApi:
         :type _host_index: int, optional
         :return: Returns the result object.
         """  # noqa: E501
+        warnings.warn("POST /v1/evaluators/calibrate/{id} is deprecated.", DeprecationWarning, stacklevel=2)
 
         _param = self._evaluators_calibrate_create2_serialize(
             id=id,

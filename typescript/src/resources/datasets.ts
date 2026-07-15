@@ -1,5 +1,14 @@
-import type { paths } from '../generated/types.ts';
-import { ScorableError, PaginatedResponse, ApiError } from '../types/common.js';
+import type { paths, components } from '../generated/types.ts';
+import { ScorableError, PaginatedResponse, ApiError, ListParams } from '../types/common.js';
+
+export type DatasetItem = components['schemas']['DatasetItem'];
+export type DatasetItemRequest = components['schemas']['DatasetItemRequest'];
+export type PatchedDatasetItemRequest = components['schemas']['PatchedDatasetItemRequest'];
+
+export interface ListDatasetItemsParams extends ListParams {
+  /** Include archived items when true (defaults to excluding them). */
+  includeArchived?: boolean;
+}
 
 // Extract types from the generated schema
 type DatasetListResponse =
@@ -218,5 +227,128 @@ export class DatasetsResource {
    */
   async download(id: string): Promise<DatasetDetail> {
     return this.get(id, true);
+  }
+
+  /**
+   * Add a single item to a dataset
+   */
+  async addItem(datasetId: string, item: DatasetItemRequest): Promise<DatasetItem> {
+    const { data, error } = await this._client.POST('/v1/datasets/{dataset_id}/items/', {
+      params: { path: { dataset_id: datasetId } },
+      body: item,
+    });
+    if (error) {
+      throw new ScorableError(
+        (error as ApiError)?.status ?? 500,
+        'ADD_DATASET_ITEM_FAILED',
+        error,
+        `Failed to add item to dataset ${datasetId}`,
+      );
+    }
+    return data;
+  }
+
+  /**
+   * Bulk add items to a dataset (at most 5000 per call)
+   */
+  async addItems(datasetId: string, items: DatasetItemRequest[]): Promise<DatasetItem[]> {
+    const { data, error } = await this._client.POST('/v1/datasets/{dataset_id}/items/bulk/', {
+      params: { path: { dataset_id: datasetId } },
+      body: items,
+    });
+    if (error) {
+      throw new ScorableError(
+        (error as ApiError)?.status ?? 500,
+        'BULK_ADD_DATASET_ITEMS_FAILED',
+        error,
+        `Failed to bulk add items to dataset ${datasetId}`,
+      );
+    }
+    return data;
+  }
+
+  /**
+   * List the latest-version items of a dataset (with embedded published annotations)
+   */
+  async listItems(
+    datasetId: string,
+    params: ListDatasetItemsParams = {},
+  ): Promise<PaginatedResponse<DatasetItem>> {
+    const { includeArchived, ...rest } = params;
+    const query = includeArchived !== undefined ? { ...rest, is_archived: includeArchived } : rest;
+    const { data, error } = await this._client.GET('/v1/datasets/{dataset_id}/items/', {
+      params: { path: { dataset_id: datasetId }, query },
+    });
+    if (error) {
+      throw new ScorableError(
+        (error as ApiError)?.status ?? 500,
+        'LIST_DATASET_ITEMS_FAILED',
+        error,
+        `Failed to list items for dataset ${datasetId}`,
+      );
+    }
+    return {
+      results: data.results,
+      next: data.next ?? undefined,
+      previous: data.previous ?? undefined,
+    };
+  }
+
+  /**
+   * Get a single dataset item
+   */
+  async getItem(datasetId: string, itemId: string): Promise<DatasetItem> {
+    const { data, error } = await this._client.GET('/v1/datasets/{dataset_id}/items/{item_id}/', {
+      params: { path: { dataset_id: datasetId, item_id: itemId } },
+    });
+    if (error) {
+      throw new ScorableError(
+        (error as ApiError)?.status ?? 500,
+        'GET_DATASET_ITEM_FAILED',
+        error,
+        `Failed to get item ${itemId}`,
+      );
+    }
+    return data;
+  }
+
+  /**
+   * Edit a dataset item (creates a new version; only the latest version is editable)
+   */
+  async updateItem(
+    datasetId: string,
+    itemId: string,
+    item: PatchedDatasetItemRequest,
+  ): Promise<DatasetItem> {
+    const { data, error } = await this._client.PATCH('/v1/datasets/{dataset_id}/items/{item_id}/', {
+      params: { path: { dataset_id: datasetId, item_id: itemId } },
+      body: item,
+    });
+    if (error) {
+      throw new ScorableError(
+        (error as ApiError)?.status ?? 500,
+        'UPDATE_DATASET_ITEM_FAILED',
+        error,
+        `Failed to update item ${itemId}`,
+      );
+    }
+    return data;
+  }
+
+  /**
+   * Archive (soft-delete) a dataset item
+   */
+  async archiveItem(datasetId: string, itemId: string): Promise<void> {
+    const { error } = await this._client.DELETE('/v1/datasets/{dataset_id}/items/{item_id}/', {
+      params: { path: { dataset_id: datasetId, item_id: itemId } },
+    });
+    if (error) {
+      throw new ScorableError(
+        (error as ApiError)?.status ?? 500,
+        'ARCHIVE_DATASET_ITEM_FAILED',
+        error,
+        `Failed to archive item ${itemId}`,
+      );
+    }
   }
 }

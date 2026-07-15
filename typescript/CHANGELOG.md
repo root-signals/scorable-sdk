@@ -1,3 +1,13 @@
+## 0.12.0
+
+Adds the annotation-store resources for labelling datasets and calibrating evaluators.
+
+- Add `client.annotations` — `create`/`get`/`list`/`update`/`delete` annotations (published or draft) on dataset items. Omitting `scoreConfigId` uses the global identity "Score" config, so a raw expected score can be set with just `value`.
+- Add `client.scoreConfigs` — `create`/`get`/`list`/`update`/`delete` score configs (continuous, binary, categorical) that define how labels map to scores.
+- Add dataset items on `client.datasets` — `addItem`/`addItems`, `getItem`, `listItems`, `updateItem`, `archiveItem` — to build labelled datasets programmatically.
+- Add `client.calibrationRuns` — start a calibration run and read its results: `create`, `get`, `list`, and `listItems`. Each calibration run item exposes the `human_value` and `evaluator_score`, their `disagreement`, and the `request`/`response` that was scored.
+- Add `evaluators.calibrateRun()` to run calibration against a labelled dataset and measure agreement.
+
 ## 0.11.0
 
 - Add `projects` resource on the client (`client.projects`) with `list`/`get`/`create`/`update`/`delete`. Supports `is_default` for promoting a project as the org default.

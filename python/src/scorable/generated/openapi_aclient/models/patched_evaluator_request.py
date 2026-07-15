@@ -21,6 +21,7 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictStr
 from typing_extensions import Annotated, Self
 
+from scorable.generated.openapi_aclient.models.evaluator_behavior_enum import EvaluatorBehaviorEnum
 from scorable.generated.openapi_aclient.models.evaluator_demonstrations_request import EvaluatorDemonstrationsRequest
 from scorable.generated.openapi_aclient.models.input_variable_request import InputVariableRequest
 
@@ -31,6 +32,9 @@ class PatchedEvaluatorRequest(BaseModel):
     """  # noqa: E501
 
     change_note: Optional[StrictStr] = None
+    demonstration_dataset_id: Optional[StrictStr] = Field(
+        default=None, description="Dataset whose annotations for this evaluator are used as few-shot demonstrations."
+    )
     evaluator_demonstrations: Optional[List[EvaluatorDemonstrationsRequest]] = None
     input_variables: Optional[List[InputVariableRequest]] = None
     models: Optional[List[Annotated[str, Field(min_length=1, strict=True)]]] = Field(
@@ -50,8 +54,10 @@ class PatchedEvaluatorRequest(BaseModel):
         default=None, description="Project to assign this evaluator to. Defaults to org default project."
     )
     scoring_criteria: Optional[Annotated[str, Field(min_length=1, strict=True, max_length=500000)]] = None
+    behavior: Optional[EvaluatorBehaviorEnum] = None
     __properties: ClassVar[List[str]] = [
         "change_note",
+        "demonstration_dataset_id",
         "evaluator_demonstrations",
         "input_variables",
         "models",
@@ -61,6 +67,7 @@ class PatchedEvaluatorRequest(BaseModel):
         "overwrite",
         "project_id",
         "scoring_criteria",
+        "behavior",
     ]
 
     model_config = ConfigDict(
@@ -119,6 +126,11 @@ class PatchedEvaluatorRequest(BaseModel):
         if self.change_note is None and "change_note" in self.model_fields_set:
             _dict["change_note"] = None
 
+        # set to None if demonstration_dataset_id (nullable) is None
+        # and model_fields_set contains the field
+        if self.demonstration_dataset_id is None and "demonstration_dataset_id" in self.model_fields_set:
+            _dict["demonstration_dataset_id"] = None
+
         # set to None if evaluator_demonstrations (nullable) is None
         # and model_fields_set contains the field
         if self.evaluator_demonstrations is None and "evaluator_demonstrations" in self.model_fields_set:
@@ -148,6 +160,7 @@ class PatchedEvaluatorRequest(BaseModel):
         _obj = cls.model_validate(
             {
                 "change_note": obj.get("change_note"),
+                "demonstration_dataset_id": obj.get("demonstration_dataset_id"),
                 "evaluator_demonstrations": [
                     EvaluatorDemonstrationsRequest.from_dict(_item) for _item in obj["evaluator_demonstrations"]
                 ]
@@ -163,6 +176,7 @@ class PatchedEvaluatorRequest(BaseModel):
                 "overwrite": obj.get("overwrite") if obj.get("overwrite") is not None else False,
                 "project_id": obj.get("project_id"),
                 "scoring_criteria": obj.get("scoring_criteria"),
+                "behavior": obj.get("behavior"),
             }
         )
         return _obj

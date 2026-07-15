@@ -1,7 +1,21 @@
+import time
+
 from scorable import Scorable
-from scorable.skills import EvaluatorDemonstration
 
 client = Scorable()
+
+
+def wait_for_completion(run, timeout: float = 120.0):
+    deadline = time.monotonic() + timeout
+    while run.status in ("pending", "running"):
+        if time.monotonic() > deadline:
+            raise TimeoutError(f"Calibration run {run.id} did not finish within {timeout}s")
+        time.sleep(2)
+        run = client.calibration_runs.get(run.id)
+    if run.status == "failed":
+        raise RuntimeError(f"Calibration run {run.id} failed: {run.error}")
+    return run
+
 
 # Create an evaluator
 network_troubleshooting_evaluator = client.evaluators.create(
@@ -20,51 +34,50 @@ network_troubleshooting_evaluator = client.evaluators.create(
     overwrite=True,
 )
 
+# Build a labelled dataset: add example request/response pairs, then annotate each with the
+# expected score. Omitting a score config defaults to the global identity "Score" config, so the
+# annotation value is the expected score directly.
+dataset = client.datasets.create(name="Network troubleshooting calibration set", type="test")
+assert dataset is not None
 
-# Run first calibration (benchmarking).
-test_result = client.evaluators.calibrate_existing(
-    evaluator_id=network_troubleshooting_evaluator.id,
-    # The test data is a list of lists, where each inner
-    # list contains an expected score for a given request and response.
-    test_data=[
-        [
-            "0.1",
-            "My internet is not working.",
-            "I'm sorry to hear that your internet isn't working. Let's troubleshoot this step by step.",
-        ],
-        [
-            "0.95",
-            "My internet is not working.",
-            "Okay, let's check some basics. First, can you tell me what operating system your computer is running (Windows, macOS, etc.)? Also, can you check the Ethernet cable connecting your computer to the router to ensure it is securely plugged in at both ends? After confirming these steps, open a command prompt or terminal and run `ping 8.8.8.8`. Let me know the results. If you are using wireless connection, try to move closer to the router and see if that improves the connectivity. If the ping fails consistently, the issue might be with your ISP. If the connection improves closer to the router, consider improving your wireless coverage with a range extender or by repositioning the router.",
-        ],
-    ],
+vague = client.datasets.add_item(
+    dataset.id,
+    request="My internet is not working.",
+    response="I'm sorry to hear that your internet isn't working. Let's troubleshoot this step by step.",
+)
+thorough = client.datasets.add_item(
+    dataset.id,
+    request="My internet is not working.",
+    response="Okay, let's check some basics. First, what operating system is your computer running? "
+    "Check the Ethernet cable is securely plugged in at both ends, then run `ping 8.8.8.8` and share "
+    "the results. If the ping fails consistently the issue may be with your ISP.",
 )
 
-print(test_result[0].result)
+client.annotations.create(dataset_item_id=vague.id, value=0.1)
+client.annotations.create(dataset_item_id=thorough.id, value=0.95)
 
-# Improve the evaluator with demonstrations,
-# penalize the vague "I'm sorry" response by setting an expected score of 0.1
+# Run a calibration run: measure how well the evaluator agrees with the human labels.
+run = client.evaluators.calibrate_run(network_troubleshooting_evaluator.id, dataset_id=dataset.id)
+run = wait_for_completion(run)
+print("Calibration metrics:", run.metrics)
+
+# Improve the evaluator by pointing it at the labelled dataset as few-shot demonstrations.
 client.evaluators.update(
-    evaluator_id=network_troubleshooting_evaluator.id,
-    evaluator_demonstrations=[
-        EvaluatorDemonstration(
-            response="I'm sorry to hear that your internet isn't working. Let's troubleshoot this step by step.",
-            request="My internet is not working.",
-            score=0.1,
-        ),
-    ],
-)
-# Run second calibration
-test_result = client.evaluators.calibrate_existing(
-    evaluator_id=network_troubleshooting_evaluator.id,
-    test_data=[
-        [
-            "0.1",
-            "My internet is not working.",
-            "I'm sorry to hear that your internet isn't working. Let's troubleshoot this step by step.",
-        ],
-    ],
+    network_troubleshooting_evaluator.id,
+    demonstration_dataset_id=dataset.id,
 )
 
-# Check the results. See that the vague "I'm sorry" response receives a lower score.
-print(test_result[0].result)
+# Re-run calibration and compare the metrics.
+run = client.evaluators.calibrate_run(network_troubleshooting_evaluator.id, dataset_id=dataset.id)
+run = wait_for_completion(run)
+print("Calibration metrics after demonstrations:", run.metrics)
+
+# Inspect the per-item results to see which inputs the evaluator disagreed with most. Items come
+# ordered by largest disagreement first; each carries the request/response that was scored, the
+# human (expected) and evaluator scores, and their absolute difference (disagreement).
+print("\nLargest disagreements:")
+for item in list(client.calibration_runs.list_items(run.id))[:5]:
+    delta = f"{item.disagreement:.2f}" if item.disagreement is not None else "n/a"
+    print(f"  |Δ|={delta}  human={item.human_value}  evaluator={item.evaluator_score}")
+    print(f"    request:  {item.request}")
+    print(f"    response: {item.response}")

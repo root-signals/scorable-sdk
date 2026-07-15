@@ -21,14 +21,12 @@ from typing_extensions import Self
 
 class StatusEnum(str, Enum):
     """
-    * `unlisted` - unlisted * `listed` - listed * `public` - public * `public_unlisted` - public_unlisted * `private` - private
+    * `public` - public * `public_unlisted` - public_unlisted * `private` - private
     """
 
     """
     allowed enum values
     """
-    UNLISTED = "unlisted"
-    LISTED = "listed"
     PUBLIC = "public"
     PUBLIC_UNLISTED = "public_unlisted"
     PRIVATE = "private"

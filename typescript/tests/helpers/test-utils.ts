@@ -7,6 +7,9 @@ import { ModelsResource } from '../../src/resources/models.js';
 import { ExecutionLogsResource } from '../../src/resources/execution-logs.js';
 import { DatasetsResource } from '../../src/resources/datasets.js';
 import { ProjectsResource } from '../../src/resources/projects.js';
+import { AnnotationsResource } from '../../src/resources/annotations.js';
+import { CalibrationRunsResource } from '../../src/resources/calibration-runs.js';
+import { ScoreConfigsResource } from '../../src/resources/score-configs.js';
 
 // Test utilities for creating clients and mock data
 export class TestUtils {
@@ -27,6 +30,9 @@ export class TestUtils {
     (client as any).executionLogs = new ExecutionLogsResource(mockClient);
     (client as any).datasets = new DatasetsResource(mockClient);
     (client as any).projects = new ProjectsResource(mockClient as any);
+    (client as any).annotations = new AnnotationsResource(mockClient as any);
+    (client as any).calibrationRuns = new CalibrationRunsResource(mockClient as any);
+    (client as any).scoreConfigs = new ScoreConfigsResource(mockClient as any);
 
     return client;
   }

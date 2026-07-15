@@ -21,7 +21,6 @@ export type {
   EvaluatorListParams,
   EvaluatorCreateParams,
   EvaluatorUpdateParams,
-  EvaluatorDemonstration,
 } from './resources/evaluators.js';
 
 export type {
@@ -60,6 +59,9 @@ export type {
 // Additional resources
 export { DatasetsResource } from './resources/datasets.js';
 export { ProjectsResource } from './resources/projects.js';
+export { AnnotationsResource } from './resources/annotations.js';
+export { CalibrationRunsResource } from './resources/calibration-runs.js';
+export { ScoreConfigsResource } from './resources/score-configs.js';
 
 export type {
   Project,
@@ -67,6 +69,30 @@ export type {
   UpdateProjectParams,
   ProjectListParams,
 } from './resources/projects.js';
+
+export type {
+  Annotation,
+  CreateAnnotationData,
+  UpdateAnnotationData,
+  AnnotationListParams,
+} from './resources/annotations.js';
+export type {
+  CalibrationRun,
+  CalibrationRunItem,
+  CreateCalibrationRunData,
+  CalibrationRunListParams,
+} from './resources/calibration-runs.js';
+export type {
+  ScoreConfig,
+  ScoreConfigRequest,
+  PatchedScoreConfigRequest,
+} from './resources/score-configs.js';
+export type {
+  DatasetItem,
+  DatasetItemRequest,
+  PatchedDatasetItemRequest,
+  ListDatasetItemsParams,
+} from './resources/datasets.js';
 
 // Multi-turn conversation types
 export type Turn = components['schemas']['MessageTurnRequest'];

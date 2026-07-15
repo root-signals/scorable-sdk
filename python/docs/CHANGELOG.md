@@ -1,3 +1,14 @@
+## 1.13.0
+
+Adds the annotation-store resources for labelling datasets and calibrating evaluators.
+
+- Add `client.annotations` — `create`/`get`/`list`/`update`/`delete` annotations (published or draft) on dataset items (sync + async). Omitting `score_config_id` uses the global identity "Score" config, so a raw expected score can be set with just `value`.
+- Add `client.score_configs` — `create`/`get`/`list`/`update`/`delete` score configs (continuous, binary, categorical) that define how labels map to scores (sync + async).
+- Add dataset items on `client.datasets` — `add_item`/`add_items`, `get_item`, `list_items`, `update_item`, `archive_item` (sync + async) — to build labelled datasets programmatically.
+- Add `client.calibration_runs` — start a calibration run and read its results: `create`, `get`, `list`, and `list_items` (sync + async). Each `CalibrationRunItem` exposes the `human_value` and `evaluator_score`, their `disagreement`, and the `request`/`response` that was scored.
+- Add `evaluators.calibrate_run()` / `acalibrate_run()` to run calibration against a labelled dataset and measure agreement. See `examples/calibration.py`.
+- The evaluator calibration helpers were reworked around the resources above; if you used a previous calibration method, switch to `evaluators.calibrate_run()` + `client.calibration_runs`.
+
 ## 1.12.0
 
 - Add `Projects` resource (`client.projects`) with `list`/`retrieve`/`create`/`update`/`delete` (sync and async). Supports `is_default` for promoting a project as the org default.
