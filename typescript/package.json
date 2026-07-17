@@ -51,7 +51,7 @@
   "author": "Scorable",
   "license": "Apache-2.0",
   "dependencies": {
-    "openapi-fetch": "^0.15.0"
+    "openapi-fetch": "^0.17.0"
   },
   "optionalDependencies": {
     "form-data": "^4.0.5",
