@@ -45,7 +45,7 @@
     "@types/node": "^25.5.0",
     "oxfmt": "^0.53.0",
     "oxlint": "^1.56.0",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vitest": "^4.1.5"
   },
   "engines": {
