@@ -25,6 +25,41 @@ export interface ExecutionLogListParams extends ListParams {
   projectId?: string;
 }
 
+type ExecutionLogQuery = NonNullable<paths['/v1/execution-logs/']['get']['parameters']['query']>;
+
+/**
+ * Translate the SDK's public filter names onto the API's actual query param
+ * names. Historically several params were forwarded verbatim under names the
+ * API never accepted, which now hard-400 against the strict param gate.
+ */
+function toExecutionLogQuery(params: ExecutionLogListParams): ExecutionLogQuery {
+  const query: Record<string, unknown> = {};
+  const set = (key: string, value: unknown): void => {
+    if (value !== undefined) query[key] = value;
+  };
+
+  // executed_item_id backs both the skill and evaluator filters — an evaluator's
+  // own logs carry its id there — so the two are mutually exclusive in practice.
+  set('executed_item_id', params.skill_id ?? params.evaluator_id);
+  set('judge_id', params.judge_id);
+  set('min_cost', params.cost_min);
+  set('max_cost', params.cost_max);
+  set('min_score', params.score_min);
+  set('max_score', params.score_max);
+  set('date_from', params.created_at_after);
+  set('date_to', params.created_at_before);
+  set('model', params.model);
+  set('owner_email', params.owner__email);
+  set('tags', params.tags);
+  set('search', params.search);
+  set('ordering', params.ordering);
+  set('page_size', params.page_size);
+  set('cursor', params.cursor);
+  set('project_id', params.projectId);
+
+  return query as ExecutionLogQuery;
+}
+
 export class ExecutionLogsResource {
   constructor(private _client: Client) {}
 
@@ -32,8 +67,7 @@ export class ExecutionLogsResource {
    * List execution logs with filtering and pagination
    */
   async list(params: ExecutionLogListParams = {}): Promise<PaginatedResponse<ExecutionLogList>> {
-    const { projectId, ...rest } = params;
-    const query = projectId !== undefined ? { ...rest, project_id: projectId } : rest;
+    const query = toExecutionLogQuery(params);
     const { data, error } = await this._client.GET('/v1/execution-logs/', {
       params: { query },
     });
