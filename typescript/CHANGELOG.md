@@ -1,3 +1,11 @@
+## 0.12.1
+
+Fixes `executionLogs` filtering. Several filters were sent under param names the API doesn't accept — they silently returned unfiltered results before, and now hard-400 against the API's strict param validation.
+
+- `executionLogs.list()` and the `getBy*` helpers now translate every filter onto the API's real query-param name: `score_min`/`score_max` → `min_score`/`max_score`, `cost_min`/`cost_max` → `min_cost`/`max_cost`, `created_at_after`/`created_at_before` → `date_from`/`date_to`, `skill_id`/`evaluator_id` → `executed_item_id`, `owner__email` → `owner_email`. The public param names are unchanged, so no call sites need to change.
+- Passing both `skill_id` and `evaluator_id` (they map to the same field) now throws a 400 `ScorableError` instead of silently dropping one.
+- Bump `openapi-fetch` to 0.17.0; build under TypeScript 6.
+
 ## 0.12.0
 
 Adds the annotation-store resources for labelling datasets and calibrating evaluators.
