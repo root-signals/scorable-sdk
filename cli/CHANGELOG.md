@@ -1,3 +1,8 @@
+## 0.15.1
+
+- Bump `@root-signals/scorable` to `^0.12.1`, which fixes `execution-log list` filters. `--score-min`/`--score-max`, `--created-at-after`/`--created-at-before`, `--owner-email`, `--evaluator-id`, and `--model` sent query-param names the API rejected (400) and now filter correctly.
+- Dependency maintenance: js-yaml, @inquirer/prompts, oxlint, typescript.
+
 ## 0.15.0
 
 - Bump `@root-signals/scorable` to `^0.12.0` for the annotation-store resources.
