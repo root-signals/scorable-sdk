@@ -33,13 +33,23 @@ type ExecutionLogQuery = NonNullable<paths['/v1/execution-logs/']['get']['parame
  * API never accepted, which now hard-400 against the strict param gate.
  */
 function toExecutionLogQuery(params: ExecutionLogListParams): ExecutionLogQuery {
+  // executed_item_id backs both the skill and evaluator filters — an evaluator's
+  // own logs carry its id there — so the two are mutually exclusive. Reject the
+  // conflict loudly rather than silently dropping one.
+  if (params.skill_id !== undefined && params.evaluator_id !== undefined) {
+    throw new ScorableError(
+      400,
+      'INVALID_EXECUTION_LOG_FILTER',
+      undefined,
+      'skill_id and evaluator_id cannot be used together',
+    );
+  }
+
   const query: Record<string, unknown> = {};
   const set = (key: string, value: unknown): void => {
     if (value !== undefined) query[key] = value;
   };
 
-  // executed_item_id backs both the skill and evaluator filters — an evaluator's
-  // own logs carry its id there — so the two are mutually exclusive in practice.
   set('executed_item_id', params.skill_id ?? params.evaluator_id);
   set('judge_id', params.judge_id);
   set('min_cost', params.cost_min);

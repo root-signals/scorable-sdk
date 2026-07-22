@@ -96,6 +96,13 @@ describe('ExecutionLogsResource', () => {
       expectQuery({ owner_email: 'user@scorable.ai' });
     });
 
+    it('rejects conflicting skill_id and evaluator_id instead of silently dropping one', async () => {
+      await expect(
+        client.executionLogs.list({ skill_id: 'skill-1', evaluator_id: 'eval-1' }),
+      ).rejects.toThrow('skill_id and evaluator_id cannot be used together');
+      expect(mockClient.GET).not.toHaveBeenCalled();
+    });
+
     it('passes judge_id, model, tags and search through unchanged', async () => {
       await client.executionLogs.list({
         judge_id: 'judge-1',
