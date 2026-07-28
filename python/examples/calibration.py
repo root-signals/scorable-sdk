@@ -5,7 +5,7 @@ from scorable import Scorable
 client = Scorable()
 
 
-def wait_for_completion(run, timeout: float = 120.0):
+def wait_for_completion(run, timeout: float = 300.0):
     deadline = time.monotonic() + timeout
     while run.status in ("pending", "running"):
         if time.monotonic() > deadline:
