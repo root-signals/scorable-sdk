@@ -2,7 +2,7 @@ import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 import { writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import yaml from "js-yaml";
+import { dump } from "js-yaml";
 import { runCli } from "./helpers/run-cli.js";
 import { runPromptTests } from "../src/commands/prompt-test/run.js";
 
@@ -22,7 +22,7 @@ function makeTempConfig(data: unknown): { path: string; cleanup: () => void } {
   const dir = join(tmpdir(), `scorable-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
   mkdirSync(dir, { recursive: true });
   const path = join(dir, "prompt-tests.yaml");
-  writeFileSync(path, yaml.dump(data));
+  writeFileSync(path, dump(data));
   return { path, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
 }
 

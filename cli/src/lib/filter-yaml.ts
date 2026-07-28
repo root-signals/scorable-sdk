@@ -1,5 +1,5 @@
 import { z } from "zod";
-import yaml from "js-yaml";
+import { load } from "js-yaml";
 
 const MatchCondition = z
   .object({
@@ -108,7 +108,7 @@ export type FilterYaml = z.infer<typeof FilterYamlSchema>;
 export function loadFilterYaml(source: string): FilterYaml {
   let raw: unknown;
   try {
-    raw = yaml.load(source);
+    raw = load(source);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     throw new Error(`Invalid YAML: ${msg}`);

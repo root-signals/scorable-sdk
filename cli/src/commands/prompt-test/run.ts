@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { readFileSync, writeFileSync } from "node:fs";
-import yaml from "js-yaml";
+import { load } from "js-yaml";
 import chalk from "chalk";
 import Table from "cli-table3";
 import { requireApiKey } from "../../auth.js";
@@ -116,7 +116,7 @@ export async function runPromptTests(
 ): Promise<void> {
   let rawConfig: unknown;
   try {
-    rawConfig = yaml.load(readFileSync(configPath, "utf8"));
+    rawConfig = load(readFileSync(configPath, "utf8"));
   } catch {
     printError(
       `'${configPath}' not found. Please run \`pt init\` first or specify a different config file with -c.`,
