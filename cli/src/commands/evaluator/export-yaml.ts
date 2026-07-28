@@ -1,6 +1,6 @@
 import { writeFileSync } from "node:fs";
 import { Command } from "commander";
-import yaml from "js-yaml";
+import { load, dump } from "js-yaml";
 import ora from "ora";
 import { requireApiKey, getSdkClient } from "../../auth.js";
 import { printSuccess, handleSdkError } from "../../output.js";
@@ -8,10 +8,10 @@ import { printSuccess, handleSdkError } from "../../output.js";
 // YAML exports are portable artifacts; embedding an org-local UUID would make them
 // footgun-y to re-import in another org. Strip it before emitting.
 function stripProjectId(yamlContent: string): string {
-  const parsed = yaml.load(yamlContent);
+  const parsed = load(yamlContent);
   if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
     delete (parsed as Record<string, unknown>).project_id;
-    return yaml.dump(parsed);
+    return dump(parsed);
   }
   return yamlContent;
 }
