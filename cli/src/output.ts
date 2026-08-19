@@ -87,7 +87,7 @@ export function printMessage(msg: string): void {
   console.log(msg);
 }
 
-function truncate(s: string, max: number): string {
+export function truncate(s: string, max: number): string {
   return s.length > max ? s.slice(0, max - 1) + "…" : s;
 }
 
