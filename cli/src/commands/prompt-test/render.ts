@@ -41,7 +41,7 @@ export interface SummaryRow {
   failed: number;
   meanCost: number | null;
   meanLatency: number | null;
-  /** Mean score per evaluator name; null when no scored task produced a value. */
+  /** Mean score per evaluator id; null when no scored task produced a value. */
   scores: Map<string, number | null>;
 }
 
@@ -76,13 +76,17 @@ export function buildPromptLabels(experiments: PromptTest[]): Map<string, string
   return labels;
 }
 
-/** Evaluator display names, de-duplicated by id, in stable sorted-by-id order. */
-export function collectEvaluatorNames(experiments: PromptTest[]): string[] {
+/**
+ * Evaluators, de-duplicated and keyed by id, in stable sorted-by-id order. Two evaluators
+ * can share a display name (e.g. the same judge run at different versions) -- keeping id
+ * as the key keeps their scores from being silently averaged together under one name.
+ */
+export function collectEvaluators(experiments: PromptTest[]): Array<{ id: string; name: string }> {
   const byId = new Map<string, string>();
   for (const exp of experiments) {
     for (const e of exp.evaluators) if (!byId.has(e.id)) byId.set(e.id, e.name);
   }
-  return [...byId.keys()].sort().map((id) => byId.get(id)!);
+  return [...byId.keys()].sort().map((id) => ({ id, name: byId.get(id)! }));
 }
 
 /**
@@ -91,12 +95,12 @@ export function collectEvaluatorNames(experiments: PromptTest[]): string[] {
  */
 export function buildSummaryRows(experiments: PromptTest[]): SummaryRow[] {
   const labels = buildPromptLabels(experiments);
-  const evaluatorNames = collectEvaluatorNames(experiments);
+  const evaluators = collectEvaluators(experiments);
 
   return experiments.map((exp) => {
     const costs: number[] = [];
     const latencies: number[] = [];
-    const scoresByName = new Map<string, number[]>();
+    const scoresById = new Map<string, number[]>();
 
     for (const task of exp.tasks) {
       const cost = task.cost != null ? Number(task.cost) : NaN;
@@ -105,14 +109,14 @@ export function buildSummaryRows(experiments: PromptTest[]): SummaryRow[] {
 
       for (const r of task.evaluation_results) {
         if (r.score == null) continue;
-        const bucket = scoresByName.get(r.name) ?? [];
+        const bucket = scoresById.get(r.id) ?? [];
         bucket.push(r.score);
-        scoresByName.set(r.name, bucket);
+        scoresById.set(r.id, bucket);
       }
     }
 
     const scores = new Map<string, number | null>();
-    for (const name of evaluatorNames) scores.set(name, mean(scoresByName.get(name) ?? []));
+    for (const e of evaluators) scores.set(e.id, mean(scoresById.get(e.id) ?? []));
 
     return {
       promptLabel: labels.get(exp.prompt)!,
@@ -190,16 +194,24 @@ export function summaryFitsAsColumns(evaluatorCount: number): boolean {
 
 export function renderSummaryTable(experiments: PromptTest[], colour = true): string {
   const rows = buildSummaryRows(experiments);
-  const evaluatorNames = collectEvaluatorNames(experiments);
+  const evaluators = collectEvaluators(experiments);
   const paint = (s: string) => (colour ? chalk.bold.cyan(s) : s);
   const score = (v: number | null) => (colour ? colourScore(v) : fmtScore(v));
 
-  if (summaryFitsAsColumns(evaluatorNames.length)) {
+  if (summaryFitsAsColumns(evaluators.length)) {
     const table = new Table({
-      head: ["Prompt", "Model", "Tasks", "Failed", "Cost", "Latency", ...evaluatorNames].map(paint),
+      head: [
+        "Prompt",
+        "Model",
+        "Tasks",
+        "Failed",
+        "Cost",
+        "Latency",
+        ...evaluators.map((e) => e.name),
+      ].map(paint),
       chars: UNICODE_CHARS,
       style: { head: [] },
-      colWidths: [...FIXED_COLS, ...evaluatorNames.map(() => EVAL_COL)],
+      colWidths: [...FIXED_COLS, ...evaluators.map(() => EVAL_COL)],
       wordWrap: true,
     });
     for (const r of rows) {
@@ -210,7 +222,7 @@ export function renderSummaryTable(experiments: PromptTest[], colour = true): st
         String(r.failed),
         fmtCost(r.meanCost),
         fmtLatency(r.meanLatency),
-        ...evaluatorNames.map((n) => score(r.scores.get(n) ?? null)),
+        ...evaluators.map((e) => score(r.scores.get(e.id) ?? null)),
       ]);
     }
     return table.toString();
@@ -226,16 +238,16 @@ export function renderSummaryTable(experiments: PromptTest[], colour = true): st
     wordWrap: true,
   });
   for (const r of rows) {
-    for (const name of evaluatorNames) {
+    for (const e of evaluators) {
       table.push([
         r.promptLabel,
         truncate(r.model, 12),
-        truncate(name, 18),
+        truncate(e.name, 18),
         String(r.tasks),
         String(r.failed),
         fmtCost(r.meanCost),
         fmtLatency(r.meanLatency),
-        score(r.scores.get(name) ?? null),
+        score(r.scores.get(e.id) ?? null),
       ]);
     }
   }

@@ -98,7 +98,7 @@ describe("prompt-test summary aggregation", () => {
     expect(row.failed).toBe(0);
     expect(row.meanCost).toBeCloseTo(0.003);
     expect(row.meanLatency).toBeCloseTo(3);
-    expect(row.scores.get("groundedness")).toBeCloseTo(0.8);
+    expect(row.scores.get("ev-0")).toBeCloseTo(0.8);
   });
 
   it("counts failed tasks and excludes null scores from the mean", () => {
@@ -114,7 +114,39 @@ describe("prompt-test summary aggregation", () => {
     expect(row.tasks).toBe(2);
     expect(row.failed).toBe(1);
     // The null score must not drag the mean toward zero.
-    expect(row.scores.get("groundedness")).toBeCloseTo(0.8);
+    expect(row.scores.get("ev-0")).toBeCloseTo(0.8);
+  });
+
+  it("keeps scores separate for evaluators that share a name but differ by id", () => {
+    // Regression guard: two evaluators with the same display name (e.g. the same judge
+    // run at different versions) must not be silently averaged into one column.
+    const exp: PromptTest = {
+      id: "exp",
+      prompt: "p",
+      model: "m",
+      evaluators: [
+        { id: "judge-v1", name: "Eurocode Judge" },
+        { id: "judge-v2", name: "Eurocode Judge" },
+      ],
+      tasks: [
+        {
+          id: "t1",
+          status: "completed",
+          cost: "0.001",
+          llm_output: "out",
+          model_call_duration: 1,
+          variables: {},
+          evaluation_results: [
+            { id: "judge-v1", name: "Eurocode Judge", score: 1.0, justification: "j1" },
+            { id: "judge-v2", name: "Eurocode Judge", score: 0.2, justification: "j2" },
+          ],
+        },
+      ],
+    } as PromptTest;
+
+    const [row] = buildSummaryRows([exp]);
+    expect(row.scores.get("judge-v1")).toBeCloseTo(1.0);
+    expect(row.scores.get("judge-v2")).toBeCloseTo(0.2);
   });
 });
 

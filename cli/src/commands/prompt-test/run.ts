@@ -202,7 +202,7 @@ export function registerRunCommand(pt: Command): void {
       }) => {
         try {
           await runPromptTests(opts.output, opts.config, undefined, opts.projectId, {
-            format: parseOutputFormat(opts.format),
+            format: parseOutputFormat(opts.format, "--format"),
             full: Boolean(opts.full),
           });
         } catch (e) {

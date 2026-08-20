@@ -2,10 +2,10 @@
 
 export type OutputFormat = "table" | "json" | "csv";
 
-export function parseOutputFormat(value: string | undefined): OutputFormat {
+export function parseOutputFormat(value: string | undefined, flag = "--output"): OutputFormat {
   const v = (value ?? "table").toLowerCase();
   if (v === "table" || v === "json" || v === "csv") return v;
-  throw new Error(`Invalid --output format "${value}". Use: table, json, csv`);
+  throw new Error(`Invalid ${flag} format "${value}". Use: table, json, csv`);
 }
 
 function csvEscape(value: unknown): string {
