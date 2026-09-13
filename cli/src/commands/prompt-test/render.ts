@@ -80,13 +80,23 @@ export function buildPromptLabels(experiments: PromptTest[]): Map<string, string
  * Evaluators, de-duplicated and keyed by id, in stable sorted-by-id order. Two evaluators
  * can share a display name (e.g. the same judge run at different versions) -- keeping id
  * as the key keeps their scores from being silently averaged together under one name.
+ * `label` is the display form: the bare name, or name plus a short id prefix whenever
+ * another evaluator shares that name, so table columns stay distinguishable.
  */
-export function collectEvaluators(experiments: PromptTest[]): Array<{ id: string; name: string }> {
+export function collectEvaluators(
+  experiments: PromptTest[],
+): Array<{ id: string; name: string; label: string }> {
   const byId = new Map<string, string>();
   for (const exp of experiments) {
     for (const e of exp.evaluators) if (!byId.has(e.id)) byId.set(e.id, e.name);
   }
-  return [...byId.keys()].sort().map((id) => ({ id, name: byId.get(id)! }));
+  const nameCounts = new Map<string, number>();
+  for (const name of byId.values()) nameCounts.set(name, (nameCounts.get(name) ?? 0) + 1);
+  return [...byId.keys()].sort().map((id) => {
+    const name = byId.get(id)!;
+    const label = (nameCounts.get(name) ?? 0) > 1 ? `${name} [${id.slice(0, 8)}]` : name;
+    return { id, name, label };
+  });
 }
 
 /**
@@ -207,7 +217,7 @@ export function renderSummaryTable(experiments: PromptTest[], colour = true): st
         "Failed",
         "Cost",
         "Latency",
-        ...evaluators.map((e) => e.name),
+        ...evaluators.map((e) => e.label),
       ].map(paint),
       chars: UNICODE_CHARS,
       style: { head: [] },
@@ -242,7 +252,7 @@ export function renderSummaryTable(experiments: PromptTest[], colour = true): st
       table.push([
         r.promptLabel,
         truncate(r.model, 12),
-        truncate(e.name, 18),
+        truncate(e.label, 18),
         String(r.tasks),
         String(r.failed),
         fmtCost(r.meanCost),
@@ -322,6 +332,7 @@ export function renderCsv(experiments: PromptTest[]): string {
     "cost",
     "latency_s",
     "evaluator",
+    "evaluator_id",
     "score",
     "justification",
     "llm_output",
@@ -342,11 +353,18 @@ export function renderCsv(experiments: PromptTest[]): string {
         task.model_call_duration ?? "",
       ];
       if (!task.evaluation_results.length) {
-        rows.push([...base, "", "", "", task.llm_output ?? ""]);
+        rows.push([...base, "", "", "", "", task.llm_output ?? ""]);
         continue;
       }
       for (const r of task.evaluation_results) {
-        rows.push([...base, r.name, r.score ?? "", r.justification ?? "", task.llm_output ?? ""]);
+        rows.push([
+          ...base,
+          r.name,
+          r.id,
+          r.score ?? "",
+          r.justification ?? "",
+          task.llm_output ?? "",
+        ]);
       }
     }
   }

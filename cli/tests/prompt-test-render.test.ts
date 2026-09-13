@@ -10,6 +10,7 @@ import {
   summaryFitsAsColumns,
   SUMMARY_MAX_WIDTH,
 } from "../src/commands/prompt-test/render.js";
+import { toCsv } from "../src/lib/output-format.js";
 import type { PromptTest } from "../src/types.js";
 
 const ANSI = /\[[0-9;]*m/g;
@@ -283,5 +284,76 @@ describe("csv output", () => {
     });
     const csv = renderCsv([exp]);
     expect(csv).toContain('"has, a ""quote"" and\nnewline"');
+  });
+});
+
+describe("csv formula-injection hardening", () => {
+  it("prefixes string cells that start with a formula character", () => {
+    const csv = toCsv(["v"], [["=SUM(A1:A9)"], ["+1"], ["-rm -rf"], ["@cmd"]]);
+    const [, ...rows] = csv.trimEnd().split("\n");
+    expect(rows).toEqual(["'=SUM(A1:A9)", "'+1", "'-rm -rf", "'@cmd"]);
+  });
+
+  it("leaves numbers and ordinary strings untouched", () => {
+    const csv = toCsv(["v"], [[-5], [0.25], ["plain text"]]);
+    const [, ...rows] = csv.trimEnd().split("\n");
+    expect(rows).toEqual(["-5", "0.25", "plain text"]);
+  });
+
+  it("neutralizes a formula payload arriving through a justification", () => {
+    const exp = experiment({
+      prompt: "p",
+      model: "m",
+      tasks: [task({ scores: [["groundedness", 0.9, '=HYPERLINK("http://evil")']] })],
+    });
+    const csv = renderCsv([exp]);
+    expect(csv).toContain("'=HYPERLINK");
+  });
+});
+
+describe("evaluator identity in rendered output", () => {
+  const sameNameExp: PromptTest = {
+    id: "exp",
+    prompt: "p",
+    model: "m",
+    evaluators: [
+      { id: "judge-v1", name: "Eurocode Judge" },
+      { id: "judge-v2", name: "Eurocode Judge" },
+    ],
+    tasks: [
+      {
+        id: "t1",
+        status: "completed",
+        cost: "0.001",
+        llm_output: "out",
+        model_call_duration: 1,
+        variables: {},
+        evaluation_results: [
+          { id: "judge-v1", name: "Eurocode Judge", score: 1.0, justification: "j1" },
+          { id: "judge-v2", name: "Eurocode Judge", score: 0.2, justification: "j2" },
+        ],
+      },
+    ],
+  } as PromptTest;
+
+  it("disambiguates same-named evaluators in the summary table", () => {
+    const rendered = strip(renderSummaryTable([sameNameExp], false));
+    expect(rendered).toContain("judge-v1");
+    expect(rendered).toContain("judge-v2");
+  });
+
+  it("keeps unique evaluator names unsuffixed", () => {
+    const exp = experiment({ prompt: "p", model: "m" });
+    const rendered = strip(renderSummaryTable([exp], false));
+    expect(rendered).not.toContain("[ev-0]");
+  });
+
+  it("carries evaluator_id in every CSV row", () => {
+    const csv = renderCsv([sameNameExp]);
+    const lines = csv.trimEnd().split("\n");
+    expect(lines[0]).toContain("evaluator_id");
+    const dataRows = lines.slice(1);
+    expect(dataRows.some((r) => r.includes("judge-v1") && r.includes("1"))).toBe(true);
+    expect(dataRows.some((r) => r.includes("judge-v2") && r.includes("0.2"))).toBe(true);
   });
 });

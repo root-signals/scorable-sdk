@@ -10,7 +10,12 @@ export function parseOutputFormat(value: string | undefined, flag = "--output"):
 
 function csvEscape(value: unknown): string {
   if (value === null || value === undefined) return "";
-  const s = typeof value === "string" ? value : String(value);
+  let s = typeof value === "string" ? value : String(value);
+  // Spreadsheet formula injection: a cell starting with =, +, - or @ executes as a
+  // formula when the CSV is opened in Excel/Sheets, and quoting does not prevent it.
+  // Only string values are neutralized -- numbers (e.g. negative durations) must
+  // serialize unchanged.
+  if (typeof value === "string" && /^[=+\-@]/.test(s)) s = `'${s}`;
   if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
   return s;
 }

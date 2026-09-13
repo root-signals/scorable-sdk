@@ -71,16 +71,24 @@ export function handleSdkError(e: unknown): never {
   throw new CliError(1, oneLine);
 }
 
-export function printSuccess(msg: string): void {
-  console.log(chalk.green("✔") + " " + msg);
+// `toStderr` lets a command with machine-readable stdout (e.g. --format json/csv)
+// keep progress lines out of the stream a script consumes.
+export function printSuccess(msg: string, toStderr = false): void {
+  const line = chalk.green("✔") + " " + msg;
+  if (toStderr) console.error(line);
+  else console.log(line);
 }
 
-export function printInfo(msg: string): void {
-  console.log(chalk.cyan("›") + " " + msg);
+export function printInfo(msg: string, toStderr = false): void {
+  const line = chalk.cyan("›") + " " + msg;
+  if (toStderr) console.error(line);
+  else console.log(line);
 }
 
-export function printWarning(msg: string): void {
-  console.log(chalk.yellow("⚠") + " " + msg);
+export function printWarning(msg: string, toStderr = false): void {
+  const line = chalk.yellow("⚠") + " " + msg;
+  if (toStderr) console.error(line);
+  else console.log(line);
 }
 
 export function printMessage(msg: string): void {
