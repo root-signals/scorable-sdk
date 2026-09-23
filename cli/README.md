@@ -725,6 +725,23 @@ evaluators:
 #     name: { type: string }
 ```
 
+#### Using a dataset
+
+Set `dataset_id` instead of `inputs` to run every item in a stored dataset.
+
+Dataset columns are matched to your `{{variables}}` **by name** — a prompt containing
+`{{text}}` needs the dataset's items to carry a variable called `text`. Import CSVs with a
+header row so the columns are named; a headerless file is read positionally as request,
+response and expected output instead.
+
+`request`, `response` and `expected_output` are special: they map onto the item's own fields
+rather than its variables, and stay addressable in a prompt, so `{{request}}` works for a
+dataset of question/answer pairs. A column that must remain a variable despite being named
+like one of those can be written as `variables.request`.
+
+An item missing a variable your prompt needs fails that item and names what was missing,
+rather than silently substituting the wrong column.
+
 Results are displayed in a table and a browser link is printed for the full comparison view.
 
 ## Development
