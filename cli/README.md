@@ -725,7 +725,10 @@ evaluators:
 #     name: { type: string }
 ```
 
-Results are displayed in a table and a browser link is printed for the full comparison view.
+Results are printed as a summary table (one row per prompt x model, with mean score per
+evaluator, cost and latency) followed by per-task detail including each evaluator's
+justification. Use `--full` for untruncated prompts, outputs and justifications, and
+`--format json|csv` for machine-readable output. `-o <path>` still writes the raw JSON.
 
 ## Development
 
