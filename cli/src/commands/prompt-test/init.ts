@@ -19,7 +19,11 @@ inputs:
       text: "Contact: Jane Smith (email: jane.smith@company.org, handle: @janesmith)"
 
 # Alternative to inputs: Use a dataset by ID
-# Uncomment the line below and comment out the inputs section to use a dataset instead
+# Uncomment the line below and comment out the inputs section to use a dataset instead.
+# Dataset columns are matched to {{variables}} by name, so a dataset used with the
+# prompts above needs a column named "text". When importing a CSV, include a header
+# row naming the columns; a column named request, response or expected_output maps to
+# that field on the item and is addressable as {{request}} and so on.
 # dataset_id: "<uuid>"
 
 # Models to test (each will be run with all prompt/input combinations)
