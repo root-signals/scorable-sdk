@@ -91,7 +91,7 @@ Check the full list of *Root* evaluators from the [Root evaluators documentation
 | 📘 Product Docs | [View Documentation](https://docs.scorable.ai) |
 | 📑 API Docs | [View Documentation](https://api.docs.scorable.ai/) |
 | 🐍 Python SDK | [View Documentation](https://github.com/root-signals/python-sdk) |
-| 🔌 MCP | [View Repo](https://github.com/root-signals/root-signals-mcp) |
+| 🔌 MCP | [View Documentation](https://docs.scorable.ai/mcp-server) |
 
 
 ## Examples
