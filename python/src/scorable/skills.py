@@ -52,9 +52,6 @@ from .generated.openapi_aclient.models.objective_request import ObjectiveRequest
 from .generated.openapi_aclient.models.patched_evaluator_request import (
     PatchedEvaluatorRequest as APatchedEvaluatorRequest,
 )
-from .generated.openapi_aclient.models.reference_variable_request import (
-    ReferenceVariableRequest as AReferenceVariableRequest,
-)
 from .generated.openapi_aclient.models.skill_test_input_request import (
     SkillTestInputRequest as ASkillTestInputRequest,
 )
@@ -75,7 +72,6 @@ from .generated.openapi_client.models.input_variable_request import InputVariabl
 from .generated.openapi_client.models.message_turn_request import MessageTurnRequest
 from .generated.openapi_client.models.objective_request import ObjectiveRequest
 from .generated.openapi_client.models.patched_evaluator_request import PatchedEvaluatorRequest
-from .generated.openapi_client.models.reference_variable_request import ReferenceVariableRequest
 from .generated.openapi_client.models.skill_test_input_request import SkillTestInputRequest
 from .utils import ClientContextCallable, aiterate_cursor_list, iterate_cursor_list, with_async_client, with_sync_client
 
@@ -85,17 +81,6 @@ ModelName = Union[
         "root",  # RS-chosen model
     ],
 ]
-
-
-class ReferenceVariable(BaseModel):
-    """
-    Reference variable definition.
-
-    `name` within prompt gets populated with content from `dataset_id`.
-    """
-
-    name: str
-    dataset_id: str
 
 
 class InputVariable(BaseModel):
@@ -326,19 +311,6 @@ def _to_input_variables(
     return [_convert_to_generated_model(entry) for entry in input_variables or {}]
 
 
-def _to_reference_variables(
-    reference_variables: Optional[Union[List[ReferenceVariable], List[ReferenceVariableRequest]]],
-) -> List[ReferenceVariableRequest]:
-    def _convert_to_generated_model(
-        entry: Union[ReferenceVariable, ReferenceVariableRequest],
-    ) -> ReferenceVariableRequest:
-        if not isinstance(entry, ReferenceVariableRequest):
-            return ReferenceVariableRequest(name=entry.name, dataset=entry.dataset_id)
-        return entry
-
-    return [_convert_to_generated_model(entry) for entry in reference_variables or {}]
-
-
 def _ato_input_variables(
     input_variables: Optional[Union[List[InputVariable], List[AInputVariableRequest]]],
 ) -> List[AInputVariableRequest]:
@@ -348,19 +320,6 @@ def _ato_input_variables(
         return entry
 
     return [_convert_to_generated_model(entry) for entry in input_variables or {}]
-
-
-def _ato_reference_variables(
-    reference_variables: Optional[Union[List[ReferenceVariable], List[AReferenceVariableRequest]]],
-) -> List[AReferenceVariableRequest]:
-    def _convert_to_generated_model(
-        entry: Union[ReferenceVariable, AReferenceVariableRequest],
-    ) -> AReferenceVariableRequest:
-        if not isinstance(entry, AReferenceVariableRequest):
-            return AReferenceVariableRequest(name=entry.name, dataset=entry.dataset_id)
-        return entry
-
-    return [_convert_to_generated_model(entry) for entry in reference_variables or {}]
 
 
 class PresetEvaluatorRunner:
@@ -762,7 +721,6 @@ class Evaluators:
         test_data: Optional[List[List[str]]] = None,
         prompt: str,
         model: ModelName,
-        reference_variables: Optional[Union[List[ReferenceVariable], List[ReferenceVariableRequest]]] = None,
         input_variables: Optional[Union[List[InputVariable], List[InputVariableRequest]]] = None,
         _request_timeout: Optional[int] = None,
         _client: ApiClient,
@@ -785,7 +743,6 @@ class Evaluators:
             models=[model],
             is_evaluator=True,
             objective=ObjectiveRequest(intent="Calibration"),
-            reference_variables=_to_reference_variables(reference_variables),
             input_variables=_to_input_variables(input_variables),
         )
         return api_instance.evaluators_calibrate_create(evaluator_test_request, _request_timeout=_request_timeout)
@@ -799,7 +756,6 @@ class Evaluators:
         test_data: Optional[List[List[str]]] = None,
         prompt: str,
         model: ModelName,
-        reference_variables: Optional[Union[List[ReferenceVariable], List[AReferenceVariableRequest]]] = None,
         input_variables: Optional[Union[List[InputVariable], List[AInputVariableRequest]]] = None,
         _request_timeout: Optional[int] = None,
         _client: AApiClient,
@@ -822,7 +778,6 @@ class Evaluators:
             models=[model],
             is_evaluator=True,
             objective=AObjectiveRequest(intent="Calibration"),
-            reference_variables=_ato_reference_variables(reference_variables),
             input_variables=_ato_input_variables(input_variables),
         )
         return await api_instance.evaluators_calibrate_create(evaluator_test_request, _request_timeout=_request_timeout)

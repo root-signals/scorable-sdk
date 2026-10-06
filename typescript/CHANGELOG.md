@@ -1,3 +1,10 @@
+## 0.13.0
+
+Follows the API removing operational skills, chat and reference variables.
+
+- Deprecate `executionLogs.getBySkill()` and the `skill_id` list filter; use `getByEvaluator()` / `evaluator_id`. Both still work and map to the same API field.
+- Remove `validators` from `objectives.create()` / `update()` data and the `has_validators` list filter. The API no longer returns or honours them.
+
 ## 0.12.1
 
 Fixes `executionLogs` filtering. Several filters were sent under param names the API doesn't accept — they silently returned unfiltered results before, and now hard-400 against the API's strict param validation.
