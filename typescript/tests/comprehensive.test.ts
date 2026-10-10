@@ -251,7 +251,6 @@ describe.skipIf(!runComprehensiveTests)('Scorable SDK Comprehensive Tests', () =
         const objective = await client.objectives.create({
           intent: `Test objective created for SDK testing ${Date.now()}`,
           status: 'unlisted',
-          validators: [],
         });
         expect(objective.id).toBeDefined();
         createdObjectiveId = objective.id;
@@ -277,7 +276,6 @@ describe.skipIf(!runComprehensiveTests)('Scorable SDK Comprehensive Tests', () =
           const updated = await client.objectives.update(createdObjectiveId, {
             intent: `Updated test objective ${Date.now()}`,
             status: 'unlisted',
-            validators: [],
           });
           expect(updated.id).toBe(createdObjectiveId);
           expect(updated.intent).toContain('Updated test objective');
