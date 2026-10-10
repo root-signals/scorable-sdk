@@ -175,3 +175,60 @@ describe("TestPromptTestingOperations", () => {
     }
   });
 });
+
+describe("structured output keeps stdout machine-readable", () => {
+  function capture() {
+    const out: string[] = [];
+    const err: string[] = [];
+    const logSpy = vi.spyOn(console, "log").mockImplementation((m?: unknown) => {
+      out.push(String(m));
+    });
+    const errSpy = vi.spyOn(console, "error").mockImplementation((m?: unknown) => {
+      err.push(String(m));
+    });
+    return { out, err, restore: () => (logSpy.mockRestore(), errSpy.mockRestore()) };
+  }
+
+  it("--format json puts only JSON on stdout, progress on stderr", async () => {
+    vi.stubGlobal("fetch", makeMockFetch(mockExperiment));
+    const { path, cleanup } = makeTempConfig(baseConfig);
+    const cap = capture();
+    try {
+      await runPromptTests(undefined, path, mockSleep, undefined, { format: "json" });
+    } finally {
+      cap.restore();
+      cleanup();
+    }
+    const stdout = cap.out.join("\n");
+    expect(() => JSON.parse(stdout)).not.toThrow();
+    expect(cap.err.length).toBeGreaterThan(0);
+  });
+
+  it("--format csv puts only CSV on stdout, progress on stderr", async () => {
+    vi.stubGlobal("fetch", makeMockFetch(mockExperiment));
+    const { path, cleanup } = makeTempConfig(baseConfig);
+    const cap = capture();
+    try {
+      await runPromptTests(undefined, path, mockSleep, undefined, { format: "csv" });
+    } finally {
+      cap.restore();
+      cleanup();
+    }
+    expect(cap.out.join("\n")).toMatch(/^prompt_label,/);
+    expect(cap.err.length).toBeGreaterThan(0);
+  });
+
+  it("default table format keeps progress on stdout as before", async () => {
+    vi.stubGlobal("fetch", makeMockFetch(mockExperiment));
+    const { path, cleanup } = makeTempConfig(baseConfig);
+    const cap = capture();
+    try {
+      await runPromptTests(undefined, path, mockSleep);
+    } finally {
+      cap.restore();
+      cleanup();
+    }
+    expect(cap.out.some((l) => l.includes("Starting prompt tests"))).toBe(true);
+    expect(cap.err.length).toBe(0);
+  });
+});

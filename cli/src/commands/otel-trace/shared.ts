@@ -1,12 +1,9 @@
 // Shared helpers for OTEL trace commands: time-window flags, output format, CSV.
 
-export type OutputFormat = "table" | "json" | "csv";
-
-export function parseOutputFormat(value: string | undefined): OutputFormat {
-  const v = (value ?? "table").toLowerCase();
-  if (v === "table" || v === "json" || v === "csv") return v;
-  throw new Error(`Invalid --output format "${value}". Use: table, json, csv`);
-}
+// Re-exported from ../../lib/output-format.js so prompt-test and otel-trace share one
+// implementation without importing across sibling command directories.
+export { parseOutputFormat, toCsv } from "../../lib/output-format.js";
+export type { OutputFormat } from "../../lib/output-format.js";
 
 const DURATION_PATTERN = /^(\d+(?:\.\d+)?)(ms|s|m|h|d)$/i;
 
@@ -80,15 +77,3 @@ export function buildTimeFilters(window: { start?: string; end?: string }): stri
 
 // RFC 4180 CSV escaping: wrap in quotes if value contains comma/quote/newline,
 // double any internal quotes.
-function csvEscape(value: unknown): string {
-  if (value === null || value === undefined) return "";
-  const s = typeof value === "string" ? value : String(value);
-  if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
-  return s;
-}
-
-export function toCsv(headers: string[], rows: unknown[][]): string {
-  const lines = [headers.map(csvEscape).join(",")];
-  for (const row of rows) lines.push(row.map(csvEscape).join(","));
-  return lines.join("\n") + "\n";
-}

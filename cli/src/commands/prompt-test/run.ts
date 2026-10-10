@@ -1,29 +1,20 @@
 import { Command } from "commander";
 import { readFileSync, writeFileSync } from "node:fs";
 import { load } from "js-yaml";
-import chalk from "chalk";
-import Table from "cli-table3";
 import { requireApiKey } from "../../auth.js";
 import { apiRequest } from "../../client.js";
-import { printInfo, printSuccess, printWarning, printError, handleSdkError } from "../../output.js";
-
-const UNICODE_CHARS = {
-  top: "─",
-  "top-mid": "┬",
-  "top-left": "┌",
-  "top-right": "┐",
-  bottom: "─",
-  "bottom-mid": "┴",
-  "bottom-left": "└",
-  "bottom-right": "┘",
-  left: "│",
-  "left-mid": "├",
-  mid: "─",
-  "mid-mid": "┼",
-  right: "│",
-  "right-mid": "┤",
-  middle: "│",
-};
+import {
+  printInfo,
+  printSuccess,
+  printWarning,
+  printError,
+  printMessage,
+  printJson,
+  handleSdkError,
+} from "../../output.js";
+import { parseOutputFormat } from "../../lib/output-format.js";
+import type { OutputFormat } from "../../lib/output-format.js";
+import { renderResults, renderCsv } from "./render.js";
 import { CliError } from "../../types.js";
 import { resolveProjectIdValue, PROJECT_ID_FLAG_DESC } from "../../lib/project-id.js";
 import type { PromptTest, PromptTestConfig } from "../../types.js";
@@ -33,79 +24,27 @@ function isPromptTestComplete(exp: PromptTest): boolean {
   return exp.tasks.every((t) => t.status === "completed" || t.status === "failed");
 }
 
-function displayProgressTable(experiments: PromptTest[]): void {
-  const table = new Table({
-    head: ["Prompt Test ID", "Status", "Tasks Completed"].map((h) => chalk.bold.cyan(h)),
-    chars: UNICODE_CHARS,
-  });
-
+/**
+ * Progress is reported one line per state change instead of a full table per poll --
+ * a table per 1s iteration buried the actual result under dozens of near-identical tables.
+ */
+function reportProgress(
+  experiments: PromptTest[],
+  announced: Set<string>,
+  toStderr: boolean,
+): void {
   for (const exp of experiments) {
-    const done = exp.tasks.filter((t) => t.status === "completed" || t.status === "failed").length;
-    const total = exp.tasks.length;
-    table.push([
-      exp.id,
-      isPromptTestComplete(exp) ? "✅ Completed" : "⏳ Running",
-      `${done}/${total}`,
-    ]);
+    if (!isPromptTestComplete(exp) || announced.has(exp.id)) continue;
+    announced.add(exp.id);
+    const failed = exp.tasks.filter((t) => t.status === "failed").length;
+    const suffix = failed ? ` (${failed} failed)` : "";
+    printSuccess(`Prompt test ${exp.id} completed: ${exp.tasks.length} tasks${suffix}.`, toStderr);
   }
-
-  console.log(table.toString());
 }
 
-function displayAggregatedResults(experiments: PromptTest[]): void {
-  if (!experiments.length) {
-    printWarning("No prompt test results to display.");
-    return;
-  }
-
-  const allEvaluators = new Map<string, string>();
-  for (const exp of experiments) {
-    for (const e of exp.evaluators) {
-      if (!allEvaluators.has(e.id)) allEvaluators.set(e.id, e.name);
-    }
-  }
-  const sortedEvalIds = [...allEvaluators.keys()].sort();
-
-  const table = new Table({
-    head: [
-      "Inputs",
-      "Prompt",
-      "Model",
-      "Cost",
-      "Latency (s)",
-      "Output",
-      ...sortedEvalIds.map((id) => allEvaluators.get(id)!),
-    ].map((h) => chalk.bold.cyan(h)),
-    chars: UNICODE_CHARS,
-    wordWrap: true,
-  });
-
-  for (const exp of experiments) {
-    for (const task of exp.tasks) {
-      const inputsStr = Object.entries(task.variables)
-        .map(([k, v]) => `${k}: ${v}`)
-        .join("\n");
-
-      const row: string[] = [
-        inputsStr,
-        exp.prompt,
-        exp.model,
-        task.cost ?? "N/A",
-        task.model_call_duration != null ? task.model_call_duration.toFixed(3) : "N/A",
-        task.llm_output ?? "",
-      ];
-
-      const scores = new Map(task.evaluation_results.map((r) => [r.id, r.score]));
-      for (const evalId of sortedEvalIds) {
-        const score = scores.get(evalId);
-        row.push(score != null ? String(score) : "N/A");
-      }
-
-      table.push(row);
-    }
-  }
-
-  console.log(table.toString());
+export interface RunOptions {
+  format?: OutputFormat;
+  full?: boolean;
 }
 
 export async function runPromptTests(
@@ -113,6 +52,7 @@ export async function runPromptTests(
   configPath: string,
   sleep: (ms: number) => Promise<void> = (ms) => new Promise((r) => setTimeout(r, ms)),
   projectIdOverride?: string,
+  options: RunOptions = {},
 ): Promise<void> {
   let rawConfig: unknown;
   try {
@@ -140,8 +80,14 @@ export async function runPromptTests(
     throw new CliError(1, "Invalid config");
   }
 
+  const format = options.format ?? "table";
+  const full = options.full ?? false;
+  // With --format json/csv, stdout must carry ONLY the serialized result so scripts can
+  // pipe it; every progress line moves to stderr.
+  const structured = format !== "table";
+
   const apiKey = await requireApiKey();
-  printInfo("Starting prompt tests");
+  printInfo("Starting prompt tests", structured);
 
   // Resolution: --project-id override > config file > env > settings.
   // Passing `--project-id` to `run` invokes resolveProjectIdValue, which already
@@ -180,9 +126,15 @@ export async function runPromptTests(
       })) as PromptTest | null;
       if (result?.id) {
         experiments[result.id] = result;
-        printSuccess(`Successfully created prompt test for model '${model}' with ID: ${result.id}`);
+        printSuccess(
+          `Successfully created prompt test for model '${model}' with ID: ${result.id}`,
+          structured,
+        );
       } else {
-        printWarning(`Failed to create prompt test for model '${model}' with prompt: ${prompt}`);
+        printWarning(
+          `Failed to create prompt test for model '${model}' with prompt: ${prompt}`,
+          structured,
+        );
       }
     }
   }
@@ -192,8 +144,9 @@ export async function runPromptTests(
     throw new CliError(1, "No prompt tests created");
   }
 
-  printInfo("Waiting for prompt tests to complete...");
+  printInfo("Waiting for prompt tests to complete...", structured);
   const completed: Record<string, PromptTest> = {};
+  const announced = new Set<string>();
 
   while (Object.keys(completed).length < Object.keys(experiments).length) {
     for (const expId of Object.keys(experiments)) {
@@ -203,7 +156,7 @@ export async function runPromptTests(
         apiKey,
       })) as PromptTest | null;
       if (!expData) {
-        printWarning(`Could not retrieve status for prompt test ${expId}`);
+        printWarning(`Could not retrieve status for prompt test ${expId}`, structured);
         continue;
       }
 
@@ -211,25 +164,32 @@ export async function runPromptTests(
 
       if (isPromptTestComplete(expData)) {
         completed[expId] = expData;
-        printSuccess(`Prompt test ${expId} completed.`);
       }
     }
 
-    displayProgressTable(Object.values(experiments));
+    reportProgress(Object.values(experiments), announced, structured);
 
     if (Object.keys(completed).length < Object.keys(experiments).length) {
       await sleep(1000);
     }
   }
 
-  printSuccess("All prompt tests completed.");
+  printSuccess("All prompt tests completed.", structured);
   const finalTests = Object.values(completed).sort((a, b) => a.id.localeCompare(b.id));
-  displayAggregatedResults(finalTests);
+  if (format === "json") {
+    printJson(finalTests);
+  } else if (format === "csv") {
+    printMessage(renderCsv(finalTests).trimEnd());
+  } else if (!finalTests.length) {
+    printWarning("No prompt test results to display.");
+  } else {
+    printMessage(renderResults(finalTests, full));
+  }
 
   if (outputFile) {
     try {
       writeFileSync(outputFile, JSON.stringify(finalTests, null, 2));
-      printSuccess(`Results saved to ${outputFile}`);
+      printSuccess(`Results saved to ${outputFile}`, structured);
     } catch (e) {
       printError(
         `Failed to write results to ${outputFile}: ${e instanceof Error ? e.message : String(e)}`,
@@ -243,12 +203,25 @@ export function registerRunCommand(pt: Command): void {
     .description("Runs prompt tests from the prompt-tests.yaml file")
     .option("-o, --output <path>", "Output file path to save prompt test results as JSON")
     .option("-c, --config <path>", "Path to prompt testing configuration file", "prompt-tests.yaml")
+    .option("--format <format>", "Output format: table, json, csv", "table")
+    .option("--full", "Print untruncated prompts, outputs, and justifications")
     .option("--project-id <uuid>", PROJECT_ID_FLAG_DESC + " Overrides project_id from config file.")
-    .action(async (opts: { output?: string; config: string; projectId?: string }) => {
-      try {
-        await runPromptTests(opts.output, opts.config, undefined, opts.projectId);
-      } catch (e) {
-        handleSdkError(e);
-      }
-    });
+    .action(
+      async (opts: {
+        output?: string;
+        config: string;
+        projectId?: string;
+        format?: string;
+        full?: boolean;
+      }) => {
+        try {
+          await runPromptTests(opts.output, opts.config, undefined, opts.projectId, {
+            format: parseOutputFormat(opts.format, "--format"),
+            full: Boolean(opts.full),
+          });
+        } catch (e) {
+          handleSdkError(e);
+        }
+      },
+    );
 }
