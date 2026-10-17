@@ -185,10 +185,42 @@ paths:
       responses:
         '204':
           description: No response body
+  /v1/batch-executions/:
+    post:
+      operationId: batch_executions_create
+      description: Run a judge, or an ad-hoc set of evaluators, over inline inputs
+        or a whole dataset. Returns immediately; poll the status url for results.
+      tags:
+      - batch-executions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchExecutionCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchExecutionCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchExecutionCreateRequest'
+      security:
+      - publicApiKey: []
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchExecutionResponse'
+          description: ''
   /v1/calibration-runs/:
     get:
       operationId: calibration_runs_list
       parameters:
+      - in: query
+        name: comparison_group
+        schema:
+          type: string
+        description: Filter by comma-separated comparison groups.
       - name: cursor
         required: false
         in: query
@@ -297,6 +329,34 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedCalibrationRunItemList'
           description: ''
+  /v1/calibration-runs/attach/:
+    post:
+      operationId: calibration_runs_attach_create
+      description: Attach the calibration runs made while drafting a new evaluator
+        to it once saved.
+      tags:
+      - calibration-runs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalibrationRunAttachRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CalibrationRunAttachRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CalibrationRunAttachRequest'
+        required: true
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalibrationRunAttachResponse'
+          description: ''
   /v1/datasets/:
     get:
       operationId: datasets_list
@@ -332,12 +392,6 @@ paths:
           type: string
           default: ''
         description: Search for dataset by name
-      - in: query
-        name: type
-        schema:
-          type: string
-          default: ''
-        description: 'Filter by type. Possible values: reference, test'
       tags:
       - datasets
       security:
@@ -360,17 +414,11 @@ paths:
             schema:
               $ref: '#/components/schemas/DataSetCreateRequest'
             examples:
-              CreateADataSetFromURL:
-                value:
-                  name: My data set
-                  url: https://example.com
-                summary: Create a data set from URL
               CreateADataSetFromAFile:
                 value: !!set
                   ? "\n                        const formData = new FormData();\n
-                    \                       formData.append(\"file\", file);\n                        formData.append(\"type\",
-                    \"reference\");\n                        const response = await
-                    fetch(`base_url/dataset/upload/`, {\n                        method:
+                    \                       formData.append(\"file\", file);\n                        const
+                    response = await fetch(`base_url/dataset/upload/`, {\n                        method:
                     \"POST\",\n                        body: formData,\n                        headers:
                     {\n                            Authorization: `Api-Key ${api_key}`,\n
                     \                       },\n                        });\n                    "
@@ -453,7 +501,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/DatasetItemRequest'
-        required: true
       security:
       - publicApiKey: []
       responses:
@@ -518,7 +565,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/DatasetItemRequest'
-        required: true
       security:
       - publicApiKey: []
       responses:
@@ -656,6 +702,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/DataSetList'
           description: ''
+    patch:
+      operationId: datasets_partial_update
+      description: Rename a dataset.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - datasets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPatchDataSetRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPatchDataSetRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPatchDataSetRequest'
+      security:
+      - publicApiKey: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataSetList'
+          description: ''
     delete:
       operationId: datasets_destroy
       description: Delete a dataset.
@@ -686,6 +763,16 @@ paths:
         description: The pagination cursor value.
         schema:
           type: string
+      - in: query
+        name: evaluator_type
+        schema:
+          type: string
+          enum:
+          - managed
+          - native
+        description: |-
+          * `managed` - managed
+          * `native` - native
       - in: query
         name: include_public
         schema:
@@ -737,24 +824,14 @@ paths:
         schema:
           type: string
           format: uuid
-        description: Filter by project. Public evaluators are excluded when this filter
-          is set.
+        description: Filter by project. Scorable root evaluators are always included;
+          other public evaluators are excluded when this filter is set.
       - in: query
         name: search
         schema:
           type: string
           default: ''
         description: Search for evaluators by name or description.
-      - in: query
-        name: skill_type
-        schema:
-          type: string
-          enum:
-          - managed
-          - native
-        description: |-
-          * `managed` - managed
-          * `native` - native
       tags:
       - evaluators
       security:
@@ -881,12 +958,6 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedEvaluatorRequest'
             examples:
-              UpdateASkillPrompt:
-                value:
-                  prompt: 'Please answer this {{question}}. Your answer here:'
-                  input_variables:
-                  - name: question
-                summary: Update a skill prompt
               UpdateAnEvaluatorScoringCriteria:
                 value:
                   scoring_criteria: Does the {{response}} contain ambiguous language?
@@ -928,7 +999,9 @@ paths:
   /v1/evaluators/calibrate/:
     post:
       operationId: evaluators_calibrate_create
-      description: Test an evaluator definition using calibration data
+      description: Test an evaluator definition against a dataset. Each labeled item
+        (newest published annotation) is a calibration case whose annotation value
+        is the expected score.
       tags:
       - evaluators
       requestBody:
@@ -936,30 +1009,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SkillTestInputRequest'
-            examples:
-              TestWithCalibrationData.:
-                value:
-                  test_data:
-                  - - '1.0'
-                    - '2'
-                    - What is 1+1. Respond with a single digit number.
-                  - - '0.34'
-                    - The primary colors are red, blue, and green.
-                    - What are the primary colors?
-                  objective:
-                    intent: 'Is the output relevant to the prompt? Evaluate for the
-                      following criteria: accuracy, completeness, adherence to the
-                      prompt, and logical consistency.'
-                  prompt: Evaluate how well the {{response}} adheres to instructions
-                    given in {{request}}.
-                  name: Relevancy
-                  models:
-                  - gpt-4-turbo
-                  is_evaluator: true
-                summary: Test with calibration data.
-                description: 'Calibration test_data must have columns in this order:
-                  ''expected score'', ''text to evaluate (output)'', ''input''. Input
-                  is optional.'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/SkillTestInputRequest'
@@ -967,55 +1016,6 @@ paths:
             schema:
               $ref: '#/components/schemas/SkillTestInputRequest'
         required: true
-      security:
-      - publicApiKey: []
-      deprecated: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EvaluatorCalibrationOutput'
-          description: ''
-  /v1/evaluators/calibrate/{id}:
-    post:
-      operationId: evaluators_calibrate_create_2
-      description: Test an existing evaluator using calibration data
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
-      tags:
-      - evaluators
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SkillTestDataRequest'
-            examples:
-              TestWithCalibrationData.:
-                value:
-                  test_data:
-                  - - '1.0'
-                    - '2'
-                    - What is 1+1. Respond with a single digit number.
-                  - - '0.34'
-                    - The primary colors are red, blue, and green.
-                    - What are the primary colors?
-                summary: Test with calibration data.
-                description: 'Calibration test_data must have columns in this order:
-                  ''expected score'', ''text to evaluate (output)'', ''input''. Input
-                  is optional.'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SkillTestDataRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SkillTestDataRequest'
       security:
       - publicApiKey: []
       deprecated: true
@@ -1335,8 +1335,15 @@ paths:
     get:
       operationId: execution_logs_list
       description: Get a list of execution logs. An execution log is created every
-        time a skill or an evaluator is executed.
+        time an evaluator is executed.
       parameters:
+      - in: query
+        name: batch_execution_id
+        schema:
+          type: string
+          format: uuid
+        description: Filter logs produced by a batch execution, including their child
+          evaluator logs
       - name: cursor
         required: false
         in: query
@@ -1367,6 +1374,7 @@ paths:
           enum:
           - evaluator
           - experiment
+          - internal
           - judge
           - proxy
           - skill
@@ -1378,6 +1386,22 @@ paths:
           * `experiment` - experiment
           * `test` - test
           * `proxy` - proxy
+          * `internal` - internal
+      - in: query
+        name: export
+        schema:
+          type: string
+          enum:
+          - csv
+        description: Return the page as a CSV file instead of JSON
+      - in: query
+        name: export_full_text
+        schema:
+          type: boolean
+          default: false
+        description: With export=csv, keep long text fields whole. By default each
+          is cut at 32,000 characters to fit spreadsheet cells; request_truncated
+          and response_truncated mark cut rows, and log_url links to the full log.
       - in: query
         name: has_session_id
         schema:
@@ -1391,27 +1415,57 @@ paths:
         description: 'Comma-separated list of additional fields to include in the
           response. Supports: llm_output, variables, evaluation_context'
       - in: query
+        name: judge_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: max_cost
+        schema:
+          type: number
+        description: Filter logs by maximum cost, inclusive, excludes null costs
+      - in: query
         name: max_score
         schema:
           type: number
         description: Filter logs by maximum score, inclusive, excludes null scores
       - in: query
+        name: min_cost
+        schema:
+          type: number
+        description: Filter logs by minimum cost, inclusive, excludes null costs
+      - in: query
         name: min_score
         schema:
           type: number
         description: Filter logs by minimum score, inclusive, excludes null scores
+      - in: query
+        name: model
+        schema:
+          type: string
+        description: Filter logs by model name (exact match)
       - name: ordering
         required: false
         in: query
         description: Which field to use when ordering the results.
         schema:
           type: string
+      - in: query
+        name: owner_email
+        schema:
+          type: string
+        description: Filter logs by owner email (exact match)
       - name: page_size
         required: false
         in: query
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: parent_execution_log_id
+        schema:
+          type: string
+          format: uuid
       - in: query
         name: project_id
         schema:
@@ -1423,7 +1477,7 @@ paths:
         schema:
           type: string
           default: ''
-        description: Filter with skill name or id
+        description: Filter with evaluator name or id
       - in: query
         name: session_id
         schema:
@@ -1436,11 +1490,11 @@ paths:
           default: ''
         description: Filter logs by tag names (comma-separated)
       - in: query
-        name: unique_skills
+        name: unique_evaluators
         schema:
           type: boolean
           default: false
-        description: Return only unique skills
+        description: Return only unique evaluators
       - in: query
         name: user_id
         schema:
@@ -1689,8 +1743,6 @@ paths:
   /v1/judges/{judge_id}/batch-execute/:
     post:
       operationId: judges_batch_execute_create
-      description: Execute a judge with multiple inputs in parallel. Returns immediately
-        with batch ID for polling.
       parameters:
       - in: path
         name: judge_id
@@ -1699,97 +1751,11 @@ paths:
         required: true
       tags:
       - judges
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/JudgeBatchExecutionRequest'
-            examples:
-              SimpleBatchExecution:
-                value:
-                  inputs:
-                  - request: What is AI?
-                    response: AI stands for Artificial Intelligence
-                  - request: What is ML?
-                    response: ML stands for Machine Learning
-                  tags:
-                  - my-app-v1
-                summary: Simple batch execution
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/JudgeBatchExecutionRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/JudgeBatchExecutionRequest'
-        required: true
       security:
       - publicApiKey: []
       responses:
-        '202':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JudgeBatchExecutionResponse'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                description: Invalid input or batch size exceeds 100 items
-          description: ''
-        '401':
-          content:
-            application/json:
-              schema:
-                description: Authentication required
-              examples:
-                AuthenticationFailed:
-                  value:
-                    type: about:blank
-                    status: 401
-                    title: Incorrect authentication credentials.
-                    detail: Authentication credentials were not provided.
-                    instance: null
-                    code: authentication_failed
-                NotAuthenticated:
-                  value:
-                    type: about:blank
-                    status: 401
-                    title: Not authenticated.
-                    detail: Authentication credentials were not provided.
-                    instance: null
-                    code: not_authenticated
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                description: Permission denied
-              examples:
-                PermissionDenied:
-                  value:
-                    type: about:blank
-                    status: 403
-                    title: Permission denied.
-                    detail: You do not have permission to perform this action.
-                    instance: null
-                    code: permission_denied
-          description: ''
-        '429':
-          content:
-            application/json:
-              schema:
-                description: Quota exceeded
-              examples:
-                Throttled:
-                  value:
-                    type: about:blank
-                    status: 429
-                    title: Throttled.
-                    detail: Request was throttled.
-                    instance: null
-                    code: throttled
-          description: ''
+        '200':
+          description: No response body
   /v1/judges/{judge_id}/execute/:
     post:
       operationId: judges_execute_create
@@ -2395,7 +2361,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedJudgeBatchExecutionListItemList'
+                $ref: '#/components/schemas/PaginatedBatchExecutionListItemList'
           description: ''
   /v1/judges/batch-executions/{id}/:
     get:
@@ -2417,7 +2383,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JudgeBatchExecutionDetail'
+                $ref: '#/components/schemas/BatchExecutionDetail'
           description: ''
   /v1/judges/claim/:
     post:
@@ -2626,7 +2592,9 @@ paths:
           type: array
           items:
             type: string
-        description: Search for models by capabilities.
+        description: Deprecated and ignored. All models are returned regardless of
+          this parameter.
+        deprecated: true
         explode: false
         style: form
       - name: cursor
@@ -2909,7 +2877,7 @@ paths:
                   intent: Answer a question based on job title
                 summary: Create an Objective definition
                 description: Create an Objective, which defines the intent of the
-                  skills which match it, as well as the requirement that the answers
+                  evaluators which match it, as well as the requirement that the answers
                   should be of high clarity (0.9 is required threshold), and the results
                   will be also evaluated for precision but that information is just
                   gathered for informational purposes
@@ -3607,20 +3575,357 @@ components:
       description: |-
         * `draft` - draft
         * `published` - published
-    BatchExecutionStatus:
+    BatchExecutionCreateRequest:
+      type: object
+      properties:
+        inputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchExecutionInputRequest'
+          maxItems: 100
+          minItems: 1
+        dataset_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Evaluate every item in this dataset instead of supplying inputs
+            inline.
+        range:
+          allOf:
+          - $ref: '#/components/schemas/DatasetRangeRequest'
+          nullable: true
+          description: Optional subset of the dataset. Zero-based and inclusive.
+        tags:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        judge_version_id:
+          type: string
+          format: uuid
+          nullable: true
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Project to assign this batch execution to. Defaults to the
+            judge's project or org default.
+        judge_id:
+          type: string
+          format: uuid
+          nullable: true
+        evaluator_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Evaluators to run. Selecting evaluators here does not create
+            or require a judge.
+          minItems: 1
+    BatchExecutionDetail:
+      type: object
+      properties:
+        batch_execution_id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status914Enum'
+          readOnly: true
+        total_count:
+          type: integer
+          readOnly: true
+          description: Total number of inputs in the batch
+        completed_count:
+          type: integer
+          readOnly: true
+          description: Number of successfully completed executions
+        failed_count:
+          type: integer
+          readOnly: true
+          description: Number of failed executions
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        started_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        judge:
+          allOf:
+          - $ref: '#/components/schemas/NestedJudge'
+          readOnly: true
+          nullable: true
+        evaluators:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedBatchEvaluator'
+          readOnly: true
+        dataset:
+          allOf:
+          - $ref: '#/components/schemas/NestedDataSet'
+          readOnly: true
+          nullable: true
+        dataset_range:
+          readOnly: true
+          nullable: true
+          description: 'Optional subset of the dataset, e.g. {''start'': 0, ''end'':
+            49}. Zero-based, inclusive.'
+        tags:
+          readOnly: true
+          description: Tags applied to all executions in this batch
+        project_id:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchExecutionItem'
+          readOnly: true
+      required:
+      - batch_execution_id
+      - completed_at
+      - completed_count
+      - created_at
+      - dataset
+      - dataset_range
+      - evaluators
+      - failed_count
+      - items
+      - judge
+      - project_id
+      - started_at
+      - status
+      - tags
+      - total_count
+    BatchExecutionInputRequest:
+      type: object
+      properties:
+        turns:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageTurnRequest'
+          nullable: true
+        request:
+          type: string
+          nullable: true
+        response:
+          type: string
+          nullable: true
+        contexts:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        expected_output:
+          type: string
+          nullable: true
+          maxLength: 3500000
+        evaluator_version_id:
+          type: string
+          nullable: true
+        user_id:
+          type: string
+          nullable: true
+          maxLength: 255
+        session_id:
+          type: string
+          nullable: true
+          maxLength: 255
+        system_prompt:
+          type: string
+          nullable: true
+          maxLength: 3500000
+        file_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: File IDs (from POST /v1/files/). Note, not all models support
+            uploaded files as context.
+    BatchExecutionItem:
+      type: object
+      properties:
+        index:
+          type: integer
+          readOnly: true
+          description: Position in the batch (0-indexed)
+        status:
+          allOf:
+          - $ref: '#/components/schemas/BatchExecutionItemStatusEnum'
+          readOnly: true
+        input:
+          type: object
+          properties:
+            request:
+              type: string
+            response:
+              type: string
+            contexts:
+              type: array
+              items:
+                type: string
+              nullable: true
+            expected_output:
+              type: string
+              nullable: true
+            turns:
+              type: array
+              nullable: true
+              items:
+                type: object
+                properties:
+                  role:
+                    type: string
+                  content:
+                    type: string
+          readOnly: true
+        evaluator_results:
+          readOnly: true
+          nullable: true
+          description: List of evaluator results for this execution
+        error_message:
+          type: string
+          readOnly: true
+        execution_log_id:
+          type: string
+          format: uuid
+          nullable: true
+          readOnly: true
+        started_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - completed_at
+      - error_message
+      - evaluator_results
+      - execution_log_id
+      - index
+      - input
+      - started_at
+      - status
+    BatchExecutionItemStatusEnum:
       enum:
       - pending
       - processing
       - completed
       - failed
-      - partial
       type: string
       description: |-
         * `pending` - pending
         * `processing` - processing
         * `completed` - completed
         * `failed` - failed
-        * `partial` - partial
+    BatchExecutionListItem:
+      type: object
+      properties:
+        batch_execution_id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status914Enum'
+          readOnly: true
+        total_count:
+          type: integer
+          readOnly: true
+          description: Total number of inputs in the batch
+        completed_count:
+          type: integer
+          readOnly: true
+          description: Number of successfully completed executions
+        failed_count:
+          type: integer
+          readOnly: true
+          description: Number of failed executions
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        started_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        judge:
+          allOf:
+          - $ref: '#/components/schemas/NestedJudge'
+          readOnly: true
+          nullable: true
+        evaluators:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedBatchEvaluator'
+          readOnly: true
+        dataset:
+          allOf:
+          - $ref: '#/components/schemas/NestedDataSet'
+          readOnly: true
+          nullable: true
+        dataset_range:
+          readOnly: true
+          nullable: true
+          description: 'Optional subset of the dataset, e.g. {''start'': 0, ''end'':
+            49}. Zero-based, inclusive.'
+        tags:
+          readOnly: true
+          description: Tags applied to all executions in this batch
+        project_id:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+      required:
+      - batch_execution_id
+      - completed_at
+      - completed_count
+      - created_at
+      - dataset
+      - dataset_range
+      - evaluators
+      - failed_count
+      - judge
+      - project_id
+      - started_at
+      - status
+      - tags
+      - total_count
+    BatchExecutionResponse:
+      type: object
+      properties:
+        batch_execution_id:
+          type: string
+          format: uuid
+        status_url:
+          type: string
+      required:
+      - batch_execution_id
+      - status_url
     BatchSetTagsModelRequest:
       type: object
       properties:
@@ -3639,6 +3944,24 @@ components:
           maxItems: 15
       required:
       - log_ids
+    CalibrationDefinitionRequest:
+      type: object
+      properties:
+        scoring_criteria:
+          type: string
+          minLength: 1
+        model:
+          type: string
+          minLength: 1
+        behavior:
+          $ref: '#/components/schemas/EvaluatorBehaviorEnum'
+        demonstration_dataset_id:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - model
+      - scoring_criteria
     CalibrationRun:
       type: object
       properties:
@@ -3650,10 +3973,19 @@ components:
           type: string
           format: uuid
           readOnly: true
+          nullable: true
         evaluator_version_id:
           type: string
           format: uuid
           readOnly: true
+          nullable: true
+        definition:
+          readOnly: true
+        comparison_group:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
         score_config:
           type: string
           format: uuid
@@ -3689,8 +4021,10 @@ components:
           readOnly: true
           nullable: true
       required:
+      - comparison_group
       - created_at
       - dataset
+      - definition
       - error
       - evaluator_external_id
       - evaluator_version_id
@@ -3701,12 +4035,34 @@ components:
       - score_config
       - source_type
       - status
+    CalibrationRunAttachRequest:
+      type: object
+      properties:
+        evaluator_external_id:
+          type: string
+          format: uuid
+        comparison_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - comparison_groups
+      - evaluator_external_id
+    CalibrationRunAttachResponse:
+      type: object
+      properties:
+        attached:
+          type: integer
+      required:
+      - attached
     CalibrationRunCreateRequest:
       type: object
       properties:
         evaluator_external_id:
           type: string
           format: uuid
+          nullable: true
         evaluator_version_id:
           type: string
           format: uuid
@@ -3717,8 +4073,15 @@ components:
           nullable: true
         source:
           $ref: '#/components/schemas/CalibrationRunSourceRequest'
+        definition:
+          allOf:
+          - $ref: '#/components/schemas/CalibrationDefinitionRequest'
+          nullable: true
+        comparison_group:
+          type: string
+          format: uuid
+          nullable: true
       required:
-      - evaluator_external_id
       - source
     CalibrationRunItem:
       type: object
@@ -3832,11 +4195,7 @@ components:
         file:
           type: string
           format: uri
-        type:
-          $ref: '#/components/schemas/DataSetType'
-        url:
-          type: string
-          format: uri
+          nullable: true
         tags:
           type: array
           items:
@@ -3872,12 +4231,6 @@ components:
           type: string
           format: uuid
           writeOnly: true
-        type:
-          $ref: '#/components/schemas/DataSetType'
-        url:
-          type: string
-          format: uri
-          minLength: 1
         tags:
           type: array
           items:
@@ -3902,8 +4255,6 @@ components:
         name:
           type: string
           nullable: true
-        type:
-          $ref: '#/components/schemas/DataSetType'
         tags:
           type: array
           items:
@@ -3933,14 +4284,6 @@ components:
       - id
       - owner
       - project_id
-    DataSetType:
-      enum:
-      - reference
-      - test
-      type: string
-      description: |-
-        * `reference` - REFERENCE
-        * `test` - TEST
     DatasetItem:
       type: object
       properties:
@@ -3964,6 +4307,7 @@ components:
           type: string
         request:
           type: string
+        turns: {}
         expected_output:
           type: string
         contexts: {}
@@ -3991,16 +4335,15 @@ components:
       - id
       - is_archived
       - is_latest_version
-      - response
       - version_id
     DatasetItemRequest:
       type: object
       properties:
         response:
           type: string
-          minLength: 1
         request:
           type: string
+        turns: {}
         expected_output:
           type: string
         contexts: {}
@@ -4008,19 +4351,15 @@ components:
         metadata: {}
         change_note:
           type: string
-      required:
-      - response
     DatasetRangeRequest:
       type: object
       properties:
         start:
           type: integer
           minimum: 0
-          nullable: true
         end:
           type: integer
           minimum: 0
-          nullable: true
       required:
       - end
       - start
@@ -4054,11 +4393,6 @@ components:
           nullable: true
           description: Dataset whose annotations for this evaluator are used as few-shot
             demonstrations.
-        evaluator_demonstrations:
-          type: array
-          items:
-            $ref: '#/components/schemas/EvaluatorDemonstrations'
-          nullable: true
         id:
           type: string
           format: uuid
@@ -4236,44 +4570,6 @@ components:
       - llm_output
       - model
       - rendered_prompt
-      - score
-    EvaluatorDemonstrations:
-      type: object
-      properties:
-        request:
-          type: string
-          nullable: true
-        response:
-          type: string
-          nullable: true
-        score:
-          type: number
-          format: double
-          maximum: 1
-          minimum: 0
-        justification:
-          type: string
-          nullable: true
-      required:
-      - score
-    EvaluatorDemonstrationsRequest:
-      type: object
-      properties:
-        request:
-          type: string
-          nullable: true
-        response:
-          type: string
-          nullable: true
-        score:
-          type: number
-          format: double
-          maximum: 1
-          minimum: 0
-        justification:
-          type: string
-          nullable: true
-      required:
       - score
     EvaluatorExecutionRequest:
       type: object
@@ -4538,11 +4834,6 @@ components:
           nullable: true
           description: Dataset whose annotations for this evaluator are used as few-shot
             demonstrations.
-        evaluator_demonstrations:
-          type: array
-          items:
-            $ref: '#/components/schemas/EvaluatorDemonstrationsRequest'
-          nullable: true
         input_variables:
           type: array
           items:
@@ -4568,14 +4859,14 @@ components:
           format: uuid
           writeOnly: true
           nullable: true
-          description: Optionally pin the Skill to a specific version of an Objective.
+          description: Optionally pin the Evaluator to a specific version of an Objective.
             If not provided, the latest version of the objective will be used and
             followed.
         overwrite:
           type: boolean
           writeOnly: true
           default: false
-          description: Overwrite existing skill with the same name. Only for POST
+          description: Overwrite existing evaluator with the same name. Only for POST
             requests.
         project_id:
           type: string
@@ -4926,6 +5217,11 @@ components:
           type: string
           format: uuid
           readOnly: true
+        skill:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
         created_at:
           type: string
           format: date-time
@@ -4939,11 +5235,6 @@ components:
         name:
           type: string
           maxLength: 1000
-        skill:
-          type: string
-          format: uuid
-          readOnly: true
-          nullable: true
       required:
       - created_at
       - id
@@ -5059,294 +5350,6 @@ components:
       - intent
       - name
       - version_id
-    JudgeBatchExecutionDetail:
-      type: object
-      properties:
-        batch_execution_id:
-          type: string
-          format: uuid
-          readOnly: true
-        status:
-          allOf:
-          - $ref: '#/components/schemas/BatchExecutionStatus'
-          readOnly: true
-        total_count:
-          type: integer
-          readOnly: true
-          description: Total number of inputs in the batch
-        completed_count:
-          type: integer
-          readOnly: true
-          description: Number of successfully completed executions
-        failed_count:
-          type: integer
-          readOnly: true
-          description: Number of failed executions
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        started_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        completed_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        judge:
-          allOf:
-          - $ref: '#/components/schemas/NestedJudge'
-          readOnly: true
-        project_id:
-          type: string
-          format: uuid
-          readOnly: true
-          nullable: true
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/JudgeBatchExecutionItem'
-          readOnly: true
-      required:
-      - batch_execution_id
-      - completed_at
-      - completed_count
-      - created_at
-      - failed_count
-      - items
-      - judge
-      - project_id
-      - started_at
-      - status
-      - total_count
-    JudgeBatchExecutionInputRequest:
-      type: object
-      properties:
-        turns:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageTurnRequest'
-          nullable: true
-        tools:
-          type: array
-          items:
-            type: object
-            additionalProperties: {}
-          nullable: true
-          description: OpenAI-style tool catalog available to the agent during the
-            conversation.
-        request:
-          type: string
-          nullable: true
-        response:
-          type: string
-          nullable: true
-        contexts:
-          type: array
-          items:
-            type: string
-            minLength: 1
-        expected_output:
-          type: string
-          nullable: true
-          maxLength: 3500000
-        evaluator_version_id:
-          type: string
-          nullable: true
-        user_id:
-          type: string
-          nullable: true
-          maxLength: 255
-        session_id:
-          type: string
-          nullable: true
-          maxLength: 255
-        system_prompt:
-          type: string
-          nullable: true
-          maxLength: 3500000
-        file_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: File IDs (from POST /v1/files/). Note, not all models support
-            uploaded files as context.
-        project_id:
-          type: string
-          format: uuid
-          nullable: true
-          description: Project to assign the execution log to. Defaults to the resource's
-            project or org default.
-    JudgeBatchExecutionItem:
-      type: object
-      properties:
-        index:
-          type: integer
-          readOnly: true
-          description: Position in the batch (0-indexed)
-        status:
-          allOf:
-          - $ref: '#/components/schemas/JudgeBatchExecutionItemStatusEnum'
-          readOnly: true
-        input:
-          type: object
-          properties:
-            request:
-              type: string
-            response:
-              type: string
-            contexts:
-              type: array
-              items:
-                type: string
-              nullable: true
-            expected_output:
-              type: string
-              nullable: true
-          readOnly: true
-        evaluator_results:
-          readOnly: true
-          nullable: true
-          description: List of evaluator results for this execution
-        error_message:
-          type: string
-          readOnly: true
-        execution_log_id:
-          type: string
-          format: uuid
-          nullable: true
-          readOnly: true
-        started_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        completed_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-      required:
-      - completed_at
-      - error_message
-      - evaluator_results
-      - execution_log_id
-      - index
-      - input
-      - started_at
-      - status
-    JudgeBatchExecutionItemStatusEnum:
-      enum:
-      - pending
-      - processing
-      - completed
-      - failed
-      type: string
-      description: |-
-        * `pending` - pending
-        * `processing` - processing
-        * `completed` - completed
-        * `failed` - failed
-    JudgeBatchExecutionListItem:
-      type: object
-      properties:
-        batch_execution_id:
-          type: string
-          format: uuid
-          readOnly: true
-        status:
-          allOf:
-          - $ref: '#/components/schemas/BatchExecutionStatus'
-          readOnly: true
-        total_count:
-          type: integer
-          readOnly: true
-          description: Total number of inputs in the batch
-        completed_count:
-          type: integer
-          readOnly: true
-          description: Number of successfully completed executions
-        failed_count:
-          type: integer
-          readOnly: true
-          description: Number of failed executions
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        started_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        completed_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        judge:
-          allOf:
-          - $ref: '#/components/schemas/NestedJudge'
-          readOnly: true
-        project_id:
-          type: string
-          format: uuid
-          readOnly: true
-          nullable: true
-      required:
-      - batch_execution_id
-      - completed_at
-      - completed_count
-      - created_at
-      - failed_count
-      - judge
-      - project_id
-      - started_at
-      - status
-      - total_count
-    JudgeBatchExecutionRequest:
-      type: object
-      properties:
-        inputs:
-          type: array
-          items:
-            $ref: '#/components/schemas/JudgeBatchExecutionInputRequest'
-          maxItems: 100
-          minItems: 1
-        tags:
-          type: array
-          items:
-            type: string
-            minLength: 1
-        judge_version_id:
-          type: string
-          format: uuid
-          nullable: true
-        project_id:
-          type: string
-          format: uuid
-          nullable: true
-          description: Project to assign this batch execution to. Defaults to the
-            judge's project or org default.
-      required:
-      - inputs
-    JudgeBatchExecutionResponse:
-      type: object
-      properties:
-        batch_execution_id:
-          type: string
-          format: uuid
-        status_url:
-          type: string
-      required:
-      - batch_execution_id
-      - status_url
     JudgeClaimRequestRequest:
       type: object
       properties:
@@ -5962,6 +5965,33 @@ components:
       required:
       - model
       - success
+    NestedBatchEvaluator:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        version_id:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - id
+      - name
+      - version_id
+    NestedDataSet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+      - id
+      - name
     NestedEvaluator:
       type: object
       properties:
@@ -6077,15 +6107,6 @@ components:
         intent:
           type: string
           maxLength: 100000
-        test_set:
-          type: array
-          items:
-            type: array
-            items:
-              type: string
-          readOnly: true
-          nullable: true
-          description: 'Deprecated: Use test_dataset_id instead.'
         created_at:
           type: string
           format: date-time
@@ -6112,7 +6133,6 @@ components:
       - created_at
       - id
       - owner
-      - test_set
       - version_id
     ObjectiveList:
       type: object
@@ -6329,6 +6349,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Annotation'
+    PaginatedBatchExecutionListItemList:
+      type: object
+      required:
+      - results
+      properties:
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchExecutionListItem'
     PaginatedCalibrationRunItemList:
       type: object
       required:
@@ -6462,25 +6501,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExecutionLogList'
-    PaginatedJudgeBatchExecutionListItemList:
-      type: object
-      required:
-      - results
-      properties:
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?cursor=cD00ODY%3D"
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/JudgeBatchExecutionListItem'
     PaginatedJudgeListList:
       type: object
       required:
@@ -6645,9 +6665,9 @@ components:
       properties:
         response:
           type: string
-          minLength: 1
         request:
           type: string
+        turns: {}
         expected_output:
           type: string
         contexts: {}
@@ -6667,11 +6687,6 @@ components:
           nullable: true
           description: Dataset whose annotations for this evaluator are used as few-shot
             demonstrations.
-        evaluator_demonstrations:
-          type: array
-          items:
-            $ref: '#/components/schemas/EvaluatorDemonstrationsRequest'
-          nullable: true
         input_variables:
           type: array
           items:
@@ -6697,14 +6712,14 @@ components:
           format: uuid
           writeOnly: true
           nullable: true
-          description: Optionally pin the Skill to a specific version of an Objective.
+          description: Optionally pin the Evaluator to a specific version of an Objective.
             If not provided, the latest version of the objective will be used and
             followed.
         overwrite:
           type: boolean
           writeOnly: true
           default: false
-          description: Overwrite existing skill with the same name. Only for POST
+          description: Overwrite existing evaluator with the same name. Only for POST
             requests.
         project_id:
           type: string
@@ -6800,6 +6815,11 @@ components:
           nullable: true
           description: Project to associate this objective with. Defaults to the organization's
             default project.
+    PatchedPatchDataSetRequest:
+      type: object
+      properties:
+        name:
+          type: string
     PatchedProjectRequest:
       type: object
       properties:
@@ -6881,9 +6901,11 @@ components:
         logo_light:
           type: string
           format: uri
+          nullable: true
         logo_dark:
           type: string
           format: uri
+          nullable: true
         is_gdpr_compliant:
           type: boolean
       required:
@@ -6901,19 +6923,6 @@ components:
         * `low` - low
         * `medium` - medium
         * `high` - high
-    ReferenceVariableRequest:
-      type: object
-      properties:
-        dataset:
-          type: string
-          format: uuid
-        name:
-          type: string
-          minLength: 1
-          maxLength: 1000
-      required:
-      - dataset
-      - name
     RoleEnum:
       enum:
       - user
@@ -7022,33 +7031,6 @@ components:
       - result
       - status
       - threshold
-    SkillTestDataRequest:
-      type: object
-      properties:
-        test_data:
-          type: array
-          items:
-            type: array
-            items:
-              type: string
-              minLength: 1
-          writeOnly: true
-          nullable: true
-        test_dataset_id:
-          type: string
-          writeOnly: true
-          minLength: 1
-          description: 'Deprecated: superseded by the annotation-based dataset (DatasetItem
-            + Annotation).'
-        project_id:
-          type: string
-          format: uuid
-          nullable: true
-        dataset_range:
-          allOf:
-          - $ref: '#/components/schemas/DatasetRangeRequest'
-          nullable: true
-          description: Specifies the range of dataset rows to use
     SkillTestInputBehaviorEnum:
       enum:
       - fast
@@ -7062,21 +7044,12 @@ components:
     SkillTestInputRequest:
       type: object
       properties:
-        test_data:
-          type: array
-          items:
-            type: array
-            items:
-              type: string
-              minLength: 1
-          writeOnly: true
-          nullable: true
         test_dataset_id:
           type: string
+          format: uuid
           writeOnly: true
-          minLength: 1
-          description: 'Deprecated: superseded by the annotation-based dataset (DatasetItem
-            + Annotation).'
+          description: Dataset whose labeled items (published annotations) are the
+            calibration cases.
         project_id:
           type: string
           format: uuid
@@ -7089,11 +7062,6 @@ components:
         prompt:
           type: string
           minLength: 1
-        reference_variables:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReferenceVariableRequest'
-          default: []
         input_variables:
           type: array
           items:
@@ -7114,7 +7082,7 @@ components:
           nullable: true
         is_evaluator:
           type: boolean
-          default: false
+          default: true
         behavior:
           nullable: true
           oneOf:
@@ -7122,6 +7090,21 @@ components:
           - $ref: '#/components/schemas/NullEnum'
       required:
       - prompt
+      - test_dataset_id
+    Status914Enum:
+      enum:
+      - pending
+      - processing
+      - completed
+      - failed
+      - partial
+      type: string
+      description: |-
+        * `pending` - pending
+        * `processing` - processing
+        * `completed` - completed
+        * `failed` - failed
+        * `partial` - partial
     StatusEnum:
       enum:
       - public
@@ -7166,7 +7149,21 @@ components:
       type: apiKey
       in: header
       name: Authorization
-      description: Token-based authentication with required prefix "Api-Key"
-      x-default: Api-Key <your-api-key>
+      description: 'Paste your API key prefixed with "Api-Key ". Example: Api-Key
+        a1b2c3d4.your-secret-key'
 servers:
 - url: https://api.localhost:8000
+tags:
+- name: evaluators
+- name: judges
+- name: annotations
+- name: batch-executions
+- name: calibration-runs
+- name: datasets
+- name: execution-logs
+- name: files
+- name: models
+- name: objectives
+- name: otel
+- name: projects
+- name: score-configs

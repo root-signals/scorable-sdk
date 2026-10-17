@@ -20,11 +20,9 @@ from typing_extensions import Annotated
 
 from scorable.generated.openapi_client.api_client import ApiClient, RequestSerialized
 from scorable.generated.openapi_client.api_response import ApiResponse
+from scorable.generated.openapi_client.models.batch_execution_detail import BatchExecutionDetail
 from scorable.generated.openapi_client.models.duplicate_judge_request_request import DuplicateJudgeRequestRequest
 from scorable.generated.openapi_client.models.judge import Judge
-from scorable.generated.openapi_client.models.judge_batch_execution_detail import JudgeBatchExecutionDetail
-from scorable.generated.openapi_client.models.judge_batch_execution_request import JudgeBatchExecutionRequest
-from scorable.generated.openapi_client.models.judge_batch_execution_response import JudgeBatchExecutionResponse
 from scorable.generated.openapi_client.models.judge_claim_request_request import JudgeClaimRequestRequest
 from scorable.generated.openapi_client.models.judge_execution_request import JudgeExecutionRequest
 from scorable.generated.openapi_client.models.judge_execution_response import JudgeExecutionResponse
@@ -37,8 +35,8 @@ from scorable.generated.openapi_client.models.judge_request import JudgeRequest
 from scorable.generated.openapi_client.models.judges_synthetic_data_retrieve200_response import (
     JudgesSyntheticDataRetrieve200Response,
 )
-from scorable.generated.openapi_client.models.paginated_judge_batch_execution_list_item_list import (
-    PaginatedJudgeBatchExecutionListItemList,
+from scorable.generated.openapi_client.models.paginated_batch_execution_list_item_list import (
+    PaginatedBatchExecutionListItemList,
 )
 from scorable.generated.openapi_client.models.paginated_judge_list_list import PaginatedJudgeListList
 from scorable.generated.openapi_client.models.patched_judge_request import PatchedJudgeRequest
@@ -61,7 +59,6 @@ class JudgesApi:
     def judges_batch_execute_create(
         self,
         judge_id: StrictStr,
-        judge_batch_execution_request: JudgeBatchExecutionRequest,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -71,15 +68,12 @@ class JudgesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> JudgeBatchExecutionResponse:
+    ) -> None:
         """judges_batch_execute_create
 
-        Execute a judge with multiple inputs in parallel. Returns immediately with batch ID for polling.
 
         :param judge_id: (required)
         :type judge_id: str
-        :param judge_batch_execution_request: (required)
-        :type judge_batch_execution_request: JudgeBatchExecutionRequest
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -104,7 +98,6 @@ class JudgesApi:
 
         _param = self._judges_batch_execute_create_serialize(
             judge_id=judge_id,
-            judge_batch_execution_request=judge_batch_execution_request,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -112,11 +105,7 @@ class JudgesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "202": "JudgeBatchExecutionResponse",
-            "400": "object",
-            "401": "object",
-            "403": "object",
-            "429": "object",
+            "200": None,
         }
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
@@ -129,7 +118,6 @@ class JudgesApi:
     def judges_batch_execute_create_with_http_info(
         self,
         judge_id: StrictStr,
-        judge_batch_execution_request: JudgeBatchExecutionRequest,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -139,15 +127,12 @@ class JudgesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[JudgeBatchExecutionResponse]:
+    ) -> ApiResponse[None]:
         """judges_batch_execute_create
 
-        Execute a judge with multiple inputs in parallel. Returns immediately with batch ID for polling.
 
         :param judge_id: (required)
         :type judge_id: str
-        :param judge_batch_execution_request: (required)
-        :type judge_batch_execution_request: JudgeBatchExecutionRequest
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -172,7 +157,6 @@ class JudgesApi:
 
         _param = self._judges_batch_execute_create_serialize(
             judge_id=judge_id,
-            judge_batch_execution_request=judge_batch_execution_request,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -180,11 +164,7 @@ class JudgesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "202": "JudgeBatchExecutionResponse",
-            "400": "object",
-            "401": "object",
-            "403": "object",
-            "429": "object",
+            "200": None,
         }
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
@@ -197,7 +177,6 @@ class JudgesApi:
     def judges_batch_execute_create_without_preload_content(
         self,
         judge_id: StrictStr,
-        judge_batch_execution_request: JudgeBatchExecutionRequest,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -210,12 +189,9 @@ class JudgesApi:
     ) -> RESTResponseType:
         """judges_batch_execute_create
 
-        Execute a judge with multiple inputs in parallel. Returns immediately with batch ID for polling.
 
         :param judge_id: (required)
         :type judge_id: str
-        :param judge_batch_execution_request: (required)
-        :type judge_batch_execution_request: JudgeBatchExecutionRequest
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -240,7 +216,6 @@ class JudgesApi:
 
         _param = self._judges_batch_execute_create_serialize(
             judge_id=judge_id,
-            judge_batch_execution_request=judge_batch_execution_request,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -248,11 +223,7 @@ class JudgesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "202": "JudgeBatchExecutionResponse",
-            "400": "object",
-            "401": "object",
-            "403": "object",
-            "429": "object",
+            "200": None,
         }
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
@@ -260,7 +231,6 @@ class JudgesApi:
     def _judges_batch_execute_create_serialize(
         self,
         judge_id,
-        judge_batch_execution_request,
         _request_auth,
         _content_type,
         _headers,
@@ -284,21 +254,6 @@ class JudgesApi:
         # process the header parameters
         # process the form parameters
         # process the body parameter
-        if judge_batch_execution_request is not None:
-            _body_params = judge_batch_execution_request
-
-        # set the HTTP header `Accept`
-        _header_params["Accept"] = self.api_client.select_header_accept(["application/json"])
-
-        # set the HTTP header `Content-Type`
-        if _content_type:
-            _header_params["Content-Type"] = _content_type
-        else:
-            _default_content_type = self.api_client.select_header_content_type(
-                ["application/json", "application/x-www-form-urlencoded", "multipart/form-data"]
-            )
-            if _default_content_type is not None:
-                _header_params["Content-Type"] = _default_content_type
 
         # authentication setting
         _auth_settings: List[str] = ["publicApiKey"]
@@ -337,7 +292,7 @@ class JudgesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> PaginatedJudgeBatchExecutionListItemList:
+    ) -> PaginatedBatchExecutionListItemList:
         """judges_batch_executions_list
 
         List batch judge executions
@@ -393,7 +348,7 @@ class JudgesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "PaginatedJudgeBatchExecutionListItemList",
+            "200": "PaginatedBatchExecutionListItemList",
         }
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
@@ -421,7 +376,7 @@ class JudgesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[PaginatedJudgeBatchExecutionListItemList]:
+    ) -> ApiResponse[PaginatedBatchExecutionListItemList]:
         """judges_batch_executions_list
 
         List batch judge executions
@@ -477,7 +432,7 @@ class JudgesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "PaginatedJudgeBatchExecutionListItemList",
+            "200": "PaginatedBatchExecutionListItemList",
         }
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
@@ -561,7 +516,7 @@ class JudgesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "PaginatedJudgeBatchExecutionListItemList",
+            "200": "PaginatedBatchExecutionListItemList",
         }
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response
@@ -658,7 +613,7 @@ class JudgesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> JudgeBatchExecutionDetail:
+    ) -> BatchExecutionDetail:
         """judges_batch_executions_retrieve
 
         Get batch execution status and results. Returns all items (max 100).
@@ -692,7 +647,7 @@ class JudgesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "JudgeBatchExecutionDetail",
+            "200": "BatchExecutionDetail",
         }
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
@@ -714,7 +669,7 @@ class JudgesApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[JudgeBatchExecutionDetail]:
+    ) -> ApiResponse[BatchExecutionDetail]:
         """judges_batch_executions_retrieve
 
         Get batch execution status and results. Returns all items (max 100).
@@ -748,7 +703,7 @@ class JudgesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "JudgeBatchExecutionDetail",
+            "200": "BatchExecutionDetail",
         }
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         response_data.read()
@@ -804,7 +759,7 @@ class JudgesApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            "200": "JudgeBatchExecutionDetail",
+            "200": "BatchExecutionDetail",
         }
         response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
         return response_data.response

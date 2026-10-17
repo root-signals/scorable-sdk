@@ -28,7 +28,6 @@ interface ListDatasetsParams {
   ordering?: string;
   page_size?: number;
   search?: string;
-  type?: 'reference' | 'test';
   /** Filter datasets by project UUID. */
   projectId?: string;
 }
@@ -36,8 +35,6 @@ interface ListDatasetsParams {
 // File upload types
 interface DatasetMetadata {
   name?: string;
-  type?: 'reference' | 'test';
-  url?: string;
   tags?: string[];
   has_header?: boolean;
   /** Project to assign this dataset to. Defaults to the org's default project. */
@@ -165,7 +162,7 @@ export class DatasetsResource {
         formData.append('file', buffer as never, metadata.name ?? 'dataset.csv');
       }
     } else if (typeof file === 'string') {
-      // Handle URL or base64 string
+      // Handle string input
       formData.append('file', file);
     } else {
       // Handle other file-like objects (ReadableStream, etc.)
@@ -174,8 +171,6 @@ export class DatasetsResource {
 
     // Add metadata fields
     if (metadata.name) formData.append('name', metadata.name);
-    if (metadata.type) formData.append('type', metadata.type);
-    if (metadata.url) formData.append('url', metadata.url);
     if (metadata.has_header !== undefined)
       formData.append('has_header', metadata.has_header.toString());
     if (metadata.tags) {

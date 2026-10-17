@@ -22,7 +22,6 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Self
 
-from scorable.generated.openapi_client.models.data_set_type import DataSetType
 from scorable.generated.openapi_client.models.nested_user_details import NestedUserDetails
 from scorable.generated.openapi_client.models.status_enum import StatusEnum
 
@@ -34,24 +33,13 @@ class DataSetList(BaseModel):
 
     id: StrictStr
     name: Optional[StrictStr] = None
-    type: Optional[DataSetType] = None
     tags: Optional[List[StrictStr]] = None
     owner: NestedUserDetails
     created_at: datetime
     status: Optional[StatusEnum] = None
     project_id: Optional[StrictStr]
     meta: Optional[Any] = Field(alias="_meta")
-    __properties: ClassVar[List[str]] = [
-        "id",
-        "name",
-        "type",
-        "tags",
-        "owner",
-        "created_at",
-        "status",
-        "project_id",
-        "_meta",
-    ]
+    __properties: ClassVar[List[str]] = ["id", "name", "tags", "owner", "created_at", "status", "project_id", "_meta"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -136,7 +124,6 @@ class DataSetList(BaseModel):
             {
                 "id": obj.get("id"),
                 "name": obj.get("name"),
-                "type": obj.get("type"),
                 "tags": obj.get("tags"),
                 "owner": NestedUserDetails.from_dict(obj["owner"]) if obj.get("owner") is not None else None,
                 "created_at": obj.get("created_at"),

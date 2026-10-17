@@ -21,6 +21,7 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict, StrictStr
 from typing_extensions import Self
 
+from scorable.generated.openapi_aclient.models.calibration_definition_request import CalibrationDefinitionRequest
 from scorable.generated.openapi_aclient.models.calibration_run_source_request import CalibrationRunSourceRequest
 
 
@@ -29,11 +30,20 @@ class CalibrationRunCreateRequest(BaseModel):
     CalibrationRunCreateRequest
     """  # noqa: E501
 
-    evaluator_external_id: StrictStr
+    evaluator_external_id: Optional[StrictStr] = None
     evaluator_version_id: Optional[StrictStr] = None
     score_config_id: Optional[StrictStr] = None
     source: CalibrationRunSourceRequest
-    __properties: ClassVar[List[str]] = ["evaluator_external_id", "evaluator_version_id", "score_config_id", "source"]
+    definition: Optional[CalibrationDefinitionRequest] = None
+    comparison_group: Optional[StrictStr] = None
+    __properties: ClassVar[List[str]] = [
+        "evaluator_external_id",
+        "evaluator_version_id",
+        "score_config_id",
+        "source",
+        "definition",
+        "comparison_group",
+    ]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -75,6 +85,14 @@ class CalibrationRunCreateRequest(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of source
         if self.source:
             _dict["source"] = self.source.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of definition
+        if self.definition:
+            _dict["definition"] = self.definition.to_dict()
+        # set to None if evaluator_external_id (nullable) is None
+        # and model_fields_set contains the field
+        if self.evaluator_external_id is None and "evaluator_external_id" in self.model_fields_set:
+            _dict["evaluator_external_id"] = None
+
         # set to None if evaluator_version_id (nullable) is None
         # and model_fields_set contains the field
         if self.evaluator_version_id is None and "evaluator_version_id" in self.model_fields_set:
@@ -84,6 +102,16 @@ class CalibrationRunCreateRequest(BaseModel):
         # and model_fields_set contains the field
         if self.score_config_id is None and "score_config_id" in self.model_fields_set:
             _dict["score_config_id"] = None
+
+        # set to None if definition (nullable) is None
+        # and model_fields_set contains the field
+        if self.definition is None and "definition" in self.model_fields_set:
+            _dict["definition"] = None
+
+        # set to None if comparison_group (nullable) is None
+        # and model_fields_set contains the field
+        if self.comparison_group is None and "comparison_group" in self.model_fields_set:
+            _dict["comparison_group"] = None
 
         return _dict
 
@@ -104,6 +132,10 @@ class CalibrationRunCreateRequest(BaseModel):
                 "source": CalibrationRunSourceRequest.from_dict(obj["source"])
                 if obj.get("source") is not None
                 else None,
+                "definition": CalibrationDefinitionRequest.from_dict(obj["definition"])
+                if obj.get("definition") is not None
+                else None,
+                "comparison_group": obj.get("comparison_group"),
             }
         )
         return _obj

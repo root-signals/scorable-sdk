@@ -29,11 +29,11 @@ class InputVariable(BaseModel):
     """  # noqa: E501
 
     id: StrictStr
+    skill: Optional[StrictStr]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
     name: Annotated[str, Field(strict=True, max_length=1000)]
-    skill: Optional[StrictStr]
-    __properties: ClassVar[List[str]] = ["id", "created_at", "updated_at", "name", "skill"]
+    __properties: ClassVar[List[str]] = ["id", "skill", "created_at", "updated_at", "name"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -72,9 +72,9 @@ class InputVariable(BaseModel):
         excluded_fields: Set[str] = set(
             [
                 "id",
+                "skill",
                 "created_at",
                 "updated_at",
-                "skill",
             ]
         )
 
@@ -83,6 +83,11 @@ class InputVariable(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # set to None if skill (nullable) is None
+        # and model_fields_set contains the field
+        if self.skill is None and "skill" in self.model_fields_set:
+            _dict["skill"] = None
+
         # set to None if created_at (nullable) is None
         # and model_fields_set contains the field
         if self.created_at is None and "created_at" in self.model_fields_set:
@@ -92,11 +97,6 @@ class InputVariable(BaseModel):
         # and model_fields_set contains the field
         if self.updated_at is None and "updated_at" in self.model_fields_set:
             _dict["updated_at"] = None
-
-        # set to None if skill (nullable) is None
-        # and model_fields_set contains the field
-        if self.skill is None and "skill" in self.model_fields_set:
-            _dict["skill"] = None
 
         return _dict
 
@@ -112,10 +112,10 @@ class InputVariable(BaseModel):
         _obj = cls.model_validate(
             {
                 "id": obj.get("id"),
+                "skill": obj.get("skill"),
                 "created_at": obj.get("created_at"),
                 "updated_at": obj.get("updated_at"),
                 "name": obj.get("name"),
-                "skill": obj.get("skill"),
             }
         )
         return _obj

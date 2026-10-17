@@ -21,8 +21,6 @@ from typing import Any, ClassVar, Dict, List, Optional, Set, Union
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictBytes, StrictStr
 from typing_extensions import Annotated, Self
 
-from scorable.generated.openapi_client.models.data_set_type import DataSetType
-
 
 class DataSetCreateRequest(BaseModel):
     """
@@ -32,15 +30,13 @@ class DataSetCreateRequest(BaseModel):
     name: Optional[Annotated[str, Field(min_length=1, strict=True)]] = None
     file: Optional[Union[StrictBytes, StrictStr]] = None
     draft_id: Optional[StrictStr] = None
-    type: Optional[DataSetType] = None
-    url: Optional[Annotated[str, Field(min_length=1, strict=True)]] = None
     tags: Optional[List[StrictStr]] = None
     has_header: Optional[StrictBool] = False
     project_id: Optional[StrictStr] = Field(
         default=None,
         description="Project to associate this dataset with. Defaults to the organization's default project.",
     )
-    __properties: ClassVar[List[str]] = ["name", "file", "draft_id", "type", "url", "tags", "has_header", "project_id"]
+    __properties: ClassVar[List[str]] = ["name", "file", "draft_id", "tags", "has_header", "project_id"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -105,8 +101,6 @@ class DataSetCreateRequest(BaseModel):
                 "name": obj.get("name"),
                 "file": obj.get("file"),
                 "draft_id": obj.get("draft_id"),
-                "type": obj.get("type"),
-                "url": obj.get("url"),
                 "tags": obj.get("tags"),
                 "has_header": obj.get("has_header") if obj.get("has_header") is not None else False,
                 "project_id": obj.get("project_id"),

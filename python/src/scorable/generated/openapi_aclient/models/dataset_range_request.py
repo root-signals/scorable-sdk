@@ -27,8 +27,8 @@ class DatasetRangeRequest(BaseModel):
     DatasetRangeRequest
     """  # noqa: E501
 
-    start: Optional[Annotated[int, Field(strict=True, ge=0)]]
-    end: Optional[Annotated[int, Field(strict=True, ge=0)]]
+    start: Annotated[int, Field(strict=True, ge=0)]
+    end: Annotated[int, Field(strict=True, ge=0)]
     __properties: ClassVar[List[str]] = ["start", "end"]
 
     model_config = ConfigDict(
@@ -68,16 +68,6 @@ class DatasetRangeRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # set to None if start (nullable) is None
-        # and model_fields_set contains the field
-        if self.start is None and "start" in self.model_fields_set:
-            _dict["start"] = None
-
-        # set to None if end (nullable) is None
-        # and model_fields_set contains the field
-        if self.end is None and "end" in self.model_fields_set:
-            _dict["end"] = None
-
         return _dict
 
     @classmethod

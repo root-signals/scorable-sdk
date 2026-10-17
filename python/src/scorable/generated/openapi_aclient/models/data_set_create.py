@@ -21,7 +21,6 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictStr
 from typing_extensions import Self
 
-from scorable.generated.openapi_aclient.models.data_set_type import DataSetType
 from scorable.generated.openapi_aclient.models.nested_user_details import NestedUserDetails
 
 
@@ -33,8 +32,6 @@ class DataSetCreate(BaseModel):
     id: StrictStr
     name: Optional[StrictStr] = None
     file: Optional[StrictStr] = None
-    type: Optional[DataSetType] = None
-    url: Optional[StrictStr] = None
     tags: Optional[List[StrictStr]] = None
     owner: NestedUserDetails
     has_header: Optional[StrictBool] = False
@@ -42,17 +39,7 @@ class DataSetCreate(BaseModel):
         default=None,
         description="Project to associate this dataset with. Defaults to the organization's default project.",
     )
-    __properties: ClassVar[List[str]] = [
-        "id",
-        "name",
-        "file",
-        "type",
-        "url",
-        "tags",
-        "owner",
-        "has_header",
-        "project_id",
-    ]
+    __properties: ClassVar[List[str]] = ["id", "name", "file", "tags", "owner", "has_header", "project_id"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -106,6 +93,11 @@ class DataSetCreate(BaseModel):
         if self.name is None and "name" in self.model_fields_set:
             _dict["name"] = None
 
+        # set to None if file (nullable) is None
+        # and model_fields_set contains the field
+        if self.file is None and "file" in self.model_fields_set:
+            _dict["file"] = None
+
         # set to None if project_id (nullable) is None
         # and model_fields_set contains the field
         if self.project_id is None and "project_id" in self.model_fields_set:
@@ -127,8 +119,6 @@ class DataSetCreate(BaseModel):
                 "id": obj.get("id"),
                 "name": obj.get("name"),
                 "file": obj.get("file"),
-                "type": obj.get("type"),
-                "url": obj.get("url"),
                 "tags": obj.get("tags"),
                 "owner": NestedUserDetails.from_dict(obj["owner"]) if obj.get("owner") is not None else None,
                 "has_header": obj.get("has_header") if obj.get("has_header") is not None else False,

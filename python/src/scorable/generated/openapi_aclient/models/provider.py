@@ -76,6 +76,16 @@ class Provider(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # set to None if logo_light (nullable) is None
+        # and model_fields_set contains the field
+        if self.logo_light is None and "logo_light" in self.model_fields_set:
+            _dict["logo_light"] = None
+
+        # set to None if logo_dark (nullable) is None
+        # and model_fields_set contains the field
+        if self.logo_dark is None and "logo_dark" in self.model_fields_set:
+            _dict["logo_dark"] = None
+
         return _dict
 
     @classmethod

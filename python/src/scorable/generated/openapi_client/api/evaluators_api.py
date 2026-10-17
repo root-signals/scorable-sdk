@@ -33,7 +33,6 @@ from scorable.generated.openapi_client.models.paginated_evaluator_list_output_li
     PaginatedEvaluatorListOutputList,
 )
 from scorable.generated.openapi_client.models.patched_evaluator_request import PatchedEvaluatorRequest
-from scorable.generated.openapi_client.models.skill_test_data_request import SkillTestDataRequest
 from scorable.generated.openapi_client.models.skill_test_input_request import SkillTestInputRequest
 from scorable.generated.openapi_client.rest import RESTResponseType
 
@@ -66,7 +65,7 @@ class EvaluatorsApi:
     ) -> List[EvaluatorCalibrationOutput]:
         """(Deprecated) evaluators_calibrate_create
 
-        Test an evaluator definition using calibration data
+        Test an evaluator definition against a dataset. Each labeled item (newest published annotation) is a calibration case whose annotation value is the expected score.
 
         :param skill_test_input_request: (required)
         :type skill_test_input_request: SkillTestInputRequest
@@ -127,7 +126,7 @@ class EvaluatorsApi:
     ) -> ApiResponse[List[EvaluatorCalibrationOutput]]:
         """(Deprecated) evaluators_calibrate_create
 
-        Test an evaluator definition using calibration data
+        Test an evaluator definition against a dataset. Each labeled item (newest published annotation) is a calibration case whose annotation value is the expected score.
 
         :param skill_test_input_request: (required)
         :type skill_test_input_request: SkillTestInputRequest
@@ -188,7 +187,7 @@ class EvaluatorsApi:
     ) -> RESTResponseType:
         """(Deprecated) evaluators_calibrate_create
 
-        Test an evaluator definition using calibration data
+        Test an evaluator definition against a dataset. Each labeled item (newest published annotation) is a calibration case whose annotation value is the expected score.
 
         :param skill_test_input_request: (required)
         :type skill_test_input_request: SkillTestInputRequest
@@ -275,258 +274,6 @@ class EvaluatorsApi:
         return self.api_client.param_serialize(
             method="POST",
             resource_path="/v1/evaluators/calibrate/",
-            path_params=_path_params,
-            query_params=_query_params,
-            header_params=_header_params,
-            body=_body_params,
-            post_params=_form_params,
-            files=_files,
-            auth_settings=_auth_settings,
-            collection_formats=_collection_formats,
-            _host=_host,
-            _request_auth=_request_auth,
-        )
-
-    @validate_call
-    def evaluators_calibrate_create2(
-        self,
-        id: StrictStr,
-        skill_test_data_request: Optional[SkillTestDataRequest] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> List[EvaluatorCalibrationOutput]:
-        """(Deprecated) evaluators_calibrate_create2
-
-        Test an existing evaluator using calibration data
-
-        :param id: (required)
-        :type id: str
-        :param skill_test_data_request:
-        :type skill_test_data_request: SkillTestDataRequest
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """  # noqa: E501
-        warnings.warn("POST /v1/evaluators/calibrate/{id} is deprecated.", DeprecationWarning, stacklevel=2)
-
-        _param = self._evaluators_calibrate_create2_serialize(
-            id=id,
-            skill_test_data_request=skill_test_data_request,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index,
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            "200": "List[EvaluatorCalibrationOutput]",
-        }
-        response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        ).data
-
-    @validate_call
-    def evaluators_calibrate_create2_with_http_info(
-        self,
-        id: StrictStr,
-        skill_test_data_request: Optional[SkillTestDataRequest] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[List[EvaluatorCalibrationOutput]]:
-        """(Deprecated) evaluators_calibrate_create2
-
-        Test an existing evaluator using calibration data
-
-        :param id: (required)
-        :type id: str
-        :param skill_test_data_request:
-        :type skill_test_data_request: SkillTestDataRequest
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """  # noqa: E501
-        warnings.warn("POST /v1/evaluators/calibrate/{id} is deprecated.", DeprecationWarning, stacklevel=2)
-
-        _param = self._evaluators_calibrate_create2_serialize(
-            id=id,
-            skill_test_data_request=skill_test_data_request,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index,
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            "200": "List[EvaluatorCalibrationOutput]",
-        }
-        response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        )
-
-    @validate_call
-    def evaluators_calibrate_create2_without_preload_content(
-        self,
-        id: StrictStr,
-        skill_test_data_request: Optional[SkillTestDataRequest] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[Annotated[StrictFloat, Field(gt=0)], Annotated[StrictFloat, Field(gt=0)]],
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> RESTResponseType:
-        """(Deprecated) evaluators_calibrate_create2
-
-        Test an existing evaluator using calibration data
-
-        :param id: (required)
-        :type id: str
-        :param skill_test_data_request:
-        :type skill_test_data_request: SkillTestDataRequest
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """  # noqa: E501
-        warnings.warn("POST /v1/evaluators/calibrate/{id} is deprecated.", DeprecationWarning, stacklevel=2)
-
-        _param = self._evaluators_calibrate_create2_serialize(
-            id=id,
-            skill_test_data_request=skill_test_data_request,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index,
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            "200": "List[EvaluatorCalibrationOutput]",
-        }
-        response_data = self.api_client.call_api(*_param, _request_timeout=_request_timeout)
-        return response_data.response
-
-    def _evaluators_calibrate_create2_serialize(
-        self,
-        id,
-        skill_test_data_request,
-        _request_auth,
-        _content_type,
-        _headers,
-        _host_index,
-    ) -> RequestSerialized:
-        _host = None
-
-        _collection_formats: Dict[str, str] = {}
-
-        _path_params: Dict[str, str] = {}
-        _query_params: List[Tuple[str, str]] = []
-        _header_params: Dict[str, Optional[str]] = _headers or {}
-        _form_params: List[Tuple[str, str]] = []
-        _files: Dict[str, str] = {}
-        _body_params: Optional[bytes] = None
-
-        # process the path parameters
-        if id is not None:
-            _path_params["id"] = id
-        # process the query parameters
-        # process the header parameters
-        # process the form parameters
-        # process the body parameter
-        if skill_test_data_request is not None:
-            _body_params = skill_test_data_request
-
-        # set the HTTP header `Accept`
-        _header_params["Accept"] = self.api_client.select_header_accept(["application/json"])
-
-        # set the HTTP header `Content-Type`
-        if _content_type:
-            _header_params["Content-Type"] = _content_type
-        else:
-            _default_content_type = self.api_client.select_header_content_type(
-                ["application/json", "application/x-www-form-urlencoded", "multipart/form-data"]
-            )
-            if _default_content_type is not None:
-                _header_params["Content-Type"] = _default_content_type
-
-        # authentication setting
-        _auth_settings: List[str] = ["publicApiKey"]
-
-        return self.api_client.param_serialize(
-            method="POST",
-            resource_path="/v1/evaluators/calibrate/{id}",
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -2177,6 +1924,9 @@ class EvaluatorsApi:
     def evaluators_list(
         self,
         cursor: Annotated[Optional[StrictStr], Field(description="The pagination cursor value.")] = None,
+        evaluator_type: Annotated[
+            Optional[StrictStr], Field(description="* `managed` - managed * `native` - native")
+        ] = None,
         include_public: Annotated[
             Optional[StrictBool], Field(description="Include public evaluators from other organizations.")
         ] = None,
@@ -2194,13 +1944,12 @@ class EvaluatorsApi:
         page_size: Annotated[Optional[StrictInt], Field(description="Number of results to return per page.")] = None,
         project_id: Annotated[
             Optional[StrictStr],
-            Field(description="Filter by project. Public evaluators are excluded when this filter is set."),
+            Field(
+                description="Filter by project. Scorable root evaluators are always included; other public evaluators are excluded when this filter is set."
+            ),
         ] = None,
         search: Annotated[
             Optional[StrictStr], Field(description="Search for evaluators by name or description.")
-        ] = None,
-        skill_type: Annotated[
-            Optional[StrictStr], Field(description="* `managed` - managed * `native` - native")
         ] = None,
         _request_timeout: Union[
             None,
@@ -2218,6 +1967,8 @@ class EvaluatorsApi:
 
         :param cursor: The pagination cursor value.
         :type cursor: str
+        :param evaluator_type: * `managed` - managed * `native` - native
+        :type evaluator_type: str
         :param include_public: Include public evaluators from other organizations.
         :type include_public: bool
         :param is_root_evaluator: Return only Scorable defined evaluators.
@@ -2236,12 +1987,10 @@ class EvaluatorsApi:
         :type owner__last_name: str
         :param page_size: Number of results to return per page.
         :type page_size: int
-        :param project_id: Filter by project. Public evaluators are excluded when this filter is set.
+        :param project_id: Filter by project. Scorable root evaluators are always included; other public evaluators are excluded when this filter is set.
         :type project_id: str
         :param search: Search for evaluators by name or description.
         :type search: str
-        :param skill_type: * `managed` - managed * `native` - native
-        :type skill_type: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -2266,6 +2015,7 @@ class EvaluatorsApi:
 
         _param = self._evaluators_list_serialize(
             cursor=cursor,
+            evaluator_type=evaluator_type,
             include_public=include_public,
             is_root_evaluator=is_root_evaluator,
             name=name,
@@ -2277,7 +2027,6 @@ class EvaluatorsApi:
             page_size=page_size,
             project_id=project_id,
             search=search,
-            skill_type=skill_type,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -2298,6 +2047,9 @@ class EvaluatorsApi:
     def evaluators_list_with_http_info(
         self,
         cursor: Annotated[Optional[StrictStr], Field(description="The pagination cursor value.")] = None,
+        evaluator_type: Annotated[
+            Optional[StrictStr], Field(description="* `managed` - managed * `native` - native")
+        ] = None,
         include_public: Annotated[
             Optional[StrictBool], Field(description="Include public evaluators from other organizations.")
         ] = None,
@@ -2315,13 +2067,12 @@ class EvaluatorsApi:
         page_size: Annotated[Optional[StrictInt], Field(description="Number of results to return per page.")] = None,
         project_id: Annotated[
             Optional[StrictStr],
-            Field(description="Filter by project. Public evaluators are excluded when this filter is set."),
+            Field(
+                description="Filter by project. Scorable root evaluators are always included; other public evaluators are excluded when this filter is set."
+            ),
         ] = None,
         search: Annotated[
             Optional[StrictStr], Field(description="Search for evaluators by name or description.")
-        ] = None,
-        skill_type: Annotated[
-            Optional[StrictStr], Field(description="* `managed` - managed * `native` - native")
         ] = None,
         _request_timeout: Union[
             None,
@@ -2339,6 +2090,8 @@ class EvaluatorsApi:
 
         :param cursor: The pagination cursor value.
         :type cursor: str
+        :param evaluator_type: * `managed` - managed * `native` - native
+        :type evaluator_type: str
         :param include_public: Include public evaluators from other organizations.
         :type include_public: bool
         :param is_root_evaluator: Return only Scorable defined evaluators.
@@ -2357,12 +2110,10 @@ class EvaluatorsApi:
         :type owner__last_name: str
         :param page_size: Number of results to return per page.
         :type page_size: int
-        :param project_id: Filter by project. Public evaluators are excluded when this filter is set.
+        :param project_id: Filter by project. Scorable root evaluators are always included; other public evaluators are excluded when this filter is set.
         :type project_id: str
         :param search: Search for evaluators by name or description.
         :type search: str
-        :param skill_type: * `managed` - managed * `native` - native
-        :type skill_type: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -2387,6 +2138,7 @@ class EvaluatorsApi:
 
         _param = self._evaluators_list_serialize(
             cursor=cursor,
+            evaluator_type=evaluator_type,
             include_public=include_public,
             is_root_evaluator=is_root_evaluator,
             name=name,
@@ -2398,7 +2150,6 @@ class EvaluatorsApi:
             page_size=page_size,
             project_id=project_id,
             search=search,
-            skill_type=skill_type,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -2419,6 +2170,9 @@ class EvaluatorsApi:
     def evaluators_list_without_preload_content(
         self,
         cursor: Annotated[Optional[StrictStr], Field(description="The pagination cursor value.")] = None,
+        evaluator_type: Annotated[
+            Optional[StrictStr], Field(description="* `managed` - managed * `native` - native")
+        ] = None,
         include_public: Annotated[
             Optional[StrictBool], Field(description="Include public evaluators from other organizations.")
         ] = None,
@@ -2436,13 +2190,12 @@ class EvaluatorsApi:
         page_size: Annotated[Optional[StrictInt], Field(description="Number of results to return per page.")] = None,
         project_id: Annotated[
             Optional[StrictStr],
-            Field(description="Filter by project. Public evaluators are excluded when this filter is set."),
+            Field(
+                description="Filter by project. Scorable root evaluators are always included; other public evaluators are excluded when this filter is set."
+            ),
         ] = None,
         search: Annotated[
             Optional[StrictStr], Field(description="Search for evaluators by name or description.")
-        ] = None,
-        skill_type: Annotated[
-            Optional[StrictStr], Field(description="* `managed` - managed * `native` - native")
         ] = None,
         _request_timeout: Union[
             None,
@@ -2460,6 +2213,8 @@ class EvaluatorsApi:
 
         :param cursor: The pagination cursor value.
         :type cursor: str
+        :param evaluator_type: * `managed` - managed * `native` - native
+        :type evaluator_type: str
         :param include_public: Include public evaluators from other organizations.
         :type include_public: bool
         :param is_root_evaluator: Return only Scorable defined evaluators.
@@ -2478,12 +2233,10 @@ class EvaluatorsApi:
         :type owner__last_name: str
         :param page_size: Number of results to return per page.
         :type page_size: int
-        :param project_id: Filter by project. Public evaluators are excluded when this filter is set.
+        :param project_id: Filter by project. Scorable root evaluators are always included; other public evaluators are excluded when this filter is set.
         :type project_id: str
         :param search: Search for evaluators by name or description.
         :type search: str
-        :param skill_type: * `managed` - managed * `native` - native
-        :type skill_type: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -2508,6 +2261,7 @@ class EvaluatorsApi:
 
         _param = self._evaluators_list_serialize(
             cursor=cursor,
+            evaluator_type=evaluator_type,
             include_public=include_public,
             is_root_evaluator=is_root_evaluator,
             name=name,
@@ -2519,7 +2273,6 @@ class EvaluatorsApi:
             page_size=page_size,
             project_id=project_id,
             search=search,
-            skill_type=skill_type,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -2535,6 +2288,7 @@ class EvaluatorsApi:
     def _evaluators_list_serialize(
         self,
         cursor,
+        evaluator_type,
         include_public,
         is_root_evaluator,
         name,
@@ -2546,7 +2300,6 @@ class EvaluatorsApi:
         page_size,
         project_id,
         search,
-        skill_type,
         _request_auth,
         _content_type,
         _headers,
@@ -2567,6 +2320,9 @@ class EvaluatorsApi:
         # process the query parameters
         if cursor is not None:
             _query_params.append(("cursor", cursor))
+
+        if evaluator_type is not None:
+            _query_params.append(("evaluator_type", evaluator_type))
 
         if include_public is not None:
             _query_params.append(("include_public", include_public))
@@ -2600,9 +2356,6 @@ class EvaluatorsApi:
 
         if search is not None:
             _query_params.append(("search", search))
-
-        if skill_type is not None:
-            _query_params.append(("skill_type", skill_type))
 
         # process the header parameters
         # process the form parameters

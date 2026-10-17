@@ -32,8 +32,10 @@ class CalibrationRun(BaseModel):
     """  # noqa: E501
 
     id: StrictStr
-    evaluator_external_id: StrictStr
-    evaluator_version_id: StrictStr
+    evaluator_external_id: Optional[StrictStr]
+    evaluator_version_id: Optional[StrictStr]
+    definition: Optional[Any]
+    comparison_group: Optional[StrictStr]
     score_config: Optional[StrictStr]
     source_type: CalibrationSourceTypeEnum
     dataset: Optional[StrictStr]
@@ -47,6 +49,8 @@ class CalibrationRun(BaseModel):
         "id",
         "evaluator_external_id",
         "evaluator_version_id",
+        "definition",
+        "comparison_group",
         "score_config",
         "source_type",
         "dataset",
@@ -99,12 +103,16 @@ class CalibrationRun(BaseModel):
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
+        * OpenAPI `readOnly` fields are excluded.
+        * OpenAPI `readOnly` fields are excluded.
         """
         excluded_fields: Set[str] = set(
             [
                 "id",
                 "evaluator_external_id",
                 "evaluator_version_id",
+                "definition",
+                "comparison_group",
                 "score_config",
                 "source_type",
                 "dataset",
@@ -122,6 +130,26 @@ class CalibrationRun(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # set to None if evaluator_external_id (nullable) is None
+        # and model_fields_set contains the field
+        if self.evaluator_external_id is None and "evaluator_external_id" in self.model_fields_set:
+            _dict["evaluator_external_id"] = None
+
+        # set to None if evaluator_version_id (nullable) is None
+        # and model_fields_set contains the field
+        if self.evaluator_version_id is None and "evaluator_version_id" in self.model_fields_set:
+            _dict["evaluator_version_id"] = None
+
+        # set to None if definition (nullable) is None
+        # and model_fields_set contains the field
+        if self.definition is None and "definition" in self.model_fields_set:
+            _dict["definition"] = None
+
+        # set to None if comparison_group (nullable) is None
+        # and model_fields_set contains the field
+        if self.comparison_group is None and "comparison_group" in self.model_fields_set:
+            _dict["comparison_group"] = None
+
         # set to None if score_config (nullable) is None
         # and model_fields_set contains the field
         if self.score_config is None and "score_config" in self.model_fields_set:
@@ -158,6 +186,8 @@ class CalibrationRun(BaseModel):
                 "id": obj.get("id"),
                 "evaluator_external_id": obj.get("evaluator_external_id"),
                 "evaluator_version_id": obj.get("evaluator_version_id"),
+                "definition": obj.get("definition"),
+                "comparison_group": obj.get("comparison_group"),
                 "score_config": obj.get("score_config"),
                 "source_type": obj.get("source_type"),
                 "dataset": obj.get("dataset"),

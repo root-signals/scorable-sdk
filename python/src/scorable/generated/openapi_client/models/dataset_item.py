@@ -34,8 +34,9 @@ class DatasetItem(BaseModel):
     external_id: StrictStr
     version_id: StrictStr
     is_latest_version: StrictBool
-    response: StrictStr
+    response: Optional[StrictStr] = None
     request: Optional[StrictStr] = None
+    turns: Optional[Any] = None
     expected_output: Optional[StrictStr] = None
     contexts: Optional[Any] = None
     variables: Optional[Any] = None
@@ -51,6 +52,7 @@ class DatasetItem(BaseModel):
         "is_latest_version",
         "response",
         "request",
+        "turns",
         "expected_output",
         "contexts",
         "variables",
@@ -122,6 +124,11 @@ class DatasetItem(BaseModel):
                 if _item:
                     _items.append(_item.to_dict())
             _dict["annotations"] = _items
+        # set to None if turns (nullable) is None
+        # and model_fields_set contains the field
+        if self.turns is None and "turns" in self.model_fields_set:
+            _dict["turns"] = None
+
         # set to None if contexts (nullable) is None
         # and model_fields_set contains the field
         if self.contexts is None and "contexts" in self.model_fields_set:
@@ -161,6 +168,7 @@ class DatasetItem(BaseModel):
                 "is_latest_version": obj.get("is_latest_version") if obj.get("is_latest_version") is not None else True,
                 "response": obj.get("response"),
                 "request": obj.get("request"),
+                "turns": obj.get("turns"),
                 "expected_output": obj.get("expected_output"),
                 "contexts": obj.get("contexts"),
                 "variables": obj.get("variables"),

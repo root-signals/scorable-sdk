@@ -15,7 +15,7 @@ describe('DatasetsResource', () => {
       const mockDatasets = {
         results: [
           TestDataFactory.createDataset(),
-          TestDataFactory.createDataset({ type: 'reference' }),
+          TestDataFactory.createDataset({ name: 'Second Dataset' }),
         ],
         next: null,
         previous: null,
@@ -36,7 +36,6 @@ describe('DatasetsResource', () => {
     it('should handle pagination parameters', async () => {
       await client.datasets.list({
         page_size: 10,
-        type: 'test',
         search: 'test-dataset',
       });
 
@@ -44,7 +43,6 @@ describe('DatasetsResource', () => {
         params: {
           query: {
             page_size: 10,
-            type: 'test',
             search: 'test-dataset',
           },
         },
@@ -91,8 +89,6 @@ describe('DatasetsResource', () => {
     it('should create dataset successfully', async () => {
       const datasetData = {
         name: 'Test Dataset',
-        type: 'test' as const,
-        url: 'https://example.com/data.csv',
         has_header: true,
       };
 

@@ -1,3 +1,8 @@
+## Unreleased
+
+- `datasets.list()` / `upload()` drop the `type` parameter and dataset objects no longer carry `type`; the API no longer has dataset types. `upload()` also drops the `url` field, which the API ignored.
+- Regenerate the API types from the current schema.
+
 ## 0.13.0
 
 Follows the API removing operational skills, chat and reference variables.

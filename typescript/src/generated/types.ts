@@ -37,6 +37,23 @@ export interface paths {
     patch: operations['annotations_partial_update'];
     trace?: never;
   };
+  '/v1/batch-executions/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Run a judge, or an ad-hoc set of evaluators, over inline inputs or a whole dataset. Returns immediately; poll the status url for results. */
+    post: operations['batch_executions_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/v1/calibration-runs/': {
     parameters: {
       query?: never;
@@ -80,6 +97,23 @@ export interface paths {
     get: operations['calibration_runs_items_list'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/v1/calibration-runs/attach/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Attach the calibration runs made while drafting a new evaluator to it once saved. */
+    post: operations['calibration_runs_attach_create'];
     delete?: never;
     options?: never;
     head?: never;
@@ -169,7 +203,8 @@ export interface paths {
     delete: operations['datasets_destroy'];
     options?: never;
     head?: never;
-    patch?: never;
+    /** @description Rename a dataset. */
+    patch: operations['datasets_partial_update'];
     trace?: never;
   };
   '/v1/evaluators/': {
@@ -221,29 +256,9 @@ export interface paths {
     put?: never;
     /**
      * @deprecated
-     * @description Test an evaluator definition using calibration data
+     * @description Test an evaluator definition against a dataset. Each labeled item (newest published annotation) is a calibration case whose annotation value is the expected score.
      */
     post: operations['evaluators_calibrate_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/evaluators/calibrate/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * @deprecated
-     * @description Test an existing evaluator using calibration data
-     */
-    post: operations['evaluators_calibrate_create_2'];
     delete?: never;
     options?: never;
     head?: never;
@@ -359,7 +374,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** @description Get a list of execution logs. An execution log is created every time a skill or an evaluator is executed. */
+    /** @description Get a list of execution logs. An execution log is created every time an evaluator is executed. */
     get: operations['execution_logs_list'];
     put?: never;
     post?: never;
@@ -484,7 +499,6 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** @description Execute a judge with multiple inputs in parallel. Returns immediately with batch ID for polling. */
     post: operations['judges_batch_execute_create'];
     delete?: never;
     options?: never;
@@ -1093,27 +1107,155 @@ export interface components {
      * @enum {string}
      */
     AnnotationStatusEnum: 'draft' | 'published';
+    BatchExecutionCreateRequest: {
+      inputs?: components['schemas']['BatchExecutionInputRequest'][];
+      /**
+       * Format: uuid
+       * @description Evaluate every item in this dataset instead of supplying inputs inline.
+       */
+      dataset_id?: string | null;
+      /** @description Optional subset of the dataset. Zero-based and inclusive. */
+      range?: components['schemas']['DatasetRangeRequest'] | null;
+      tags?: string[];
+      /** Format: uuid */
+      judge_version_id?: string | null;
+      /**
+       * Format: uuid
+       * @description Project to assign this batch execution to. Defaults to the judge's project or org default.
+       */
+      project_id?: string | null;
+      /** Format: uuid */
+      judge_id?: string | null;
+      /** @description Evaluators to run. Selecting evaluators here does not create or require a judge. */
+      evaluator_ids?: string[];
+    };
+    BatchExecutionDetail: {
+      /** Format: uuid */
+      readonly batch_execution_id: string;
+      readonly status: components['schemas']['Status914Enum'];
+      /** @description Total number of inputs in the batch */
+      readonly total_count: number;
+      /** @description Number of successfully completed executions */
+      readonly completed_count: number;
+      /** @description Number of failed executions */
+      readonly failed_count: number;
+      /** Format: date-time */
+      readonly created_at: string | null;
+      /** Format: date-time */
+      readonly started_at: string | null;
+      /** Format: date-time */
+      readonly completed_at: string | null;
+      readonly judge: components['schemas']['NestedJudge'] | null;
+      readonly evaluators: components['schemas']['NestedBatchEvaluator'][];
+      readonly dataset: components['schemas']['NestedDataSet'] | null;
+      /** @description Optional subset of the dataset, e.g. {'start': 0, 'end': 49}. Zero-based, inclusive. */
+      readonly dataset_range: unknown;
+      /** @description Tags applied to all executions in this batch */
+      readonly tags: unknown;
+      /** Format: uuid */
+      readonly project_id: string | null;
+      readonly items: components['schemas']['BatchExecutionItem'][];
+    };
+    BatchExecutionInputRequest: {
+      turns?: components['schemas']['MessageTurnRequest'][] | null;
+      request?: string | null;
+      response?: string | null;
+      contexts?: string[];
+      expected_output?: string | null;
+      evaluator_version_id?: string | null;
+      user_id?: string | null;
+      session_id?: string | null;
+      system_prompt?: string | null;
+      /** @description File IDs (from POST /v1/files/). Note, not all models support uploaded files as context. */
+      file_ids?: string[];
+    };
+    BatchExecutionItem: {
+      /** @description Position in the batch (0-indexed) */
+      readonly index: number;
+      readonly status: components['schemas']['BatchExecutionItemStatusEnum'];
+      readonly input: {
+        request?: string;
+        response?: string;
+        contexts?: string[] | null;
+        expected_output?: string | null;
+        turns?:
+          | {
+              role?: string;
+              content?: string;
+            }[]
+          | null;
+      };
+      /** @description List of evaluator results for this execution */
+      readonly evaluator_results: unknown;
+      readonly error_message: string;
+      /** Format: uuid */
+      readonly execution_log_id: string | null;
+      /** Format: date-time */
+      readonly started_at: string | null;
+      /** Format: date-time */
+      readonly completed_at: string | null;
+    };
     /**
      * @description * `pending` - pending
      *     * `processing` - processing
      *     * `completed` - completed
      *     * `failed` - failed
-     *     * `partial` - partial
      * @enum {string}
      */
-    BatchExecutionStatus: 'pending' | 'processing' | 'completed' | 'failed' | 'partial';
+    BatchExecutionItemStatusEnum: 'pending' | 'processing' | 'completed' | 'failed';
+    BatchExecutionListItem: {
+      /** Format: uuid */
+      readonly batch_execution_id: string;
+      readonly status: components['schemas']['Status914Enum'];
+      /** @description Total number of inputs in the batch */
+      readonly total_count: number;
+      /** @description Number of successfully completed executions */
+      readonly completed_count: number;
+      /** @description Number of failed executions */
+      readonly failed_count: number;
+      /** Format: date-time */
+      readonly created_at: string | null;
+      /** Format: date-time */
+      readonly started_at: string | null;
+      /** Format: date-time */
+      readonly completed_at: string | null;
+      readonly judge: components['schemas']['NestedJudge'] | null;
+      readonly evaluators: components['schemas']['NestedBatchEvaluator'][];
+      readonly dataset: components['schemas']['NestedDataSet'] | null;
+      /** @description Optional subset of the dataset, e.g. {'start': 0, 'end': 49}. Zero-based, inclusive. */
+      readonly dataset_range: unknown;
+      /** @description Tags applied to all executions in this batch */
+      readonly tags: unknown;
+      /** Format: uuid */
+      readonly project_id: string | null;
+    };
+    BatchExecutionResponse: {
+      /** Format: uuid */
+      batch_execution_id: string;
+      status_url: string;
+    };
     BatchSetTagsModelRequest: {
       log_ids: string[];
       /** @default [] */
       tags: string[];
     };
+    CalibrationDefinitionRequest: {
+      scoring_criteria: string;
+      model: string;
+      behavior?: components['schemas']['EvaluatorBehaviorEnum'];
+      /** Format: uuid */
+      demonstration_dataset_id?: string | null;
+    };
     CalibrationRun: {
       /** Format: uuid */
       readonly id: string;
       /** Format: uuid */
-      readonly evaluator_external_id: string;
+      readonly evaluator_external_id: string | null;
       /** Format: uuid */
-      readonly evaluator_version_id: string;
+      readonly evaluator_version_id: string | null;
+      readonly definition: unknown;
+      /** Format: uuid */
+      readonly comparison_group: string | null;
       /** Format: uuid */
       readonly score_config: string | null;
       readonly source_type: components['schemas']['CalibrationSourceTypeEnum'];
@@ -1127,14 +1269,25 @@ export interface components {
       /** Format: date-time */
       readonly created_at: string | null;
     };
-    CalibrationRunCreateRequest: {
+    CalibrationRunAttachRequest: {
       /** Format: uuid */
       evaluator_external_id: string;
+      comparison_groups: string[];
+    };
+    CalibrationRunAttachResponse: {
+      attached: number;
+    };
+    CalibrationRunCreateRequest: {
+      /** Format: uuid */
+      evaluator_external_id?: string | null;
       /** Format: uuid */
       evaluator_version_id?: string | null;
       /** Format: uuid */
       score_config_id?: string | null;
       source: components['schemas']['CalibrationRunSourceRequest'];
+      definition?: components['schemas']['CalibrationDefinitionRequest'] | null;
+      /** Format: uuid */
+      comparison_group?: string | null;
     };
     CalibrationRunItem: {
       /** Format: uuid */
@@ -1182,10 +1335,7 @@ export interface components {
       readonly id: string;
       name?: string | null;
       /** Format: uri */
-      file?: string;
-      type?: components['schemas']['DataSetType'];
-      /** Format: uri */
-      url?: string;
+      file?: string | null;
       tags?: string[];
       readonly owner: components['schemas']['NestedUserDetails'];
       /** @default false */
@@ -1202,9 +1352,6 @@ export interface components {
       file?: string;
       /** Format: uuid */
       draft_id?: string;
-      type?: components['schemas']['DataSetType'];
-      /** Format: uri */
-      url?: string;
       tags?: string[];
       /** @default false */
       has_header: boolean;
@@ -1218,7 +1365,6 @@ export interface components {
       /** Format: uuid */
       readonly id: string;
       name?: string | null;
-      type?: components['schemas']['DataSetType'];
       tags?: string[];
       readonly owner: components['schemas']['NestedUserDetails'];
       /** Format: date-time */
@@ -1229,12 +1375,6 @@ export interface components {
       /** meta */
       readonly _meta: unknown;
     };
-    /**
-     * @description * `reference` - REFERENCE
-     *     * `test` - TEST
-     * @enum {string}
-     */
-    DataSetType: 'reference' | 'test';
     DatasetItem: {
       /** Format: uuid */
       readonly id: string;
@@ -1244,8 +1384,9 @@ export interface components {
       readonly version_id: string;
       /** @default true */
       readonly is_latest_version: boolean;
-      response: string;
+      response?: string;
       request?: string;
+      turns?: unknown;
       expected_output?: string;
       contexts?: unknown;
       variables?: unknown;
@@ -1257,8 +1398,9 @@ export interface components {
       readonly created_at: string | null;
     };
     DatasetItemRequest: {
-      response: string;
+      response?: string;
       request?: string;
+      turns?: unknown;
       expected_output?: string;
       contexts?: unknown;
       variables?: unknown;
@@ -1266,8 +1408,8 @@ export interface components {
       change_note?: string;
     };
     DatasetRangeRequest: {
-      start: number | null;
-      end: number | null;
+      start: number;
+      end: number;
     };
     DuplicateJudgeRequestRequest: {
       /** Format: uuid */
@@ -1286,7 +1428,6 @@ export interface components {
        * @description Dataset whose annotations for this evaluator are used as few-shot demonstrations.
        */
       demonstration_dataset_id?: string | null;
-      evaluator_demonstrations?: components['schemas']['EvaluatorDemonstrations'][] | null;
       /** Format: uuid */
       readonly id: string;
       input_variables?: components['schemas']['InputVariable'][];
@@ -1371,20 +1512,6 @@ export interface components {
       expected_score: number;
       /** Format: double */
       score: number | null;
-      justification?: string | null;
-    };
-    EvaluatorDemonstrations: {
-      request?: string | null;
-      response?: string | null;
-      /** Format: double */
-      score: number;
-      justification?: string | null;
-    };
-    EvaluatorDemonstrationsRequest: {
-      request?: string | null;
-      response?: string | null;
-      /** Format: double */
-      score: number;
       justification?: string | null;
     };
     EvaluatorExecutionRequest: {
@@ -1509,7 +1636,6 @@ export interface components {
        * @description Dataset whose annotations for this evaluator are used as few-shot demonstrations.
        */
       demonstration_dataset_id?: string | null;
-      evaluator_demonstrations?: components['schemas']['EvaluatorDemonstrationsRequest'][] | null;
       input_variables?: components['schemas']['InputVariableRequest'][];
       /** @description Primary model (index 0) and an optional list of fallback models to use if the primary model is not available. If not provided, a default model will be used. */
       models?: string[];
@@ -1518,11 +1644,11 @@ export interface components {
       objective_id: string;
       /**
        * Format: uuid
-       * @description Optionally pin the Skill to a specific version of an Objective. If not provided, the latest version of the objective will be used and followed.
+       * @description Optionally pin the Evaluator to a specific version of an Objective. If not provided, the latest version of the objective will be used and followed.
        */
       objective_version_id?: string | null;
       /**
-       * @description Overwrite existing skill with the same name. Only for POST requests.
+       * @description Overwrite existing evaluator with the same name. Only for POST requests.
        * @default false
        */
       overwrite: boolean;
@@ -1654,13 +1780,13 @@ export interface components {
     InputVariable: {
       /** Format: uuid */
       readonly id: string;
+      /** Format: uuid */
+      readonly skill: string | null;
       /** Format: date-time */
       readonly created_at: string | null;
       /** Format: date-time */
       readonly updated_at: string | null;
       name: string;
-      /** Format: uuid */
-      readonly skill: string | null;
     };
     InputVariableRequest: {
       name: string;
@@ -1720,115 +1846,6 @@ export interface components {
       visibility?: components['schemas']['VisibilityEnum'];
       /** Format: uuid */
       readonly version_id: string;
-    };
-    JudgeBatchExecutionDetail: {
-      /** Format: uuid */
-      readonly batch_execution_id: string;
-      readonly status: components['schemas']['BatchExecutionStatus'];
-      /** @description Total number of inputs in the batch */
-      readonly total_count: number;
-      /** @description Number of successfully completed executions */
-      readonly completed_count: number;
-      /** @description Number of failed executions */
-      readonly failed_count: number;
-      /** Format: date-time */
-      readonly created_at: string | null;
-      /** Format: date-time */
-      readonly started_at: string | null;
-      /** Format: date-time */
-      readonly completed_at: string | null;
-      readonly judge: components['schemas']['NestedJudge'];
-      /** Format: uuid */
-      readonly project_id: string | null;
-      readonly items: components['schemas']['JudgeBatchExecutionItem'][];
-    };
-    JudgeBatchExecutionInputRequest: {
-      turns?: components['schemas']['MessageTurnRequest'][] | null;
-      /** @description OpenAI-style tool catalog available to the agent during the conversation. */
-      tools?:
-        | {
-            [key: string]: unknown;
-          }[]
-        | null;
-      request?: string | null;
-      response?: string | null;
-      contexts?: string[];
-      expected_output?: string | null;
-      evaluator_version_id?: string | null;
-      user_id?: string | null;
-      session_id?: string | null;
-      system_prompt?: string | null;
-      /** @description File IDs (from POST /v1/files/). Note, not all models support uploaded files as context. */
-      file_ids?: string[];
-      /**
-       * Format: uuid
-       * @description Project to assign the execution log to. Defaults to the resource's project or org default.
-       */
-      project_id?: string | null;
-    };
-    JudgeBatchExecutionItem: {
-      /** @description Position in the batch (0-indexed) */
-      readonly index: number;
-      readonly status: components['schemas']['JudgeBatchExecutionItemStatusEnum'];
-      readonly input: {
-        request?: string;
-        response?: string;
-        contexts?: string[] | null;
-        expected_output?: string | null;
-      };
-      /** @description List of evaluator results for this execution */
-      readonly evaluator_results: unknown;
-      readonly error_message: string;
-      /** Format: uuid */
-      readonly execution_log_id: string | null;
-      /** Format: date-time */
-      readonly started_at: string | null;
-      /** Format: date-time */
-      readonly completed_at: string | null;
-    };
-    /**
-     * @description * `pending` - pending
-     *     * `processing` - processing
-     *     * `completed` - completed
-     *     * `failed` - failed
-     * @enum {string}
-     */
-    JudgeBatchExecutionItemStatusEnum: 'pending' | 'processing' | 'completed' | 'failed';
-    JudgeBatchExecutionListItem: {
-      /** Format: uuid */
-      readonly batch_execution_id: string;
-      readonly status: components['schemas']['BatchExecutionStatus'];
-      /** @description Total number of inputs in the batch */
-      readonly total_count: number;
-      /** @description Number of successfully completed executions */
-      readonly completed_count: number;
-      /** @description Number of failed executions */
-      readonly failed_count: number;
-      /** Format: date-time */
-      readonly created_at: string | null;
-      /** Format: date-time */
-      readonly started_at: string | null;
-      /** Format: date-time */
-      readonly completed_at: string | null;
-      readonly judge: components['schemas']['NestedJudge'];
-      /** Format: uuid */
-      readonly project_id: string | null;
-    };
-    JudgeBatchExecutionRequest: {
-      inputs: components['schemas']['JudgeBatchExecutionInputRequest'][];
-      tags?: string[];
-      /** Format: uuid */
-      judge_version_id?: string | null;
-      /**
-       * Format: uuid
-       * @description Project to assign this batch execution to. Defaults to the judge's project or org default.
-       */
-      project_id?: string | null;
-    };
-    JudgeBatchExecutionResponse: {
-      /** Format: uuid */
-      batch_execution_id: string;
-      status_url: string;
     };
     JudgeClaimRequestRequest: {
       /** Format: uuid */
@@ -2115,6 +2132,18 @@ export interface components {
         [key: string]: unknown;
       } | null;
     };
+    NestedBatchEvaluator: {
+      /** Format: uuid */
+      id: string;
+      name: string;
+      /** Format: uuid */
+      version_id: string | null;
+    };
+    NestedDataSet: {
+      /** Format: uuid */
+      id: string;
+      name: string;
+    };
     NestedEvaluator: {
       /** Format: uuid */
       id: string;
@@ -2165,8 +2194,6 @@ export interface components {
       /** Format: uuid */
       readonly id: string;
       intent?: string;
-      /** @description Deprecated: Use test_dataset_id instead. */
-      readonly test_set: string[][] | null;
       /** Format: date-time */
       readonly created_at: string;
       readonly owner: components['schemas']['NestedUserDetails'];
@@ -2289,6 +2316,19 @@ export interface components {
       previous?: string | null;
       results: components['schemas']['Annotation'][];
     };
+    PaginatedBatchExecutionListItemList: {
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
+       */
+      previous?: string | null;
+      results: components['schemas']['BatchExecutionListItem'][];
+    };
     PaginatedCalibrationRunItemList: {
       /**
        * Format: uri
@@ -2379,19 +2419,6 @@ export interface components {
        */
       previous?: string | null;
       results: components['schemas']['ExecutionLogList'][];
-    };
-    PaginatedJudgeBatchExecutionListItemList: {
-      /**
-       * Format: uri
-       * @example http://api.example.org/accounts/?cursor=cD00ODY%3D"
-       */
-      next?: string | null;
-      /**
-       * Format: uri
-       * @example http://api.example.org/accounts/?cursor=cj0xJnA9NDg3
-       */
-      previous?: string | null;
-      results: components['schemas']['JudgeBatchExecutionListItem'][];
     };
     PaginatedJudgeListList: {
       /**
@@ -2500,6 +2527,7 @@ export interface components {
     PatchedDatasetItemRequest: {
       response?: string;
       request?: string;
+      turns?: unknown;
       expected_output?: string;
       contexts?: unknown;
       variables?: unknown;
@@ -2513,7 +2541,6 @@ export interface components {
        * @description Dataset whose annotations for this evaluator are used as few-shot demonstrations.
        */
       demonstration_dataset_id?: string | null;
-      evaluator_demonstrations?: components['schemas']['EvaluatorDemonstrationsRequest'][] | null;
       input_variables?: components['schemas']['InputVariableRequest'][];
       /** @description Primary model (index 0) and an optional list of fallback models to use if the primary model is not available. If not provided, a default model will be used. */
       models?: string[];
@@ -2522,11 +2549,11 @@ export interface components {
       objective_id?: string;
       /**
        * Format: uuid
-       * @description Optionally pin the Skill to a specific version of an Objective. If not provided, the latest version of the objective will be used and followed.
+       * @description Optionally pin the Evaluator to a specific version of an Objective. If not provided, the latest version of the objective will be used and followed.
        */
       objective_version_id?: string | null;
       /**
-       * @description Overwrite existing skill with the same name. Only for POST requests.
+       * @description Overwrite existing evaluator with the same name. Only for POST requests.
        * @default false
        */
       overwrite: boolean;
@@ -2576,6 +2603,9 @@ export interface components {
        */
       project_id?: string | null;
     };
+    PatchedPatchDataSetRequest: {
+      name?: string;
+    };
     PatchedProjectRequest: {
       name?: string;
       description?: string;
@@ -2610,9 +2640,9 @@ export interface components {
       readonly id: string;
       name: string;
       /** Format: uri */
-      logo_light?: string;
+      logo_light?: string | null;
       /** Format: uri */
-      logo_dark?: string;
+      logo_dark?: string | null;
       is_gdpr_compliant?: boolean;
     };
     /**
@@ -2623,11 +2653,6 @@ export interface components {
      * @enum {string}
      */
     ReasoningEffortEnum: 'off' | 'low' | 'medium' | 'high';
-    ReferenceVariableRequest: {
-      /** Format: uuid */
-      dataset: string;
-      name: string;
-    };
     /**
      * @description * `user` - user
      *     * `assistant` - assistant
@@ -2676,15 +2701,6 @@ export interface components {
       readonly status: components['schemas']['ValidationResultStatus'];
       readonly justification: string;
     };
-    SkillTestDataRequest: {
-      test_data?: string[][] | null;
-      /** @description Deprecated: superseded by the annotation-based dataset (DatasetItem + Annotation). */
-      test_dataset_id?: string;
-      /** Format: uuid */
-      project_id?: string | null;
-      /** @description Specifies the range of dataset rows to use */
-      dataset_range?: components['schemas']['DatasetRangeRequest'] | null;
-    };
     /**
      * @description * `fast` - fast
      *     * `balanced` - balanced
@@ -2693,27 +2709,36 @@ export interface components {
      */
     SkillTestInputBehaviorEnum: 'fast' | 'balanced' | 'thorough';
     SkillTestInputRequest: {
-      test_data?: string[][] | null;
-      /** @description Deprecated: superseded by the annotation-based dataset (DatasetItem + Annotation). */
-      test_dataset_id?: string;
+      /**
+       * Format: uuid
+       * @description Dataset whose labeled items (published annotations) are the calibration cases.
+       */
+      test_dataset_id: string;
       /** Format: uuid */
       project_id?: string | null;
       /** @description Specifies the range of dataset rows to use */
       dataset_range?: components['schemas']['DatasetRangeRequest'] | null;
       prompt: string;
       /** @default [] */
-      reference_variables: components['schemas']['ReferenceVariableRequest'][];
-      /** @default [] */
       input_variables: components['schemas']['InputVariableRequest'][];
       models?: string[];
       name?: string | null;
       objective?: components['schemas']['ObjectiveRequest'] | null;
-      /** @default false */
+      /** @default true */
       is_evaluator: boolean;
       behavior?:
         | (components['schemas']['SkillTestInputBehaviorEnum'] | components['schemas']['NullEnum'])
         | null;
     };
+    /**
+     * @description * `pending` - pending
+     *     * `processing` - processing
+     *     * `completed` - completed
+     *     * `failed` - failed
+     *     * `partial` - partial
+     * @enum {string}
+     */
+    Status914Enum: 'pending' | 'processing' | 'completed' | 'failed' | 'partial';
     /**
      * @description * `public` - public
      *     * `public_unlisted` - public_unlisted
@@ -2900,9 +2925,36 @@ export interface operations {
       };
     };
   };
+  batch_executions_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['BatchExecutionCreateRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['BatchExecutionCreateRequest'];
+        'multipart/form-data': components['schemas']['BatchExecutionCreateRequest'];
+      };
+    };
+    responses: {
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['BatchExecutionResponse'];
+        };
+      };
+    };
+  };
   calibration_runs_list: {
     parameters: {
       query?: {
+        /** @description Filter by comma-separated comparison groups. */
+        comparison_group?: string;
         /** @description The pagination cursor value. */
         cursor?: string;
         /** @description Filter by evaluator external id. */
@@ -2998,6 +3050,31 @@ export interface operations {
       };
     };
   };
+  calibration_runs_attach_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CalibrationRunAttachRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['CalibrationRunAttachRequest'];
+        'multipart/form-data': components['schemas']['CalibrationRunAttachRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CalibrationRunAttachResponse'];
+        };
+      };
+    };
+  };
   datasets_list: {
     parameters: {
       query?: {
@@ -3011,8 +3088,6 @@ export interface operations {
         project_id?: string;
         /** @description Search for dataset by name */
         search?: string;
-        /** @description Filter by type. Possible values: reference, test */
-        type?: string;
       };
       header?: never;
       path?: never;
@@ -3092,7 +3167,7 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody: {
+    requestBody?: {
       content: {
         'application/json': components['schemas']['DatasetItemRequest'];
         'application/x-www-form-urlencoded': components['schemas']['DatasetItemRequest'];
@@ -3142,7 +3217,7 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody: {
+    requestBody?: {
       content: {
         'application/json': components['schemas']['DatasetItemRequest'];
         'application/x-www-form-urlencoded': components['schemas']['DatasetItemRequest'];
@@ -3280,11 +3355,43 @@ export interface operations {
       };
     };
   };
+  datasets_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['PatchedPatchDataSetRequest'];
+        'application/x-www-form-urlencoded': components['schemas']['PatchedPatchDataSetRequest'];
+        'multipart/form-data': components['schemas']['PatchedPatchDataSetRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['DataSetList'];
+        };
+      };
+    };
+  };
   evaluators_list: {
     parameters: {
       query?: {
         /** @description The pagination cursor value. */
         cursor?: string;
+        /**
+         * @description * `managed` - managed
+         *     * `native` - native
+         */
+        evaluator_type?: 'managed' | 'native';
         /** @description Include public evaluators from other organizations. */
         include_public?: boolean;
         /** @description Return only Scorable defined evaluators. */
@@ -3299,15 +3406,10 @@ export interface operations {
         owner__last_name?: string;
         /** @description Number of results to return per page. */
         page_size?: number;
-        /** @description Filter by project. Public evaluators are excluded when this filter is set. */
+        /** @description Filter by project. Scorable root evaluators are always included; other public evaluators are excluded when this filter is set. */
         project_id?: string;
         /** @description Search for evaluators by name or description. */
         search?: string;
-        /**
-         * @description * `managed` - managed
-         *     * `native` - native
-         */
-        skill_type?: 'managed' | 'native';
       };
       header?: never;
       path?: never;
@@ -3462,33 +3564,6 @@ export interface operations {
         'application/json': components['schemas']['SkillTestInputRequest'];
         'application/x-www-form-urlencoded': components['schemas']['SkillTestInputRequest'];
         'multipart/form-data': components['schemas']['SkillTestInputRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['EvaluatorCalibrationOutput'][];
-        };
-      };
-    };
-  };
-  evaluators_calibrate_create_2: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['SkillTestDataRequest'];
-        'application/x-www-form-urlencoded': components['schemas']['SkillTestDataRequest'];
-        'multipart/form-data': components['schemas']['SkillTestDataRequest'];
       };
     };
     responses: {
@@ -3658,6 +3733,8 @@ export interface operations {
   execution_logs_list: {
     parameters: {
       query?: {
+        /** @description Filter logs produced by a batch execution, including their child evaluator logs */
+        batch_execution_id?: string;
         /** @description The pagination cursor value. */
         cursor?: string;
         /** @description Filter logs created after or at this datetime (inclusive) */
@@ -3672,30 +3749,46 @@ export interface operations {
          *     * `experiment` - experiment
          *     * `test` - test
          *     * `proxy` - proxy
+         *     * `internal` - internal
          */
-        execution_type?: 'evaluator' | 'experiment' | 'judge' | 'proxy' | 'skill' | 'test';
+        execution_type?:
+          'evaluator' | 'experiment' | 'internal' | 'judge' | 'proxy' | 'skill' | 'test';
+        /** @description Return the page as a CSV file instead of JSON */
+        export?: 'csv';
+        /** @description With export=csv, keep long text fields whole. By default each is cut at 32,000 characters to fit spreadsheet cells; request_truncated and response_truncated mark cut rows, and log_url links to the full log. */
+        export_full_text?: boolean;
         /** @description Filter logs that have a session identifier */
         has_session_id?: boolean;
         /** @description Comma-separated list of additional fields to include in the response. Supports: llm_output, variables, evaluation_context */
         include?: string;
+        judge_id?: string;
+        /** @description Filter logs by maximum cost, inclusive, excludes null costs */
+        max_cost?: number;
         /** @description Filter logs by maximum score, inclusive, excludes null scores */
         max_score?: number;
+        /** @description Filter logs by minimum cost, inclusive, excludes null costs */
+        min_cost?: number;
         /** @description Filter logs by minimum score, inclusive, excludes null scores */
         min_score?: number;
+        /** @description Filter logs by model name (exact match) */
+        model?: string;
         /** @description Which field to use when ordering the results. */
         ordering?: string;
+        /** @description Filter logs by owner email (exact match) */
+        owner_email?: string;
         /** @description Number of results to return per page. */
         page_size?: number;
+        parent_execution_log_id?: string;
         /** @description Filter logs by project UUID */
         project_id?: string;
-        /** @description Filter with skill name or id */
+        /** @description Filter with evaluator name or id */
         search?: string;
         /** @description Filter logs by external session identifier (exact match) */
         session_id?: string;
         /** @description Filter logs by tag names (comma-separated) */
         tags?: string;
-        /** @description Return only unique skills */
-        unique_skills?: boolean;
+        /** @description Return only unique evaluators */
+        unique_evaluators?: boolean;
         /** @description Filter logs by external user identifier (exact match) */
         user_id?: string;
       };
@@ -3910,53 +4003,14 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['JudgeBatchExecutionRequest'];
-        'application/x-www-form-urlencoded': components['schemas']['JudgeBatchExecutionRequest'];
-        'multipart/form-data': components['schemas']['JudgeBatchExecutionRequest'];
-      };
-    };
+    requestBody?: never;
     responses: {
-      202: {
+      /** @description No response body */
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          'application/json': components['schemas']['JudgeBatchExecutionResponse'];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
+        content?: never;
       };
     };
   };
@@ -4326,7 +4380,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['PaginatedJudgeBatchExecutionListItemList'];
+          'application/json': components['schemas']['PaginatedBatchExecutionListItemList'];
         };
       };
     };
@@ -4347,7 +4401,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['JudgeBatchExecutionDetail'];
+          'application/json': components['schemas']['BatchExecutionDetail'];
         };
       };
     };
@@ -4479,7 +4533,10 @@ export interface operations {
   models_list: {
     parameters: {
       query?: {
-        /** @description Search for models by capabilities. */
+        /**
+         * @deprecated
+         * @description Deprecated and ignored. All models are returned regardless of this parameter.
+         */
         capable_of?: string[];
         /** @description The pagination cursor value. */
         cursor?: string;

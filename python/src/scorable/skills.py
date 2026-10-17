@@ -717,8 +717,7 @@ class Evaluators:
         self,
         *,
         name: str,
-        test_dataset_id: Optional[str] = None,
-        test_data: Optional[List[List[str]]] = None,
+        test_dataset_id: str,
         prompt: str,
         model: ModelName,
         input_variables: Optional[Union[List[InputVariable], List[InputVariableRequest]]] = None,
@@ -726,19 +725,15 @@ class Evaluators:
         _client: ApiClient,
     ) -> List[EvaluatorCalibrationOutput]:
         """
-        Run calibration set for an evaluator definition.
+        Calibrate an evaluator definition against a dataset's labeled items.
+        Each item's newest published annotation is its expected score.
         See the create evaluator method for more details on the parameters.
         """
 
-        if not test_dataset_id and not test_data:
-            raise ValueError("Either test_dataset_id or test_data must be provided")
-        if test_dataset_id and test_data:
-            raise ValueError("Only one of test_dataset_id or test_data must be provided")
         api_instance = EvaluatorsApi(_client)
         evaluator_test_request = SkillTestInputRequest(
             name=name,
             test_dataset_id=test_dataset_id,
-            test_data=test_data,
             prompt=prompt,
             models=[model],
             is_evaluator=True,
@@ -752,8 +747,7 @@ class Evaluators:
         self,
         *,
         name: str,
-        test_dataset_id: Optional[str] = None,
-        test_data: Optional[List[List[str]]] = None,
+        test_dataset_id: str,
         prompt: str,
         model: ModelName,
         input_variables: Optional[Union[List[InputVariable], List[AInputVariableRequest]]] = None,
@@ -761,19 +755,15 @@ class Evaluators:
         _client: AApiClient,
     ) -> List[AEvaluatorCalibrationOutput]:
         """
-        Asynchronously run calibration set for an evaluator definition.
+        Asynchronously calibrate an evaluator definition against a dataset's labeled items.
+        Each item's newest published annotation is its expected score.
         See the create evaluator method for more details on the parameters.
         """
 
-        if not test_dataset_id and not test_data:
-            raise ValueError("Either test_dataset_id or test_data must be provided")
-        if test_dataset_id and test_data:
-            raise ValueError("Only one of test_dataset_id or test_data must be provided")
         api_instance = AEvaluatorsApi(_client)
         evaluator_test_request = ASkillTestInputRequest(
             name=name,
             test_dataset_id=test_dataset_id,
-            test_data=test_data,
             prompt=prompt,
             models=[model],
             is_evaluator=True,
