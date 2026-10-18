@@ -484,7 +484,8 @@ class ModelsApi:
     def models_list(
         self,
         capable_of: Annotated[
-            Optional[List[StrictStr]], Field(description="Search for models by capabilities.")
+            Optional[List[StrictStr]],
+            Field(description="Deprecated and ignored. All models are returned regardless of this parameter."),
         ] = None,
         cursor: Annotated[Optional[StrictStr], Field(description="The pagination cursor value.")] = None,
         ordering: Annotated[
@@ -505,7 +506,7 @@ class ModelsApi:
 
         Get all available LLM models.
 
-        :param capable_of: Search for models by capabilities.
+        :param capable_of: Deprecated and ignored. All models are returned regardless of this parameter.
         :type capable_of: List[str]
         :param cursor: The pagination cursor value.
         :type cursor: str
@@ -560,7 +561,8 @@ class ModelsApi:
     def models_list_with_http_info(
         self,
         capable_of: Annotated[
-            Optional[List[StrictStr]], Field(description="Search for models by capabilities.")
+            Optional[List[StrictStr]],
+            Field(description="Deprecated and ignored. All models are returned regardless of this parameter."),
         ] = None,
         cursor: Annotated[Optional[StrictStr], Field(description="The pagination cursor value.")] = None,
         ordering: Annotated[
@@ -581,7 +583,7 @@ class ModelsApi:
 
         Get all available LLM models.
 
-        :param capable_of: Search for models by capabilities.
+        :param capable_of: Deprecated and ignored. All models are returned regardless of this parameter.
         :type capable_of: List[str]
         :param cursor: The pagination cursor value.
         :type cursor: str
@@ -636,7 +638,8 @@ class ModelsApi:
     def models_list_without_preload_content(
         self,
         capable_of: Annotated[
-            Optional[List[StrictStr]], Field(description="Search for models by capabilities.")
+            Optional[List[StrictStr]],
+            Field(description="Deprecated and ignored. All models are returned regardless of this parameter."),
         ] = None,
         cursor: Annotated[Optional[StrictStr], Field(description="The pagination cursor value.")] = None,
         ordering: Annotated[
@@ -657,7 +660,7 @@ class ModelsApi:
 
         Get all available LLM models.
 
-        :param capable_of: Search for models by capabilities.
+        :param capable_of: Deprecated and ignored. All models are returned regardless of this parameter.
         :type capable_of: List[str]
         :param cursor: The pagination cursor value.
         :type cursor: str

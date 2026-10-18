@@ -32,7 +32,6 @@ class Objective(BaseModel):
 
     id: StrictStr
     intent: Optional[Annotated[str, Field(strict=True, max_length=100000)]] = None
-    test_set: Optional[List[List[StrictStr]]] = Field(description="Deprecated: Use test_dataset_id instead.")
     created_at: datetime
     owner: NestedUserDetails
     version_id: StrictStr
@@ -41,7 +40,6 @@ class Objective(BaseModel):
     __properties: ClassVar[List[str]] = [
         "id",
         "intent",
-        "test_set",
         "created_at",
         "owner",
         "version_id",
@@ -83,12 +81,10 @@ class Objective(BaseModel):
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
         * OpenAPI `readOnly` fields are excluded.
-        * OpenAPI `readOnly` fields are excluded.
         """
         excluded_fields: Set[str] = set(
             [
                 "id",
-                "test_set",
                 "created_at",
                 "owner",
                 "version_id",
@@ -104,11 +100,6 @@ class Objective(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of owner
         if self.owner:
             _dict["owner"] = self.owner.to_dict()
-        # set to None if test_set (nullable) is None
-        # and model_fields_set contains the field
-        if self.test_set is None and "test_set" in self.model_fields_set:
-            _dict["test_set"] = None
-
         # set to None if test_dataset_id (nullable) is None
         # and model_fields_set contains the field
         if self.test_dataset_id is None and "test_dataset_id" in self.model_fields_set:
@@ -129,7 +120,6 @@ class Objective(BaseModel):
             {
                 "id": obj.get("id"),
                 "intent": obj.get("intent"),
-                "test_set": obj.get("test_set"),
                 "created_at": obj.get("created_at"),
                 "owner": NestedUserDetails.from_dict(obj["owner"]) if obj.get("owner") is not None else None,
                 "version_id": obj.get("version_id"),

@@ -16,9 +16,25 @@ Do not edit the class manually.
 from scorable.generated.openapi_client.models.annotation import Annotation
 from scorable.generated.openapi_client.models.annotation_request import AnnotationRequest
 from scorable.generated.openapi_client.models.annotation_status_enum import AnnotationStatusEnum
-from scorable.generated.openapi_client.models.batch_execution_status import BatchExecutionStatus
+from scorable.generated.openapi_client.models.batch_execution_create_request import BatchExecutionCreateRequest
+from scorable.generated.openapi_client.models.batch_execution_create_request_range import (
+    BatchExecutionCreateRequestRange,
+)
+from scorable.generated.openapi_client.models.batch_execution_detail import BatchExecutionDetail
+from scorable.generated.openapi_client.models.batch_execution_input_request import BatchExecutionInputRequest
+from scorable.generated.openapi_client.models.batch_execution_item import BatchExecutionItem
+from scorable.generated.openapi_client.models.batch_execution_item_input import BatchExecutionItemInput
+from scorable.generated.openapi_client.models.batch_execution_item_input_turns_inner import (
+    BatchExecutionItemInputTurnsInner,
+)
+from scorable.generated.openapi_client.models.batch_execution_item_status_enum import BatchExecutionItemStatusEnum
+from scorable.generated.openapi_client.models.batch_execution_list_item import BatchExecutionListItem
+from scorable.generated.openapi_client.models.batch_execution_response import BatchExecutionResponse
 from scorable.generated.openapi_client.models.batch_set_tags_model_request import BatchSetTagsModelRequest
+from scorable.generated.openapi_client.models.calibration_definition_request import CalibrationDefinitionRequest
 from scorable.generated.openapi_client.models.calibration_run import CalibrationRun
+from scorable.generated.openapi_client.models.calibration_run_attach_request import CalibrationRunAttachRequest
+from scorable.generated.openapi_client.models.calibration_run_attach_response import CalibrationRunAttachResponse
 from scorable.generated.openapi_client.models.calibration_run_create_request import CalibrationRunCreateRequest
 from scorable.generated.openapi_client.models.calibration_run_item import CalibrationRunItem
 from scorable.generated.openapi_client.models.calibration_run_source_request import CalibrationRunSourceRequest
@@ -27,7 +43,6 @@ from scorable.generated.openapi_client.models.calibration_source_type_enum impor
 from scorable.generated.openapi_client.models.data_set_create import DataSetCreate
 from scorable.generated.openapi_client.models.data_set_create_request import DataSetCreateRequest
 from scorable.generated.openapi_client.models.data_set_list import DataSetList
-from scorable.generated.openapi_client.models.data_set_type import DataSetType
 from scorable.generated.openapi_client.models.dataset_item import DatasetItem
 from scorable.generated.openapi_client.models.dataset_item_request import DatasetItemRequest
 from scorable.generated.openapi_client.models.dataset_range_request import DatasetRangeRequest
@@ -37,8 +52,6 @@ from scorable.generated.openapi_client.models.evaluator import Evaluator
 from scorable.generated.openapi_client.models.evaluator_behavior_enum import EvaluatorBehaviorEnum
 from scorable.generated.openapi_client.models.evaluator_calibration_output import EvaluatorCalibrationOutput
 from scorable.generated.openapi_client.models.evaluator_calibration_result import EvaluatorCalibrationResult
-from scorable.generated.openapi_client.models.evaluator_demonstrations import EvaluatorDemonstrations
-from scorable.generated.openapi_client.models.evaluator_demonstrations_request import EvaluatorDemonstrationsRequest
 from scorable.generated.openapi_client.models.evaluator_execution_request import EvaluatorExecutionRequest
 from scorable.generated.openapi_client.models.evaluator_execution_result import EvaluatorExecutionResult
 from scorable.generated.openapi_client.models.evaluator_import_yaml_request_request import (
@@ -69,16 +82,6 @@ from scorable.generated.openapi_client.models.id import ID
 from scorable.generated.openapi_client.models.input_variable import InputVariable
 from scorable.generated.openapi_client.models.input_variable_request import InputVariableRequest
 from scorable.generated.openapi_client.models.judge import Judge
-from scorable.generated.openapi_client.models.judge_batch_execution_detail import JudgeBatchExecutionDetail
-from scorable.generated.openapi_client.models.judge_batch_execution_input_request import JudgeBatchExecutionInputRequest
-from scorable.generated.openapi_client.models.judge_batch_execution_item import JudgeBatchExecutionItem
-from scorable.generated.openapi_client.models.judge_batch_execution_item_input import JudgeBatchExecutionItemInput
-from scorable.generated.openapi_client.models.judge_batch_execution_item_status_enum import (
-    JudgeBatchExecutionItemStatusEnum,
-)
-from scorable.generated.openapi_client.models.judge_batch_execution_list_item import JudgeBatchExecutionListItem
-from scorable.generated.openapi_client.models.judge_batch_execution_request import JudgeBatchExecutionRequest
-from scorable.generated.openapi_client.models.judge_batch_execution_response import JudgeBatchExecutionResponse
 from scorable.generated.openapi_client.models.judge_claim_request_request import JudgeClaimRequestRequest
 from scorable.generated.openapi_client.models.judge_execution_request import JudgeExecutionRequest
 from scorable.generated.openapi_client.models.judge_execution_response import JudgeExecutionResponse
@@ -104,6 +107,8 @@ from scorable.generated.openapi_client.models.model_list_visibility_enum import 
 from scorable.generated.openapi_client.models.model_request import ModelRequest
 from scorable.generated.openapi_client.models.model_test_request_request import ModelTestRequestRequest
 from scorable.generated.openapi_client.models.model_test_response import ModelTestResponse
+from scorable.generated.openapi_client.models.nested_batch_evaluator import NestedBatchEvaluator
+from scorable.generated.openapi_client.models.nested_data_set import NestedDataSet
 from scorable.generated.openapi_client.models.nested_evaluator import NestedEvaluator
 from scorable.generated.openapi_client.models.nested_evaluator_objective import NestedEvaluatorObjective
 from scorable.generated.openapi_client.models.nested_evaluator_request import NestedEvaluatorRequest
@@ -122,6 +127,9 @@ from scorable.generated.openapi_client.models.otel_trace_evaluation_filter_input
 from scorable.generated.openapi_client.models.otel_trace_evaluation_filter_output import OtelTraceEvaluationFilterOutput
 from scorable.generated.openapi_client.models.otel_trace_record import OtelTraceRecord
 from scorable.generated.openapi_client.models.paginated_annotation_list import PaginatedAnnotationList
+from scorable.generated.openapi_client.models.paginated_batch_execution_list_item_list import (
+    PaginatedBatchExecutionListItemList,
+)
 from scorable.generated.openapi_client.models.paginated_calibration_run_item_list import PaginatedCalibrationRunItemList
 from scorable.generated.openapi_client.models.paginated_calibration_run_list import PaginatedCalibrationRunList
 from scorable.generated.openapi_client.models.paginated_data_set_list_list import PaginatedDataSetListList
@@ -131,9 +139,6 @@ from scorable.generated.openapi_client.models.paginated_evaluator_list_output_li
     PaginatedEvaluatorListOutputList,
 )
 from scorable.generated.openapi_client.models.paginated_execution_log_list_list import PaginatedExecutionLogListList
-from scorable.generated.openapi_client.models.paginated_judge_batch_execution_list_item_list import (
-    PaginatedJudgeBatchExecutionListItemList,
-)
 from scorable.generated.openapi_client.models.paginated_judge_list_list import PaginatedJudgeListList
 from scorable.generated.openapi_client.models.paginated_model_list_list import PaginatedModelListList
 from scorable.generated.openapi_client.models.paginated_objective_list import PaginatedObjectiveList
@@ -147,24 +152,24 @@ from scorable.generated.openapi_client.models.patched_evaluator_request import P
 from scorable.generated.openapi_client.models.patched_judge_request import PatchedJudgeRequest
 from scorable.generated.openapi_client.models.patched_model_request import PatchedModelRequest
 from scorable.generated.openapi_client.models.patched_objective_request import PatchedObjectiveRequest
+from scorable.generated.openapi_client.models.patched_patch_data_set_request import PatchedPatchDataSetRequest
 from scorable.generated.openapi_client.models.patched_project_request import PatchedProjectRequest
 from scorable.generated.openapi_client.models.patched_score_config_request import PatchedScoreConfigRequest
 from scorable.generated.openapi_client.models.project import Project
 from scorable.generated.openapi_client.models.project_request import ProjectRequest
 from scorable.generated.openapi_client.models.provider import Provider
 from scorable.generated.openapi_client.models.reasoning_effort_enum import ReasoningEffortEnum
-from scorable.generated.openapi_client.models.reference_variable_request import ReferenceVariableRequest
 from scorable.generated.openapi_client.models.role_enum import RoleEnum
 from scorable.generated.openapi_client.models.score_config import ScoreConfig
 from scorable.generated.openapi_client.models.score_config_request import ScoreConfigRequest
 from scorable.generated.openapi_client.models.score_config_type_enum import ScoreConfigTypeEnum
 from scorable.generated.openapi_client.models.skill_execution_validator_result import SkillExecutionValidatorResult
-from scorable.generated.openapi_client.models.skill_test_data_request import SkillTestDataRequest
-from scorable.generated.openapi_client.models.skill_test_data_request_dataset_range import (
-    SkillTestDataRequestDatasetRange,
-)
 from scorable.generated.openapi_client.models.skill_test_input_behavior_enum import SkillTestInputBehaviorEnum
 from scorable.generated.openapi_client.models.skill_test_input_request import SkillTestInputRequest
+from scorable.generated.openapi_client.models.skill_test_input_request_dataset_range import (
+    SkillTestInputRequestDatasetRange,
+)
+from scorable.generated.openapi_client.models.status914_enum import Status914Enum
 from scorable.generated.openapi_client.models.status_enum import StatusEnum
 from scorable.generated.openapi_client.models.validation_result_status import ValidationResultStatus
 from scorable.generated.openapi_client.models.visibility_enum import VisibilityEnum

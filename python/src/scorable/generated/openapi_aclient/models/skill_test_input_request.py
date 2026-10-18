@@ -23,11 +23,10 @@ from typing_extensions import Annotated, Self
 
 from scorable.generated.openapi_aclient.models.input_variable_request import InputVariableRequest
 from scorable.generated.openapi_aclient.models.objective_request import ObjectiveRequest
-from scorable.generated.openapi_aclient.models.reference_variable_request import ReferenceVariableRequest
-from scorable.generated.openapi_aclient.models.skill_test_data_request_dataset_range import (
-    SkillTestDataRequestDatasetRange,
-)
 from scorable.generated.openapi_aclient.models.skill_test_input_behavior_enum import SkillTestInputBehaviorEnum
+from scorable.generated.openapi_aclient.models.skill_test_input_request_dataset_range import (
+    SkillTestInputRequestDatasetRange,
+)
 
 
 class SkillTestInputRequest(BaseModel):
@@ -35,27 +34,23 @@ class SkillTestInputRequest(BaseModel):
     SkillTestInputRequest
     """  # noqa: E501
 
-    test_data: Optional[List[List[Annotated[str, Field(min_length=1, strict=True)]]]] = None
-    test_dataset_id: Optional[Annotated[str, Field(min_length=1, strict=True)]] = Field(
-        default=None, description="Deprecated: superseded by the annotation-based dataset (DatasetItem + Annotation)."
+    test_dataset_id: StrictStr = Field(
+        description="Dataset whose labeled items (published annotations) are the calibration cases."
     )
     project_id: Optional[StrictStr] = None
-    dataset_range: Optional[SkillTestDataRequestDatasetRange] = None
+    dataset_range: Optional[SkillTestInputRequestDatasetRange] = None
     prompt: Annotated[str, Field(min_length=1, strict=True)]
-    reference_variables: Optional[List[ReferenceVariableRequest]] = None
     input_variables: Optional[List[InputVariableRequest]] = None
     models: Optional[List[Annotated[str, Field(min_length=1, strict=True)]]] = None
     name: Optional[Annotated[str, Field(min_length=1, strict=True)]] = None
     objective: Optional[ObjectiveRequest] = None
-    is_evaluator: Optional[StrictBool] = False
+    is_evaluator: Optional[StrictBool] = True
     behavior: Optional[SkillTestInputBehaviorEnum] = None
     __properties: ClassVar[List[str]] = [
-        "test_data",
         "test_dataset_id",
         "project_id",
         "dataset_range",
         "prompt",
-        "reference_variables",
         "input_variables",
         "models",
         "name",
@@ -104,13 +99,6 @@ class SkillTestInputRequest(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of dataset_range
         if self.dataset_range:
             _dict["dataset_range"] = self.dataset_range.to_dict()
-        # override the default output from pydantic by calling `to_dict()` of each item in reference_variables (list)
-        _items = []
-        if self.reference_variables:
-            for _item in self.reference_variables:
-                if _item:
-                    _items.append(_item.to_dict())
-            _dict["reference_variables"] = _items
         # override the default output from pydantic by calling `to_dict()` of each item in input_variables (list)
         _items = []
         if self.input_variables:
@@ -121,11 +109,6 @@ class SkillTestInputRequest(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of objective
         if self.objective:
             _dict["objective"] = self.objective.to_dict()
-        # set to None if test_data (nullable) is None
-        # and model_fields_set contains the field
-        if self.test_data is None and "test_data" in self.model_fields_set:
-            _dict["test_data"] = None
-
         # set to None if project_id (nullable) is None
         # and model_fields_set contains the field
         if self.project_id is None and "project_id" in self.model_fields_set:
@@ -164,25 +147,19 @@ class SkillTestInputRequest(BaseModel):
 
         _obj = cls.model_validate(
             {
-                "test_data": obj.get("test_data"),
                 "test_dataset_id": obj.get("test_dataset_id"),
                 "project_id": obj.get("project_id"),
-                "dataset_range": SkillTestDataRequestDatasetRange.from_dict(obj["dataset_range"])
+                "dataset_range": SkillTestInputRequestDatasetRange.from_dict(obj["dataset_range"])
                 if obj.get("dataset_range") is not None
                 else None,
                 "prompt": obj.get("prompt"),
-                "reference_variables": [
-                    ReferenceVariableRequest.from_dict(_item) for _item in obj["reference_variables"]
-                ]
-                if obj.get("reference_variables") is not None
-                else None,
                 "input_variables": [InputVariableRequest.from_dict(_item) for _item in obj["input_variables"]]
                 if obj.get("input_variables") is not None
                 else None,
                 "models": obj.get("models"),
                 "name": obj.get("name"),
                 "objective": ObjectiveRequest.from_dict(obj["objective"]) if obj.get("objective") is not None else None,
-                "is_evaluator": obj.get("is_evaluator") if obj.get("is_evaluator") is not None else False,
+                "is_evaluator": obj.get("is_evaluator") if obj.get("is_evaluator") is not None else True,
                 "behavior": obj.get("behavior"),
             }
         )

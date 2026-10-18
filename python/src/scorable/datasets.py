@@ -54,7 +54,6 @@ class DataSets:
         *,
         name: Optional[str] = None,
         path: Optional[str] = None,
-        type: str = "reference",
         project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
     ) -> Optional[DataSetCreate]:
@@ -63,7 +62,7 @@ class DataSets:
         If the dataset has a path, it will be uploaded to the registry.
         """
 
-        payload: Dict[str, Any] = {"name": name, "type": type, "tags": []}
+        payload: Dict[str, Any] = {"name": name, "tags": []}
         if project_id is not None:
             payload["project_id"] = project_id
         file = None
@@ -94,7 +93,6 @@ class DataSets:
         *,
         name: Optional[str] = None,
         path: Optional[str] = None,
-        type: str = "reference",
         project_id: Optional[str] = None,
         _request_timeout: Optional[int] = None,
     ) -> Optional[ADataSetCreate]:
@@ -106,7 +104,6 @@ class DataSets:
 
         payload = aiohttp.FormData()
         payload.add_field("name", name)
-        payload.add_field("type", type)
         if project_id is not None:
             payload.add_field("project_id", project_id)
 

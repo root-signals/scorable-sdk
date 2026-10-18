@@ -1,3 +1,18 @@
+## Unreleased
+
+Follows the API moving inline evaluator data to datasets.
+
+- `evaluators.calibrate()` / `acalibrate()` no longer take `test_data`; `test_dataset_id` is required. The API calibrates against the dataset's labeled items, taking each item's newest published annotation as the expected score. Build the dataset with `datasets.add_items()` and `annotations.create()`.
+- `datasets.create()` / `acreate()` drop the `type` parameter; the API no longer has dataset types. The old `"reference"` default made calls that left `type` out fail against the current API; with this version they work, and older versions work again once the API ignores the field.
+- Regenerate the API client. `DataSetType` and the `type` field on dataset models are gone, as are models for other removed API fields and endpoints.
+
+## 1.14.0
+
+Drops reference variables, which the API removed together with operational skills and RAG.
+
+- Remove the `ReferenceVariable` model and the `reference_variables` parameter of `evaluators.calibrate()` / `acalibrate()`. Evaluator prompts take input variables only; the API ignores the field if an older client still sends it.
+- `/v1/models/` still accepts `capable_of` but the API ignores it (model capabilities were removed), so `models.list(capable_of=[...])` returns every available model. The parameter will be dropped in a future release.
+
 ## 1.13.0
 
 Adds the annotation-store resources for labelling datasets and calibrating evaluators.

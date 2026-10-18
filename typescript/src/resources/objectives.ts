@@ -9,11 +9,6 @@ export type ObjectiveDetail = components['schemas']['Objective'];
 export interface CreateObjectiveData {
   intent?: string;
   status?: 'unlisted' | 'listed' | 'public' | 'public_unlisted';
-  validators?: Array<{
-    evaluator_id?: string;
-    evaluator_name?: string;
-    threshold?: number;
-  }>;
   force_create?: boolean;
   test_dataset_id?: string;
   /** Project to assign this objective to. Defaults to the org's default project. */
@@ -23,11 +18,6 @@ export interface CreateObjectiveData {
 export interface UpdateObjectiveData {
   intent?: string;
   status?: 'unlisted' | 'listed' | 'public' | 'public_unlisted';
-  validators?: Array<{
-    evaluator_id?: string;
-    evaluator_name?: string;
-    threshold?: number;
-  }>;
   force_create?: boolean;
   test_dataset_id?: string;
   /** Pass `projectId` to move this objective to a different project within your organization. */
@@ -35,7 +25,6 @@ export interface UpdateObjectiveData {
 }
 
 export interface ObjectiveListParams extends ListParams {
-  has_validators?: boolean;
   intent?: string;
   /** Filter objectives by project UUID. */
   projectId?: string;

@@ -41,6 +41,10 @@ class ExecutionLogsApi:
     @validate_call
     async def execution_logs_list(
         self,
+        batch_execution_id: Annotated[
+            Optional[StrictStr],
+            Field(description="Filter logs produced by a batch execution, including their child evaluator logs"),
+        ] = None,
         cursor: Annotated[Optional[StrictStr], Field(description="The pagination cursor value.")] = None,
         date_from: Annotated[
             Optional[datetime], Field(description="Filter logs created after or at this datetime (inclusive)")
@@ -52,7 +56,16 @@ class ExecutionLogsApi:
         execution_type: Annotated[
             Optional[StrictStr],
             Field(
-                description="* `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy"
+                description="* `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy * `internal` - internal"
+            ),
+        ] = None,
+        export: Annotated[
+            Optional[StrictStr], Field(description="Return the page as a CSV file instead of JSON")
+        ] = None,
+        export_full_text: Annotated[
+            Optional[StrictBool],
+            Field(
+                description="With export=csv, keep long text fields whole. By default each is cut at 32,000 characters to fit spreadsheet cells; request_truncated and response_truncated mark cut rows, and log_url links to the full log."
             ),
         ] = None,
         has_session_id: Annotated[
@@ -64,25 +77,39 @@ class ExecutionLogsApi:
                 description="Comma-separated list of additional fields to include in the response. Supports: llm_output, variables, evaluation_context"
             ),
         ] = None,
+        judge_id: Optional[StrictStr] = None,
+        max_cost: Annotated[
+            Optional[Union[StrictFloat, StrictInt]],
+            Field(description="Filter logs by maximum cost, inclusive, excludes null costs"),
+        ] = None,
         max_score: Annotated[
             Optional[Union[StrictFloat, StrictInt]],
             Field(description="Filter logs by maximum score, inclusive, excludes null scores"),
+        ] = None,
+        min_cost: Annotated[
+            Optional[Union[StrictFloat, StrictInt]],
+            Field(description="Filter logs by minimum cost, inclusive, excludes null costs"),
         ] = None,
         min_score: Annotated[
             Optional[Union[StrictFloat, StrictInt]],
             Field(description="Filter logs by minimum score, inclusive, excludes null scores"),
         ] = None,
+        model: Annotated[Optional[StrictStr], Field(description="Filter logs by model name (exact match)")] = None,
         ordering: Annotated[
             Optional[StrictStr], Field(description="Which field to use when ordering the results.")
         ] = None,
+        owner_email: Annotated[
+            Optional[StrictStr], Field(description="Filter logs by owner email (exact match)")
+        ] = None,
         page_size: Annotated[Optional[StrictInt], Field(description="Number of results to return per page.")] = None,
+        parent_execution_log_id: Optional[StrictStr] = None,
         project_id: Annotated[Optional[StrictStr], Field(description="Filter logs by project UUID")] = None,
-        search: Annotated[Optional[StrictStr], Field(description="Filter with skill name or id")] = None,
+        search: Annotated[Optional[StrictStr], Field(description="Filter with evaluator name or id")] = None,
         session_id: Annotated[
             Optional[StrictStr], Field(description="Filter logs by external session identifier (exact match)")
         ] = None,
         tags: Annotated[Optional[StrictStr], Field(description="Filter logs by tag names (comma-separated)")] = None,
-        unique_skills: Annotated[Optional[StrictBool], Field(description="Return only unique skills")] = None,
+        unique_evaluators: Annotated[Optional[StrictBool], Field(description="Return only unique evaluators")] = None,
         user_id: Annotated[
             Optional[StrictStr], Field(description="Filter logs by external user identifier (exact match)")
         ] = None,
@@ -98,8 +125,10 @@ class ExecutionLogsApi:
     ) -> PaginatedExecutionLogListList:
         """execution_logs_list
 
-        Get a list of execution logs. An execution log is created every time a skill or an evaluator is executed.
+        Get a list of execution logs. An execution log is created every time an evaluator is executed.
 
+        :param batch_execution_id: Filter logs produced by a batch execution, including their child evaluator logs
+        :type batch_execution_id: str
         :param cursor: The pagination cursor value.
         :type cursor: str
         :param date_from: Filter logs created after or at this datetime (inclusive)
@@ -108,30 +137,46 @@ class ExecutionLogsApi:
         :type date_to: datetime
         :param executed_item_id:
         :type executed_item_id: str
-        :param execution_type: * `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy
+        :param execution_type: * `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy * `internal` - internal
         :type execution_type: str
+        :param export: Return the page as a CSV file instead of JSON
+        :type export: str
+        :param export_full_text: With export=csv, keep long text fields whole. By default each is cut at 32,000 characters to fit spreadsheet cells; request_truncated and response_truncated mark cut rows, and log_url links to the full log.
+        :type export_full_text: bool
         :param has_session_id: Filter logs that have a session identifier
         :type has_session_id: bool
         :param include: Comma-separated list of additional fields to include in the response. Supports: llm_output, variables, evaluation_context
         :type include: str
+        :param judge_id:
+        :type judge_id: str
+        :param max_cost: Filter logs by maximum cost, inclusive, excludes null costs
+        :type max_cost: float
         :param max_score: Filter logs by maximum score, inclusive, excludes null scores
         :type max_score: float
+        :param min_cost: Filter logs by minimum cost, inclusive, excludes null costs
+        :type min_cost: float
         :param min_score: Filter logs by minimum score, inclusive, excludes null scores
         :type min_score: float
+        :param model: Filter logs by model name (exact match)
+        :type model: str
         :param ordering: Which field to use when ordering the results.
         :type ordering: str
+        :param owner_email: Filter logs by owner email (exact match)
+        :type owner_email: str
         :param page_size: Number of results to return per page.
         :type page_size: int
+        :param parent_execution_log_id:
+        :type parent_execution_log_id: str
         :param project_id: Filter logs by project UUID
         :type project_id: str
-        :param search: Filter with skill name or id
+        :param search: Filter with evaluator name or id
         :type search: str
         :param session_id: Filter logs by external session identifier (exact match)
         :type session_id: str
         :param tags: Filter logs by tag names (comma-separated)
         :type tags: str
-        :param unique_skills: Return only unique skills
-        :type unique_skills: bool
+        :param unique_evaluators: Return only unique evaluators
+        :type unique_evaluators: bool
         :param user_id: Filter logs by external user identifier (exact match)
         :type user_id: str
         :param _request_timeout: timeout setting for this request. If one
@@ -157,22 +202,31 @@ class ExecutionLogsApi:
         """  # noqa: E501
 
         _param = self._execution_logs_list_serialize(
+            batch_execution_id=batch_execution_id,
             cursor=cursor,
             date_from=date_from,
             date_to=date_to,
             executed_item_id=executed_item_id,
             execution_type=execution_type,
+            export=export,
+            export_full_text=export_full_text,
             has_session_id=has_session_id,
             include=include,
+            judge_id=judge_id,
+            max_cost=max_cost,
             max_score=max_score,
+            min_cost=min_cost,
             min_score=min_score,
+            model=model,
             ordering=ordering,
+            owner_email=owner_email,
             page_size=page_size,
+            parent_execution_log_id=parent_execution_log_id,
             project_id=project_id,
             search=search,
             session_id=session_id,
             tags=tags,
-            unique_skills=unique_skills,
+            unique_evaluators=unique_evaluators,
             user_id=user_id,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -193,6 +247,10 @@ class ExecutionLogsApi:
     @validate_call
     async def execution_logs_list_with_http_info(
         self,
+        batch_execution_id: Annotated[
+            Optional[StrictStr],
+            Field(description="Filter logs produced by a batch execution, including their child evaluator logs"),
+        ] = None,
         cursor: Annotated[Optional[StrictStr], Field(description="The pagination cursor value.")] = None,
         date_from: Annotated[
             Optional[datetime], Field(description="Filter logs created after or at this datetime (inclusive)")
@@ -204,7 +262,16 @@ class ExecutionLogsApi:
         execution_type: Annotated[
             Optional[StrictStr],
             Field(
-                description="* `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy"
+                description="* `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy * `internal` - internal"
+            ),
+        ] = None,
+        export: Annotated[
+            Optional[StrictStr], Field(description="Return the page as a CSV file instead of JSON")
+        ] = None,
+        export_full_text: Annotated[
+            Optional[StrictBool],
+            Field(
+                description="With export=csv, keep long text fields whole. By default each is cut at 32,000 characters to fit spreadsheet cells; request_truncated and response_truncated mark cut rows, and log_url links to the full log."
             ),
         ] = None,
         has_session_id: Annotated[
@@ -216,25 +283,39 @@ class ExecutionLogsApi:
                 description="Comma-separated list of additional fields to include in the response. Supports: llm_output, variables, evaluation_context"
             ),
         ] = None,
+        judge_id: Optional[StrictStr] = None,
+        max_cost: Annotated[
+            Optional[Union[StrictFloat, StrictInt]],
+            Field(description="Filter logs by maximum cost, inclusive, excludes null costs"),
+        ] = None,
         max_score: Annotated[
             Optional[Union[StrictFloat, StrictInt]],
             Field(description="Filter logs by maximum score, inclusive, excludes null scores"),
+        ] = None,
+        min_cost: Annotated[
+            Optional[Union[StrictFloat, StrictInt]],
+            Field(description="Filter logs by minimum cost, inclusive, excludes null costs"),
         ] = None,
         min_score: Annotated[
             Optional[Union[StrictFloat, StrictInt]],
             Field(description="Filter logs by minimum score, inclusive, excludes null scores"),
         ] = None,
+        model: Annotated[Optional[StrictStr], Field(description="Filter logs by model name (exact match)")] = None,
         ordering: Annotated[
             Optional[StrictStr], Field(description="Which field to use when ordering the results.")
         ] = None,
+        owner_email: Annotated[
+            Optional[StrictStr], Field(description="Filter logs by owner email (exact match)")
+        ] = None,
         page_size: Annotated[Optional[StrictInt], Field(description="Number of results to return per page.")] = None,
+        parent_execution_log_id: Optional[StrictStr] = None,
         project_id: Annotated[Optional[StrictStr], Field(description="Filter logs by project UUID")] = None,
-        search: Annotated[Optional[StrictStr], Field(description="Filter with skill name or id")] = None,
+        search: Annotated[Optional[StrictStr], Field(description="Filter with evaluator name or id")] = None,
         session_id: Annotated[
             Optional[StrictStr], Field(description="Filter logs by external session identifier (exact match)")
         ] = None,
         tags: Annotated[Optional[StrictStr], Field(description="Filter logs by tag names (comma-separated)")] = None,
-        unique_skills: Annotated[Optional[StrictBool], Field(description="Return only unique skills")] = None,
+        unique_evaluators: Annotated[Optional[StrictBool], Field(description="Return only unique evaluators")] = None,
         user_id: Annotated[
             Optional[StrictStr], Field(description="Filter logs by external user identifier (exact match)")
         ] = None,
@@ -250,8 +331,10 @@ class ExecutionLogsApi:
     ) -> ApiResponse[PaginatedExecutionLogListList]:
         """execution_logs_list
 
-        Get a list of execution logs. An execution log is created every time a skill or an evaluator is executed.
+        Get a list of execution logs. An execution log is created every time an evaluator is executed.
 
+        :param batch_execution_id: Filter logs produced by a batch execution, including their child evaluator logs
+        :type batch_execution_id: str
         :param cursor: The pagination cursor value.
         :type cursor: str
         :param date_from: Filter logs created after or at this datetime (inclusive)
@@ -260,30 +343,46 @@ class ExecutionLogsApi:
         :type date_to: datetime
         :param executed_item_id:
         :type executed_item_id: str
-        :param execution_type: * `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy
+        :param execution_type: * `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy * `internal` - internal
         :type execution_type: str
+        :param export: Return the page as a CSV file instead of JSON
+        :type export: str
+        :param export_full_text: With export=csv, keep long text fields whole. By default each is cut at 32,000 characters to fit spreadsheet cells; request_truncated and response_truncated mark cut rows, and log_url links to the full log.
+        :type export_full_text: bool
         :param has_session_id: Filter logs that have a session identifier
         :type has_session_id: bool
         :param include: Comma-separated list of additional fields to include in the response. Supports: llm_output, variables, evaluation_context
         :type include: str
+        :param judge_id:
+        :type judge_id: str
+        :param max_cost: Filter logs by maximum cost, inclusive, excludes null costs
+        :type max_cost: float
         :param max_score: Filter logs by maximum score, inclusive, excludes null scores
         :type max_score: float
+        :param min_cost: Filter logs by minimum cost, inclusive, excludes null costs
+        :type min_cost: float
         :param min_score: Filter logs by minimum score, inclusive, excludes null scores
         :type min_score: float
+        :param model: Filter logs by model name (exact match)
+        :type model: str
         :param ordering: Which field to use when ordering the results.
         :type ordering: str
+        :param owner_email: Filter logs by owner email (exact match)
+        :type owner_email: str
         :param page_size: Number of results to return per page.
         :type page_size: int
+        :param parent_execution_log_id:
+        :type parent_execution_log_id: str
         :param project_id: Filter logs by project UUID
         :type project_id: str
-        :param search: Filter with skill name or id
+        :param search: Filter with evaluator name or id
         :type search: str
         :param session_id: Filter logs by external session identifier (exact match)
         :type session_id: str
         :param tags: Filter logs by tag names (comma-separated)
         :type tags: str
-        :param unique_skills: Return only unique skills
-        :type unique_skills: bool
+        :param unique_evaluators: Return only unique evaluators
+        :type unique_evaluators: bool
         :param user_id: Filter logs by external user identifier (exact match)
         :type user_id: str
         :param _request_timeout: timeout setting for this request. If one
@@ -309,22 +408,31 @@ class ExecutionLogsApi:
         """  # noqa: E501
 
         _param = self._execution_logs_list_serialize(
+            batch_execution_id=batch_execution_id,
             cursor=cursor,
             date_from=date_from,
             date_to=date_to,
             executed_item_id=executed_item_id,
             execution_type=execution_type,
+            export=export,
+            export_full_text=export_full_text,
             has_session_id=has_session_id,
             include=include,
+            judge_id=judge_id,
+            max_cost=max_cost,
             max_score=max_score,
+            min_cost=min_cost,
             min_score=min_score,
+            model=model,
             ordering=ordering,
+            owner_email=owner_email,
             page_size=page_size,
+            parent_execution_log_id=parent_execution_log_id,
             project_id=project_id,
             search=search,
             session_id=session_id,
             tags=tags,
-            unique_skills=unique_skills,
+            unique_evaluators=unique_evaluators,
             user_id=user_id,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -345,6 +453,10 @@ class ExecutionLogsApi:
     @validate_call
     async def execution_logs_list_without_preload_content(
         self,
+        batch_execution_id: Annotated[
+            Optional[StrictStr],
+            Field(description="Filter logs produced by a batch execution, including their child evaluator logs"),
+        ] = None,
         cursor: Annotated[Optional[StrictStr], Field(description="The pagination cursor value.")] = None,
         date_from: Annotated[
             Optional[datetime], Field(description="Filter logs created after or at this datetime (inclusive)")
@@ -356,7 +468,16 @@ class ExecutionLogsApi:
         execution_type: Annotated[
             Optional[StrictStr],
             Field(
-                description="* `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy"
+                description="* `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy * `internal` - internal"
+            ),
+        ] = None,
+        export: Annotated[
+            Optional[StrictStr], Field(description="Return the page as a CSV file instead of JSON")
+        ] = None,
+        export_full_text: Annotated[
+            Optional[StrictBool],
+            Field(
+                description="With export=csv, keep long text fields whole. By default each is cut at 32,000 characters to fit spreadsheet cells; request_truncated and response_truncated mark cut rows, and log_url links to the full log."
             ),
         ] = None,
         has_session_id: Annotated[
@@ -368,25 +489,39 @@ class ExecutionLogsApi:
                 description="Comma-separated list of additional fields to include in the response. Supports: llm_output, variables, evaluation_context"
             ),
         ] = None,
+        judge_id: Optional[StrictStr] = None,
+        max_cost: Annotated[
+            Optional[Union[StrictFloat, StrictInt]],
+            Field(description="Filter logs by maximum cost, inclusive, excludes null costs"),
+        ] = None,
         max_score: Annotated[
             Optional[Union[StrictFloat, StrictInt]],
             Field(description="Filter logs by maximum score, inclusive, excludes null scores"),
+        ] = None,
+        min_cost: Annotated[
+            Optional[Union[StrictFloat, StrictInt]],
+            Field(description="Filter logs by minimum cost, inclusive, excludes null costs"),
         ] = None,
         min_score: Annotated[
             Optional[Union[StrictFloat, StrictInt]],
             Field(description="Filter logs by minimum score, inclusive, excludes null scores"),
         ] = None,
+        model: Annotated[Optional[StrictStr], Field(description="Filter logs by model name (exact match)")] = None,
         ordering: Annotated[
             Optional[StrictStr], Field(description="Which field to use when ordering the results.")
         ] = None,
+        owner_email: Annotated[
+            Optional[StrictStr], Field(description="Filter logs by owner email (exact match)")
+        ] = None,
         page_size: Annotated[Optional[StrictInt], Field(description="Number of results to return per page.")] = None,
+        parent_execution_log_id: Optional[StrictStr] = None,
         project_id: Annotated[Optional[StrictStr], Field(description="Filter logs by project UUID")] = None,
-        search: Annotated[Optional[StrictStr], Field(description="Filter with skill name or id")] = None,
+        search: Annotated[Optional[StrictStr], Field(description="Filter with evaluator name or id")] = None,
         session_id: Annotated[
             Optional[StrictStr], Field(description="Filter logs by external session identifier (exact match)")
         ] = None,
         tags: Annotated[Optional[StrictStr], Field(description="Filter logs by tag names (comma-separated)")] = None,
-        unique_skills: Annotated[Optional[StrictBool], Field(description="Return only unique skills")] = None,
+        unique_evaluators: Annotated[Optional[StrictBool], Field(description="Return only unique evaluators")] = None,
         user_id: Annotated[
             Optional[StrictStr], Field(description="Filter logs by external user identifier (exact match)")
         ] = None,
@@ -402,8 +537,10 @@ class ExecutionLogsApi:
     ) -> RESTResponseType:
         """execution_logs_list
 
-        Get a list of execution logs. An execution log is created every time a skill or an evaluator is executed.
+        Get a list of execution logs. An execution log is created every time an evaluator is executed.
 
+        :param batch_execution_id: Filter logs produced by a batch execution, including their child evaluator logs
+        :type batch_execution_id: str
         :param cursor: The pagination cursor value.
         :type cursor: str
         :param date_from: Filter logs created after or at this datetime (inclusive)
@@ -412,30 +549,46 @@ class ExecutionLogsApi:
         :type date_to: datetime
         :param executed_item_id:
         :type executed_item_id: str
-        :param execution_type: * `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy
+        :param execution_type: * `skill` - skill * `evaluator` - evaluator * `judge` - judge * `experiment` - experiment * `test` - test * `proxy` - proxy * `internal` - internal
         :type execution_type: str
+        :param export: Return the page as a CSV file instead of JSON
+        :type export: str
+        :param export_full_text: With export=csv, keep long text fields whole. By default each is cut at 32,000 characters to fit spreadsheet cells; request_truncated and response_truncated mark cut rows, and log_url links to the full log.
+        :type export_full_text: bool
         :param has_session_id: Filter logs that have a session identifier
         :type has_session_id: bool
         :param include: Comma-separated list of additional fields to include in the response. Supports: llm_output, variables, evaluation_context
         :type include: str
+        :param judge_id:
+        :type judge_id: str
+        :param max_cost: Filter logs by maximum cost, inclusive, excludes null costs
+        :type max_cost: float
         :param max_score: Filter logs by maximum score, inclusive, excludes null scores
         :type max_score: float
+        :param min_cost: Filter logs by minimum cost, inclusive, excludes null costs
+        :type min_cost: float
         :param min_score: Filter logs by minimum score, inclusive, excludes null scores
         :type min_score: float
+        :param model: Filter logs by model name (exact match)
+        :type model: str
         :param ordering: Which field to use when ordering the results.
         :type ordering: str
+        :param owner_email: Filter logs by owner email (exact match)
+        :type owner_email: str
         :param page_size: Number of results to return per page.
         :type page_size: int
+        :param parent_execution_log_id:
+        :type parent_execution_log_id: str
         :param project_id: Filter logs by project UUID
         :type project_id: str
-        :param search: Filter with skill name or id
+        :param search: Filter with evaluator name or id
         :type search: str
         :param session_id: Filter logs by external session identifier (exact match)
         :type session_id: str
         :param tags: Filter logs by tag names (comma-separated)
         :type tags: str
-        :param unique_skills: Return only unique skills
-        :type unique_skills: bool
+        :param unique_evaluators: Return only unique evaluators
+        :type unique_evaluators: bool
         :param user_id: Filter logs by external user identifier (exact match)
         :type user_id: str
         :param _request_timeout: timeout setting for this request. If one
@@ -461,22 +614,31 @@ class ExecutionLogsApi:
         """  # noqa: E501
 
         _param = self._execution_logs_list_serialize(
+            batch_execution_id=batch_execution_id,
             cursor=cursor,
             date_from=date_from,
             date_to=date_to,
             executed_item_id=executed_item_id,
             execution_type=execution_type,
+            export=export,
+            export_full_text=export_full_text,
             has_session_id=has_session_id,
             include=include,
+            judge_id=judge_id,
+            max_cost=max_cost,
             max_score=max_score,
+            min_cost=min_cost,
             min_score=min_score,
+            model=model,
             ordering=ordering,
+            owner_email=owner_email,
             page_size=page_size,
+            parent_execution_log_id=parent_execution_log_id,
             project_id=project_id,
             search=search,
             session_id=session_id,
             tags=tags,
-            unique_skills=unique_skills,
+            unique_evaluators=unique_evaluators,
             user_id=user_id,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -492,22 +654,31 @@ class ExecutionLogsApi:
 
     def _execution_logs_list_serialize(
         self,
+        batch_execution_id,
         cursor,
         date_from,
         date_to,
         executed_item_id,
         execution_type,
+        export,
+        export_full_text,
         has_session_id,
         include,
+        judge_id,
+        max_cost,
         max_score,
+        min_cost,
         min_score,
+        model,
         ordering,
+        owner_email,
         page_size,
+        parent_execution_log_id,
         project_id,
         search,
         session_id,
         tags,
-        unique_skills,
+        unique_evaluators,
         user_id,
         _request_auth,
         _content_type,
@@ -527,6 +698,9 @@ class ExecutionLogsApi:
 
         # process the path parameters
         # process the query parameters
+        if batch_execution_id is not None:
+            _query_params.append(("batch_execution_id", batch_execution_id))
+
         if cursor is not None:
             _query_params.append(("cursor", cursor))
 
@@ -548,23 +722,47 @@ class ExecutionLogsApi:
         if execution_type is not None:
             _query_params.append(("execution_type", execution_type))
 
+        if export is not None:
+            _query_params.append(("export", export))
+
+        if export_full_text is not None:
+            _query_params.append(("export_full_text", export_full_text))
+
         if has_session_id is not None:
             _query_params.append(("has_session_id", has_session_id))
 
         if include is not None:
             _query_params.append(("include", include))
 
+        if judge_id is not None:
+            _query_params.append(("judge_id", judge_id))
+
+        if max_cost is not None:
+            _query_params.append(("max_cost", max_cost))
+
         if max_score is not None:
             _query_params.append(("max_score", max_score))
+
+        if min_cost is not None:
+            _query_params.append(("min_cost", min_cost))
 
         if min_score is not None:
             _query_params.append(("min_score", min_score))
 
+        if model is not None:
+            _query_params.append(("model", model))
+
         if ordering is not None:
             _query_params.append(("ordering", ordering))
 
+        if owner_email is not None:
+            _query_params.append(("owner_email", owner_email))
+
         if page_size is not None:
             _query_params.append(("page_size", page_size))
+
+        if parent_execution_log_id is not None:
+            _query_params.append(("parent_execution_log_id", parent_execution_log_id))
 
         if project_id is not None:
             _query_params.append(("project_id", project_id))
@@ -578,8 +776,8 @@ class ExecutionLogsApi:
         if tags is not None:
             _query_params.append(("tags", tags))
 
-        if unique_skills is not None:
-            _query_params.append(("unique_skills", unique_skills))
+        if unique_evaluators is not None:
+            _query_params.append(("unique_evaluators", unique_evaluators))
 
         if user_id is not None:
             _query_params.append(("user_id", user_id))

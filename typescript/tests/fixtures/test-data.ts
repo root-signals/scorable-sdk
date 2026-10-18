@@ -71,7 +71,6 @@ export class TestDataFactory {
     return {
       id: `dataset-${Date.now()}`,
       name: 'Test Dataset',
-      type: 'test' as const,
       tags: ['test', 'sdk'],
       owner: {
         email: 'test@example.com',

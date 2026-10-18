@@ -18,8 +18,8 @@ import pprint
 import re  # noqa: F401
 from typing import Any, ClassVar, Dict, List, Optional, Set
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing_extensions import Annotated, Self
+from pydantic import BaseModel, ConfigDict, StrictStr
+from typing_extensions import Self
 
 
 class DatasetItemRequest(BaseModel):
@@ -27,8 +27,9 @@ class DatasetItemRequest(BaseModel):
     DatasetItemRequest
     """  # noqa: E501
 
-    response: Annotated[str, Field(min_length=1, strict=True)]
+    response: Optional[StrictStr] = None
     request: Optional[StrictStr] = None
+    turns: Optional[Any] = None
     expected_output: Optional[StrictStr] = None
     contexts: Optional[Any] = None
     variables: Optional[Any] = None
@@ -37,6 +38,7 @@ class DatasetItemRequest(BaseModel):
     __properties: ClassVar[List[str]] = [
         "response",
         "request",
+        "turns",
         "expected_output",
         "contexts",
         "variables",
@@ -81,6 +83,11 @@ class DatasetItemRequest(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # set to None if turns (nullable) is None
+        # and model_fields_set contains the field
+        if self.turns is None and "turns" in self.model_fields_set:
+            _dict["turns"] = None
+
         # set to None if contexts (nullable) is None
         # and model_fields_set contains the field
         if self.contexts is None and "contexts" in self.model_fields_set:
@@ -111,6 +118,7 @@ class DatasetItemRequest(BaseModel):
             {
                 "response": obj.get("response"),
                 "request": obj.get("request"),
+                "turns": obj.get("turns"),
                 "expected_output": obj.get("expected_output"),
                 "contexts": obj.get("contexts"),
                 "variables": obj.get("variables"),

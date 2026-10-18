@@ -7,6 +7,7 @@ export type ExecutionLogList = components['schemas']['ExecutionLogList'];
 export type ExecutionLogDetails = components['schemas']['ExecutionLogDetails'];
 
 export interface ExecutionLogListParams extends ListParams {
+  /** @deprecated Operational skills were removed from the API; use `evaluator_id`. */
   skill_id?: string;
   evaluator_id?: string;
   judge_id?: string;
@@ -120,6 +121,8 @@ export class ExecutionLogsResource {
 
   /**
    * Get execution logs for a specific skill
+   *
+   * @deprecated Operational skills were removed from the API; use `getByEvaluator`.
    */
   async getBySkill(
     skillId: string,

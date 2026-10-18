@@ -37,7 +37,7 @@ network_troubleshooting_evaluator = client.evaluators.create(
 # Build a labelled dataset: add example request/response pairs, then annotate each with the
 # expected score. Omitting a score config defaults to the global identity "Score" config, so the
 # annotation value is the expected score directly.
-dataset = client.datasets.create(name="Network troubleshooting calibration set", type="test")
+dataset = client.datasets.create(name="Network troubleshooting calibration set")
 assert dataset is not None
 
 vague = client.datasets.add_item(
