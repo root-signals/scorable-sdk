@@ -75,9 +75,7 @@ from scorable import Scorable
 client = Scorable()
 
 # Run any of our ready-made evaluators
-result = client.evaluators.Politeness(
-    response="You can find the instructions from our Careers page."
-)
+result = client.evaluators.Politeness(response="You can find the instructions from our Careers page.")
 # Example result:
 #   {
 #     "score": 0.7, --> a normalized score between [0, 1]
