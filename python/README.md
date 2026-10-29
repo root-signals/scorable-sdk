@@ -10,7 +10,7 @@
 
 <p align="center">
     <a href="https://pypi.org/project/scorable/">
-      <img alt="Supported Python versions" src="https://img.shields.io/badge/Python-3.10%20to%203.13-yellow?style=for-the-badge&logo=python&logoColor=yellow">
+      <img alt="Supported Python versions" src="https://img.shields.io/badge/Python-3.11%20to%203.13-yellow?style=for-the-badge&logo=python&logoColor=yellow">
     </a>
 </p>
 
