@@ -46,7 +46,7 @@ classifiers = [
 dev = [
   "furo", # sphinx theme
   "hatch",
-  "mypy==2.4.0",
+  "mypy==2.4.1",
   "myst_parser",
   "pre-commit",
   "pytest-asyncio",
